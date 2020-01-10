@@ -1,0 +1,271 @@
+9 29 25
+
+2mass-atlas-ID00004s-jID00004.fits 4.02648925781 1 0
+2mass-atlas-ID00001s-jID00001.fits 4.02648925781 1 0
+2mass-atlas-ID00000s-jID00000.fits 4.02648925781 1 0
+fits_list.tbl 0.00023365020752 1 0
+region.hdr 0.000289916992188 1 0
+2mass-atlas-ID00002s-jID00002.fits 4.02648925781 1 0
+2mass-atlas-ID00003s-jID00003.fits 4.02648925781 1 0
+pimages.tbl 0.000798225402832 1 0
+cimages.tbl 0.000798225402832 1 0
+c2mass-atlas-ID00001s-jID00001_area.fits 3.96903133392
+c2mass-atlas-ID00003s-jID00003.fits 3.97764015198
+p2mass-atlas-ID00002s-jID00002_area.fits 3.98857402802
+corrections.tbl 0.000252723693848
+diff.txt 0.389484405518
+p2mass-atlas-ID00000s-jID00000.fits 3.97022628784
+c2mass-atlas-ID00000s-jID00000.fits 3.97022628784
+c2mass-atlas-ID00004s-jID00004.fits 3.96504116058
+fits.tbl 0.00180149078369
+c2mass-atlas-ID00000s-jID00000_area.fits 3.97022628784
+c2mass-atlas-ID00002s-jID00002_area.fits 3.98857402802
+c2mass-atlas-ID00001s-jID00001.fits 3.96903133392
+newcimages.tbl 0.00152492523193
+mosaic_ID00022_ID00022.fits 44.3550243378
+c2mass-atlas-ID00003s-jID00003_area.fits 3.97764015198
+c2mass-atlas-ID00002s-jID00002.fits 3.98857402802
+c2mass-atlas-ID00004s-jID00004_area.fits 3.96504116058
+p2mass-atlas-ID00001s-jID00001.fits 3.96903133392
+mosaic_ID00022_ID00022_area.fits 44.3550243378
+p2mass-atlas-ID00001s-jID00001_area.fits 3.96903133392
+p2mass-atlas-ID00000s-jID00000_area.fits 3.97022628784
+p2mass-atlas-ID00003s-jID00003.fits 3.97764015198
+shrunken_ID00023_ID00023.fits 1.77491092682
+p2mass-atlas-ID00003s-jID00003_area.fits 3.97764015198
+shrunken_ID00023_ID00023.jpg 0.195365905762
+p2mass-atlas-ID00004s-jID00004_area.fits 3.96504116058
+fit.txt 0.000259399414062
+p2mass-atlas-ID00004s-jID00004.fits 3.96504116058
+p2mass-atlas-ID00002s-jID00002.fits 3.98857402802
+
+ID00019 mBackground 10.93 3 2
+corrections.tbl
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+c2mass-atlas-ID00003s-jID00003.fits
+c2mass-atlas-ID00003s-jID00003_area.fits
+ID00018 mBackground 10.83 3 2
+corrections.tbl
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+c2mass-atlas-ID00002s-jID00002_area.fits
+c2mass-atlas-ID00002s-jID00002.fits
+ID00015 mBgModel 1.42 2 1
+pimages.tbl
+fits.tbl
+corrections.tbl
+ID00014 mConcatFit 0.72 3 1
+fits_list.tbl
+fit.txt
+diff.txt
+fits.tbl
+ID00017 mBackground 10.64 3 2
+corrections.tbl
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+c2mass-atlas-ID00001s-jID00001_area.fits
+c2mass-atlas-ID00001s-jID00001.fits
+ID00016 mBackground 10.39 3 2
+corrections.tbl
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+c2mass-atlas-ID00000s-jID00000_area.fits
+c2mass-atlas-ID00000s-jID00000.fits
+ID00011 mDiffFit 10.51 5 2
+region.hdr
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+fit.txt
+diff.txt
+ID00010 mDiffFit 10.51 3 2
+region.hdr
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+fit.txt
+diff.txt
+ID00013 mDiffFit 10.37 5 2
+region.hdr
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+fit.txt
+diff.txt
+ID00012 mDiffFit 10.62 5 2
+region.hdr
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+fit.txt
+diff.txt
+ID00020 mBackground 10.76 3 2
+corrections.tbl
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+c2mass-atlas-ID00004s-jID00004.fits
+c2mass-atlas-ID00004s-jID00004_area.fits
+ID00021 mImgTbl 1.39 11 1
+cimages.tbl
+c2mass-atlas-ID00000s-jID00000_area.fits
+c2mass-atlas-ID00000s-jID00000.fits
+c2mass-atlas-ID00001s-jID00001_area.fits
+c2mass-atlas-ID00001s-jID00001.fits
+c2mass-atlas-ID00002s-jID00002_area.fits
+c2mass-atlas-ID00002s-jID00002.fits
+c2mass-atlas-ID00003s-jID00003.fits
+c2mass-atlas-ID00003s-jID00003_area.fits
+c2mass-atlas-ID00004s-jID00004.fits
+c2mass-atlas-ID00004s-jID00004_area.fits
+newcimages.tbl
+ID00008 mDiffFit 10.81 5 2
+region.hdr
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+fit.txt
+diff.txt
+ID00009 mDiffFit 10.49 5 2
+region.hdr
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+fit.txt
+diff.txt
+ID00024 mJPEG 0.45 1 1
+shrunken_ID00023_ID00023.fits
+shrunken_ID00023_ID00023.jpg
+ID00002 mProjectPP 13.36 2 2
+region.hdr
+2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+ID00003 mProjectPP 13.6 2 2
+region.hdr
+2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+ID00000 mProjectPP 13.39 2 2
+region.hdr
+2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+ID00001 mProjectPP 13.83 2 2
+region.hdr
+2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+ID00006 mDiffFit 10.59 5 2
+region.hdr
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+fit.txt
+diff.txt
+ID00007 mDiffFit 10.88 5 2
+region.hdr
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+fit.txt
+diff.txt
+ID00004 mProjectPP 13.78 2 2
+region.hdr
+2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+ID00005 mDiffFit 10.59 5 2
+region.hdr
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+fit.txt
+diff.txt
+ID00022 mAdd 3.03 2 2
+region.hdr
+newcimages.tbl
+mosaic_ID00022_ID00022.fits
+mosaic_ID00022_ID00022_area.fits
+ID00023 mShrink 3.86 2 1
+mosaic_ID00022_ID00022.fits
+mosaic_ID00022_ID00022_area.fits
+shrunken_ID00023_ID00023.fits
+
+ID00002 4
+ID00010
+ID00008
+ID00009
+ID00018
+ID00003 4
+ID00011
+ID00019
+ID00007
+ID00013
+ID00000 4
+ID00016
+ID00008
+ID00006
+ID00005
+ID00001 7
+ID00011
+ID00009
+ID00017
+ID00012
+ID00006
+ID00007
+ID00005
+ID00004 3
+ID00020
+ID00012
+ID00013
+ID00010 1
+ID00014
+ID00008 1
+ID00014
+ID00009 1
+ID00014
+ID00018 1
+ID00021
+ID00011 1
+ID00014
+ID00019 1
+ID00021
+ID00007 1
+ID00014
+ID00013 1
+ID00014
+ID00016 1
+ID00021
+ID00006 1
+ID00014
+ID00005 1
+ID00014
+ID00017 1
+ID00021
+ID00012 1
+ID00014
+ID00020 1
+ID00021
+ID00014 1
+ID00015
+ID00021 1
+ID00022
+ID00015 5
+ID00016
+ID00020
+ID00019
+ID00018
+ID00017
+ID00022 1
+ID00023
+ID00023 1
+ID00024
+ID00024 0

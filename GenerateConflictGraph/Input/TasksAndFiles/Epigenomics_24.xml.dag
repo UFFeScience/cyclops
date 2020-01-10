@@ -1,0 +1,186 @@
+3 35 24
+
+chr210.sfq 426.158289909 1 0
+chr21.BS.bfa 1191.30527687 1 0
+chr21.BSnull.bfa 1191.30527687 1 0
+chr21.0.4.sfq 79.9628925323
+chr21.0.1.nocontam.fq 42.6807117462
+chr21.0.4.nocontam.fq 35.5816144943
+chr21.0.2.nocontam.map 6.17490291595
+chr21.0.2.nocontam.bfq 5.68091106415
+chr21.0.2.nocontam.fq 23.8126211166
+chr21.0.0.contam.sfq 39.5472288132
+chr21.0.4.nocontam.sfq 41.3079490662
+chr21.0.1.contam.sfq 47.7980051041
+chr21.0.0.nocontam.fq 23.4730548859
+chr21.0.0.nocontam.bfq 6.59820652008
+chr21.0.2.contam.sfq 40.1207494736
+chr21.0.3.nocontam.fq 35.0015850067
+chr21.0.3.contam.sfq 48.7869281769
+chr21.0.4.nocontam.bfq 8.6206741333
+chr21.0.1.nocontam.sfq 45.9121084213
+chr21.nocontam.map.zr 1.5203371048
+chr21.0.1.sfq 93.7101135254
+chr21.nocontam.chr.map 0.611831665039
+chr21.0.4.contam.sfq 38.6549434662
+chr21.0.0.sfq 81.5718765259
+chr21.0.3.nocontam.map 9.34590911865
+chr21.0.3.nocontam.sfq 45.2382240295
+chr21.nocontam.map 40.3436260223
+chr21.0.2.nocontam.sfq 36.7675056458
+chr21.0.0.nocontam.map 7.17196273804
+chr21.0.4.nocontam.map 9.37029743195
+chr21.0.1.nocontam.map 10.701171875
+chr21.0.3.nocontam.bfq 8.59823703766
+chr21.nocontam.chr.pileup 3.61974906921
+chr21.nocontam.map.vm 0.165602684021
+chr21.0.3.sfq 94.0251522064
+chr21.0.0.nocontam.sfq 42.0246477127
+chr21.0.1.nocontam.bfq 9.84507846832
+chr21.0.2.sfq 76.8882551193
+
+ID00019 map_chr21 3623.08 2 1
+chr21.BS.bfa
+chr21.0.3.nocontam.bfq
+chr21.0.3.nocontam.map
+ID00018 map_chr21 2425.31 2 1
+chr21.BS.bfa
+chr21.0.2.nocontam.bfq
+chr21.0.2.nocontam.map
+ID00015 fastq2bfq_chr21 5.16 1 1
+chr21.0.4.nocontam.fq
+chr21.0.4.nocontam.bfq
+ID00014 fastq2bfq_chr21 4.72 1 1
+chr21.0.3.nocontam.fq
+chr21.0.3.nocontam.bfq
+ID00017 map_chr21 3196.4 2 1
+chr21.BS.bfa
+chr21.0.1.nocontam.bfq
+chr21.0.1.nocontam.map
+ID00016 map_chr21 2830.54 2 1
+chr21.BS.bfa
+chr21.0.0.nocontam.bfq
+chr21.0.0.nocontam.map
+ID00011 fastq2bfq_chr21 4.25 1 1
+chr21.0.0.nocontam.fq
+chr21.0.0.nocontam.bfq
+ID00010 sol2sanger_chr21 5.02 1 1
+chr21.0.4.nocontam.sfq
+chr21.0.4.nocontam.fq
+ID00013 fastq2bfq_chr21 4.03 1 1
+chr21.0.2.nocontam.fq
+chr21.0.2.nocontam.bfq
+ID00012 fastq2bfq_chr21 5.91 1 1
+chr21.0.1.nocontam.fq
+chr21.0.1.nocontam.bfq
+ID00020 map_chr21 4062.96 2 1
+chr21.BS.bfa
+chr21.0.4.nocontam.bfq
+chr21.0.4.nocontam.map
+ID00021 mapMerge_chr21 17.23 5 3
+chr21.0.0.nocontam.map
+chr21.0.1.nocontam.map
+chr21.0.2.nocontam.map
+chr21.0.3.nocontam.map
+chr21.0.4.nocontam.map
+chr21.nocontam.map
+chr21.nocontam.map.zr
+chr21.nocontam.map.vm
+ID00008 sol2sanger_chr21 3.26 1 1
+chr21.0.2.nocontam.sfq
+chr21.0.2.nocontam.fq
+ID00009 sol2sanger_chr21 3.06 1 1
+chr21.0.3.nocontam.sfq
+chr21.0.3.nocontam.fq
+ID00002 filterContams_chr21 8.23 1 2
+chr21.0.1.sfq
+chr21.0.1.nocontam.sfq
+chr21.0.1.contam.sfq
+ID00003 filterContams_chr21 8.15 1 2
+chr21.0.2.sfq
+chr21.0.2.nocontam.sfq
+chr21.0.2.contam.sfq
+ID00000 fastqSplit_chr21 103.52 1 5
+chr210.sfq
+chr21.0.0.sfq
+chr21.0.1.sfq
+chr21.0.2.sfq
+chr21.0.3.sfq
+chr21.0.4.sfq
+ID00001 filterContams_chr21 7.01 1 2
+chr21.0.0.sfq
+chr21.0.0.nocontam.sfq
+chr21.0.0.contam.sfq
+ID00006 sol2sanger_chr21 2.36 1 1
+chr21.0.0.nocontam.sfq
+chr21.0.0.nocontam.fq
+ID00007 sol2sanger_chr21 3.54 1 1
+chr21.0.1.nocontam.sfq
+chr21.0.1.nocontam.fq
+ID00004 filterContams_chr21 9.25 1 2
+chr21.0.3.sfq
+chr21.0.3.nocontam.sfq
+chr21.0.3.contam.sfq
+ID00005 filterContams_chr21 11.89 1 2
+chr21.0.4.sfq
+chr21.0.4.nocontam.sfq
+chr21.0.4.contam.sfq
+ID00022 maqindex_chr21 0.05 1 1
+chr21.nocontam.map
+chr21.nocontam.chr.map
+ID00023 pileup_chr21 1375.22 2 1
+chr21.BSnull.bfa
+chr21.nocontam.chr.map
+chr21.nocontam.chr.pileup
+
+ID00000 5
+ID00002
+ID00003
+ID00001
+ID00004
+ID00005
+ID00002 1
+ID00007
+ID00003 1
+ID00008
+ID00001 1
+ID00006
+ID00004 1
+ID00009
+ID00005 1
+ID00010
+ID00007 1
+ID00012
+ID00008 1
+ID00013
+ID00006 1
+ID00011
+ID00009 1
+ID00014
+ID00010 1
+ID00015
+ID00012 1
+ID00017
+ID00013 1
+ID00018
+ID00011 1
+ID00016
+ID00014 1
+ID00019
+ID00015 1
+ID00020
+ID00017 1
+ID00021
+ID00018 1
+ID00021
+ID00016 1
+ID00021
+ID00019 1
+ID00021
+ID00020 1
+ID00021
+ID00021 1
+ID00022
+ID00022 1
+ID00023
+ID00023 0

@@ -1,0 +1,553 @@
+12 41 50
+
+2mass-atlas-ID00004s-jID00004.fits 4.02648925781 1 0
+2mass-atlas-ID00001s-jID00001.fits 4.02648925781 1 0
+2mass-atlas-ID00005s-jID00005.fits 4.02648925781 1 0
+2mass-atlas-ID00000s-jID00000.fits 4.02648925781 1 0
+fits_list.tbl 0.000727653503418 1 0
+2mass-atlas-ID00006s-jID00006.fits 4.02648925781 1 0
+region.hdr 0.000289916992188 1 0
+2mass-atlas-ID00002s-jID00002.fits 4.02648925781 1 0
+2mass-atlas-ID00003s-jID00003.fits 4.02648925781 1 0
+pimages.tbl 0.00127792358398 1 0
+cimages.tbl 0.00127792358398 1 0
+2mass-atlas-ID00007s-jID00007.fits 4.02648925781 1 0
+p2mass-atlas-ID00007s-jID00007_area.fits 3.95404720306
+c2mass-atlas-ID00001s-jID00001_area.fits 3.97922515869
+p2mass-atlas-ID00006s-jID00006_area.fits 3.96091938019
+c2mass-atlas-ID00003s-jID00003.fits 3.9621887207
+p2mass-atlas-ID00002s-jID00002_area.fits 3.96273326874
+corrections.tbl 0.000405311584473
+p2mass-atlas-ID00005s-jID00005.fits 3.95098781586
+p2mass-atlas-ID00000s-jID00000_area.fits 3.96964073181
+shrunken_ID00048_ID00048.fits 2.65965175629
+p2mass-atlas-ID00000s-jID00000.fits 3.96964073181
+c2mass-atlas-ID00006s-jID00006_area.fits 3.96091938019
+c2mass-atlas-ID00007s-jID00007_area.fits 3.95404720306
+c2mass-atlas-ID00000s-jID00000.fits 3.96964073181
+c2mass-atlas-ID00004s-jID00004.fits 3.97250270844
+fits.tbl 0.00560569763184
+c2mass-atlas-ID00000s-jID00000_area.fits 3.96964073181
+c2mass-atlas-ID00002s-jID00002_area.fits 3.96273326874
+c2mass-atlas-ID00001s-jID00001.fits 3.97922515869
+mosaic_ID00047_ID00047_area.fits 66.4647073746
+c2mass-atlas-ID00003s-jID00003_area.fits 3.9621887207
+newcimages.tbl 0.00339317321777
+p2mass-atlas-ID00006s-jID00006.fits 3.96091938019
+c2mass-atlas-ID00006s-jID00006.fits 3.96091938019
+c2mass-atlas-ID00002s-jID00002.fits 3.96273326874
+c2mass-atlas-ID00004s-jID00004_area.fits 3.97250270844
+p2mass-atlas-ID00001s-jID00001.fits 3.97922515869
+p2mass-atlas-ID00001s-jID00001_area.fits 3.97922515869
+c2mass-atlas-ID00005s-jID00005_area.fits 3.95098781586
+p2mass-atlas-ID00003s-jID00003.fits 3.9621887207
+c2mass-atlas-ID00005s-jID00005.fits 3.95098781586
+p2mass-atlas-ID00003s-jID00003_area.fits 3.9621887207
+shrunken_ID00048_ID00048.jpg 0.687181472778
+p2mass-atlas-ID00007s-jID00007.fits 3.95404720306
+c2mass-atlas-ID00007s-jID00007.fits 3.95404720306
+p2mass-atlas-ID00004s-jID00004_area.fits 3.97250270844
+fit.txt 0.000248908996582
+mosaic_ID00047_ID00047.fits 66.4647073746
+diff.txt 0.405827522278
+p2mass-atlas-ID00004s-jID00004.fits 3.97250270844
+p2mass-atlas-ID00005s-jID00005_area.fits 3.95098781586
+p2mass-atlas-ID00002s-jID00002.fits 3.96273326874
+
+ID00040 mBackground 10.47 3 2
+corrections.tbl
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+c2mass-atlas-ID00002s-jID00002_area.fits
+c2mass-atlas-ID00002s-jID00002.fits
+ID00034 mDiffFit 10.56 5 2
+region.hdr
+p2mass-atlas-ID00007s-jID00007.fits
+p2mass-atlas-ID00007s-jID00007_area.fits
+p2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005_area.fits
+fit.txt
+diff.txt
+ID00033 mDiffFit 10.6 5 2
+region.hdr
+p2mass-atlas-ID00007s-jID00007.fits
+p2mass-atlas-ID00007s-jID00007_area.fits
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+fit.txt
+diff.txt
+ID00028 mDiffFit 10.64 5 2
+region.hdr
+p2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005_area.fits
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+fit.txt
+diff.txt
+ID00031 mDiffFit 10.68 5 2
+region.hdr
+p2mass-atlas-ID00006s-jID00006.fits
+p2mass-atlas-ID00006s-jID00006_area.fits
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+fit.txt
+diff.txt
+ID00030 mDiffFit 10.65 5 2
+region.hdr
+p2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005_area.fits
+p2mass-atlas-ID00006s-jID00006.fits
+p2mass-atlas-ID00006s-jID00006_area.fits
+fit.txt
+diff.txt
+ID00019 mDiffFit 10.31 5 2
+region.hdr
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+fit.txt
+diff.txt
+ID00018 mDiffFit 10.48 3 2
+region.hdr
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+fit.txt
+diff.txt
+ID00035 mDiffFit 10.56 3 2
+region.hdr
+p2mass-atlas-ID00007s-jID00007.fits
+p2mass-atlas-ID00007s-jID00007_area.fits
+fit.txt
+diff.txt
+ID00029 mDiffFit 10.62 5 2
+region.hdr
+p2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005_area.fits
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+fit.txt
+diff.txt
+ID00015 mDiffFit 10.54 5 2
+region.hdr
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+fit.txt
+diff.txt
+ID00014 mDiffFit 10.7 3 2
+region.hdr
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+fit.txt
+diff.txt
+ID00017 mDiffFit 10.71 5 2
+region.hdr
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+p2mass-atlas-ID00007s-jID00007.fits
+p2mass-atlas-ID00007s-jID00007_area.fits
+fit.txt
+diff.txt
+ID00016 mDiffFit 10.51 5 2
+region.hdr
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+fit.txt
+diff.txt
+ID00011 mDiffFit 10.78 5 2
+region.hdr
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+fit.txt
+diff.txt
+ID00010 mDiffFit 10.69 5 2
+region.hdr
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+fit.txt
+diff.txt
+ID00013 mDiffFit 10.59 5 2
+region.hdr
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+fit.txt
+diff.txt
+ID00012 mDiffFit 10.56 5 2
+region.hdr
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+p2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005_area.fits
+fit.txt
+diff.txt
+ID00038 mBackground 10.99 3 2
+corrections.tbl
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+c2mass-atlas-ID00000s-jID00000_area.fits
+c2mass-atlas-ID00000s-jID00000.fits
+ID00047 mAdd 4.75 2 2
+region.hdr
+newcimages.tbl
+mosaic_ID00047_ID00047.fits
+mosaic_ID00047_ID00047_area.fits
+ID00041 mBackground 10.53 3 2
+corrections.tbl
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+c2mass-atlas-ID00003s-jID00003.fits
+c2mass-atlas-ID00003s-jID00003_area.fits
+ID00048 mShrink 4.88 2 1
+mosaic_ID00047_ID00047.fits
+mosaic_ID00047_ID00047_area.fits
+shrunken_ID00048_ID00048.fits
+ID00049 mJPEG 1.22 1 1
+shrunken_ID00048_ID00048.fits
+shrunken_ID00048_ID00048.jpg
+ID00044 mBackground 10.54 3 2
+corrections.tbl
+p2mass-atlas-ID00006s-jID00006.fits
+p2mass-atlas-ID00006s-jID00006_area.fits
+c2mass-atlas-ID00006s-jID00006_area.fits
+c2mass-atlas-ID00006s-jID00006.fits
+ID00039 mBackground 10.66 3 2
+corrections.tbl
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+c2mass-atlas-ID00001s-jID00001_area.fits
+c2mass-atlas-ID00001s-jID00001.fits
+ID00045 mBackground 10.42 3 2
+corrections.tbl
+p2mass-atlas-ID00007s-jID00007.fits
+p2mass-atlas-ID00007s-jID00007_area.fits
+c2mass-atlas-ID00007s-jID00007.fits
+c2mass-atlas-ID00007s-jID00007_area.fits
+ID00020 mDiffFit 10.63 5 2
+region.hdr
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+fit.txt
+diff.txt
+ID00021 mDiffFit 10.36 3 2
+region.hdr
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+fit.txt
+diff.txt
+ID00008 mDiffFit 10.65 3 2
+region.hdr
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+fit.txt
+diff.txt
+ID00009 mDiffFit 10.68 5 2
+region.hdr
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+fit.txt
+diff.txt
+ID00024 mDiffFit 10.28 5 2
+region.hdr
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+fit.txt
+diff.txt
+ID00025 mDiffFit 10.51 5 2
+region.hdr
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+fit.txt
+diff.txt
+ID00026 mDiffFit 10.41 3 2
+region.hdr
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+fit.txt
+diff.txt
+ID00027 mDiffFit 10.54 5 2
+region.hdr
+p2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005_area.fits
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+fit.txt
+diff.txt
+ID00002 mProjectPP 13.55 2 2
+region.hdr
+2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+ID00003 mProjectPP 13.31 2 2
+region.hdr
+2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+ID00000 mProjectPP 13.08 2 2
+region.hdr
+2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000.fits
+p2mass-atlas-ID00000s-jID00000_area.fits
+ID00001 mProjectPP 13.48 2 2
+region.hdr
+2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001.fits
+p2mass-atlas-ID00001s-jID00001_area.fits
+ID00006 mProjectPP 13.6 2 2
+region.hdr
+2mass-atlas-ID00006s-jID00006.fits
+p2mass-atlas-ID00006s-jID00006.fits
+p2mass-atlas-ID00006s-jID00006_area.fits
+ID00007 mProjectPP 13.17 2 2
+region.hdr
+2mass-atlas-ID00007s-jID00007.fits
+p2mass-atlas-ID00007s-jID00007.fits
+p2mass-atlas-ID00007s-jID00007_area.fits
+ID00004 mProjectPP 13.43 2 2
+region.hdr
+2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+ID00005 mProjectPP 13.6 2 2
+region.hdr
+2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005_area.fits
+ID00046 mImgTbl 3.2 17 1
+cimages.tbl
+c2mass-atlas-ID00000s-jID00000_area.fits
+c2mass-atlas-ID00000s-jID00000.fits
+c2mass-atlas-ID00001s-jID00001_area.fits
+c2mass-atlas-ID00001s-jID00001.fits
+c2mass-atlas-ID00002s-jID00002_area.fits
+c2mass-atlas-ID00002s-jID00002.fits
+c2mass-atlas-ID00003s-jID00003.fits
+c2mass-atlas-ID00003s-jID00003_area.fits
+c2mass-atlas-ID00004s-jID00004.fits
+c2mass-atlas-ID00004s-jID00004_area.fits
+c2mass-atlas-ID00005s-jID00005_area.fits
+c2mass-atlas-ID00005s-jID00005.fits
+c2mass-atlas-ID00006s-jID00006_area.fits
+c2mass-atlas-ID00006s-jID00006.fits
+c2mass-atlas-ID00007s-jID00007.fits
+c2mass-atlas-ID00007s-jID00007_area.fits
+newcimages.tbl
+ID00032 mDiffFit 10.69 5 2
+region.hdr
+p2mass-atlas-ID00007s-jID00007.fits
+p2mass-atlas-ID00007s-jID00007_area.fits
+p2mass-atlas-ID00002s-jID00002.fits
+p2mass-atlas-ID00002s-jID00002_area.fits
+fit.txt
+diff.txt
+ID00022 mDiffFit 10.6 5 2
+region.hdr
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+fit.txt
+diff.txt
+ID00043 mBackground 10.49 3 2
+corrections.tbl
+p2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005_area.fits
+c2mass-atlas-ID00005s-jID00005_area.fits
+c2mass-atlas-ID00005s-jID00005.fits
+ID00023 mDiffFit 10.56 5 2
+region.hdr
+p2mass-atlas-ID00003s-jID00003.fits
+p2mass-atlas-ID00003s-jID00003_area.fits
+p2mass-atlas-ID00005s-jID00005.fits
+p2mass-atlas-ID00005s-jID00005_area.fits
+fit.txt
+diff.txt
+ID00042 mBackground 10.74 3 2
+corrections.tbl
+p2mass-atlas-ID00004s-jID00004.fits
+p2mass-atlas-ID00004s-jID00004_area.fits
+c2mass-atlas-ID00004s-jID00004.fits
+c2mass-atlas-ID00004s-jID00004_area.fits
+ID00037 mBgModel 4.2 2 1
+pimages.tbl
+fits.tbl
+corrections.tbl
+ID00036 mConcatFit 2.24 3 1
+fits_list.tbl
+fit.txt
+diff.txt
+fits.tbl
+
+ID00002 6
+ID00040
+ID00032
+ID00019
+ID00018
+ID00015
+ID00010
+ID00003 10
+ID00041
+ID00033
+ID00019
+ID00011
+ID00020
+ID00021
+ID00022
+ID00025
+ID00029
+ID00023
+ID00000 9
+ID00011
+ID00010
+ID00013
+ID00012
+ID00038
+ID00009
+ID00024
+ID00027
+ID00008
+ID00001 9
+ID00015
+ID00014
+ID00017
+ID00016
+ID00013
+ID00039
+ID00020
+ID00009
+ID00028
+ID00006 3
+ID00031
+ID00030
+ID00044
+ID00007 6
+ID00033
+ID00032
+ID00035
+ID00034
+ID00017
+ID00045
+ID00004 7
+ID00031
+ID00016
+ID00022
+ID00024
+ID00025
+ID00026
+ID00042
+ID00005 8
+ID00030
+ID00034
+ID00012
+ID00027
+ID00028
+ID00029
+ID00043
+ID00023
+ID00040 1
+ID00046
+ID00032 1
+ID00036
+ID00019 1
+ID00036
+ID00018 1
+ID00036
+ID00015 1
+ID00036
+ID00010 1
+ID00036
+ID00041 1
+ID00046
+ID00033 1
+ID00036
+ID00011 1
+ID00036
+ID00020 1
+ID00036
+ID00021 1
+ID00036
+ID00022 1
+ID00036
+ID00025 1
+ID00036
+ID00029 1
+ID00036
+ID00023 1
+ID00036
+ID00013 1
+ID00036
+ID00012 1
+ID00036
+ID00038 1
+ID00046
+ID00009 1
+ID00036
+ID00024 1
+ID00036
+ID00027 1
+ID00036
+ID00008 1
+ID00036
+ID00014 1
+ID00036
+ID00017 1
+ID00036
+ID00016 1
+ID00036
+ID00039 1
+ID00046
+ID00028 1
+ID00036
+ID00031 1
+ID00036
+ID00030 1
+ID00036
+ID00044 1
+ID00046
+ID00035 1
+ID00036
+ID00034 1
+ID00036
+ID00045 1
+ID00046
+ID00026 1
+ID00036
+ID00042 1
+ID00046
+ID00043 1
+ID00046
+ID00046 1
+ID00047
+ID00036 1
+ID00037
+ID00047 1
+ID00048
+ID00037 8
+ID00040
+ID00041
+ID00038
+ID00044
+ID00039
+ID00045
+ID00043
+ID00042
+ID00048 1
+ID00049
+ID00049 0
