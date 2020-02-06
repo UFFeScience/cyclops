@@ -25,4 +25,4 @@ file(GLOB_RECURSE SOURCES "src/*/*.cc")
 
 ##### executables
 
-add_executable(dmer.x)
+add_executable(wf_security_greedy.x)
