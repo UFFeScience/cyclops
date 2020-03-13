@@ -1,0 +1,21 @@
+Log file created at: 2020/03/10 21:35:08
+Running on machine: localhost.localdomain
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0310 21:35:08.582276 16074 main.cc:46] Starting ...
+I0310 21:35:08.582659 16074 main.cc:48] Input File of the Tasks and Files: /home/ralves/my-dev/Wf-Security/approximative_solutions/input/tasks_and_files/CyberShake_30.xml.dag
+I0310 21:35:08.582666 16074 main.cc:49] Input File of the Cluster: /home/ralves/my-dev/Wf-Security/approximative_solutions/input/clouds/cluster.vcl
+I0310 21:35:08.582670 16074 main.cc:50] Input File of the Conflict Graph: /home/ralves/my-dev/Wf-Security/approximative_solutions/input/conflict_graph/CyberShake_30.xml.scg
+I0310 21:35:08.582674 16074 main.cc:51] Input File of the Conflict Graph: greedy
+I0310 21:35:08.582687 16074 main.cc:56] ... algorithm picked-up ...
+I0310 21:35:08.582691 16074 Algorithm.cc:41] total_storage: 0
+I0310 21:35:08.582718 16074 Algorithm.cc:42] total_file: 0
+I0310 21:35:08.582765 16074 Algorithm.cc:50] line: 17 32 30 2 100.00 100.00
+I0310 21:35:08.582796 16074 Algorithm.cc:63] _static_file_size: 17
+I0310 21:35:08.582803 16074 Algorithm.cc:64] _dynamic_file_size: 32
+I0310 21:35:08.582808 16074 Algorithm.cc:65] _task_size: 32
+I0310 21:35:08.582810 16074 Algorithm.cc:66] _requirement_size: 2
+I0310 21:35:08.582814 16074 Algorithm.cc:67] _deadline: 100
+I0310 21:35:08.582818 16074 Algorithm.cc:68] _budget: 100
+I0310 21:35:08.582825 16074 Algorithm.cc:69] _file_size: 49
+I0310 21:35:08.582828 16074 Algorithm.cc:70] _size: 64
+I0310 21:35:08.582842 16074 main.cc:60] ... ending.

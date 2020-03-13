@@ -21,6 +21,7 @@ import datastructure.DigraphAsMatrix;
 import datastructure.Edge;
 import datastructure.Enumeration;
 import datastructure.GraphAsMatrix;
+import datastructure.Vertex;
 
 /**
  * @author Rodrigo Alves
@@ -162,6 +163,26 @@ public class MainConflictGraph {
 			outputFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 					new File(outputFileName))));
 			
+			// Write, for every node, conflict between output files
+			
+			Enumeration enumVertices = graph.getVertices();
+			while (enumVertices.hasMoreElements()) {
+				Vertex v = (Vertex) enumVertices.nextElement();
+				
+				DataTask data = (DataTask) v.getWeight();
+				
+				Vector<DataFile> dataFiles = data.getOutputFiles();
+								
+				for (int i = 0; i < dataFiles.size() - 1; ++i) {
+					for(int j = i + 1; j < dataFiles.size(); ++j) {
+						outputFile.write(dataFiles.get(i).getName() + " " 
+							+ dataFiles.get(j).getName() + " " + "1\n");
+					}
+				}
+			}
+			
+			// Write every father-son conflict constraint
+			
 			Enumeration enumEdges = graph.getEdges();
 			while (enumEdges.hasMoreElements()) {
 				Edge e = (Edge) enumEdges.nextElement();
@@ -176,10 +197,12 @@ public class MainConflictGraph {
 				}
 			}
 			
+			// Write every same-level conflict constraint
+			
 			Vector<Vector<DataTask>> heightStorage = new Vector<>();
 			
 //			System.out.println(heightStorage);
-			
+								
 			graph.depthFirstTraversal(new HeightStoreVisitor(heightStorage), 0);
 			
 //			System.out.println(heightStorage);

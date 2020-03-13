@@ -1,0 +1,4 @@
+Log file created at: 2020/03/10 21:09:19
+Running on machine: localhost.localdomain
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0310 21:09:19.953634 12150 main.cc:46] Starting ...

@@ -1,3 +1,7 @@
+file2 file3 1
+file5 file6 1
+file5 file7 1
+file6 file7 1
 file2 file5 0
 file2 file6 0
 file2 file7 0

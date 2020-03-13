@@ -1,0 +1,834 @@
+Log file created at: 2020/03/13 12:08:56
+Running on machine: localhost.localdomain
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0313 12:08:56.781407  8969 main.cc:46] Starting ...
+I0313 12:08:56.786304  8969 main.cc:48] Input File of the Tasks and Files: /home/ralves/my-dev/Wf-Security/approximative_solutions/input/tasks_and_files/CyberShake_30.xml.dag
+I0313 12:08:56.786314  8969 main.cc:49] Input File of the Cluster: /home/ralves/my-dev/Wf-Security/approximative_solutions/input/clouds/cluster.vcl
+I0313 12:08:56.786319  8969 main.cc:50] Input File of the Conflict Graph: /home/ralves/my-dev/Wf-Security/approximative_solutions/input/conflict_graph/CyberShake_30.xml.scg
+I0313 12:08:56.786321  8969 main.cc:51] Input File of the Conflict Graph: greedy
+I0313 12:08:56.786329  8969 main.cc:56] ... algorithm picked-up ...
+I0313 12:08:56.786334  8969 Algorithm.cc:49] total_storage: 0
+I0313 12:08:56.786361  8969 Algorithm.cc:50] total_file: 0
+I0313 12:08:56.786666  8969 Algorithm.cc:58] Head: 17 32 30 2 100.00 100.00
+I0313 12:08:56.786717  8969 Algorithm.cc:71] _static_file_size: 17
+I0313 12:08:56.786723  8969 Algorithm.cc:72] _dynamic_file_size: 32
+I0313 12:08:56.786726  8969 Algorithm.cc:73] _task_size: 32
+I0313 12:08:56.786731  8969 Algorithm.cc:74] _requirement_size: 2
+I0313 12:08:56.786733  8969 Algorithm.cc:75] _deadline: 100
+I0313 12:08:56.786742  8969 Algorithm.cc:76] _budget: 100
+I0313 12:08:56.786746  8969 Algorithm.cc:77] _file_size: 49
+I0313 12:08:56.786751  8969 Algorithm.cc:78] _size: 64
+I0313 12:08:56.786754  8969 Algorithm.cc:90] Requirement: 0 1
+I0313 12:08:56.786784  8969 Algorithm.cc:100] Requirement[_id: 0, _max_value: 1]
+I0313 12:08:56.786790  8969 Algorithm.cc:90] Requirement: 1 1
+I0313 12:08:56.786805  8969 Algorithm.cc:100] Requirement[_id: 1, _max_value: 1]
+I0313 12:08:56.786811  8969 Algorithm.cc:107] File: FFI_0_1_fx.sgt 18897.6680574 1 0
+I0313 12:08:56.786829  8969 Algorithm.cc:115] file_name: FFI_0_1_fx.sgt
+I0313 12:08:56.786834  8969 Algorithm.cc:116] file_size: 18897.7
+I0313 12:08:56.786844  8969 Algorithm.cc:141] StaticFile[_id: 64, _name: FFI_0_1_fx.sgt, _size: 18897.7, _vms: 0]
+I0313 12:08:56.786864  8969 Algorithm.cc:107] File: FFI_0_2_txt.variation-s09479-h02338 4.94854259491 1 0
+I0313 12:08:56.786887  8969 Algorithm.cc:115] file_name: FFI_0_2_txt.variation-s09479-h02338
+I0313 12:08:56.786892  8969 Algorithm.cc:116] file_size: 4.94854
+I0313 12:08:56.786900  8969 Algorithm.cc:141] StaticFile[_id: 65, _name: FFI_0_2_txt.variation-s09479-h02338, _size: 4.94854, _vms: 0]
+I0313 12:08:56.786909  8969 Algorithm.cc:107] File: FFI_0_2_txt.variation-s03955-h02403 1.88186645508 1 0
+I0313 12:08:56.786931  8969 Algorithm.cc:115] file_name: FFI_0_2_txt.variation-s03955-h02403
+I0313 12:08:56.786934  8969 Algorithm.cc:116] file_size: 1.88187
+I0313 12:08:56.786942  8969 Algorithm.cc:141] StaticFile[_id: 66, _name: FFI_0_2_txt.variation-s03955-h02403, _size: 1.88187, _vms: 0]
+I0313 12:08:56.786952  8969 Algorithm.cc:107] File: FFI_0_2_txt.variation-s08845-h09162 1.87144756317 1 0
+I0313 12:08:56.786972  8969 Algorithm.cc:115] file_name: FFI_0_2_txt.variation-s08845-h09162
+I0313 12:08:56.786975  8969 Algorithm.cc:116] file_size: 1.87145
+I0313 12:08:56.786983  8969 Algorithm.cc:141] StaticFile[_id: 67, _name: FFI_0_2_txt.variation-s08845-h09162, _size: 1.87145, _vms: 0]
+I0313 12:08:56.786991  8969 Algorithm.cc:107] File: FFI_0_2_fx.sgt 18460.3403292 1 0
+I0313 12:08:56.787010  8969 Algorithm.cc:115] file_name: FFI_0_2_fx.sgt
+I0313 12:08:56.787014  8969 Algorithm.cc:116] file_size: 18460.3
+I0313 12:08:56.787021  8969 Algorithm.cc:141] StaticFile[_id: 68, _name: FFI_0_2_fx.sgt, _size: 18460.3, _vms: 0]
+I0313 12:08:56.787030  8969 Algorithm.cc:107] File: FFI_0_2_txt.variation-s02400-h00543 2.86559104919 1 0
+I0313 12:08:56.787050  8969 Algorithm.cc:115] file_name: FFI_0_2_txt.variation-s02400-h00543
+I0313 12:08:56.787055  8969 Algorithm.cc:116] file_size: 2.86559
+I0313 12:08:56.787061  8969 Algorithm.cc:141] StaticFile[_id: 69, _name: FFI_0_2_txt.variation-s02400-h00543, _size: 2.86559, _vms: 0]
+I0313 12:08:56.787071  8969 Algorithm.cc:107] File: FFI_0_2_txt.variation-s04772-h05300 4.54945850372 1 0
+I0313 12:08:56.787101  8969 Algorithm.cc:115] file_name: FFI_0_2_txt.variation-s04772-h05300
+I0313 12:08:56.787106  8969 Algorithm.cc:116] file_size: 4.54946
+I0313 12:08:56.787111  8969 Algorithm.cc:141] StaticFile[_id: 70, _name: FFI_0_2_txt.variation-s04772-h05300, _size: 4.54946, _vms: 0]
+I0313 12:08:56.787120  8969 Algorithm.cc:107] File: FFI_0_1_txt.variation-s02186-h02600 2.70447731018 1 0
+I0313 12:08:56.787142  8969 Algorithm.cc:115] file_name: FFI_0_1_txt.variation-s02186-h02600
+I0313 12:08:56.787145  8969 Algorithm.cc:116] file_size: 2.70448
+I0313 12:08:56.787151  8969 Algorithm.cc:141] StaticFile[_id: 71, _name: FFI_0_1_txt.variation-s02186-h02600, _size: 2.70448, _vms: 0]
+I0313 12:08:56.787160  8969 Algorithm.cc:107] File: FFI_0_2_txt.variation-s05646-h00806 2.122174263 1 0
+I0313 12:08:56.787184  8969 Algorithm.cc:115] file_name: FFI_0_2_txt.variation-s05646-h00806
+I0313 12:08:56.787187  8969 Algorithm.cc:116] file_size: 2.12217
+I0313 12:08:56.787194  8969 Algorithm.cc:141] StaticFile[_id: 72, _name: FFI_0_2_txt.variation-s05646-h00806, _size: 2.12217, _vms: 0]
+I0313 12:08:56.787201  8969 Algorithm.cc:107] File: FFI_0_1_fy.sgt 18897.6680574 1 0
+I0313 12:08:56.787220  8969 Algorithm.cc:115] file_name: FFI_0_1_fy.sgt
+I0313 12:08:56.787225  8969 Algorithm.cc:116] file_size: 18897.7
+I0313 12:08:56.787231  8969 Algorithm.cc:141] StaticFile[_id: 73, _name: FFI_0_1_fy.sgt, _size: 18897.7, _vms: 0]
+I0313 12:08:56.787240  8969 Algorithm.cc:107] File: FFI_0_1_txt.variation-s04762-h01072 2.72781944275 1 0
+I0313 12:08:56.787261  8969 Algorithm.cc:115] file_name: FFI_0_1_txt.variation-s04762-h01072
+I0313 12:08:56.787266  8969 Algorithm.cc:116] file_size: 2.72782
+I0313 12:08:56.787272  8969 Algorithm.cc:141] StaticFile[_id: 74, _name: FFI_0_1_txt.variation-s04762-h01072, _size: 2.72782, _vms: 0]
+I0313 12:08:56.787281  8969 Algorithm.cc:107] File: FFI_0_2_txt.variation-s02624-h09712 3.37824726105 1 0
+I0313 12:08:56.787300  8969 Algorithm.cc:115] file_name: FFI_0_2_txt.variation-s02624-h09712
+I0313 12:08:56.787304  8969 Algorithm.cc:116] file_size: 3.37825
+I0313 12:08:56.787310  8969 Algorithm.cc:141] StaticFile[_id: 75, _name: FFI_0_2_txt.variation-s02624-h09712, _size: 3.37825, _vms: 0]
+I0313 12:08:56.787320  8969 Algorithm.cc:107] File: FFI_0_1_txt.variation-s06578-h01433 2.43946170807 1 0
+I0313 12:08:56.787340  8969 Algorithm.cc:115] file_name: FFI_0_1_txt.variation-s06578-h01433
+I0313 12:08:56.787343  8969 Algorithm.cc:116] file_size: 2.43946
+I0313 12:08:56.787349  8969 Algorithm.cc:141] StaticFile[_id: 76, _name: FFI_0_1_txt.variation-s06578-h01433, _size: 2.43946, _vms: 0]
+I0313 12:08:56.787358  8969 Algorithm.cc:107] File: FFI_0_2_fy.sgt 18460.3403292 1 0
+I0313 12:08:56.787376  8969 Algorithm.cc:115] file_name: FFI_0_2_fy.sgt
+I0313 12:08:56.787380  8969 Algorithm.cc:116] file_size: 18460.3
+I0313 12:08:56.787386  8969 Algorithm.cc:141] StaticFile[_id: 77, _name: FFI_0_2_fy.sgt, _size: 18460.3, _vms: 0]
+I0313 12:08:56.787395  8969 Algorithm.cc:107] File: FFI_0_2_txt.variation-s08580-h01104 4.42413425446 1 0
+I0313 12:08:56.787415  8969 Algorithm.cc:115] file_name: FFI_0_2_txt.variation-s08580-h01104
+I0313 12:08:56.787420  8969 Algorithm.cc:116] file_size: 4.42413
+I0313 12:08:56.787426  8969 Algorithm.cc:141] StaticFile[_id: 78, _name: FFI_0_2_txt.variation-s08580-h01104, _size: 4.42413, _vms: 0]
+I0313 12:08:56.787436  8969 Algorithm.cc:107] File: FFI_0_1_txt.variation-s07436-h08820 3.20485877991 1 0
+I0313 12:08:56.787456  8969 Algorithm.cc:115] file_name: FFI_0_1_txt.variation-s07436-h08820
+I0313 12:08:56.787461  8969 Algorithm.cc:116] file_size: 3.20486
+I0313 12:08:56.787467  8969 Algorithm.cc:141] StaticFile[_id: 79, _name: FFI_0_1_txt.variation-s07436-h08820, _size: 3.20486, _vms: 0]
+I0313 12:08:56.787474  8969 Algorithm.cc:107] File: FFI_0_1_txt.variation-s07544-h01299 2.60556030273 1 0
+I0313 12:08:56.787493  8969 Algorithm.cc:115] file_name: FFI_0_1_txt.variation-s07544-h01299
+I0313 12:08:56.787498  8969 Algorithm.cc:116] file_size: 2.60556
+I0313 12:08:56.787504  8969 Algorithm.cc:141] StaticFile[_id: 80, _name: FFI_0_1_txt.variation-s07544-h01299, _size: 2.60556, _vms: 0]
+I0313 12:08:56.787513  8969 Algorithm.cc:150] File: Seismogram_FFI_0_2_ID00018.grm 0.0228881835938
+I0313 12:08:56.787539  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_2_ID00018.grm
+I0313 12:08:56.787544  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.787549  8969 Algorithm.cc:170] DynamicFile[_id: 32, _name: Seismogram_FFI_0_2_ID00018.grm, _size: 0.0228882]
+I0313 12:08:56.787557  8969 Algorithm.cc:150] File: Seismogram_FFI_0_2_ID00028.grm 0.0228881835938
+I0313 12:08:56.787575  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_2_ID00028.grm
+I0313 12:08:56.787580  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.787585  8969 Algorithm.cc:170] DynamicFile[_id: 33, _name: Seismogram_FFI_0_2_ID00028.grm, _size: 0.0228882]
+I0313 12:08:56.787592  8969 Algorithm.cc:150] File: Seismogram_FFI_0_1_ID00009.grm 0.0228881835938
+I0313 12:08:56.787611  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_1_ID00009.grm
+I0313 12:08:56.787614  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.787619  8969 Algorithm.cc:170] DynamicFile[_id: 34, _name: Seismogram_FFI_0_1_ID00009.grm, _size: 0.0228882]
+I0313 12:08:56.787626  8969 Algorithm.cc:150] File: FFI_0_2_subfx.sgt 242.307585716
+I0313 12:08:56.787643  8969 Algorithm.cc:158] file_name: FFI_0_2_subfx.sgt
+I0313 12:08:56.787647  8969 Algorithm.cc:159] file_size: 242.308
+I0313 12:08:56.787654  8969 Algorithm.cc:170] DynamicFile[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+I0313 12:08:56.787662  8969 Algorithm.cc:150] File: Seismogram_FFI_0_2_ID00016.grm 0.0228881835938
+I0313 12:08:56.787679  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_2_ID00016.grm
+I0313 12:08:56.787683  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.787689  8969 Algorithm.cc:170] DynamicFile[_id: 36, _name: Seismogram_FFI_0_2_ID00016.grm, _size: 0.0228882]
+I0313 12:08:56.787695  8969 Algorithm.cc:150] File: PeakVals_FFI_0_2_ID00022.bsa 0.000205993652344
+I0313 12:08:56.787727  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_2_ID00022.bsa
+I0313 12:08:56.787731  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.787737  8969 Algorithm.cc:170] DynamicFile[_id: 37, _name: PeakVals_FFI_0_2_ID00022.bsa, _size: 0.000205994]
+I0313 12:08:56.787744  8969 Algorithm.cc:150] File: PeakVals_FFI_0_2_ID00024.bsa 0.000205993652344
+I0313 12:08:56.787762  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_2_ID00024.bsa
+I0313 12:08:56.787767  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.787772  8969 Algorithm.cc:170] DynamicFile[_id: 38, _name: PeakVals_FFI_0_2_ID00024.bsa, _size: 0.000205994]
+I0313 12:08:56.787781  8969 Algorithm.cc:150] File: FFI_0_1_subfy.sgt 126.156052589
+I0313 12:08:56.787799  8969 Algorithm.cc:158] file_name: FFI_0_1_subfy.sgt
+I0313 12:08:56.787803  8969 Algorithm.cc:159] file_size: 126.156
+I0313 12:08:56.787809  8969 Algorithm.cc:170] DynamicFile[_id: 39, _name: FFI_0_1_subfy.sgt, _size: 126.156]
+I0313 12:08:56.787819  8969 Algorithm.cc:150] File: PeakVals_FFI_0_1_ID00011.bsa 0.000205993652344
+I0313 12:08:56.787838  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_1_ID00011.bsa
+I0313 12:08:56.787842  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.787848  8969 Algorithm.cc:170] DynamicFile[_id: 40, _name: PeakVals_FFI_0_1_ID00011.bsa, _size: 0.000205994]
+I0313 12:08:56.787855  8969 Algorithm.cc:150] File: Seismogram_FFI_0_2_ID00026.grm 0.0228881835938
+I0313 12:08:56.787883  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_2_ID00026.grm
+I0313 12:08:56.787889  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.787896  8969 Algorithm.cc:170] DynamicFile[_id: 41, _name: Seismogram_FFI_0_2_ID00026.grm, _size: 0.0228882]
+I0313 12:08:56.787904  8969 Algorithm.cc:150] File: PeakVals_FFI_0_2_ID00014.bsa 0.000205993652344
+I0313 12:08:56.787930  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_2_ID00014.bsa
+I0313 12:08:56.787937  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.787945  8969 Algorithm.cc:170] DynamicFile[_id: 42, _name: PeakVals_FFI_0_2_ID00014.bsa, _size: 0.000205994]
+I0313 12:08:56.787952  8969 Algorithm.cc:150] File: PeakVals_FFI_0_2_ID00028.bsa 0.000205993652344
+I0313 12:08:56.787981  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_2_ID00028.bsa
+I0313 12:08:56.787986  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.787992  8969 Algorithm.cc:170] DynamicFile[_id: 43, _name: PeakVals_FFI_0_2_ID00028.bsa, _size: 0.000205994]
+I0313 12:08:56.787998  8969 Algorithm.cc:150] File: Seismogram_FFI_0_1_ID00011.grm 0.0228881835938
+I0313 12:08:56.788017  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_1_ID00011.grm
+I0313 12:08:56.788022  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.788026  8969 Algorithm.cc:170] DynamicFile[_id: 44, _name: Seismogram_FFI_0_1_ID00011.grm, _size: 0.0228882]
+I0313 12:08:56.788033  8969 Algorithm.cc:150] File: Cybershake_PSA.zip 0.000164031982422
+I0313 12:08:56.788051  8969 Algorithm.cc:158] file_name: Cybershake_PSA.zip
+I0313 12:08:56.788055  8969 Algorithm.cc:159] file_size: 0.000164032
+I0313 12:08:56.788061  8969 Algorithm.cc:170] DynamicFile[_id: 45, _name: Cybershake_PSA.zip, _size: 0.000164032]
+I0313 12:08:56.788069  8969 Algorithm.cc:150] File: PeakVals_FFI_0_1_ID00009.bsa 0.000205993652344
+I0313 12:08:56.788086  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_1_ID00009.bsa
+I0313 12:08:56.788090  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.788096  8969 Algorithm.cc:170] DynamicFile[_id: 46, _name: PeakVals_FFI_0_1_ID00009.bsa, _size: 0.000205994]
+I0313 12:08:56.788102  8969 Algorithm.cc:150] File: PeakVals_FFI_0_1_ID00007.bsa 0.000205993652344
+I0313 12:08:56.788120  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_1_ID00007.bsa
+I0313 12:08:56.788125  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.788130  8969 Algorithm.cc:170] DynamicFile[_id: 47, _name: PeakVals_FFI_0_1_ID00007.bsa, _size: 0.000205994]
+I0313 12:08:56.788137  8969 Algorithm.cc:150] File: Seismogram_FFI_0_1_ID00005.grm 0.0228881835938
+I0313 12:08:56.788156  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_1_ID00005.grm
+I0313 12:08:56.788159  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.788166  8969 Algorithm.cc:170] DynamicFile[_id: 48, _name: Seismogram_FFI_0_1_ID00005.grm, _size: 0.0228882]
+I0313 12:08:56.788173  8969 Algorithm.cc:150] File: Seismogram_FFI_0_2_ID00022.grm 0.0228881835938
+I0313 12:08:56.788192  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_2_ID00022.grm
+I0313 12:08:56.788197  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.788202  8969 Algorithm.cc:170] DynamicFile[_id: 49, _name: Seismogram_FFI_0_2_ID00022.grm, _size: 0.0228882]
+I0313 12:08:56.788208  8969 Algorithm.cc:150] File: PeakVals_FFI_0_2_ID00018.bsa 0.000205993652344
+I0313 12:08:56.788226  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_2_ID00018.bsa
+I0313 12:08:56.788231  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.788236  8969 Algorithm.cc:170] DynamicFile[_id: 50, _name: PeakVals_FFI_0_2_ID00018.bsa, _size: 0.000205994]
+I0313 12:08:56.788244  8969 Algorithm.cc:150] File: PeakVals_FFI_0_1_ID00005.bsa 0.000205993652344
+I0313 12:08:56.788261  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_1_ID00005.bsa
+I0313 12:08:56.788265  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.788270  8969 Algorithm.cc:170] DynamicFile[_id: 51, _name: PeakVals_FFI_0_1_ID00005.bsa, _size: 0.000205994]
+I0313 12:08:56.788277  8969 Algorithm.cc:150] File: PeakVals_FFI_0_1_ID00003.bsa 0.000205993652344
+I0313 12:08:56.788296  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_1_ID00003.bsa
+I0313 12:08:56.788300  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.788305  8969 Algorithm.cc:170] DynamicFile[_id: 52, _name: PeakVals_FFI_0_1_ID00003.bsa, _size: 0.000205994]
+I0313 12:08:56.788312  8969 Algorithm.cc:150] File: PeakVals_FFI_0_2_ID00026.bsa 0.000205993652344
+I0313 12:08:56.788331  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_2_ID00026.bsa
+I0313 12:08:56.788336  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.788341  8969 Algorithm.cc:170] DynamicFile[_id: 53, _name: PeakVals_FFI_0_2_ID00026.bsa, _size: 0.000205994]
+I0313 12:08:56.788347  8969 Algorithm.cc:150] File: PeakVals_FFI_0_2_ID00016.bsa 0.000205993652344
+I0313 12:08:56.788370  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_2_ID00016.bsa
+I0313 12:08:56.788375  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.788381  8969 Algorithm.cc:170] DynamicFile[_id: 54, _name: PeakVals_FFI_0_2_ID00016.bsa, _size: 0.000205994]
+I0313 12:08:56.788388  8969 Algorithm.cc:150] File: Seismogram_FFI_0_1_ID00003.grm 0.0228881835938
+I0313 12:08:56.788406  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_1_ID00003.grm
+I0313 12:08:56.788411  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.788416  8969 Algorithm.cc:170] DynamicFile[_id: 55, _name: Seismogram_FFI_0_1_ID00003.grm, _size: 0.0228882]
+I0313 12:08:56.788424  8969 Algorithm.cc:150] File: PeakVals_FFI_0_2_ID00020.bsa 0.000205993652344
+I0313 12:08:56.788440  8969 Algorithm.cc:158] file_name: PeakVals_FFI_0_2_ID00020.bsa
+I0313 12:08:56.788445  8969 Algorithm.cc:159] file_size: 0.000205994
+I0313 12:08:56.788450  8969 Algorithm.cc:170] DynamicFile[_id: 56, _name: PeakVals_FFI_0_2_ID00020.bsa, _size: 0.000205994]
+I0313 12:08:56.788457  8969 Algorithm.cc:150] File: FFI_0_2_subfy.sgt 242.307585716
+I0313 12:08:56.788475  8969 Algorithm.cc:158] file_name: FFI_0_2_subfy.sgt
+I0313 12:08:56.788478  8969 Algorithm.cc:159] file_size: 242.308
+I0313 12:08:56.788484  8969 Algorithm.cc:170] DynamicFile[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+I0313 12:08:56.788491  8969 Algorithm.cc:150] File: Seismogram_FFI_0_2_ID00014.grm 0.0228881835938
+I0313 12:08:56.788509  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_2_ID00014.grm
+I0313 12:08:56.788513  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.788519  8969 Algorithm.cc:170] DynamicFile[_id: 58, _name: Seismogram_FFI_0_2_ID00014.grm, _size: 0.0228882]
+I0313 12:08:56.788532  8969 Algorithm.cc:150] File: Seismogram_FFI_0_2_ID00024.grm 0.0228881835938
+I0313 12:08:56.788552  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_2_ID00024.grm
+I0313 12:08:56.788555  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.788560  8969 Algorithm.cc:170] DynamicFile[_id: 59, _name: Seismogram_FFI_0_2_ID00024.grm, _size: 0.0228882]
+I0313 12:08:56.788568  8969 Algorithm.cc:150] File: Seismogram_FFI_0_2_ID00020.grm 0.0228881835938
+I0313 12:08:56.788585  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_2_ID00020.grm
+I0313 12:08:56.788589  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.788594  8969 Algorithm.cc:170] DynamicFile[_id: 60, _name: Seismogram_FFI_0_2_ID00020.grm, _size: 0.0228882]
+I0313 12:08:56.788601  8969 Algorithm.cc:150] File: Seismogram_FFI_0_1_ID00007.grm 0.0228881835938
+I0313 12:08:56.788619  8969 Algorithm.cc:158] file_name: Seismogram_FFI_0_1_ID00007.grm
+I0313 12:08:56.788623  8969 Algorithm.cc:159] file_size: 0.0228882
+I0313 12:08:56.788628  8969 Algorithm.cc:170] DynamicFile[_id: 61, _name: Seismogram_FFI_0_1_ID00007.grm, _size: 0.0228882]
+I0313 12:08:56.788635  8969 Algorithm.cc:150] File: FFI_0_1_subfx.sgt 126.156052589
+I0313 12:08:56.788652  8969 Algorithm.cc:158] file_name: FFI_0_1_subfx.sgt
+I0313 12:08:56.788656  8969 Algorithm.cc:159] file_size: 126.156
+I0313 12:08:56.788662  8969 Algorithm.cc:170] DynamicFile[_id: 62, _name: FFI_0_1_subfx.sgt, _size: 126.156]
+I0313 12:08:56.788673  8969 Algorithm.cc:150] File: Cybershake_Seismograms.zip 0.0177927017212
+I0313 12:08:56.788691  8969 Algorithm.cc:158] file_name: Cybershake_Seismograms.zip
+I0313 12:08:56.788704  8969 Algorithm.cc:159] file_size: 0.0177927
+I0313 12:08:56.788710  8969 Algorithm.cc:170] DynamicFile[_id: 63, _name: Cybershake_Seismograms.zip, _size: 0.0177927]
+I0313 12:08:56.788718  8969 Algorithm.cc:182] Task: ID00028 SeismogramSynthesis 38.94 3 1
+I0313 12:08:56.788741  8969 Algorithm.cc:195] tag: ID00028
+I0313 12:08:56.788746  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.788749  8969 Algorithm.cc:197] base_time: 38.94
+I0313 12:08:56.788755  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.788759  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.788763  8969 Algorithm.cc:211] Input file: FFI_0_2_txt.variation-s08580-h01104
+I0313 12:08:56.788782  8969 Algorithm.cc:211] Input file: FFI_0_2_subfx.sgt
+I0313 12:08:56.788792  8969 Algorithm.cc:211] Input file: FFI_0_2_subfy.sgt
+I0313 12:08:56.788801  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_2_ID00028.grm
+I0313 12:08:56.788813  8969 Algorithm.cc:241] Task[_id: 2, _tag: ID00028, _name: SeismogramSynthesis, _time: 38.94, 
+Input Files: { 
+	File[_id: 78, _name: FFI_0_2_txt.variation-s08580-h01104, _size: 4.42413]
+	File[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+	File[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+}, Output Files: {
+	File[_id: 33, _name: Seismogram_FFI_0_2_ID00028.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.788832  8969 Algorithm.cc:182] Task: ID00019 PeakValCalcOkaya 0.93 1 1
+I0313 12:08:56.788853  8969 Algorithm.cc:195] tag: ID00019
+I0313 12:08:56.788857  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.788861  8969 Algorithm.cc:197] base_time: 0.93
+I0313 12:08:56.788866  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.788868  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.788873  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00018.grm
+I0313 12:08:56.788882  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_2_ID00018.bsa
+I0313 12:08:56.788892  8969 Algorithm.cc:241] Task[_id: 3, _tag: ID00019, _name: PeakValCalcOkaya, _time: 0.93, 
+Input Files: { 
+	File[_id: 32, _name: Seismogram_FFI_0_2_ID00018.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 50, _name: PeakVals_FFI_0_2_ID00018.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.788908  8969 Algorithm.cc:182] Task: ID00018 SeismogramSynthesis 61.96 3 1
+I0313 12:08:56.788928  8969 Algorithm.cc:195] tag: ID00018
+I0313 12:08:56.788933  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.788936  8969 Algorithm.cc:197] base_time: 61.96
+I0313 12:08:56.788941  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.788945  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.788949  8969 Algorithm.cc:211] Input file: FFI_0_2_txt.variation-s08845-h09162
+I0313 12:08:56.788959  8969 Algorithm.cc:211] Input file: FFI_0_2_subfx.sgt
+I0313 12:08:56.788969  8969 Algorithm.cc:211] Input file: FFI_0_2_subfy.sgt
+I0313 12:08:56.788976  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_2_ID00018.grm
+I0313 12:08:56.788988  8969 Algorithm.cc:241] Task[_id: 4, _tag: ID00018, _name: SeismogramSynthesis, _time: 61.96, 
+Input Files: { 
+	File[_id: 67, _name: FFI_0_2_txt.variation-s08845-h09162, _size: 1.87145]
+	File[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+	File[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+}, Output Files: {
+	File[_id: 32, _name: Seismogram_FFI_0_2_ID00018.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.789005  8969 Algorithm.cc:182] Task: ID00029 PeakValCalcOkaya 0.67 1 1
+I0313 12:08:56.789026  8969 Algorithm.cc:195] tag: ID00029
+I0313 12:08:56.789029  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.789033  8969 Algorithm.cc:197] base_time: 0.67
+I0313 12:08:56.789038  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.789041  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789045  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00028.grm
+I0313 12:08:56.789055  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_2_ID00028.bsa
+I0313 12:08:56.789067  8969 Algorithm.cc:241] Task[_id: 5, _tag: ID00029, _name: PeakValCalcOkaya, _time: 0.67, 
+Input Files: { 
+	File[_id: 33, _name: Seismogram_FFI_0_2_ID00028.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 43, _name: PeakVals_FFI_0_2_ID00028.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.789078  8969 Algorithm.cc:182] Task: ID00015 PeakValCalcOkaya 1.29 1 1
+I0313 12:08:56.789099  8969 Algorithm.cc:195] tag: ID00015
+I0313 12:08:56.789103  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.789108  8969 Algorithm.cc:197] base_time: 1.29
+I0313 12:08:56.789113  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.789115  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789119  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00014.grm
+I0313 12:08:56.789134  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_2_ID00014.bsa
+I0313 12:08:56.789145  8969 Algorithm.cc:241] Task[_id: 6, _tag: ID00015, _name: PeakValCalcOkaya, _time: 1.29, 
+Input Files: { 
+	File[_id: 58, _name: Seismogram_FFI_0_2_ID00014.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 42, _name: PeakVals_FFI_0_2_ID00014.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.789157  8969 Algorithm.cc:182] Task: ID00014 SeismogramSynthesis 55.92 3 1
+I0313 12:08:56.789178  8969 Algorithm.cc:195] tag: ID00014
+I0313 12:08:56.789183  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.789186  8969 Algorithm.cc:197] base_time: 55.92
+I0313 12:08:56.789191  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.789196  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789201  8969 Algorithm.cc:211] Input file: FFI_0_2_txt.variation-s02624-h09712
+I0313 12:08:56.789209  8969 Algorithm.cc:211] Input file: FFI_0_2_subfx.sgt
+I0313 12:08:56.789218  8969 Algorithm.cc:211] Input file: FFI_0_2_subfy.sgt
+I0313 12:08:56.789227  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_2_ID00014.grm
+I0313 12:08:56.789237  8969 Algorithm.cc:241] Task[_id: 7, _tag: ID00014, _name: SeismogramSynthesis, _time: 55.92, 
+Input Files: { 
+	File[_id: 75, _name: FFI_0_2_txt.variation-s02624-h09712, _size: 3.37825]
+	File[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+	File[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+}, Output Files: {
+	File[_id: 58, _name: Seismogram_FFI_0_2_ID00014.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.789253  8969 Algorithm.cc:182] Task: ID00017 PeakValCalcOkaya 0.65 1 1
+I0313 12:08:56.789274  8969 Algorithm.cc:195] tag: ID00017
+I0313 12:08:56.789279  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.789283  8969 Algorithm.cc:197] base_time: 0.65
+I0313 12:08:56.789288  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.789291  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789295  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00016.grm
+I0313 12:08:56.789305  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_2_ID00016.bsa
+I0313 12:08:56.789315  8969 Algorithm.cc:241] Task[_id: 8, _tag: ID00017, _name: PeakValCalcOkaya, _time: 0.65, 
+Input Files: { 
+	File[_id: 36, _name: Seismogram_FFI_0_2_ID00016.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 54, _name: PeakVals_FFI_0_2_ID00016.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.789326  8969 Algorithm.cc:182] Task: ID00016 SeismogramSynthesis 44.64 3 1
+I0313 12:08:56.789347  8969 Algorithm.cc:195] tag: ID00016
+I0313 12:08:56.789351  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.789355  8969 Algorithm.cc:197] base_time: 44.64
+I0313 12:08:56.789361  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.789363  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789368  8969 Algorithm.cc:211] Input file: FFI_0_2_txt.variation-s05646-h00806
+I0313 12:08:56.789377  8969 Algorithm.cc:211] Input file: FFI_0_2_subfx.sgt
+I0313 12:08:56.789386  8969 Algorithm.cc:211] Input file: FFI_0_2_subfy.sgt
+I0313 12:08:56.789394  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_2_ID00016.grm
+I0313 12:08:56.789405  8969 Algorithm.cc:241] Task[_id: 9, _tag: ID00016, _name: SeismogramSynthesis, _time: 44.64, 
+Input Files: { 
+	File[_id: 72, _name: FFI_0_2_txt.variation-s05646-h00806, _size: 2.12217]
+	File[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+	File[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+}, Output Files: {
+	File[_id: 36, _name: Seismogram_FFI_0_2_ID00016.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.789422  8969 Algorithm.cc:182] Task: ID00011 SeismogramSynthesis 37.9 3 1
+I0313 12:08:56.789441  8969 Algorithm.cc:195] tag: ID00011
+I0313 12:08:56.789445  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.789449  8969 Algorithm.cc:197] base_time: 37.9
+I0313 12:08:56.789455  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.789458  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789463  8969 Algorithm.cc:211] Input file: FFI_0_1_txt.variation-s07436-h08820
+I0313 12:08:56.789476  8969 Algorithm.cc:211] Input file: FFI_0_1_subfx.sgt
+I0313 12:08:56.789485  8969 Algorithm.cc:211] Input file: FFI_0_1_subfy.sgt
+I0313 12:08:56.789494  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_1_ID00011.grm
+I0313 12:08:56.789505  8969 Algorithm.cc:241] Task[_id: 10, _tag: ID00011, _name: SeismogramSynthesis, _time: 37.9, 
+Input Files: { 
+	File[_id: 79, _name: FFI_0_1_txt.variation-s07436-h08820, _size: 3.20486]
+	File[_id: 62, _name: FFI_0_1_subfx.sgt, _size: 126.156]
+	File[_id: 39, _name: FFI_0_1_subfy.sgt, _size: 126.156]
+}, Output Files: {
+	File[_id: 44, _name: Seismogram_FFI_0_1_ID00011.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.789520  8969 Algorithm.cc:182] Task: ID00010 PeakValCalcOkaya 0.92 1 1
+I0313 12:08:56.789541  8969 Algorithm.cc:195] tag: ID00010
+I0313 12:08:56.789546  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.789549  8969 Algorithm.cc:197] base_time: 0.92
+I0313 12:08:56.789554  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.789557  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789561  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00009.grm
+I0313 12:08:56.789572  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_1_ID00009.bsa
+I0313 12:08:56.789585  8969 Algorithm.cc:241] Task[_id: 11, _tag: ID00010, _name: PeakValCalcOkaya, _time: 0.92, 
+Input Files: { 
+	File[_id: 34, _name: Seismogram_FFI_0_1_ID00009.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 46, _name: PeakVals_FFI_0_1_ID00009.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.789598  8969 Algorithm.cc:182] Task: ID00013 ExtractSGT 193.19 3 2
+I0313 12:08:56.789618  8969 Algorithm.cc:195] tag: ID00013
+I0313 12:08:56.789623  8969 Algorithm.cc:196] task_name: ExtractSGT
+I0313 12:08:56.789626  8969 Algorithm.cc:197] base_time: 193.19
+I0313 12:08:56.789633  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.789635  8969 Algorithm.cc:199] out_size: 2
+I0313 12:08:56.789640  8969 Algorithm.cc:211] Input file: FFI_0_2_fx.sgt
+I0313 12:08:56.789649  8969 Algorithm.cc:211] Input file: FFI_0_2_fy.sgt
+I0313 12:08:56.789659  8969 Algorithm.cc:211] Input file: FFI_0_2_txt.variation-s08580-h01104
+I0313 12:08:56.789667  8969 Algorithm.cc:224] Output file: FFI_0_2_subfx.sgt
+I0313 12:08:56.789675  8969 Algorithm.cc:224] Output file: FFI_0_2_subfy.sgt
+I0313 12:08:56.789685  8969 Algorithm.cc:241] Task[_id: 12, _tag: ID00013, _name: ExtractSGT, _time: 193.19, 
+Input Files: { 
+	File[_id: 68, _name: FFI_0_2_fx.sgt, _size: 18460.3]
+	File[_id: 77, _name: FFI_0_2_fy.sgt, _size: 18460.3]
+	File[_id: 78, _name: FFI_0_2_txt.variation-s08580-h01104, _size: 4.42413]
+}, Output Files: {
+	File[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+	File[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+}] 
+I0313 12:08:56.789711  8969 Algorithm.cc:182] Task: ID00012 PeakValCalcOkaya 1.33 1 1
+I0313 12:08:56.789734  8969 Algorithm.cc:195] tag: ID00012
+I0313 12:08:56.789738  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.789742  8969 Algorithm.cc:197] base_time: 1.33
+I0313 12:08:56.789747  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.789750  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789755  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00011.grm
+I0313 12:08:56.789765  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_1_ID00011.bsa
+I0313 12:08:56.789777  8969 Algorithm.cc:241] Task[_id: 13, _tag: ID00012, _name: PeakValCalcOkaya, _time: 1.33, 
+Input Files: { 
+	File[_id: 44, _name: Seismogram_FFI_0_1_ID00011.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 40, _name: PeakVals_FFI_0_1_ID00011.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.789789  8969 Algorithm.cc:182] Task: ID00020 SeismogramSynthesis 28.78 3 1
+I0313 12:08:56.789810  8969 Algorithm.cc:195] tag: ID00020
+I0313 12:08:56.789814  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.789817  8969 Algorithm.cc:197] base_time: 28.78
+I0313 12:08:56.789824  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.789826  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789831  8969 Algorithm.cc:211] Input file: FFI_0_2_txt.variation-s02400-h00543
+I0313 12:08:56.789847  8969 Algorithm.cc:211] Input file: FFI_0_2_subfx.sgt
+I0313 12:08:56.789857  8969 Algorithm.cc:211] Input file: FFI_0_2_subfy.sgt
+I0313 12:08:56.789865  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_2_ID00020.grm
+I0313 12:08:56.789876  8969 Algorithm.cc:241] Task[_id: 14, _tag: ID00020, _name: SeismogramSynthesis, _time: 28.78, 
+Input Files: { 
+	File[_id: 69, _name: FFI_0_2_txt.variation-s02400-h00543, _size: 2.86559]
+	File[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+	File[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+}, Output Files: {
+	File[_id: 60, _name: Seismogram_FFI_0_2_ID00020.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.789891  8969 Algorithm.cc:182] Task: ID00021 PeakValCalcOkaya 0.63 1 1
+I0313 12:08:56.789912  8969 Algorithm.cc:195] tag: ID00021
+I0313 12:08:56.789917  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.789921  8969 Algorithm.cc:197] base_time: 0.63
+I0313 12:08:56.789925  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.789928  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.789932  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00020.grm
+I0313 12:08:56.789942  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_2_ID00020.bsa
+I0313 12:08:56.789953  8969 Algorithm.cc:241] Task[_id: 15, _tag: ID00021, _name: PeakValCalcOkaya, _time: 0.63, 
+Input Files: { 
+	File[_id: 60, _name: Seismogram_FFI_0_2_ID00020.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 56, _name: PeakVals_FFI_0_2_ID00020.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.789965  8969 Algorithm.cc:182] Task: ID00008 PeakValCalcOkaya 0.89 1 1
+I0313 12:08:56.789985  8969 Algorithm.cc:195] tag: ID00008
+I0313 12:08:56.789990  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.789994  8969 Algorithm.cc:197] base_time: 0.89
+I0313 12:08:56.789999  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.790001  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.790006  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00007.grm
+I0313 12:08:56.790015  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_1_ID00007.bsa
+I0313 12:08:56.790026  8969 Algorithm.cc:241] Task[_id: 16, _tag: ID00008, _name: PeakValCalcOkaya, _time: 0.89, 
+Input Files: { 
+	File[_id: 61, _name: Seismogram_FFI_0_1_ID00007.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 47, _name: PeakVals_FFI_0_1_ID00007.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.790037  8969 Algorithm.cc:182] Task: ID00009 SeismogramSynthesis 49.04 3 1
+I0313 12:08:56.790058  8969 Algorithm.cc:195] tag: ID00009
+I0313 12:08:56.790062  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.790066  8969 Algorithm.cc:197] base_time: 49.04
+I0313 12:08:56.790071  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.790076  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.790079  8969 Algorithm.cc:211] Input file: FFI_0_1_txt.variation-s04762-h01072
+I0313 12:08:56.790088  8969 Algorithm.cc:211] Input file: FFI_0_1_subfx.sgt
+I0313 12:08:56.790097  8969 Algorithm.cc:211] Input file: FFI_0_1_subfy.sgt
+I0313 12:08:56.790107  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_1_ID00009.grm
+I0313 12:08:56.790119  8969 Algorithm.cc:241] Task[_id: 17, _tag: ID00009, _name: SeismogramSynthesis, _time: 49.04, 
+Input Files: { 
+	File[_id: 74, _name: FFI_0_1_txt.variation-s04762-h01072, _size: 2.72782]
+	File[_id: 62, _name: FFI_0_1_subfx.sgt, _size: 126.156]
+	File[_id: 39, _name: FFI_0_1_subfy.sgt, _size: 126.156]
+}, Output Files: {
+	File[_id: 34, _name: Seismogram_FFI_0_1_ID00009.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.790135  8969 Algorithm.cc:182] Task: ID00024 SeismogramSynthesis 50.78 3 1
+I0313 12:08:56.790156  8969 Algorithm.cc:195] tag: ID00024
+I0313 12:08:56.790160  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.790164  8969 Algorithm.cc:197] base_time: 50.78
+I0313 12:08:56.790169  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.790174  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.790177  8969 Algorithm.cc:211] Input file: FFI_0_2_txt.variation-s09479-h02338
+I0313 12:08:56.790191  8969 Algorithm.cc:211] Input file: FFI_0_2_subfx.sgt
+I0313 12:08:56.790200  8969 Algorithm.cc:211] Input file: FFI_0_2_subfy.sgt
+I0313 12:08:56.790208  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_2_ID00024.grm
+I0313 12:08:56.790220  8969 Algorithm.cc:241] Task[_id: 18, _tag: ID00024, _name: SeismogramSynthesis, _time: 50.78, 
+Input Files: { 
+	File[_id: 65, _name: FFI_0_2_txt.variation-s09479-h02338, _size: 4.94854]
+	File[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+	File[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+}, Output Files: {
+	File[_id: 59, _name: Seismogram_FFI_0_2_ID00024.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.790235  8969 Algorithm.cc:182] Task: ID00025 PeakValCalcOkaya 1.31 1 1
+I0313 12:08:56.790256  8969 Algorithm.cc:195] tag: ID00025
+I0313 12:08:56.790261  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.790263  8969 Algorithm.cc:197] base_time: 1.31
+I0313 12:08:56.790268  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.790271  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.790277  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00024.grm
+I0313 12:08:56.790285  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_2_ID00024.bsa
+I0313 12:08:56.790297  8969 Algorithm.cc:241] Task[_id: 19, _tag: ID00025, _name: PeakValCalcOkaya, _time: 1.31, 
+Input Files: { 
+	File[_id: 59, _name: Seismogram_FFI_0_2_ID00024.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 38, _name: PeakVals_FFI_0_2_ID00024.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.790307  8969 Algorithm.cc:182] Task: ID00026 SeismogramSynthesis 40.8 3 1
+I0313 12:08:56.790328  8969 Algorithm.cc:195] tag: ID00026
+I0313 12:08:56.790333  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.790336  8969 Algorithm.cc:197] base_time: 40.8
+I0313 12:08:56.790343  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.790345  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.790349  8969 Algorithm.cc:211] Input file: FFI_0_2_txt.variation-s04772-h05300
+I0313 12:08:56.790359  8969 Algorithm.cc:211] Input file: FFI_0_2_subfx.sgt
+I0313 12:08:56.790367  8969 Algorithm.cc:211] Input file: FFI_0_2_subfy.sgt
+I0313 12:08:56.790376  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_2_ID00026.grm
+I0313 12:08:56.790386  8969 Algorithm.cc:241] Task[_id: 20, _tag: ID00026, _name: SeismogramSynthesis, _time: 40.8, 
+Input Files: { 
+	File[_id: 70, _name: FFI_0_2_txt.variation-s04772-h05300, _size: 4.54946]
+	File[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+	File[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+}, Output Files: {
+	File[_id: 41, _name: Seismogram_FFI_0_2_ID00026.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.790402  8969 Algorithm.cc:182] Task: ID00027 PeakValCalcOkaya 1.27 1 1
+I0313 12:08:56.790422  8969 Algorithm.cc:195] tag: ID00027
+I0313 12:08:56.790426  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.790431  8969 Algorithm.cc:197] base_time: 1.27
+I0313 12:08:56.790436  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.790438  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.790442  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00026.grm
+I0313 12:08:56.790452  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_2_ID00026.bsa
+I0313 12:08:56.790462  8969 Algorithm.cc:241] Task[_id: 21, _tag: ID00027, _name: PeakValCalcOkaya, _time: 1.27, 
+Input Files: { 
+	File[_id: 41, _name: Seismogram_FFI_0_2_ID00026.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 53, _name: PeakVals_FFI_0_2_ID00026.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.790473  8969 Algorithm.cc:182] Task: ID00002 ExtractSGT 78.74 3 2
+I0313 12:08:56.790493  8969 Algorithm.cc:195] tag: ID00002
+I0313 12:08:56.790498  8969 Algorithm.cc:196] task_name: ExtractSGT
+I0313 12:08:56.790501  8969 Algorithm.cc:197] base_time: 78.74
+I0313 12:08:56.790506  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.790510  8969 Algorithm.cc:199] out_size: 2
+I0313 12:08:56.790514  8969 Algorithm.cc:211] Input file: FFI_0_1_fx.sgt
+I0313 12:08:56.790529  8969 Algorithm.cc:211] Input file: FFI_0_1_fy.sgt
+I0313 12:08:56.790536  8969 Algorithm.cc:211] Input file: FFI_0_1_txt.variation-s07436-h08820
+I0313 12:08:56.790546  8969 Algorithm.cc:224] Output file: FFI_0_1_subfx.sgt
+I0313 12:08:56.790555  8969 Algorithm.cc:224] Output file: FFI_0_1_subfy.sgt
+I0313 12:08:56.790565  8969 Algorithm.cc:241] Task[_id: 22, _tag: ID00002, _name: ExtractSGT, _time: 78.74, 
+Input Files: { 
+	File[_id: 64, _name: FFI_0_1_fx.sgt, _size: 18897.7]
+	File[_id: 73, _name: FFI_0_1_fy.sgt, _size: 18897.7]
+	File[_id: 79, _name: FFI_0_1_txt.variation-s07436-h08820, _size: 3.20486]
+}, Output Files: {
+	File[_id: 62, _name: FFI_0_1_subfx.sgt, _size: 126.156]
+	File[_id: 39, _name: FFI_0_1_subfy.sgt, _size: 126.156]
+}] 
+I0313 12:08:56.790582  8969 Algorithm.cc:182] Task: ID00003 SeismogramSynthesis 22.5 3 1
+I0313 12:08:56.795410  8969 Algorithm.cc:195] tag: ID00003
+I0313 12:08:56.795447  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.795454  8969 Algorithm.cc:197] base_time: 22.5
+I0313 12:08:56.795480  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.795486  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.795505  8969 Algorithm.cc:211] Input file: FFI_0_1_txt.variation-s06578-h01433
+I0313 12:08:56.795616  8969 Algorithm.cc:211] Input file: FFI_0_1_subfx.sgt
+I0313 12:08:56.795651  8969 Algorithm.cc:211] Input file: FFI_0_1_subfy.sgt
+I0313 12:08:56.795675  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_1_ID00003.grm
+I0313 12:08:56.795739  8969 Algorithm.cc:241] Task[_id: 23, _tag: ID00003, _name: SeismogramSynthesis, _time: 22.5, 
+Input Files: { 
+	File[_id: 76, _name: FFI_0_1_txt.variation-s06578-h01433, _size: 2.43946]
+	File[_id: 62, _name: FFI_0_1_subfx.sgt, _size: 126.156]
+	File[_id: 39, _name: FFI_0_1_subfy.sgt, _size: 126.156]
+}, Output Files: {
+	File[_id: 55, _name: Seismogram_FFI_0_1_ID00003.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.795796  8969 Algorithm.cc:182] Task: ID00000 ZipPSA 0.06 13 1
+I0313 12:08:56.795864  8969 Algorithm.cc:195] tag: ID00000
+I0313 12:08:56.795876  8969 Algorithm.cc:196] task_name: ZipPSA
+I0313 12:08:56.795883  8969 Algorithm.cc:197] base_time: 0.06
+I0313 12:08:56.795897  8969 Algorithm.cc:198] in_size: 13
+I0313 12:08:56.795903  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.795913  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_1_ID00003.bsa
+I0313 12:08:56.795948  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_1_ID00005.bsa
+I0313 12:08:56.795969  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_1_ID00007.bsa
+I0313 12:08:56.795990  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_1_ID00009.bsa
+I0313 12:08:56.796008  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_1_ID00011.bsa
+I0313 12:08:56.796030  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_2_ID00014.bsa
+I0313 12:08:56.796051  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_2_ID00016.bsa
+I0313 12:08:56.796074  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_2_ID00018.bsa
+I0313 12:08:56.796104  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_2_ID00020.bsa
+I0313 12:08:56.796399  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_2_ID00022.bsa
+I0313 12:08:56.796466  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_2_ID00024.bsa
+I0313 12:08:56.796483  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_2_ID00026.bsa
+I0313 12:08:56.796500  8969 Algorithm.cc:211] Input file: PeakVals_FFI_0_2_ID00028.bsa
+I0313 12:08:56.796519  8969 Algorithm.cc:224] Output file: Cybershake_PSA.zip
+I0313 12:08:56.796553  8969 Algorithm.cc:241] Task[_id: 24, _tag: ID00000, _name: ZipPSA, _time: 0.06, 
+Input Files: { 
+	File[_id: 52, _name: PeakVals_FFI_0_1_ID00003.bsa, _size: 0.000205994]
+	File[_id: 51, _name: PeakVals_FFI_0_1_ID00005.bsa, _size: 0.000205994]
+	File[_id: 47, _name: PeakVals_FFI_0_1_ID00007.bsa, _size: 0.000205994]
+	File[_id: 46, _name: PeakVals_FFI_0_1_ID00009.bsa, _size: 0.000205994]
+	File[_id: 40, _name: PeakVals_FFI_0_1_ID00011.bsa, _size: 0.000205994]
+	File[_id: 42, _name: PeakVals_FFI_0_2_ID00014.bsa, _size: 0.000205994]
+	File[_id: 54, _name: PeakVals_FFI_0_2_ID00016.bsa, _size: 0.000205994]
+	File[_id: 50, _name: PeakVals_FFI_0_2_ID00018.bsa, _size: 0.000205994]
+	File[_id: 56, _name: PeakVals_FFI_0_2_ID00020.bsa, _size: 0.000205994]
+	File[_id: 37, _name: PeakVals_FFI_0_2_ID00022.bsa, _size: 0.000205994]
+	File[_id: 38, _name: PeakVals_FFI_0_2_ID00024.bsa, _size: 0.000205994]
+	File[_id: 53, _name: PeakVals_FFI_0_2_ID00026.bsa, _size: 0.000205994]
+	File[_id: 43, _name: PeakVals_FFI_0_2_ID00028.bsa, _size: 0.000205994]
+}, Output Files: {
+	File[_id: 45, _name: Cybershake_PSA.zip, _size: 0.000164032]
+}] 
+I0313 12:08:56.796650  8969 Algorithm.cc:182] Task: ID00001 ZipSeis 0.08 13 1
+I0313 12:08:56.796794  8969 Algorithm.cc:195] tag: ID00001
+I0313 12:08:56.796818  8969 Algorithm.cc:196] task_name: ZipSeis
+I0313 12:08:56.796823  8969 Algorithm.cc:197] base_time: 0.08
+I0313 12:08:56.796838  8969 Algorithm.cc:198] in_size: 13
+I0313 12:08:56.796842  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.796850  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00003.grm
+I0313 12:08:56.796921  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00005.grm
+I0313 12:08:56.796945  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00007.grm
+I0313 12:08:56.796967  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00009.grm
+I0313 12:08:56.796988  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00011.grm
+I0313 12:08:56.797009  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00014.grm
+I0313 12:08:56.797029  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00016.grm
+I0313 12:08:56.797047  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00018.grm
+I0313 12:08:56.797072  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00020.grm
+I0313 12:08:56.797096  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00022.grm
+I0313 12:08:56.797116  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00024.grm
+I0313 12:08:56.797138  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00026.grm
+I0313 12:08:56.797165  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00028.grm
+I0313 12:08:56.797191  8969 Algorithm.cc:224] Output file: Cybershake_Seismograms.zip
+I0313 12:08:56.797245  8969 Algorithm.cc:241] Task[_id: 25, _tag: ID00001, _name: ZipSeis, _time: 0.08, 
+Input Files: { 
+	File[_id: 55, _name: Seismogram_FFI_0_1_ID00003.grm, _size: 0.0228882]
+	File[_id: 48, _name: Seismogram_FFI_0_1_ID00005.grm, _size: 0.0228882]
+	File[_id: 61, _name: Seismogram_FFI_0_1_ID00007.grm, _size: 0.0228882]
+	File[_id: 34, _name: Seismogram_FFI_0_1_ID00009.grm, _size: 0.0228882]
+	File[_id: 44, _name: Seismogram_FFI_0_1_ID00011.grm, _size: 0.0228882]
+	File[_id: 58, _name: Seismogram_FFI_0_2_ID00014.grm, _size: 0.0228882]
+	File[_id: 36, _name: Seismogram_FFI_0_2_ID00016.grm, _size: 0.0228882]
+	File[_id: 32, _name: Seismogram_FFI_0_2_ID00018.grm, _size: 0.0228882]
+	File[_id: 60, _name: Seismogram_FFI_0_2_ID00020.grm, _size: 0.0228882]
+	File[_id: 49, _name: Seismogram_FFI_0_2_ID00022.grm, _size: 0.0228882]
+	File[_id: 59, _name: Seismogram_FFI_0_2_ID00024.grm, _size: 0.0228882]
+	File[_id: 41, _name: Seismogram_FFI_0_2_ID00026.grm, _size: 0.0228882]
+	File[_id: 33, _name: Seismogram_FFI_0_2_ID00028.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 63, _name: Cybershake_Seismograms.zip, _size: 0.0177927]
+}] 
+I0313 12:08:56.797392  8969 Algorithm.cc:182] Task: ID00006 PeakValCalcOkaya 1.25 1 1
+I0313 12:08:56.797483  8969 Algorithm.cc:195] tag: ID00006
+I0313 12:08:56.797497  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.797502  8969 Algorithm.cc:197] base_time: 1.25
+I0313 12:08:56.797521  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.797535  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.797559  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00005.grm
+I0313 12:08:56.797597  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_1_ID00005.bsa
+I0313 12:08:56.797638  8969 Algorithm.cc:241] Task[_id: 26, _tag: ID00006, _name: PeakValCalcOkaya, _time: 1.25, 
+Input Files: { 
+	File[_id: 48, _name: Seismogram_FFI_0_1_ID00005.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 51, _name: PeakVals_FFI_0_1_ID00005.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.797683  8969 Algorithm.cc:182] Task: ID00007 SeismogramSynthesis 31.02 3 1
+I0313 12:08:56.798053  8969 Algorithm.cc:195] tag: ID00007
+I0313 12:08:56.798082  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.798089  8969 Algorithm.cc:197] base_time: 31.02
+I0313 12:08:56.798110  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.798115  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.798128  8969 Algorithm.cc:211] Input file: FFI_0_1_txt.variation-s07544-h01299
+I0313 12:08:56.798202  8969 Algorithm.cc:211] Input file: FFI_0_1_subfx.sgt
+I0313 12:08:56.798234  8969 Algorithm.cc:211] Input file: FFI_0_1_subfy.sgt
+I0313 12:08:56.798255  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_1_ID00007.grm
+I0313 12:08:56.798290  8969 Algorithm.cc:241] Task[_id: 27, _tag: ID00007, _name: SeismogramSynthesis, _time: 31.02, 
+Input Files: { 
+	File[_id: 80, _name: FFI_0_1_txt.variation-s07544-h01299, _size: 2.60556]
+	File[_id: 62, _name: FFI_0_1_subfx.sgt, _size: 126.156]
+	File[_id: 39, _name: FFI_0_1_subfy.sgt, _size: 126.156]
+}, Output Files: {
+	File[_id: 61, _name: Seismogram_FFI_0_1_ID00007.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.798341  8969 Algorithm.cc:182] Task: ID00004 PeakValCalcOkaya 0.87 1 1
+I0313 12:08:56.798413  8969 Algorithm.cc:195] tag: ID00004
+I0313 12:08:56.798429  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.798434  8969 Algorithm.cc:197] base_time: 0.87
+I0313 12:08:56.798446  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.798454  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.798465  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_1_ID00003.grm
+I0313 12:08:56.798506  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_1_ID00003.bsa
+I0313 12:08:56.798542  8969 Algorithm.cc:241] Task[_id: 28, _tag: ID00004, _name: PeakValCalcOkaya, _time: 0.87, 
+Input Files: { 
+	File[_id: 55, _name: Seismogram_FFI_0_1_ID00003.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 52, _name: PeakVals_FFI_0_1_ID00003.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.798580  8969 Algorithm.cc:182] Task: ID00005 SeismogramSynthesis 42.67 3 1
+I0313 12:08:56.798638  8969 Algorithm.cc:195] tag: ID00005
+I0313 12:08:56.798652  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.798660  8969 Algorithm.cc:197] base_time: 42.67
+I0313 12:08:56.798676  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.798682  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.798691  8969 Algorithm.cc:211] Input file: FFI_0_1_txt.variation-s02186-h02600
+I0313 12:08:56.798763  8969 Algorithm.cc:211] Input file: FFI_0_1_subfx.sgt
+I0313 12:08:56.798794  8969 Algorithm.cc:211] Input file: FFI_0_1_subfy.sgt
+I0313 12:08:56.798816  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_1_ID00005.grm
+I0313 12:08:56.798869  8969 Algorithm.cc:241] Task[_id: 29, _tag: ID00005, _name: SeismogramSynthesis, _time: 42.67, 
+Input Files: { 
+	File[_id: 71, _name: FFI_0_1_txt.variation-s02186-h02600, _size: 2.70448]
+	File[_id: 62, _name: FFI_0_1_subfx.sgt, _size: 126.156]
+	File[_id: 39, _name: FFI_0_1_subfy.sgt, _size: 126.156]
+}, Output Files: {
+	File[_id: 48, _name: Seismogram_FFI_0_1_ID00005.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.798910  8969 Algorithm.cc:182] Task: ID00022 SeismogramSynthesis 38.12 3 1
+I0313 12:08:56.798980  8969 Algorithm.cc:195] tag: ID00022
+I0313 12:08:56.798995  8969 Algorithm.cc:196] task_name: SeismogramSynthesis
+I0313 12:08:56.799000  8969 Algorithm.cc:197] base_time: 38.12
+I0313 12:08:56.799012  8969 Algorithm.cc:198] in_size: 3
+I0313 12:08:56.799019  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.799029  8969 Algorithm.cc:211] Input file: FFI_0_2_txt.variation-s03955-h02403
+I0313 12:08:56.799064  8969 Algorithm.cc:211] Input file: FFI_0_2_subfx.sgt
+I0313 12:08:56.799088  8969 Algorithm.cc:211] Input file: FFI_0_2_subfy.sgt
+I0313 12:08:56.799108  8969 Algorithm.cc:224] Output file: Seismogram_FFI_0_2_ID00022.grm
+I0313 12:08:56.799137  8969 Algorithm.cc:241] Task[_id: 30, _tag: ID00022, _name: SeismogramSynthesis, _time: 38.12, 
+Input Files: { 
+	File[_id: 66, _name: FFI_0_2_txt.variation-s03955-h02403, _size: 1.88187]
+	File[_id: 35, _name: FFI_0_2_subfx.sgt, _size: 242.308]
+	File[_id: 57, _name: FFI_0_2_subfy.sgt, _size: 242.308]
+}, Output Files: {
+	File[_id: 49, _name: Seismogram_FFI_0_2_ID00022.grm, _size: 0.0228882]
+}] 
+I0313 12:08:56.799199  8969 Algorithm.cc:182] Task: ID00023 PeakValCalcOkaya 1.5 1 1
+I0313 12:08:56.799293  8969 Algorithm.cc:195] tag: ID00023
+I0313 12:08:56.799309  8969 Algorithm.cc:196] task_name: PeakValCalcOkaya
+I0313 12:08:56.799315  8969 Algorithm.cc:197] base_time: 1.5
+I0313 12:08:56.799329  8969 Algorithm.cc:198] in_size: 1
+I0313 12:08:56.799335  8969 Algorithm.cc:199] out_size: 1
+I0313 12:08:56.799342  8969 Algorithm.cc:211] Input file: Seismogram_FFI_0_2_ID00022.grm
+I0313 12:08:56.799371  8969 Algorithm.cc:224] Output file: PeakVals_FFI_0_2_ID00022.bsa
+I0313 12:08:56.799401  8969 Algorithm.cc:241] Task[_id: 31, _tag: ID00023, _name: PeakValCalcOkaya, _time: 1.5, 
+Input Files: { 
+	File[_id: 49, _name: Seismogram_FFI_0_2_ID00022.grm, _size: 0.0228882]
+}, Output Files: {
+	File[_id: 37, _name: PeakVals_FFI_0_2_ID00022.bsa, _size: 0.000205994]
+}] 
+I0313 12:08:56.799453  8969 Algorithm.cc:269] Parent: ID00002 5
+I0313 12:08:56.799527  8969 Algorithm.cc:284] Child: ID00011
+I0313 12:08:56.799564  8969 Algorithm.cc:284] Child: ID00009
+I0313 12:08:56.799592  8969 Algorithm.cc:284] Child: ID00003
+I0313 12:08:56.799615  8969 Algorithm.cc:284] Child: ID00007
+I0313 12:08:56.799641  8969 Algorithm.cc:284] Child: ID00005
+I0313 12:08:56.799681  8969 Algorithm.cc:269] Parent: ID00013 8
+I0313 12:08:56.805431  8969 Algorithm.cc:284] Child: ID00018
+I0313 12:08:56.805464  8969 Algorithm.cc:284] Child: ID00014
+I0313 12:08:56.805476  8969 Algorithm.cc:284] Child: ID00016
+I0313 12:08:56.805488  8969 Algorithm.cc:284] Child: ID00020
+I0313 12:08:56.805500  8969 Algorithm.cc:284] Child: ID00022
+I0313 12:08:56.805510  8969 Algorithm.cc:284] Child: ID00024
+I0313 12:08:56.805521  8969 Algorithm.cc:284] Child: ID00026
+I0313 12:08:56.805531  8969 Algorithm.cc:284] Child: ID00028
+I0313 12:08:56.805546  8969 Algorithm.cc:269] Parent: ID00011 2
+I0313 12:08:56.805567  8969 Algorithm.cc:284] Child: ID00012
+I0313 12:08:56.805579  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805594  8969 Algorithm.cc:269] Parent: ID00009 2
+I0313 12:08:56.805613  8969 Algorithm.cc:284] Child: ID00010
+I0313 12:08:56.805624  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805640  8969 Algorithm.cc:269] Parent: ID00003 2
+I0313 12:08:56.805657  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805670  8969 Algorithm.cc:284] Child: ID00004
+I0313 12:08:56.805682  8969 Algorithm.cc:269] Parent: ID00007 2
+I0313 12:08:56.805711  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805725  8969 Algorithm.cc:284] Child: ID00008
+I0313 12:08:56.805737  8969 Algorithm.cc:269] Parent: ID00005 2
+I0313 12:08:56.805755  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805768  8969 Algorithm.cc:284] Child: ID00006
+I0313 12:08:56.805780  8969 Algorithm.cc:269] Parent: ID00018 2
+I0313 12:08:56.805797  8969 Algorithm.cc:284] Child: ID00019
+I0313 12:08:56.805809  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805822  8969 Algorithm.cc:269] Parent: ID00014 2
+I0313 12:08:56.805840  8969 Algorithm.cc:284] Child: ID00015
+I0313 12:08:56.805850  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805864  8969 Algorithm.cc:269] Parent: ID00016 2
+I0313 12:08:56.805881  8969 Algorithm.cc:284] Child: ID00017
+I0313 12:08:56.805892  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805908  8969 Algorithm.cc:269] Parent: ID00020 2
+I0313 12:08:56.805925  8969 Algorithm.cc:284] Child: ID00021
+I0313 12:08:56.805943  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805958  8969 Algorithm.cc:269] Parent: ID00022 2
+I0313 12:08:56.805975  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.805989  8969 Algorithm.cc:284] Child: ID00023
+I0313 12:08:56.806000  8969 Algorithm.cc:269] Parent: ID00024 2
+I0313 12:08:56.806028  8969 Algorithm.cc:284] Child: ID00025
+I0313 12:08:56.806041  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.806054  8969 Algorithm.cc:269] Parent: ID00026 2
+I0313 12:08:56.806071  8969 Algorithm.cc:284] Child: ID00027
+I0313 12:08:56.806082  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.806095  8969 Algorithm.cc:269] Parent: ID00028 2
+I0313 12:08:56.806113  8969 Algorithm.cc:284] Child: ID00029
+I0313 12:08:56.806123  8969 Algorithm.cc:284] Child: ID00001
+I0313 12:08:56.806136  8969 Algorithm.cc:269] Parent: ID00012 1
+I0313 12:08:56.806154  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806169  8969 Algorithm.cc:269] Parent: ID00001 0
+I0313 12:08:56.806188  8969 Algorithm.cc:269] Parent: ID00010 1
+I0313 12:08:56.806206  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806236  8969 Algorithm.cc:269] Parent: ID00004 1
+I0313 12:08:56.806252  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806267  8969 Algorithm.cc:269] Parent: ID00008 1
+I0313 12:08:56.806282  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806296  8969 Algorithm.cc:269] Parent: ID00006 1
+I0313 12:08:56.806313  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806326  8969 Algorithm.cc:269] Parent: ID00019 1
+I0313 12:08:56.806344  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806360  8969 Algorithm.cc:269] Parent: ID00015 1
+I0313 12:08:56.806377  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806391  8969 Algorithm.cc:269] Parent: ID00017 1
+I0313 12:08:56.806408  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806427  8969 Algorithm.cc:269] Parent: ID00021 1
+I0313 12:08:56.806444  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806458  8969 Algorithm.cc:269] Parent: ID00023 1
+I0313 12:08:56.806474  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806488  8969 Algorithm.cc:269] Parent: ID00025 1
+I0313 12:08:56.806504  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806517  8969 Algorithm.cc:269] Parent: ID00027 1
+I0313 12:08:56.806533  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806546  8969 Algorithm.cc:269] Parent: ID00029 1
+I0313 12:08:56.806561  8969 Algorithm.cc:284] Child: ID00000
+I0313 12:08:56.806576  8969 Algorithm.cc:269] Parent: ID00000 0

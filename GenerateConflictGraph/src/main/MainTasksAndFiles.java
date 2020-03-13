@@ -51,7 +51,7 @@ public class MainTasksAndFiles {
 			int numberOfDynamicFiles = Integer.decode(parts[1]);
 			int numberOfTasks = Integer.decode(parts[2]);
 			
-			outputFile.write(line + "\n");
+			outputFile.write(line + " 2 100.00 100.00\n");
 			
 			// Requirement section
 			
@@ -197,7 +197,7 @@ public class MainTasksAndFiles {
 		
 		for(File a : arquivos) {
 			generateTasksAndFiles("Input/TasksAndFiles/" + a.getName(), "Output/TasksAndFiles/" 
-					+ a.getName().replace(".dag", ".scg"));
+					+ a.getName());
 		}
 	}
 	

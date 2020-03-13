@@ -1,0 +1,8 @@
+Log file created at: 2020/03/10 21:32:59
+Running on machine: localhost.localdomain
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0310 21:32:59.249984 15666 main.cc:46] Starting ...
+I0310 21:32:59.252482 15666 main.cc:48] Input File of the Tasks and Files: /home/ralves/my-dev/Wf-Security/approximative_solutions/input/task_and_files/CyberShake_30.xml.dag
+I0310 21:32:59.252507 15666 main.cc:49] Input File of the Cluster: /home/ralves/my-dev/Wf-Security/approximative_solutions/input/clouds/cluster.vcl
+I0310 21:32:59.252519 15666 main.cc:50] Input File of the Conflict Graph: /home/ralves/my-dev/Wf-Security/approximative_solutions/input/conflict_graph/CyberShake_30.xml.scg
+I0310 21:32:59.252530 15666 main.cc:51] Input File of the Conflict Graph: greedy
