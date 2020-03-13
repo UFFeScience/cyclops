@@ -22,6 +22,7 @@
 #include "src/model/VirtualMachine.h"
 #include "src/model/Bucket.h"
 #include "src/model/Provider.h"
+#include "src/model/ConflictGraph.h"
 
 /**
  * \class Execution execution.h "src/solution/algorithm.h"
@@ -114,6 +115,8 @@ class Algorithm {
   int _bucket_size;
 
   std::vector<Provider> _providers;
+
+  ConflictGraph _conflictGraph;
 
  	// int task_size, sfile_size, dfile_size, file_size, size, vm_size, id_sink, id_root;
 	// double period_hr;

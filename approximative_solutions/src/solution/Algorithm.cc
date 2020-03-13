@@ -248,7 +248,7 @@ void Algorithm::readInputFiles(const std::string tasks_and_files,
   _task_map.insert(std::make_pair("source", sourceTask));
   _task_map.insert(std::make_pair("target", targetTask));
 
-  auto f_root = succ.insert(std::make_pair(_id_source, std::vector<int>()));
+  auto f_source = succ.insert(std::make_pair(_id_source, std::vector<int>()));
   succ.insert(std::make_pair(_id_target, std::vector<int>()));
 
   std::vector<int> aux(static_cast<unsigned long int>(_task_size), -1);
@@ -294,7 +294,7 @@ void Algorithm::readInputFiles(const std::string tasks_and_files,
   for (int i = 0; i < _task_size; i++) {
     // Add source
     if (aux[static_cast<unsigned long int>(i)] == -1) {
-      f_root.first->second.push_back(i);
+      f_source.first->second.push_back(i);
     }
   }
   prec = reverse_map(succ);
@@ -396,6 +396,35 @@ void Algorithm::readInputFiles(const std::string tasks_and_files,
   // Reading Conflict Graph file infomations
   //
 
+  std::ifstream in_conflict_graph(conflict_graph);
+
+  _conflictGraph.initialize(_size);
+
+  // Reading conflict graph informations
+  while (getline(in_conflict_graph, line)) {
+    DLOG(INFO) << "Conflict: " << line;
+    google::FlushLogFiles(google::INFO);
+
+    std::vector<std::string> strs;
+    boost::split(strs, line, boost::is_any_of(" "));
+    auto firstFile = strs[0];
+    auto secondFile = strs[1];
+    auto conflictValue = stoi(strs[2]);
+    auto firstId = _file_map.find(firstFile)->second.getId();
+    auto secondId = _file_map.find(secondFile)->second.getId();
+    DLOG(INFO) << "firstFile: " << firstFile;
+    DLOG(INFO) << "secondFile: " << secondFile;
+    DLOG(INFO) << "conflictValue: " << conflictValue;
+    DLOG(INFO) << "firstId: " << firstId;
+    DLOG(INFO) << "secondId: " << secondId;
+    google::FlushLogFiles(google::INFO);
+
+    _conflictGraph.setConflict(firstId,
+                               secondId,
+                               conflictValue);
+  }
+
+  in_conflict_graph.close();
 
 
   // Check if storage is enough

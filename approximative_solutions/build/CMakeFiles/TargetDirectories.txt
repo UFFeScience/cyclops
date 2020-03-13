@@ -1,3 +1,0 @@
-/home/ralves/my-dev/Wf-Security/approximative_solutions/build/CMakeFiles/rebuild_cache.dir
-/home/ralves/my-dev/Wf-Security/approximative_solutions/build/CMakeFiles/wf_security_greedy.x.dir
-/home/ralves/my-dev/Wf-Security/approximative_solutions/build/CMakeFiles/edit_cache.dir
