@@ -19,6 +19,9 @@
 #include "src/model/File.h"
 #include "src/model/Requirement.h"
 #include "src/model/Task.h"
+#include "src/model/VirtualMachine.h"
+#include "src/model/Bucket.h"
+#include "src/model/Provider.h"
 
 /**
  * \class Execution execution.h "src/solution/algorithm.h"
@@ -102,7 +105,15 @@ class Algorithm {
   std::unordered_map<int, std::vector<int>> succ;
   std::unordered_map<int, std::vector<int>> prec;
 
+  int _number_of_providers;
 
+  int _number_of_requirements;
+
+  std::unordered_map<int, VirtualMachine> _vm_map;
+
+  int _bucket_size;
+
+  std::vector<Provider> _providers;
 
  	// int task_size, sfile_size, dfile_size, file_size, size, vm_size, id_sink, id_root;
 	// double period_hr;

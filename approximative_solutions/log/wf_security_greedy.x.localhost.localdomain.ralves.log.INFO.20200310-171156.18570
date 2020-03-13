@@ -1,8 +1,0 @@
-Log file created at: 2020/03/10 17:11:56
-Running on machine: localhost.localdomain
-Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
-I0310 17:11:56.270944 18570 main.cc:49] Starting ...
-I0310 17:11:56.271294 18570 Algorithm.cc:29] Input File of the Tasks and Files: CyberShake_30.xml.dag
-I0310 17:11:56.271299 18570 Algorithm.cc:30] Input File of the Cluster: cluster.vcl
-I0310 17:11:56.271303 18570 Algorithm.cc:31] Input File of the Conflict Graph: CyberShake_30.xml.scg
-I0310 17:11:56.271306 18570 main.cc:55] ... ending.

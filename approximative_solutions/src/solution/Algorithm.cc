@@ -26,6 +26,8 @@
 #include "src/model/DynamicFile.h"
 #include "src/model/Requirement.h"
 #include "src/model/Task.h"
+#include "src/model/Bucket.h"
+#include "src/model/VirtualMachine.h"
 #include "src/solution/Algorithm.h"
 #include "src/solution/GreedyAlgorithm.h"
 
@@ -59,10 +61,10 @@ void Algorithm::readInputFiles(const std::string tasks_and_files,
   std::vector<std::string> tokens;
   boost::split(tokens, line, boost::is_any_of(" "));
 
-  _static_file_size = stoul(tokens[0]);
-  _dynamic_file_size = stoul(tokens[1]);
-  _task_size = stoul(tokens[2]) + 2;  // Adding two tasks (source and target)
-  _requirement_size = stoul(tokens[3]);
+  _static_file_size = stoi(tokens[0]);
+  _dynamic_file_size = stoi(tokens[1]);
+  _task_size = stoi(tokens[2]) + 2;  // Adding two tasks (source and target)
+  _requirement_size = stoi(tokens[3]);
   _deadline = stod(tokens[4]);
   _budget = stod(tokens[5]);
   _file_size = _static_file_size + _dynamic_file_size;
@@ -299,56 +301,102 @@ void Algorithm::readInputFiles(const std::string tasks_and_files,
   in_file.close();
 
   //
-  // Cluster file
+  // Reading Cluster's file infomations
   //
 
   std::ifstream in_cluster(cluster);
 
-  //
-  // Reading Cluster's file infomations
-  //
-
   getline(in_cluster, line);
 
-  getline(in_cluster, line);  // ignore first line
-
-  DLOG(INFO) << "Child: " << line;
+  DLOG(INFO) << "Head: " << line;
   google::FlushLogFiles(google::INFO);
 
   boost::split(tokens, line, boost::is_any_of(" "));
 
-  _static_file_size = stoul(tokens[0]);
-  _dynamic_file_size = stoul(tokens[1]);
+  _number_of_providers = stoi(tokens[0]);
+  _number_of_requirements = stoi(tokens[1]);
 
-  // std::vector<std::string> strs1;
-  // boost::split(strs1, line, boost::is_any_of(" "));
+  getline(in_cluster, line);  // ignore line
 
-  // _period_hr = stod(strs1[2]);
+  int provider_id = 0;
 
-  // _vm_size = stoi(strs1[4]);
+  for (int i = 0; i < _number_of_providers; ++i) {
+    getline(in_cluster, line);
+    DLOG(INFO) << "Provider: " << line;
+    google::FlushLogFiles(google::INFO);
 
-  // _storage_vet.resize(static_cast<unsigned long int>(_vm_size), 0);
+    std::vector<std::string> strs1;
+    boost::split(strs1, line, boost::is_any_of(" "));
 
-  // int vm_id = 0;
-  // // reading vms
-  // for (auto i = 0; i < _vm_size; i++) {
-  //   getline(in_cluster, line);
-  //   std::vector<std::string> strs;
-  //   boost::split(strs, line, boost::is_any_of(" "));
+    _period_hr = stod(strs1[2]);
+    _vm_size = stoi(strs1[4]);
+    _bucket_size = stoi(strs1[5]);
+    _storage_vet.resize(static_cast<unsigned long int>(_vm_size), 0);
 
-  //   // int type_id = stoi(strs[0]);
-  //   std::string vm_name = strs[1];
-  //   // double slowdown = stod(strs[2]);
-  //   double storage = stod(strs[3]) * 1024; // GB to MB
-  //   // double bandwidth = stod(strs[4]);
-  //   // double cost = stod(strs[5]);
+    Provider my_provider(provider_id++);
 
-  //   // VMachine avm(vm_name, vm_id, slowdown, storage, cost, bandwidth, type_id);
-  //   // vm_map.insert(make_pair(vm_id, avm));
-  //   _storage_vet[static_cast<unsigned long int>(vm_id)] = storage;
-  //   vm_id += 1;
-  //   total_storage += storage;
-  // }
+    int vm_id = 0;
+    int bucket_id = 0;
+
+    // Reading VMs information
+    for (auto j = 0; j < _vm_size; j++) {
+      getline(in_cluster, line);
+      DLOG(INFO) << "VM: " << line;
+      google::FlushLogFiles(google::INFO);
+
+      std::vector<std::string> strs;
+      boost::split(strs, line, boost::is_any_of(" "));
+
+      int type_id = stoi(strs[0]);
+      std::string vm_name = strs[1];
+      double slowdown = stod(strs[2]);
+      double storage = stod(strs[3]) * 1024; // GB to MB
+      double bandwidth = stod(strs[4]);
+      double cost = stod(strs[5]);
+
+      VirtualMachine my_vm(vm_id, vm_name, slowdown, storage, cost, bandwidth, type_id);
+      // _vm_map.insert(std::make_pair(vm_id, my_vm));
+      my_provider.addVirtualMachine(my_vm);
+      _storage_vet[static_cast<unsigned long int>(vm_id)] = storage;
+      vm_id += 1;
+      total_storage += storage;
+    }
+
+    // Reading Buckets informations
+    for (auto j = 0; j < _bucket_size; j++) {
+      getline(in_cluster, line);
+      DLOG(INFO) << "Bucket: " << line;
+      google::FlushLogFiles(google::INFO);
+
+      std::vector<std::string> strs;
+      boost::split(strs, line, boost::is_any_of(" "));
+
+      // <id-bucket> <capacidade> <numero de intervalos> [<limite superior> <valor contratado por intervalo>] <requirement-1> <requirement-2 (pode assumir 0 1 2{so bucket})>
+
+      int bucketId = stoi(strs[0]);
+      std::string bucketCapacity = strs[1];
+      double bucketNumberOfIntervals = stod(strs[2]);
+      // double storage = stod(strs[3]) * 1024; // GB to MB
+      // double bandwidth = stod(strs[4]);
+      // double cost = stod(strs[5]);
+
+      Bucket my_bucket(bucketId, bucketCapacity, bucketNumberOfIntervals);
+      my_provider.addBucket(my_bucket);
+      // _vm_map.insert(std::make_pair(vm_id, my_vm));
+      // _storage_vet[static_cast<unsigned long int>(vm_id)] = storage;
+      bucket_id += 1;
+      // total_storage += storage;
+    }
+    _providers.push_back(my_provider);
+  }
+
+  in_cluster.close();
+
+  //
+  // Reading Conflict Graph file infomations
+  //
+
+
 
   // Check if storage is enough
   // for (auto it : _file_map){
