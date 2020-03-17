@@ -1,20 +1,20 @@
 /**
- * \file src/exec_manager/exec_manager.h
- * \brief Contains the \c ExecutionManager class declaration.
+ * \file src/solution/MinMin.h
+ * \brief Contains the \c MinMin class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \date 2020
  *
- * This header file contains the \c ExecutionManager class that handles different execution modes.
+ * This header file contains the \c MinMin class that handles different execution modes.
  */
 
-#ifndef SRC_SOLUTION_GREEDY_ALGORITHM_H_
-#define SRC_SOLUTION_GREEDY_ALGORITHM_H_
+#ifndef SRC_SOLUTION_MIN_MIN_H_
+#define SRC_SOLUTION_MIN_MIN_H_
 
-#include "src/solution/Algorithm.h"
-#include "src/solution/GreedyAlgorithm.h"
+#include "src/solution/algorithm.h"
+#include "src/solution/min_min.h"
 
-class GreedyAlgorithm : public Algorithm {
+class MinMin : public Algorithm {
  public:
   // /**
   //  * \brief Parametrised constructor.
@@ -30,4 +30,4 @@ class GreedyAlgorithm : public Algorithm {
  private:
 };  // end of class GreedyAlgorithm
 
-#endif  // SRC_SOLUTION_GREEDY_ALGORITHM_H_
+#endif  // SRC_SOLUTION_MIN_MIN_H_

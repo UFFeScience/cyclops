@@ -12,7 +12,8 @@
 #include "src/main.h"
 #include <glog/logging.h>
 #include <gflags/gflags.h>
-#include "src/solution/algorithm.h"
+#include "src/solution/Algorithm.h"
+#include "src/data_structure/matrix/Matrix.h"
 
 DEFINE_string(tasks_and_files,
               "CyberShake_30.xml.dag",
@@ -56,6 +57,21 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "... algorithm picked-up ...";
 
   algorithm->readInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
+
+  std::cout << "Welcome to the Matrix!\n";
+
+  // Matrix<double, 0> m0 { 1 };
+
+  // Matrix<double, 2> m0 { {1, 2, 3},
+  //                        {4, 5, 6},
+  //                        {7, 8, 9} };
+
+  // Matrix<double, 1> m1 { {1}, {2}, {3} };
+  // Matrix<int, 1> m1 { 1, 2, 3, 4 };  // one dimension: a vector (4 elements)
+  Matrix<int, 1> m1(4);  // one dimension: a vector (4 elements)
+  // Matrix<double, 2> m2(10, 10);
+
+  // std::cout << m0.row(0);
 
   DLOG(INFO) << "... ending.";
   gflags::ShutDownCommandLineFlags();
