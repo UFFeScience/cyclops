@@ -24,7 +24,7 @@ class GreedyAlgorithm : public Algorithm {
   //   : Algorithm(workflow_file_name, cluster_file_name, conflict_graph_file_name) { }
 
   /// Builds the required geometric representation depending on the simulation
-  void run(void);
+  void Run(void);
 
  private:
 };  // end of class GreedyAlgorithm

@@ -11,24 +11,30 @@
 #ifndef SRC_MODEL_DYNAMIC_FILE_H_
 #define SRC_MODEL_DYNAMIC_FILE_H_
 
+#include <glog/logging.h>
 #include "src/model/file.h"
 
 class DynamicFile : public File {
  public:
   /// Parametrised constructor
-  explicit DynamicFile(const int id, const std::string name, const double size) :
+  explicit DynamicFile(const size_t id, const std::string name, const double size) :
     File(id, name, size) { }
 
-  friend std::ostream& operator<<(std::ostream& strm, const DynamicFile& a) {
-    return strm << "DynamicFile[_id: " << a.id_ << ", "
-      << "_name: " << a.name_ << ", "
-      << "_size: " << a.size_ << "]";
-  }
+  ~DynamicFile() { DLOG(INFO) << "deleting dynamic file " << id_; }
 
   /// Getter for _static
   bool isStatic() { return false; };
 
+  friend std::ostream& operator<<(std::ostream& os, const DynamicFile& a) {
+    return a.write(os);
+  }
+
  private:
+  std::ostream& write(std::ostream& os) const {
+    return os << "DynamicFile[_id: " << id_ << ", "
+      << "_name: " << name_ << ", "
+      << "_size: " << size_ << "]";
+  }
 };  // end of class DynamicFile
 
 #endif  // SRC_MODEL_DYNAMIC_FILE_H_

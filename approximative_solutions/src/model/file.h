@@ -12,19 +12,28 @@
 #define SRC_MODEL_FILE_H_
 
 #include <string>
+#include <vector>
+
+#include <sstream>
+#include <iterator>
+
+#include <limits>
 
 class File {
  public:
+
+  virtual ~File() { }
+
   /// Parametrised constructor
-  explicit File(const int id, const std::string name, const double size, const int place) :
+  explicit File(const size_t id, const std::string name, const double size, const size_t place) :
     id_(id), name_(name), size_(size), place_(place) { }
 
   /// Parametrised constructor
-  explicit File(const int id, const std::string name, const double size) :
-    id_(id), name_(name), size_(size) { place_ = -1; }
+  explicit File(const size_t id, const std::string name, const double size) :
+    id_(id), name_(name), size_(size) { place_ = std::numeric_limits<size_t>::max(); }
 
   /// Getter for _id
-  int get_id() const { return id_; }
+  size_t get_id() const { return id_; }
 
   /// Getter for _name
   const std::string &get_name() const { return name_; }
@@ -33,26 +42,36 @@ class File {
   double get_size() const { return size_; }
 
   /// Getter for _place
-  int get_place() const { return place_; }
+  size_t get_place() const { return place_; }
 
   /// Getter for _static
-  virtual bool isStatic() { return false; };
+  virtual bool IsStatic() { return false; };
 
-  // friend std::ostream& operator<<(std::ostream& strm, const File& a){
-  //   return strm << "File[_id: " << a._id << ", "
-  //     << "_name: " << a._name << ", "
-  //     << "_size: " << a._size << "]";
-  // }
+  friend std::ostream& operator<<(std::ostream& os, const File& a) {
+    return a.write(os);
+  }
 
  protected:
+  std::ostream& write(std::ostream& os) const {
+    return os << "File[_id: " << id_ << ", "
+      << "_name: " << name_ << ", "
+      << "_size: " << size_ << "]";
+  };
 
-  int id_;
+  //  std::ostream& write(std::ostream& os) const {
+  //   return os << "File[_id: " << a.id_ << ", "
+  //     << "_name: " << a.name_ << ", "
+  //     << "_size: " << a.size_ << "]";
+
+  // }
+
+  size_t id_;
 
   std::string name_;
 
 	double size_;
 
-  int place_;
+  size_t place_;
 };  // end of class File
 
 #endif  // SRC_MODEL_FILE_H_

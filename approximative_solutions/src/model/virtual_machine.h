@@ -1,5 +1,5 @@
 /**
- * \file src/model/VirutalMachine.h
+ * \file src/model/virtual_machine.h
  * \brief Contains the \c VirtualMachine class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
@@ -15,7 +15,7 @@
 
 class VirtualMachine {
  public:
-  VirtualMachine(int id,
+  VirtualMachine(size_t id,
                  std::string name,
                  double slowdown,
                  double storage,
@@ -31,7 +31,7 @@ class VirtualMachine {
     type_id_(type_id){}
 
   /// Getter for _id
-  int getId() const { return id_; }
+  size_t get_id() const { return id_; }
 
   /// Getter for _name
   const std::string &get_name() const { return name_; }
@@ -46,13 +46,27 @@ class VirtualMachine {
   double get_cost() const { return cost_; }
 
   /// Getter for _bandwidth
-  double get_bandwith() const { return bandwidth_; }
+  double get_bandwidth() const { return bandwidth_; }
 
   /// Getter for _typeId
   int get_type_id() const { return type_id_; }
 
+  friend std::ostream& operator<<(std::ostream& os, const VirtualMachine& a) {
+    return a.write(os);
+  }
  private:
-	int id_;
+  std::ostream& write(std::ostream& os) const {
+    return os << "Virtual Machine[id_: " << id_
+        << ", name_: " << name_
+        << ", slowdown_: " << slowdown_
+        << ", storage_: " << storage_
+        << ", cost_: " << cost_
+        << ", bandwidth_: " << bandwidth_
+        << ", type_id_: " << type_id_
+        << "]";
+  }
+
+	size_t id_;
 
 	std::string name_;
 
@@ -65,7 +79,6 @@ class VirtualMachine {
   double bandwidth_;
 
 	int type_id_;
-
 };
 
 #endif  // SRC_MODEL_VIRTUAL_MACHINE_H_

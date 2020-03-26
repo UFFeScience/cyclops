@@ -15,17 +15,22 @@
 #include <vector>
 
 #include <sstream>
+#include <iterator>
+
+#include <memory>
 
 #include "src/model/file.h"
 
 class Task {
 public:
   /// Parametrised constructor
-  explicit Task(const int id, const std::string tag, const std::string name, const double time) :
+  explicit Task(const size_t id, const std::string tag, const std::string name, const double time) :
     id_(id), tag_(tag), name_(name), time_(time) { }
 
+  ~Task() { }
+
   /// Getter for _id
-  int get_id() const { return id_; }
+  size_t get_id() const { return id_; }
 
   /// Getter for _tag
   const std::string &get_tag() const { return tag_; }
@@ -36,11 +41,25 @@ public:
   /// Getter for _size
   double get_time() const { return time_; }
 
+  /// Getter for _size
+  std::vector<File*> get_input_files() const { return input_files_; }
+  // std::vector<std::shared_ptr<File>> get_input_files() const { return input_files_; }
+
+  /// Getter for _size
+  std::vector<File*> get_output_files() const { return output_files_; }
+  // std::vector<std::shared_ptr<File>> get_output_files() const { return output_files_; }
+
   /// Adds a input file
-  void AddInputFile(const File &file) { input_files_.push_back(file); }
+  void AddInputFile(File* file) { input_files_.push_back(file); }
+  // void AddInputFile(std::shared_ptr<File> file) { input_files_.push_back(file); }
 
   /// Adds a output file
-  void AddOutputFile(const File &file) { output_files_.push_back(file); }
+  void AddOutputFile(File* file) { output_files_.push_back(file); }
+  // void AddOutputFile(std::shared_ptr<File> file) { output_files_.push_back(file); }
+
+  bool operator==(const Task &rhs) const {
+    return rhs.get_id() == id_;
+  }
 
   friend std::ostream& operator<<(std::ostream& strm, const Task& a) {
 
@@ -49,13 +68,14 @@ public:
     oss << "\nInput Files: { \n";
     if (!a.input_files_.empty()) {
       // Convert all but the last element to avoid a trailing ","
-      for (File o : a.input_files_) {
-        oss << "\tFile[_id: " << o.get_id() << ", "
-            << "_name: " << o.get_name() << ", "
-            << "_size: " << o.get_size() << "]\n";
+      for (File* o : a.input_files_) {
+      // for (std::shared_ptr<File> o : a.input_files_) {
+        oss << "\tFile[_id: " << o->get_id() << ", "
+            << "_name: " << o->get_name() << ", "
+            << "_size: " << o->get_size() << "]\n";
       }
-      // std::copy(a._inputFiles.begin(), a._inputFiles.end() - 1,
-      //     std::ostream_iterator<int>(oss, ","));
+      // std::copy(a.input_files_.begin(), a.input_files_.end() - 1,
+      //   std::ostream_iterator<int>(oss, ","));
 
       // // Now add the last element with no delimiter
       // oss << a._inputFiles.back();
@@ -63,13 +83,14 @@ public:
     oss << "}, Output Files: {\n";
     if (!a.output_files_.empty()) {
       // Convert all but the last element to avoid a trailing ","
-      for (File o : a.output_files_) {
-        oss << "\tFile[_id: " << o.get_id() << ", "
-            << "_name: " << o.get_name() << ", "
-            << "_size: " << o.get_size() << "]\n";
+      for (File* o : a.output_files_) {
+      // for (std::shared_ptr<File> o : a.output_files_) {
+        oss << "\tFile[_id: " << o->get_id() << ", "
+            << "_name: " << o->get_name() << ", "
+            << "_size: " << o->get_size() << "]\n";
       }
-      // std::copy(a._outputFiles.begin(), a._outputFiles.end() - 1,
-      //     std::ostream_iterator<int>(oss, ","));
+      // std::copy(a.output_files_.begin(), a.output_files_.end() - 1,
+      //   std::ostream_iterator<int>(oss, ","));
 
       // // Now add the last element with no delimiter
       // oss << a._outputFiles.back();
@@ -85,7 +106,7 @@ public:
   }
 
 private:
-  int id_;
+  size_t id_;
 
   std::string tag_;
 
@@ -93,9 +114,11 @@ private:
 
   double time_;
 
-  std::vector<File> input_files_;
+  std::vector<File*> input_files_;
+  // std::vector<std::shared_ptr<File>> input_files_;
 
-  std::vector<File> output_files_;
+  std::vector<File*> output_files_;
+  // std::vector<std::shared_ptr<File>> output_files_;
 };  // end of class Task
 
 #endif  // SRC_MODEL_TASK_H_

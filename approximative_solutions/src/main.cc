@@ -12,6 +12,7 @@
 #include "src/main.h"
 #include <glog/logging.h>
 #include <gflags/gflags.h>
+#include <exception>
 #include "src/solution/algorithm.h"
 
 DEFINE_string(tasks_and_files,
@@ -51,13 +52,24 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "Input File of the Conflict Graph: " << FLAGS_algorithm;
   // google::FlushLogFiles(google::INFO);
 
-  std::unique_ptr<Algorithm> algorithm = Algorithm::getAlgorithm(FLAGS_algorithm);
+  try {
+    std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
 
-  DLOG(INFO) << "... algorithm picked-up ...";
+    DLOG(INFO) << "... algorithm picked-up ...";
 
-  algorithm->readInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
+    algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
+    algorithm->Run();
 
-  DLOG(INFO) << "... ending.";
-  gflags::ShutDownCommandLineFlags();
+    DLOG(INFO) << "... ending.";
+    gflags::ShutDownCommandLineFlags();
+  } catch(...) {
+   // Catch all exceptions - dangerous!!!
+   // Respond (perhaps only partially) to the exception, then
+   // re-throw to pass the exception to some other handler
+   // ...
+   google::FlushLogFiles(google::INFO);
+   throw;
+  }
+
   return 0;
 }

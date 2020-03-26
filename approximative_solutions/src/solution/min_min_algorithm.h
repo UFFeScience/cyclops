@@ -11,11 +11,13 @@
 #ifndef SRC_SOLUTION_MIN_MIN_H_
 #define SRC_SOLUTION_MIN_MIN_H_
 
+#include <list>
 #include "src/solution/algorithm.h"
-#include "src/solution/min_min.h"
 
-class MinMin : public Algorithm {
+class MinMinAlgorithm : public Algorithm {
  public:
+
+  ~MinMinAlgorithm();
   // /**
   //  * \brief Parametrised constructor.
   //  */
@@ -23,9 +25,27 @@ class MinMin : public Algorithm {
   //                 const std::string cluster_file_name,
   //                 const std::string conflict_graph_file_name)
   //   : Algorithm(workflow_file_name, cluster_file_name, conflict_graph_file_name) { }
+  double ComputeStartTime(size_t task,
+                          size_t vm,
+                          std::vector<double> ft_vector,
+                          std::vector<double> queue);
+
+  double ComputeFitness(Task task,
+                        VirtualMachine vm,
+                        std::vector<double>& ft_vector,
+                        std::vector<double>& queue,
+                        std::vector<size_t>& file_place,
+                        double lambda);
+
+  void schedule(std::list<Task> avail_tasks,
+                std::vector<double>& ft_vector,
+                std::vector<double>& queue,
+                std::vector<size_t>& file_place,
+                std::list<size_t>& task_ordering,
+                double lambda);
 
   /// Builds the required geometric representation depending on the simulation
-  void run(void);
+  void Run(void);
 
  private:
 };  // end of class GreedyAlgorithm

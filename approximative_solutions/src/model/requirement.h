@@ -24,21 +24,14 @@ class Requirement {
 
 public:
   /// Parametrised constructor
-  explicit Requirement(const int id, const int max_value) : id_(id), max_value_(max_value) { }
+  explicit Requirement(const size_t id, const double max_value) : id_(id), max_value_(max_value) { }
 
   /// Getter for _id
-  int get_id() const { return id_; }
+  size_t get_id() const { return id_; }
 
   /// Getter for _max_value
-  int get_max_value() const { return max_value_; }
+  double get_max_value() const { return max_value_; }
 
-  // std::ostream& operator<<(const Requirement &a) {
-  //   return "Requirement(" << std::to_string(a._max_value) << ")";
-  // }
-
-  // friend std::ostream& operator<<(std::ostream& strm, const Requirement& a);
-
-  // friend std::ostream& operator<<(std::ostream&, const Requirement&);
   friend std::ostream& operator<<(std::ostream& os, const Requirement& a) {
     return a.write(os);
   }
@@ -47,13 +40,9 @@ private:
     return os << "Requirement[_id: " << id_ << ", " << "_max_value: " << max_value_ << "]";
   }
 
-  int id_;
+  size_t id_;
 
-  int max_value_;
+  double max_value_;
 };  // end of class Requirement
-
-// std::ostream& operator<<(std::ostream& os, const Requirement& a) {
-//   return a.write(os);
-// }
 
 #endif  // SRC_MODEL_REQUIREMENT_H_

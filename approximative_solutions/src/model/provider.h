@@ -18,10 +18,10 @@
 
 class Provider {
  public:
-  Provider(int id) : id_(id) {}
+  Provider(size_t id) : id_(id) {}
 
   /// Getter for _id
-  int get_id() const { return id_; }
+  size_t get_id() const { return id_; }
 
   /// Adds a input file
   void AddVirtualMachine(const VirtualMachine &virtual_machine) {
@@ -34,7 +34,7 @@ class Provider {
   }
 
  private:
-	int id_;
+	size_t id_;
 
 	std::vector<VirtualMachine> virtual_machines_;
 

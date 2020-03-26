@@ -11,6 +11,6 @@
 
 #include "src/solution/greedy_algorithm.h"
 
-void GreedyAlgorithm::run() {
+void GreedyAlgorithm::Run() {
 
 }  // end of GreedyAlgorithm::run() method

@@ -15,28 +15,38 @@
 
 class Bucket {
  public:
-  Bucket(int id,
+  Bucket(size_t id,
          std::string capacity,
-         int numberOfIntervals) :
+         size_t numberOfIntervals) :
 		  id_(id),
       capacity_(capacity),
       numberOfIntervals_(numberOfIntervals) {}
 
   /// Getter for _id
-  int getId() const { return id_; }
+  size_t getId() const { return id_; }
 
   // Getter for _capacity
   const std::string &getCapacity() const { return capacity_; }
 
   /// Getter for _numberOfIntervals
-  int getNumberOfIntervals() const { return numberOfIntervals_; }
+  size_t getNumberOfIntervals() const { return numberOfIntervals_; }
 
+  friend std::ostream& operator<<(std::ostream& os, const Bucket& a) {
+    return a.write(os);
+  }
  private:
-	int id_;
+  std::ostream& write(std::ostream& os) const {
+    return os << "Bucket[id_: " << id_
+        << ", capacity_: " << capacity_
+        << ", numberOfIntervals_: " << numberOfIntervals_
+        << "]";
+  }
+
+	size_t id_;
 
 	std::string capacity_;
 
-	int numberOfIntervals_;
+	size_t numberOfIntervals_;
 };
 
 
