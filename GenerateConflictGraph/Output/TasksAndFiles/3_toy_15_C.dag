@@ -14,31 +14,31 @@ file7 20
 file8 20
 file9 20
 
-t0 task0 0.27 1 2
+t0 task0 0.27 1 2 1 1
 file0
 file2
 file3
-t1 task1 0.50 1 1
+t1 task1 0.50 1 1 1 1
 file1
 file4
-t2 task2 2.00 3 3
+t2 task2 2.00 3 3 1 1
 file2
 file3
 file4
 file5
 file6
 file7
-t3 task3 1.50 2 1
+t3 task3 1.50 2 1 1 1
 file3
 file4
 file8
-t4 task4 0.50 4 1
+t4 task4 0.50 4 1 1 1
 file5
 file6
 file7
 file8
 file9
-
+ 1 1
 t0 2
 t2
 t3

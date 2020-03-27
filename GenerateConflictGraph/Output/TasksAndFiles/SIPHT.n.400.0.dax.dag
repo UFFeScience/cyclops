@@ -1477,31 +1477,31 @@ NC_0025AG05_PatserOutID00065.txt 0.0809669494629
 NC_0025AG05_PatserOutID00063.txt 0.0495052337646
 NC_0025AG05_PatserOutID00263.txt 0.12352848053
 
-ID00095 Patser 1.8 4 1
+ID00095 Patser 1.8 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00095_matrix.txt
 NC_0025AG05_PatserOutID00095.txt
-ID00094 Patser 1.38 4 1
+ID00094 Patser 1.38 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00094_matrix.txt
 NC_0025AG05_PatserOutID00094.txt
-ID00097 Patser 1.22 4 1
+ID00097 Patser 1.22 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00097_matrix.txt
 NC_0025AG05_PatserOutID00097.txt
-ID00096 Patser 1.46 4 1
+ID00096 Patser 1.46 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00096_matrix.txt
 NC_0025AG05_PatserOutID00096.txt
-ID00091 SRNA_annotate 2.45 11 8
+ID00091 SRNA_annotate 2.45 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -1521,13 +1521,13 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00090 Blast_paralogues 4.38 4 1
+ID00090 Blast_paralogues 4.38 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00093 Patser_concate 0.09 16 1
+ID00093 Patser_concate 0.09 16 1 1 1
 NC_0025AG05_PatserOutID00094.txt
 NC_0025AG05_PatserOutID00095.txt
 NC_0025AG05_PatserOutID00096.txt
@@ -1545,7 +1545,7 @@ NC_0025AG05_PatserOutID00107.txt
 NC_0025AG05_PatserOutID00108.txt
 NC_0025AG05_PatserOutID00109.txt
 NC_0025AG05_PatserOut.txt
-ID00154 Patser_concate 0.11 16 1
+ID00154 Patser_concate 0.11 16 1 1 1
 NC_0025AG05_PatserOutID00155.txt
 NC_0025AG05_PatserOutID00156.txt
 NC_0025AG05_PatserOutID00157.txt
@@ -1563,37 +1563,37 @@ NC_0025AG05_PatserOutID00168.txt
 NC_0025AG05_PatserOutID00169.txt
 NC_0025AG05_PatserOutID00170.txt
 NC_0025AG05_PatserOut.txt
-ID00155 Patser 1.07 4 1
+ID00155 Patser 1.07 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00155_matrix.txt
 NC_0025AG05_PatserOutID00155.txt
-ID00156 Patser 1.6 4 1
+ID00156 Patser 1.6 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00156_matrix.txt
 NC_0025AG05_PatserOutID00156.txt
-ID00157 Patser 1.15 4 1
+ID00157 Patser 1.15 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00157_matrix.txt
 NC_0025AG05_PatserOutID00157.txt
-ID00099 Patser 1.13 4 1
+ID00099 Patser 1.13 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00099_matrix.txt
 NC_0025AG05_PatserOutID00099.txt
-ID00098 Patser 1.78 4 1
+ID00098 Patser 1.78 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00098_matrix.txt
 NC_0025AG05_PatserOutID00098.txt
-ID00152 SRNA_annotate 1.57 11 8
+ID00152 SRNA_annotate 1.57 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -1613,42 +1613,42 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00293 Patser 1.36 4 1
+ID00293 Patser 1.36 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00293_matrix.txt
 NC_0025AG05_PatserOutID00293.txt
-ID00292 Patser 1.0 4 1
+ID00292 Patser 1.0 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00292_matrix.txt
 NC_0025AG05_PatserOutID00292.txt
-ID00291 Patser 1.21 4 1
+ID00291 Patser 1.21 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00291_matrix.txt
 NC_0025AG05_PatserOutID00291.txt
-ID00290 Patser 1.46 4 1
+ID00290 Patser 1.46 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00290_matrix.txt
 NC_0025AG05_PatserOutID00290.txt
-ID00297 Transterm 70.74 3 2
+ID00297 Transterm 70.74 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00296 RNAMotif 22.25 2 2
+ID00296 RNAMotif 22.25 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00295 Findterm 1013.34 2 8
+ID00295 Findterm 1013.34 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -1659,13 +1659,13 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00294 Patser 1.1 4 1
+ID00294 Patser 1.1 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00294_matrix.txt
 NC_0025AG05_PatserOutID00294.txt
-ID00299 SRNA 497.03 20 14
+ID00299 SRNA 497.03 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -1700,7 +1700,7 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00298 Blast 1883.59 871 3
+ID00298 Blast 1883.59 871 3 1 1
 blasta
 xdformat
 time
@@ -2575,36 +2575,36 @@ NC_866_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00318 Patser 1.48 4 1
+ID00318 Patser 1.48 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00318_matrix.txt
 NC_0025AG05_PatserOutID00318.txt
-ID00319 Patser 1.46 4 1
+ID00319 Patser 1.46 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00319_matrix.txt
 NC_0025AG05_PatserOutID00319.txt
-ID00310 Patser 1.54 4 1
+ID00310 Patser 1.54 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00310_matrix.txt
 NC_0025AG05_PatserOutID00310.txt
-ID00258 Patser 1.57 4 1
+ID00258 Patser 1.57 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00258_matrix.txt
 NC_0025AG05_PatserOutID00258.txt
-ID00208 FFN_Parse 1.6 3 1
+ID00208 FFN_Parse 1.6 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00209 Blast_candidate 6.0 5 3
+ID00209 Blast_candidate 6.0 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -2613,25 +2613,25 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00200 Patser 0.69 4 1
+ID00200 Patser 0.69 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00200_matrix.txt
 NC_0025AG05_PatserOutID00200.txt
-ID00201 Patser 1.25 4 1
+ID00201 Patser 1.25 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00201_matrix.txt
 NC_0025AG05_PatserOutID00201.txt
-ID00202 Patser 1.12 4 1
+ID00202 Patser 1.12 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00202_matrix.txt
 NC_0025AG05_PatserOutID00202.txt
-ID00203 Findterm 678.1 2 8
+ID00203 Findterm 678.1 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -2642,18 +2642,18 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00204 RNAMotif 35.34 2 2
+ID00204 RNAMotif 35.34 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00205 Transterm 75.49 3 2
+ID00205 Transterm 75.49 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00206 Blast 1717.7 936 3
+ID00206 Blast 1717.7 936 3 1 1
 blasta
 xdformat
 time
@@ -3593,7 +3593,7 @@ NC_931_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00207 SRNA 427.94 20 14
+ID00207 SRNA 427.94 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -3628,19 +3628,19 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00158 Patser 0.85 4 1
+ID00158 Patser 0.85 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00158_matrix.txt
 NC_0025AG05_PatserOutID00158.txt
-ID00159 Patser 1.11 4 1
+ID00159 Patser 1.11 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00159_matrix.txt
 NC_0025AG05_PatserOutID00159.txt
-ID00334 Blast_synteny 33.0 6 1
+ID00334 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -3648,13 +3648,13 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00335 Blast_paralogues 4.65 4 1
+ID00335 Blast_paralogues 4.65 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00336 SRNA_annotate 2.06 11 8
+ID00336 SRNA_annotate 2.06 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -3674,7 +3674,7 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00330 SRNA 427.04 20 14
+ID00330 SRNA 427.04 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -3709,12 +3709,12 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00331 FFN_Parse 1.72 3 1
+ID00331 FFN_Parse 1.72 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00332 Blast_candidate 4.95 5 3
+ID00332 Blast_candidate 4.95 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -3723,7 +3723,7 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00333 Blast_QRNA 1415.41 924 8
+ID00333 Blast_QRNA 1415.41 924 8 1 1
 xdformat
 blasta
 time
@@ -4656,7 +4656,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00338 Patser_concate 0.04 19 1
+ID00338 Patser_concate 0.04 19 1 1 1
 NC_0025AG05_PatserOutID00339.txt
 NC_0025AG05_PatserOutID00340.txt
 NC_0025AG05_PatserOutID00341.txt
@@ -4677,13 +4677,13 @@ NC_0025AG05_PatserOutID00355.txt
 NC_0025AG05_PatserOutID00356.txt
 NC_0025AG05_PatserOutID00357.txt
 NC_0025AG05_PatserOut.txt
-ID00339 Patser 0.93 4 1
+ID00339 Patser 0.93 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00339_matrix.txt
 NC_0025AG05_PatserOutID00339.txt
-ID00150 Blast_synteny 33.0 6 1
+ID00150 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -4691,13 +4691,13 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00151 Blast_paralogues 3.31 4 1
+ID00151 Blast_paralogues 3.31 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00110 Findterm 1670.54 2 8
+ID00110 Findterm 1670.54 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -4708,18 +4708,18 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00111 RNAMotif 32.71 2 2
+ID00111 RNAMotif 32.71 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00112 Transterm 59.97 3 2
+ID00112 Transterm 59.97 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00113 Blast 1783.02 872 3
+ID00113 Blast 1783.02 872 3 1 1
 blasta
 xdformat
 time
@@ -5595,7 +5595,7 @@ NC_867_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00114 SRNA 405.49 20 14
+ID00114 SRNA 405.49 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -5630,12 +5630,12 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00115 FFN_Parse 1.79 3 1
+ID00115 FFN_Parse 1.79 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00116 Blast_candidate 4.03 5 3
+ID00116 Blast_candidate 4.03 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -5644,7 +5644,7 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00117 Blast_QRNA 1428.44 914 8
+ID00117 Blast_QRNA 1428.44 914 8 1 1
 xdformat
 blasta
 time
@@ -6567,7 +6567,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00118 Blast_synteny 33.0 6 1
+ID00118 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -6575,13 +6575,13 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00119 Blast_paralogues 4.9 4 1
+ID00119 Blast_paralogues 4.9 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00059 Patser_concate 0.04 21 1
+ID00059 Patser_concate 0.04 21 1 1 1
 NC_0025AG05_PatserOutID00060.txt
 NC_0025AG05_PatserOutID00061.txt
 NC_0025AG05_PatserOutID00062.txt
@@ -6604,7 +6604,7 @@ NC_0025AG05_PatserOutID00078.txt
 NC_0025AG05_PatserOutID00079.txt
 NC_0025AG05_PatserOutID00080.txt
 NC_0025AG05_PatserOut.txt
-ID00051 SRNA 497.34 20 14
+ID00051 SRNA 497.34 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -6639,7 +6639,7 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00050 Blast 1643.99 919 3
+ID00050 Blast 1643.99 919 3 1 1
 blasta
 xdformat
 time
@@ -7562,7 +7562,7 @@ NC_914_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00053 Blast_candidate 5.41 5 3
+ID00053 Blast_candidate 5.41 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -7571,12 +7571,12 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00052 FFN_Parse 1.39 3 1
+ID00052 FFN_Parse 1.39 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00055 Blast_synteny 33.0 6 1
+ID00055 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -7584,7 +7584,7 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00054 Blast_QRNA 1254.64 903 8
+ID00054 Blast_QRNA 1254.64 903 8 1 1
 xdformat
 blasta
 time
@@ -8496,7 +8496,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00057 SRNA_annotate 1.69 11 8
+ID00057 SRNA_annotate 1.69 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -8516,19 +8516,19 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00056 Blast_paralogues 4.95 4 1
+ID00056 Blast_paralogues 4.95 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00031 Patser 1.28 4 1
+ID00031 Patser 1.28 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00031_matrix.txt
 NC_0025AG05_PatserOutID00031.txt
-ID00030 Patser_concate 0.12 16 1
+ID00030 Patser_concate 0.12 16 1 1 1
 NC_0025AG05_PatserOutID00031.txt
 NC_0025AG05_PatserOutID00032.txt
 NC_0025AG05_PatserOutID00033.txt
@@ -8546,19 +8546,19 @@ NC_0025AG05_PatserOutID00044.txt
 NC_0025AG05_PatserOutID00045.txt
 NC_0025AG05_PatserOutID00046.txt
 NC_0025AG05_PatserOut.txt
-ID00130 Patser 1.27 4 1
+ID00130 Patser 1.27 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00130_matrix.txt
 NC_0025AG05_PatserOutID00130.txt
-ID00131 Patser 1.4 4 1
+ID00131 Patser 1.4 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00131_matrix.txt
 NC_0025AG05_PatserOutID00131.txt
-ID00271 Blast_QRNA 1533.89 902 8
+ID00271 Blast_QRNA 1533.89 902 8 1 1
 xdformat
 blasta
 time
@@ -9469,7 +9469,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00270 Blast_candidate 5.29 5 3
+ID00270 Blast_candidate 5.29 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -9478,13 +9478,13 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00273 Blast_paralogues 5.64 4 1
+ID00273 Blast_paralogues 5.64 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00272 Blast_synteny 33.0 6 1
+ID00272 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -9492,7 +9492,7 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00274 SRNA_annotate 2.46 11 8
+ID00274 SRNA_annotate 2.46 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -9512,13 +9512,13 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00277 Patser 1.45 4 1
+ID00277 Patser 1.45 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00277_matrix.txt
 NC_0025AG05_PatserOutID00277.txt
-ID00276 Patser_concate 0.09 18 1
+ID00276 Patser_concate 0.09 18 1 1 1
 NC_0025AG05_PatserOutID00277.txt
 NC_0025AG05_PatserOutID00278.txt
 NC_0025AG05_PatserOutID00279.txt
@@ -9538,60 +9538,60 @@ NC_0025AG05_PatserOutID00292.txt
 NC_0025AG05_PatserOutID00293.txt
 NC_0025AG05_PatserOutID00294.txt
 NC_0025AG05_PatserOut.txt
-ID00279 Patser 1.81 4 1
+ID00279 Patser 1.81 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00279_matrix.txt
 NC_0025AG05_PatserOutID00279.txt
-ID00278 Patser 1.02 4 1
+ID00278 Patser 1.02 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00278_matrix.txt
 NC_0025AG05_PatserOutID00278.txt
-ID00372 Patser 0.92 4 1
+ID00372 Patser 0.92 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00372_matrix.txt
 NC_0025AG05_PatserOutID00372.txt
-ID00373 Patser 1.3 4 1
+ID00373 Patser 1.3 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00373_matrix.txt
 NC_0025AG05_PatserOutID00373.txt
-ID00374 Patser 0.91 4 1
+ID00374 Patser 0.91 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00374_matrix.txt
 NC_0025AG05_PatserOutID00374.txt
-ID00375 Patser 0.92 4 1
+ID00375 Patser 0.92 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00375_matrix.txt
 NC_0025AG05_PatserOutID00375.txt
-ID00376 Patser 1.28 4 1
+ID00376 Patser 1.28 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00376_matrix.txt
 NC_0025AG05_PatserOutID00376.txt
-ID00377 Patser 0.9 4 1
+ID00377 Patser 0.9 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00377_matrix.txt
 NC_0025AG05_PatserOutID00377.txt
-ID00019 RNAMotif 36.06 2 2
+ID00019 RNAMotif 36.06 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00018 Findterm 841.12 2 8
+ID00018 Findterm 841.12 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -9602,73 +9602,73 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00015 Patser 1.13 4 1
+ID00015 Patser 1.13 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00015_matrix.txt
 NC_0025AG05_PatserOutID00015.txt
-ID00014 Patser 0.98 4 1
+ID00014 Patser 0.98 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00014_matrix.txt
 NC_0025AG05_PatserOutID00014.txt
-ID00017 Patser 1.19 4 1
+ID00017 Patser 1.19 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00017_matrix.txt
 NC_0025AG05_PatserOutID00017.txt
-ID00016 Patser 1.88 4 1
+ID00016 Patser 1.88 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00016_matrix.txt
 NC_0025AG05_PatserOutID00016.txt
-ID00011 Patser 1.18 4 1
+ID00011 Patser 1.18 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00011_matrix.txt
 NC_0025AG05_PatserOutID00011.txt
-ID00010 Patser 0.73 4 1
+ID00010 Patser 0.73 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00010_matrix.txt
 NC_0025AG05_PatserOutID00010.txt
-ID00013 Patser 1.78 4 1
+ID00013 Patser 1.78 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00013_matrix.txt
 NC_0025AG05_PatserOutID00013.txt
-ID00012 Patser 1.22 4 1
+ID00012 Patser 1.22 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00012_matrix.txt
 NC_0025AG05_PatserOutID00012.txt
-ID00169 Patser 1.36 4 1
+ID00169 Patser 1.36 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00169_matrix.txt
 NC_0025AG05_PatserOutID00169.txt
-ID00168 Patser 1.15 4 1
+ID00168 Patser 1.15 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00168_matrix.txt
 NC_0025AG05_PatserOutID00168.txt
-ID00080 Patser 1.38 4 1
+ID00080 Patser 1.38 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00080_matrix.txt
 NC_0025AG05_PatserOutID00080.txt
-ID00081 Findterm 931.0 2 8
+ID00081 Findterm 931.0 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -9679,12 +9679,12 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00086 FFN_Parse 1.8 3 1
+ID00086 FFN_Parse 1.8 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00087 Blast_candidate 6.66 5 3
+ID00087 Blast_candidate 6.66 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -9693,7 +9693,7 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00084 Blast 3519.57 899 3
+ID00084 Blast 3519.57 899 3 1 1
 blasta
 xdformat
 time
@@ -10596,7 +10596,7 @@ NC_894_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00085 SRNA 315.24 20 14
+ID00085 SRNA 315.24 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -10631,19 +10631,19 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00161 Patser 1.01 4 1
+ID00161 Patser 1.01 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00161_matrix.txt
 NC_0025AG05_PatserOutID00161.txt
-ID00160 Patser 0.86 4 1
+ID00160 Patser 0.86 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00160_matrix.txt
 NC_0025AG05_PatserOutID00160.txt
-ID00088 Blast_QRNA 1359.16 937 8
+ID00088 Blast_QRNA 1359.16 937 8 1 1
 xdformat
 blasta
 time
@@ -11589,7 +11589,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00089 Blast_synteny 33.0 6 1
+ID00089 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -11597,96 +11597,96 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00165 Patser 1.8 4 1
+ID00165 Patser 1.8 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00165_matrix.txt
 NC_0025AG05_PatserOutID00165.txt
-ID00164 Patser 1.71 4 1
+ID00164 Patser 1.71 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00164_matrix.txt
 NC_0025AG05_PatserOutID00164.txt
-ID00167 Patser 1.51 4 1
+ID00167 Patser 1.51 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00167_matrix.txt
 NC_0025AG05_PatserOutID00167.txt
-ID00166 Patser 1.14 4 1
+ID00166 Patser 1.14 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00166_matrix.txt
 NC_0025AG05_PatserOutID00166.txt
-ID00280 Patser 0.77 4 1
+ID00280 Patser 0.77 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00280_matrix.txt
 NC_0025AG05_PatserOutID00280.txt
-ID00281 Patser 1.06 4 1
+ID00281 Patser 1.06 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00281_matrix.txt
 NC_0025AG05_PatserOutID00281.txt
-ID00282 Patser 0.93 4 1
+ID00282 Patser 0.93 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00282_matrix.txt
 NC_0025AG05_PatserOutID00282.txt
-ID00283 Patser 1.24 4 1
+ID00283 Patser 1.24 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00283_matrix.txt
 NC_0025AG05_PatserOutID00283.txt
-ID00284 Patser 1.43 4 1
+ID00284 Patser 1.43 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00284_matrix.txt
 NC_0025AG05_PatserOutID00284.txt
-ID00285 Patser 1.63 4 1
+ID00285 Patser 1.63 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00285_matrix.txt
 NC_0025AG05_PatserOutID00285.txt
-ID00286 Patser 1.43 4 1
+ID00286 Patser 1.43 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00286_matrix.txt
 NC_0025AG05_PatserOutID00286.txt
-ID00287 Patser 1.49 4 1
+ID00287 Patser 1.49 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00287_matrix.txt
 NC_0025AG05_PatserOutID00287.txt
-ID00288 Patser 1.35 4 1
+ID00288 Patser 1.35 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00288_matrix.txt
 NC_0025AG05_PatserOutID00288.txt
-ID00289 Patser 1.37 4 1
+ID00289 Patser 1.37 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00289_matrix.txt
 NC_0025AG05_PatserOutID00289.txt
-ID00235 RNAMotif 19.32 2 2
+ID00235 RNAMotif 19.32 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00234 Findterm 1598.55 2 8
+ID00234 Findterm 1598.55 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -11697,7 +11697,7 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00237 Blast 2922.34 924 3
+ID00237 Blast 2922.34 924 3 1 1
 blasta
 xdformat
 time
@@ -12625,42 +12625,42 @@ NC_919_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00236 Transterm 53.87 3 2
+ID00236 Transterm 53.87 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00231 Patser 0.88 4 1
+ID00231 Patser 0.88 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00231_matrix.txt
 NC_0025AG05_PatserOutID00231.txt
-ID00230 Patser 1.1 4 1
+ID00230 Patser 1.1 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00230_matrix.txt
 NC_0025AG05_PatserOutID00230.txt
-ID00233 Patser 0.89 4 1
+ID00233 Patser 0.89 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00233_matrix.txt
 NC_0025AG05_PatserOutID00233.txt
-ID00232 Patser 1.52 4 1
+ID00232 Patser 1.52 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00232_matrix.txt
 NC_0025AG05_PatserOutID00232.txt
-ID00239 FFN_Parse 1.66 3 1
+ID00239 FFN_Parse 1.66 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00238 SRNA 356.32 20 14
+ID00238 SRNA 356.32 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -12695,7 +12695,7 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00301 Blast_candidate 6.17 5 3
+ID00301 Blast_candidate 6.17 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -12704,12 +12704,12 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00300 FFN_Parse 1.37 3 1
+ID00300 FFN_Parse 1.37 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00303 Blast_synteny 33.0 6 1
+ID00303 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -12717,7 +12717,7 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00302 Blast_QRNA 1533.16 911 8
+ID00302 Blast_QRNA 1533.16 911 8 1 1
 xdformat
 blasta
 time
@@ -13637,7 +13637,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00305 SRNA_annotate 2.44 11 8
+ID00305 SRNA_annotate 2.44 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -13657,13 +13657,13 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00304 Blast_paralogues 3.73 4 1
+ID00304 Blast_paralogues 3.73 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00307 Patser_concate 0.07 18 1
+ID00307 Patser_concate 0.07 18 1 1 1
 NC_0025AG05_PatserOutID00308.txt
 NC_0025AG05_PatserOutID00309.txt
 NC_0025AG05_PatserOutID00310.txt
@@ -13683,37 +13683,37 @@ NC_0025AG05_PatserOutID00323.txt
 NC_0025AG05_PatserOutID00324.txt
 NC_0025AG05_PatserOutID00325.txt
 NC_0025AG05_PatserOut.txt
-ID00309 Patser 1.47 4 1
+ID00309 Patser 1.47 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00309_matrix.txt
 NC_0025AG05_PatserOutID00309.txt
-ID00308 Patser 1.04 4 1
+ID00308 Patser 1.04 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00308_matrix.txt
 NC_0025AG05_PatserOutID00308.txt
-ID00378 Patser 0.69 4 1
+ID00378 Patser 0.69 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00378_matrix.txt
 NC_0025AG05_PatserOutID00378.txt
-ID00379 Patser 1.47 4 1
+ID00379 Patser 1.47 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00379_matrix.txt
 NC_0025AG05_PatserOutID00379.txt
-ID00046 Patser 1.28 4 1
+ID00046 Patser 1.28 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00046_matrix.txt
 NC_0025AG05_PatserOutID00046.txt
-ID00047 Findterm 1487.7 2 8
+ID00047 Findterm 1487.7 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -13724,67 +13724,67 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00044 Patser 1.83 4 1
+ID00044 Patser 1.83 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00044_matrix.txt
 NC_0025AG05_PatserOutID00044.txt
-ID00045 Patser 1.01 4 1
+ID00045 Patser 1.01 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00045_matrix.txt
 NC_0025AG05_PatserOutID00045.txt
-ID00042 Patser 1.52 4 1
+ID00042 Patser 1.52 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00042_matrix.txt
 NC_0025AG05_PatserOutID00042.txt
-ID00043 Patser 0.93 4 1
+ID00043 Patser 0.93 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00043_matrix.txt
 NC_0025AG05_PatserOutID00043.txt
-ID00040 Patser 0.97 4 1
+ID00040 Patser 0.97 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00040_matrix.txt
 NC_0025AG05_PatserOutID00040.txt
-ID00041 Patser 1.46 4 1
+ID00041 Patser 1.46 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00041_matrix.txt
 NC_0025AG05_PatserOutID00041.txt
-ID00125 Patser 1.35 4 1
+ID00125 Patser 1.35 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00125_matrix.txt
 NC_0025AG05_PatserOutID00125.txt
-ID00124 Patser 1.8 4 1
+ID00124 Patser 1.8 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00124_matrix.txt
 NC_0025AG05_PatserOutID00124.txt
-ID00127 Patser 1.16 4 1
+ID00127 Patser 1.16 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00127_matrix.txt
 NC_0025AG05_PatserOutID00127.txt
-ID00126 Patser 1.14 4 1
+ID00126 Patser 1.14 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00126_matrix.txt
 NC_0025AG05_PatserOutID00126.txt
-ID00120 SRNA_annotate 1.18 11 8
+ID00120 SRNA_annotate 1.18 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -13804,13 +13804,13 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00123 Patser 1.33 4 1
+ID00123 Patser 1.33 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00123_matrix.txt
 NC_0025AG05_PatserOutID00123.txt
-ID00122 Patser_concate 0.05 19 1
+ID00122 Patser_concate 0.05 19 1 1 1
 NC_0025AG05_PatserOutID00123.txt
 NC_0025AG05_PatserOutID00124.txt
 NC_0025AG05_PatserOutID00125.txt
@@ -13831,7 +13831,7 @@ NC_0025AG05_PatserOutID00139.txt
 NC_0025AG05_PatserOutID00140.txt
 NC_0025AG05_PatserOutID00141.txt
 NC_0025AG05_PatserOut.txt
-ID00370 Patser_concate 0.08 17 1
+ID00370 Patser_concate 0.08 17 1 1 1
 NC_0025AG05_PatserOutID00371.txt
 NC_0025AG05_PatserOutID00372.txt
 NC_0025AG05_PatserOutID00373.txt
@@ -13850,85 +13850,85 @@ NC_0025AG05_PatserOutID00385.txt
 NC_0025AG05_PatserOutID00386.txt
 NC_0025AG05_PatserOutID00387.txt
 NC_0025AG05_PatserOut.txt
-ID00371 Patser 1.36 4 1
+ID00371 Patser 1.36 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00371_matrix.txt
 NC_0025AG05_PatserOutID00371.txt
-ID00129 Patser 1.59 4 1
+ID00129 Patser 1.59 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00129_matrix.txt
 NC_0025AG05_PatserOutID00129.txt
-ID00128 Patser 1.84 4 1
+ID00128 Patser 1.84 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00128_matrix.txt
 NC_0025AG05_PatserOutID00128.txt
-ID00345 Patser 1.09 4 1
+ID00345 Patser 1.09 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00345_matrix.txt
 NC_0025AG05_PatserOutID00345.txt
-ID00344 Patser 1.67 4 1
+ID00344 Patser 1.67 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00344_matrix.txt
 NC_0025AG05_PatserOutID00344.txt
-ID00347 Patser 1.31 4 1
+ID00347 Patser 1.31 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00347_matrix.txt
 NC_0025AG05_PatserOutID00347.txt
-ID00346 Patser 0.99 4 1
+ID00346 Patser 0.99 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00346_matrix.txt
 NC_0025AG05_PatserOutID00346.txt
-ID00341 Patser 1.08 4 1
+ID00341 Patser 1.08 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00341_matrix.txt
 NC_0025AG05_PatserOutID00341.txt
-ID00340 Patser 1.17 4 1
+ID00340 Patser 1.17 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00340_matrix.txt
 NC_0025AG05_PatserOutID00340.txt
-ID00343 Patser 0.87 4 1
+ID00343 Patser 0.87 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00343_matrix.txt
 NC_0025AG05_PatserOutID00343.txt
-ID00342 Patser 1.12 4 1
+ID00342 Patser 1.12 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00342_matrix.txt
 NC_0025AG05_PatserOutID00342.txt
-ID00349 Patser 1.57 4 1
+ID00349 Patser 1.57 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00349_matrix.txt
 NC_0025AG05_PatserOutID00349.txt
-ID00348 Patser 1.66 4 1
+ID00348 Patser 1.66 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00348_matrix.txt
 NC_0025AG05_PatserOutID00348.txt
-ID00268 SRNA 482.67 20 14
+ID00268 SRNA 482.67 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -13963,18 +13963,18 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00269 FFN_Parse 1.54 3 1
+ID00269 FFN_Parse 1.54 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00266 Transterm 48.41 3 2
+ID00266 Transterm 48.41 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00267 Blast 2425.98 914 3
+ID00267 Blast 2425.98 914 3 1 1
 blasta
 xdformat
 time
@@ -14892,7 +14892,7 @@ NC_909_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00264 Findterm 1206.16 2 8
+ID00264 Findterm 1206.16 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -14903,71 +14903,71 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00265 RNAMotif 42.32 2 2
+ID00265 RNAMotif 42.32 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00262 Patser 1.15 4 1
+ID00262 Patser 1.15 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00262_matrix.txt
 NC_0025AG05_PatserOutID00262.txt
-ID00263 Patser 0.9 4 1
+ID00263 Patser 0.9 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00263_matrix.txt
 NC_0025AG05_PatserOutID00263.txt
-ID00260 Patser 1.59 4 1
+ID00260 Patser 1.59 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00260_matrix.txt
 NC_0025AG05_PatserOutID00260.txt
-ID00261 Patser 1.35 4 1
+ID00261 Patser 1.35 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00261_matrix.txt
 NC_0025AG05_PatserOutID00261.txt
-ID00048 RNAMotif 41.51 2 2
+ID00048 RNAMotif 41.51 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00049 Transterm 60.51 3 2
+ID00049 Transterm 60.51 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00008 Patser 0.84 4 1
+ID00008 Patser 0.84 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00008_matrix.txt
 NC_0025AG05_PatserOutID00008.txt
-ID00009 Patser 1.22 4 1
+ID00009 Patser 1.22 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00009_matrix.txt
 NC_0025AG05_PatserOutID00009.txt
-ID00002 Patser 1.22 4 1
+ID00002 Patser 1.22 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00002_matrix.txt
 NC_0025AG05_PatserOutID00002.txt
-ID00003 Patser 1.48 4 1
+ID00003 Patser 1.48 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00003_matrix.txt
 NC_0025AG05_PatserOutID00003.txt
-ID00000 Patser_concate 0.12 17 1
+ID00000 Patser_concate 0.12 17 1 1 1
 NC_0025AG05_PatserOutID00001.txt
 NC_0025AG05_PatserOutID00002.txt
 NC_0025AG05_PatserOutID00003.txt
@@ -14986,42 +14986,42 @@ NC_0025AG05_PatserOutID00015.txt
 NC_0025AG05_PatserOutID00016.txt
 NC_0025AG05_PatserOutID00017.txt
 NC_0025AG05_PatserOut.txt
-ID00001 Patser 1.3 4 1
+ID00001 Patser 1.3 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00001_matrix.txt
 NC_0025AG05_PatserOutID00001.txt
-ID00006 Patser 1.48 4 1
+ID00006 Patser 1.48 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00006_matrix.txt
 NC_0025AG05_PatserOutID00006.txt
-ID00007 Patser 1.27 4 1
+ID00007 Patser 1.27 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00007_matrix.txt
 NC_0025AG05_PatserOutID00007.txt
-ID00004 Patser 1.01 4 1
+ID00004 Patser 1.01 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00004_matrix.txt
 NC_0025AG05_PatserOutID00004.txt
-ID00005 Patser 0.97 4 1
+ID00005 Patser 0.97 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00005_matrix.txt
 NC_0025AG05_PatserOutID00005.txt
-ID00176 FFN_Parse 1.51 3 1
+ID00176 FFN_Parse 1.51 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00177 Blast_candidate 5.43 5 3
+ID00177 Blast_candidate 5.43 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -15030,7 +15030,7 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00174 Blast 2912.08 934 3
+ID00174 Blast 2912.08 934 3 1 1
 blasta
 xdformat
 time
@@ -15968,7 +15968,7 @@ NC_929_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00175 SRNA 259.92 20 14
+ID00175 SRNA 259.92 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -16003,24 +16003,24 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00172 RNAMotif 29.07 2 2
+ID00172 RNAMotif 29.07 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00173 Transterm 42.15 3 2
+ID00173 Transterm 42.15 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00170 Patser 1.3 4 1
+ID00170 Patser 1.3 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00170_matrix.txt
 NC_0025AG05_PatserOutID00170.txt
-ID00171 Findterm 1022.47 2 8
+ID00171 Findterm 1022.47 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -16031,7 +16031,7 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00178 Blast_QRNA 1412.01 862 8
+ID00178 Blast_QRNA 1412.01 862 8 1 1
 xdformat
 blasta
 time
@@ -16902,7 +16902,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00179 Blast_synteny 33.0 6 1
+ID00179 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -16910,79 +16910,79 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00079 Patser 1.02 4 1
+ID00079 Patser 1.02 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00079_matrix.txt
 NC_0025AG05_PatserOutID00079.txt
-ID00078 Patser 1.27 4 1
+ID00078 Patser 1.27 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00078_matrix.txt
 NC_0025AG05_PatserOutID00078.txt
-ID00077 Patser 1.35 4 1
+ID00077 Patser 1.35 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00077_matrix.txt
 NC_0025AG05_PatserOutID00077.txt
-ID00076 Patser 1.39 4 1
+ID00076 Patser 1.39 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00076_matrix.txt
 NC_0025AG05_PatserOutID00076.txt
-ID00075 Patser 0.95 4 1
+ID00075 Patser 0.95 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00075_matrix.txt
 NC_0025AG05_PatserOutID00075.txt
-ID00074 Patser 1.05 4 1
+ID00074 Patser 1.05 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00074_matrix.txt
 NC_0025AG05_PatserOutID00074.txt
-ID00073 Patser 1.33 4 1
+ID00073 Patser 1.33 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00073_matrix.txt
 NC_0025AG05_PatserOutID00073.txt
-ID00072 Patser 1.86 4 1
+ID00072 Patser 1.86 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00072_matrix.txt
 NC_0025AG05_PatserOutID00072.txt
-ID00071 Patser 1.35 4 1
+ID00071 Patser 1.35 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00071_matrix.txt
 NC_0025AG05_PatserOutID00071.txt
-ID00070 Patser 1.68 4 1
+ID00070 Patser 1.68 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00070_matrix.txt
 NC_0025AG05_PatserOutID00070.txt
-ID00189 Patser 1.45 4 1
+ID00189 Patser 1.45 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00189_matrix.txt
 NC_0025AG05_PatserOutID00189.txt
-ID00188 Patser 1.47 4 1
+ID00188 Patser 1.47 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00188_matrix.txt
 NC_0025AG05_PatserOutID00188.txt
-ID00183 Patser_concate 0.09 19 1
+ID00183 Patser_concate 0.09 19 1 1 1
 NC_0025AG05_PatserOutID00184.txt
 NC_0025AG05_PatserOutID00185.txt
 NC_0025AG05_PatserOutID00186.txt
@@ -17003,7 +17003,7 @@ NC_0025AG05_PatserOutID00200.txt
 NC_0025AG05_PatserOutID00201.txt
 NC_0025AG05_PatserOutID00202.txt
 NC_0025AG05_PatserOut.txt
-ID00181 SRNA_annotate 2.29 11 8
+ID00181 SRNA_annotate 2.29 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -17023,325 +17023,325 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00180 Blast_paralogues 5.74 4 1
+ID00180 Blast_paralogues 5.74 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00187 Patser 1.35 4 1
+ID00187 Patser 1.35 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00187_matrix.txt
 NC_0025AG05_PatserOutID00187.txt
-ID00186 Patser 0.7 4 1
+ID00186 Patser 0.7 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00186_matrix.txt
 NC_0025AG05_PatserOutID00186.txt
-ID00185 Patser 1.45 4 1
+ID00185 Patser 1.45 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00185_matrix.txt
 NC_0025AG05_PatserOutID00185.txt
-ID00184 Patser 1.07 4 1
+ID00184 Patser 1.07 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00184_matrix.txt
 NC_0025AG05_PatserOutID00184.txt
-ID00222 Patser 1.23 4 1
+ID00222 Patser 1.23 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00222_matrix.txt
 NC_0025AG05_PatserOutID00222.txt
-ID00223 Patser 1.64 4 1
+ID00223 Patser 1.64 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00223_matrix.txt
 NC_0025AG05_PatserOutID00223.txt
-ID00220 Patser 1.04 4 1
+ID00220 Patser 1.04 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00220_matrix.txt
 NC_0025AG05_PatserOutID00220.txt
-ID00221 Patser 1.14 4 1
+ID00221 Patser 1.14 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00221_matrix.txt
 NC_0025AG05_PatserOutID00221.txt
-ID00226 Patser 1.3 4 1
+ID00226 Patser 1.3 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00226_matrix.txt
 NC_0025AG05_PatserOutID00226.txt
-ID00227 Patser 1.58 4 1
+ID00227 Patser 1.58 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00227_matrix.txt
 NC_0025AG05_PatserOutID00227.txt
-ID00224 Patser 0.79 4 1
+ID00224 Patser 0.79 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00224_matrix.txt
 NC_0025AG05_PatserOutID00224.txt
-ID00225 Patser 1.68 4 1
+ID00225 Patser 1.68 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00225_matrix.txt
 NC_0025AG05_PatserOutID00225.txt
-ID00381 Patser 1.89 4 1
+ID00381 Patser 1.89 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00381_matrix.txt
 NC_0025AG05_PatserOutID00381.txt
-ID00380 Patser 1.45 4 1
+ID00380 Patser 1.45 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00380_matrix.txt
 NC_0025AG05_PatserOutID00380.txt
-ID00228 Patser 1.22 4 1
+ID00228 Patser 1.22 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00228_matrix.txt
 NC_0025AG05_PatserOutID00228.txt
-ID00229 Patser 1.62 4 1
+ID00229 Patser 1.62 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00229_matrix.txt
 NC_0025AG05_PatserOutID00229.txt
-ID00385 Patser 1.67 4 1
+ID00385 Patser 1.67 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00385_matrix.txt
 NC_0025AG05_PatserOutID00385.txt
-ID00384 Patser 1.47 4 1
+ID00384 Patser 1.47 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00384_matrix.txt
 NC_0025AG05_PatserOutID00384.txt
-ID00387 Patser 1.23 4 1
+ID00387 Patser 1.23 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00387_matrix.txt
 NC_0025AG05_PatserOutID00387.txt
-ID00386 Patser 1.54 4 1
+ID00386 Patser 1.54 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00386_matrix.txt
 NC_0025AG05_PatserOutID00386.txt
-ID00257 Patser 1.26 4 1
+ID00257 Patser 1.26 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00257_matrix.txt
 NC_0025AG05_PatserOutID00257.txt
-ID00256 Patser 1.08 4 1
+ID00256 Patser 1.08 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00256_matrix.txt
 NC_0025AG05_PatserOutID00256.txt
-ID00255 Patser 1.11 4 1
+ID00255 Patser 1.11 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00255_matrix.txt
 NC_0025AG05_PatserOutID00255.txt
-ID00254 Patser 1.49 4 1
+ID00254 Patser 1.49 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00254_matrix.txt
 NC_0025AG05_PatserOutID00254.txt
-ID00253 Patser 1.4 4 1
+ID00253 Patser 1.4 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00253_matrix.txt
 NC_0025AG05_PatserOutID00253.txt
-ID00252 Patser 0.69 4 1
+ID00252 Patser 0.69 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00252_matrix.txt
 NC_0025AG05_PatserOutID00252.txt
-ID00251 Patser 1.18 4 1
+ID00251 Patser 1.18 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00251_matrix.txt
 NC_0025AG05_PatserOutID00251.txt
-ID00250 Patser 1.01 4 1
+ID00250 Patser 1.01 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00250_matrix.txt
 NC_0025AG05_PatserOutID00250.txt
-ID00316 Patser 1.23 4 1
+ID00316 Patser 1.23 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00316_matrix.txt
 NC_0025AG05_PatserOutID00316.txt
-ID00317 Patser 1.36 4 1
+ID00317 Patser 1.36 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00317_matrix.txt
 NC_0025AG05_PatserOutID00317.txt
-ID00314 Patser 1.07 4 1
+ID00314 Patser 1.07 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00314_matrix.txt
 NC_0025AG05_PatserOutID00314.txt
-ID00315 Patser 1.21 4 1
+ID00315 Patser 1.21 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00315_matrix.txt
 NC_0025AG05_PatserOutID00315.txt
-ID00312 Patser 1.5 4 1
+ID00312 Patser 1.5 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00312_matrix.txt
 NC_0025AG05_PatserOutID00312.txt
-ID00313 Patser 1.08 4 1
+ID00313 Patser 1.08 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00313_matrix.txt
 NC_0025AG05_PatserOutID00313.txt
-ID00259 Patser 1.63 4 1
+ID00259 Patser 1.63 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00259_matrix.txt
 NC_0025AG05_PatserOutID00259.txt
-ID00311 Patser 1.64 4 1
+ID00311 Patser 1.64 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00311_matrix.txt
 NC_0025AG05_PatserOutID00311.txt
-ID00033 Patser 1.47 4 1
+ID00033 Patser 1.47 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00033_matrix.txt
 NC_0025AG05_PatserOutID00033.txt
-ID00032 Patser 1.24 4 1
+ID00032 Patser 1.24 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00032_matrix.txt
 NC_0025AG05_PatserOutID00032.txt
-ID00138 Patser 0.93 4 1
+ID00138 Patser 0.93 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00138_matrix.txt
 NC_0025AG05_PatserOutID00138.txt
-ID00139 Patser 1.18 4 1
+ID00139 Patser 1.18 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00139_matrix.txt
 NC_0025AG05_PatserOutID00139.txt
-ID00037 Patser 1.68 4 1
+ID00037 Patser 1.68 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00037_matrix.txt
 NC_0025AG05_PatserOutID00037.txt
-ID00036 Patser 0.77 4 1
+ID00036 Patser 0.77 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00036_matrix.txt
 NC_0025AG05_PatserOutID00036.txt
-ID00035 Patser 1.71 4 1
+ID00035 Patser 1.71 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00035_matrix.txt
 NC_0025AG05_PatserOutID00035.txt
-ID00034 Patser 1.07 4 1
+ID00034 Patser 1.07 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00034_matrix.txt
 NC_0025AG05_PatserOutID00034.txt
-ID00132 Patser 1.59 4 1
+ID00132 Patser 1.59 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00132_matrix.txt
 NC_0025AG05_PatserOutID00132.txt
-ID00133 Patser 1.17 4 1
+ID00133 Patser 1.17 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00133_matrix.txt
 NC_0025AG05_PatserOutID00133.txt
-ID00039 Patser 1.56 4 1
+ID00039 Patser 1.56 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00039_matrix.txt
 NC_0025AG05_PatserOutID00039.txt
-ID00038 Patser 1.32 4 1
+ID00038 Patser 1.32 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00038_matrix.txt
 NC_0025AG05_PatserOutID00038.txt
-ID00136 Patser 1.28 4 1
+ID00136 Patser 1.28 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00136_matrix.txt
 NC_0025AG05_PatserOutID00136.txt
-ID00137 Patser 1.85 4 1
+ID00137 Patser 1.85 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00137_matrix.txt
 NC_0025AG05_PatserOutID00137.txt
-ID00134 Patser 1.47 4 1
+ID00134 Patser 1.47 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00134_matrix.txt
 NC_0025AG05_PatserOutID00134.txt
-ID00135 Patser 1.09 4 1
+ID00135 Patser 1.09 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00135_matrix.txt
 NC_0025AG05_PatserOutID00135.txt
-ID00368 SRNA_annotate 1.81 11 8
+ID00368 SRNA_annotate 1.81 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -17361,13 +17361,13 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00382 Patser 1.69 4 1
+ID00382 Patser 1.69 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00382_matrix.txt
 NC_0025AG05_PatserOutID00382.txt
-ID00149 Blast_QRNA 1274.85 914 8
+ID00149 Blast_QRNA 1274.85 914 8 1 1
 xdformat
 blasta
 time
@@ -18290,7 +18290,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00148 Blast_candidate 4.22 5 3
+ID00148 Blast_candidate 4.22 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -18299,12 +18299,12 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00147 FFN_Parse 1.8 3 1
+ID00147 FFN_Parse 1.8 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00146 SRNA 278.37 20 14
+ID00146 SRNA 278.37 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -18339,7 +18339,7 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00145 Blast 1698.03 883 3
+ID00145 Blast 1698.03 883 3 1 1
 blasta
 xdformat
 time
@@ -19226,18 +19226,18 @@ NC_878_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00144 Transterm 60.3 3 2
+ID00144 Transterm 60.3 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00143 RNAMotif 37.34 2 2
+ID00143 RNAMotif 37.34 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00142 Findterm 744.65 2 8
+ID00142 Findterm 744.65 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -19248,25 +19248,25 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00141 Patser 0.91 4 1
+ID00141 Patser 0.91 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00141_matrix.txt
 NC_0025AG05_PatserOutID00141.txt
-ID00140 Patser 0.88 4 1
+ID00140 Patser 0.88 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00140_matrix.txt
 NC_0025AG05_PatserOutID00140.txt
-ID00367 Blast_paralogues 5.29 4 1
+ID00367 Blast_paralogues 5.29 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00366 Blast_synteny 33.0 6 1
+ID00366 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -19274,66 +19274,66 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00082 RNAMotif 33.91 2 2
+ID00082 RNAMotif 33.91 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00083 Transterm 59.0 3 2
+ID00083 Transterm 59.0 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00352 Patser 1.84 4 1
+ID00352 Patser 1.84 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00352_matrix.txt
 NC_0025AG05_PatserOutID00352.txt
-ID00353 Patser 0.64 4 1
+ID00353 Patser 0.64 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00353_matrix.txt
 NC_0025AG05_PatserOutID00353.txt
-ID00350 Patser 1.49 4 1
+ID00350 Patser 1.49 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00350_matrix.txt
 NC_0025AG05_PatserOutID00350.txt
-ID00351 Patser 0.94 4 1
+ID00351 Patser 0.94 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00351_matrix.txt
 NC_0025AG05_PatserOutID00351.txt
-ID00356 Patser 1.33 4 1
+ID00356 Patser 1.33 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00356_matrix.txt
 NC_0025AG05_PatserOutID00356.txt
-ID00357 Patser 1.42 4 1
+ID00357 Patser 1.42 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00357_matrix.txt
 NC_0025AG05_PatserOutID00357.txt
-ID00354 Patser 0.92 4 1
+ID00354 Patser 0.92 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00354_matrix.txt
 NC_0025AG05_PatserOutID00354.txt
-ID00355 Patser 1.14 4 1
+ID00355 Patser 1.14 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00355_matrix.txt
 NC_0025AG05_PatserOutID00355.txt
-ID00358 Findterm 891.94 2 8
+ID00358 Findterm 891.94 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -19344,29 +19344,29 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00359 RNAMotif 29.49 2 2
+ID00359 RNAMotif 29.49 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00389 RNAMotif 25.9 2 2
+ID00389 RNAMotif 25.9 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00219 Patser 1.82 4 1
+ID00219 Patser 1.82 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00219_matrix.txt
 NC_0025AG05_PatserOutID00219.txt
-ID00218 Patser 1.5 4 1
+ID00218 Patser 1.5 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00218_matrix.txt
 NC_0025AG05_PatserOutID00218.txt
-ID00388 Findterm 1125.77 2 8
+ID00388 Findterm 1125.77 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -19377,7 +19377,7 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00213 SRNA_annotate 1.23 11 8
+ID00213 SRNA_annotate 1.23 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -19397,13 +19397,13 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00212 Blast_paralogues 7.36 4 1
+ID00212 Blast_paralogues 7.36 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00211 Blast_synteny 33.0 6 1
+ID00211 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -19411,7 +19411,7 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00210 Blast_QRNA 1496.25 865 8
+ID00210 Blast_QRNA 1496.25 865 8 1 1
 xdformat
 blasta
 time
@@ -20285,19 +20285,19 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00217 Patser 1.35 4 1
+ID00217 Patser 1.35 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00217_matrix.txt
 NC_0025AG05_PatserOutID00217.txt
-ID00216 Patser 1.84 4 1
+ID00216 Patser 1.84 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00216_matrix.txt
 NC_0025AG05_PatserOutID00216.txt
-ID00215 Patser_concate 0.07 18 1
+ID00215 Patser_concate 0.07 18 1 1 1
 NC_0025AG05_PatserOutID00216.txt
 NC_0025AG05_PatserOutID00217.txt
 NC_0025AG05_PatserOutID00218.txt
@@ -20317,30 +20317,30 @@ NC_0025AG05_PatserOutID00231.txt
 NC_0025AG05_PatserOutID00232.txt
 NC_0025AG05_PatserOutID00233.txt
 NC_0025AG05_PatserOut.txt
-ID00163 Patser 1.36 4 1
+ID00163 Patser 1.36 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00163_matrix.txt
 NC_0025AG05_PatserOutID00163.txt
-ID00162 Patser 1.33 4 1
+ID00162 Patser 1.33 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00162_matrix.txt
 NC_0025AG05_PatserOutID00162.txt
-ID00383 Patser 1.55 4 1
+ID00383 Patser 1.55 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00383_matrix.txt
 NC_0025AG05_PatserOutID00383.txt
-ID00327 RNAMotif 36.71 2 2
+ID00327 RNAMotif 36.71 2 2 1 1
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
 rnamotif.out
 rnamotif.err
-ID00326 Findterm 908.31 2 8
+ID00326 Findterm 908.31 2 8 1 1
 NC_0025AG05.fna
 RNAfold
 findterm.out
@@ -20351,43 +20351,43 @@ rna.ps
 vienna_input_tmp
 vienna_output
 vienna_index_tmp
-ID00325 Patser 1.67 4 1
+ID00325 Patser 1.67 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00325_matrix.txt
 NC_0025AG05_PatserOutID00325.txt
-ID00324 Patser 1.51 4 1
+ID00324 Patser 1.51 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00324_matrix.txt
 NC_0025AG05_PatserOutID00324.txt
-ID00323 Patser 1.61 4 1
+ID00323 Patser 1.61 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00323_matrix.txt
 NC_0025AG05_PatserOutID00323.txt
-ID00322 Patser 0.9 4 1
+ID00322 Patser 0.9 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00322_matrix.txt
 NC_0025AG05_PatserOutID00322.txt
-ID00321 Patser 1.32 4 1
+ID00321 Patser 1.32 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00321_matrix.txt
 NC_0025AG05_PatserOutID00321.txt
-ID00320 Patser 1.14 4 1
+ID00320 Patser 1.14 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00320_matrix.txt
 NC_0025AG05_PatserOutID00320.txt
-ID00329 Blast 3281.74 870 3
+ID00329 Blast 3281.74 870 3 1 1
 blasta
 xdformat
 time
@@ -21261,193 +21261,193 @@ NC_865_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00328 Transterm 38.5 3 2
+ID00328 Transterm 38.5 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00103 Patser 1.55 4 1
+ID00103 Patser 1.55 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00103_matrix.txt
 NC_0025AG05_PatserOutID00103.txt
-ID00102 Patser 1.64 4 1
+ID00102 Patser 1.64 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00102_matrix.txt
 NC_0025AG05_PatserOutID00102.txt
-ID00101 Patser 1.15 4 1
+ID00101 Patser 1.15 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00101_matrix.txt
 NC_0025AG05_PatserOutID00101.txt
-ID00100 Patser 1.33 4 1
+ID00100 Patser 1.33 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00100_matrix.txt
 NC_0025AG05_PatserOutID00100.txt
-ID00107 Patser 1.44 4 1
+ID00107 Patser 1.44 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00107_matrix.txt
 NC_0025AG05_PatserOutID00107.txt
-ID00106 Patser 1.35 4 1
+ID00106 Patser 1.35 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00106_matrix.txt
 NC_0025AG05_PatserOutID00106.txt
-ID00105 Patser 1.36 4 1
+ID00105 Patser 1.36 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00105_matrix.txt
 NC_0025AG05_PatserOutID00105.txt
-ID00104 Patser 1.1 4 1
+ID00104 Patser 1.1 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00104_matrix.txt
 NC_0025AG05_PatserOutID00104.txt
-ID00109 Patser 1.11 4 1
+ID00109 Patser 1.11 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00109_matrix.txt
 NC_0025AG05_PatserOutID00109.txt
-ID00108 Patser 1.07 4 1
+ID00108 Patser 1.07 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00108_matrix.txt
 NC_0025AG05_PatserOutID00108.txt
-ID00068 Patser 1.21 4 1
+ID00068 Patser 1.21 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00068_matrix.txt
 NC_0025AG05_PatserOutID00068.txt
-ID00069 Patser 1.3 4 1
+ID00069 Patser 1.3 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00069_matrix.txt
 NC_0025AG05_PatserOutID00069.txt
-ID00064 Patser 1.25 4 1
+ID00064 Patser 1.25 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00064_matrix.txt
 NC_0025AG05_PatserOutID00064.txt
-ID00065 Patser 1.15 4 1
+ID00065 Patser 1.15 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00065_matrix.txt
 NC_0025AG05_PatserOutID00065.txt
-ID00066 Patser 1.0 4 1
+ID00066 Patser 1.0 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00066_matrix.txt
 NC_0025AG05_PatserOutID00066.txt
-ID00067 Patser 1.7 4 1
+ID00067 Patser 1.7 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00067_matrix.txt
 NC_0025AG05_PatserOutID00067.txt
-ID00060 Patser 0.92 4 1
+ID00060 Patser 0.92 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00060_matrix.txt
 NC_0025AG05_PatserOutID00060.txt
-ID00061 Patser 0.91 4 1
+ID00061 Patser 0.91 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00061_matrix.txt
 NC_0025AG05_PatserOutID00061.txt
-ID00062 Patser 1.46 4 1
+ID00062 Patser 1.46 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00062_matrix.txt
 NC_0025AG05_PatserOutID00062.txt
-ID00063 Patser 1.65 4 1
+ID00063 Patser 1.65 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00063_matrix.txt
 NC_0025AG05_PatserOutID00063.txt
-ID00198 Patser 1.36 4 1
+ID00198 Patser 1.36 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00198_matrix.txt
 NC_0025AG05_PatserOutID00198.txt
-ID00199 Patser 1.3 4 1
+ID00199 Patser 1.3 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00199_matrix.txt
 NC_0025AG05_PatserOutID00199.txt
-ID00190 Patser 1.52 4 1
+ID00190 Patser 1.52 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00190_matrix.txt
 NC_0025AG05_PatserOutID00190.txt
-ID00191 Patser 1.24 4 1
+ID00191 Patser 1.24 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00191_matrix.txt
 NC_0025AG05_PatserOutID00191.txt
-ID00192 Patser 1.29 4 1
+ID00192 Patser 1.29 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00192_matrix.txt
 NC_0025AG05_PatserOutID00192.txt
-ID00193 Patser 0.91 4 1
+ID00193 Patser 0.91 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00193_matrix.txt
 NC_0025AG05_PatserOutID00193.txt
-ID00194 Patser 1.0 4 1
+ID00194 Patser 1.0 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00194_matrix.txt
 NC_0025AG05_PatserOutID00194.txt
-ID00195 Patser 1.41 4 1
+ID00195 Patser 1.41 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00195_matrix.txt
 NC_0025AG05_PatserOutID00195.txt
-ID00196 Patser 1.45 4 1
+ID00196 Patser 1.45 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00196_matrix.txt
 NC_0025AG05_PatserOutID00196.txt
-ID00197 Patser 1.47 4 1
+ID00197 Patser 1.47 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00197_matrix.txt
 NC_0025AG05_PatserOutID00197.txt
-ID00396 Blast_synteny 33.0 6 1
+ID00396 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -21455,13 +21455,13 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00397 Blast_paralogues 4.59 4 1
+ID00397 Blast_paralogues 4.59 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00394 Blast_candidate 6.43 5 3
+ID00394 Blast_candidate 6.43 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -21470,7 +21470,7 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00395 Blast_QRNA 1703.75 884 8
+ID00395 Blast_QRNA 1703.75 884 8 1 1
 xdformat
 blasta
 time
@@ -22363,7 +22363,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00392 SRNA 214.41 20 14
+ID00392 SRNA 214.41 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -22398,18 +22398,18 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00393 FFN_Parse 1.76 3 1
+ID00393 FFN_Parse 1.76 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00390 Transterm 53.16 3 2
+ID00390 Transterm 53.16 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00391 Blast 2572.39 938 3
+ID00391 Blast 2572.39 938 3 1 1
 blasta
 xdformat
 time
@@ -23351,7 +23351,7 @@ NC_933_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00398 SRNA_annotate 1.44 11 8
+ID00398 SRNA_annotate 1.44 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -23371,7 +23371,7 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00244 SRNA_annotate 1.98 11 8
+ID00244 SRNA_annotate 1.98 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -23391,7 +23391,7 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-ID00246 Patser_concate 0.05 17 1
+ID00246 Patser_concate 0.05 17 1 1 1
 NC_0025AG05_PatserOutID00247.txt
 NC_0025AG05_PatserOutID00248.txt
 NC_0025AG05_PatserOutID00249.txt
@@ -23410,13 +23410,13 @@ NC_0025AG05_PatserOutID00261.txt
 NC_0025AG05_PatserOutID00262.txt
 NC_0025AG05_PatserOutID00263.txt
 NC_0025AG05_PatserOut.txt
-ID00247 Patser 1.75 4 1
+ID00247 Patser 1.75 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00247_matrix.txt
 NC_0025AG05_PatserOutID00247.txt
-ID00240 Blast_candidate 4.25 5 3
+ID00240 Blast_candidate 4.25 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -23425,7 +23425,7 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00241 Blast_QRNA 1397.57 853 8
+ID00241 Blast_QRNA 1397.57 853 8 1 1
 xdformat
 blasta
 time
@@ -24287,7 +24287,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00242 Blast_synteny 33.0 6 1
+ID00242 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -24295,18 +24295,18 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00243 Blast_paralogues 6.07 4 1
+ID00243 Blast_paralogues 6.07 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00363 FFN_Parse 1.84 3 1
+ID00363 FFN_Parse 1.84 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00362 SRNA 494.09 20 14
+ID00362 SRNA 494.09 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -24341,7 +24341,7 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00361 Blast 2059.69 924 3
+ID00361 Blast 2059.69 924 3 1 1
 blasta
 xdformat
 time
@@ -25269,25 +25269,25 @@ NC_919_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00360 Transterm 67.31 3 2
+ID00360 Transterm 67.31 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00248 Patser 0.79 4 1
+ID00248 Patser 0.79 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00248_matrix.txt
 NC_0025AG05_PatserOutID00248.txt
-ID00249 Patser 1.09 4 1
+ID00249 Patser 1.09 4 1 1 1
 patser.in
 NC_0025AG05.fna
 alphabet
 ID00249_matrix.txt
 NC_0025AG05_PatserOutID00249.txt
-ID00365 Blast_QRNA 1359.95 922 8
+ID00365 Blast_QRNA 1359.95 922 8 1 1
 xdformat
 blasta
 time
@@ -26218,7 +26218,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00364 Blast_candidate 5.3 5 3
+ID00364 Blast_candidate 5.3 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -26227,13 +26227,13 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00020 Transterm 45.66 3 2
+ID00020 Transterm 45.66 3 2 1 1
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
 transterm.out
 transterm.err
-ID00021 Blast 1960.78 862 3
+ID00021 Blast 1960.78 862 3 1 1
 blasta
 xdformat
 time
@@ -27099,7 +27099,7 @@ NC_857_IGR_partners.txt
 blast.err
 blast.out
 BLAST_sorted.out
-ID00022 SRNA 260.0 20 14
+ID00022 SRNA 260.0 20 14 1 1
 access_genomes2.txt
 sRNAPredict.in
 NC_0025AG05.gbk
@@ -27134,12 +27134,12 @@ OutTerms
 OutTermsIG
 Seq_NC_0025AG05
 srna.out
-ID00023 FFN_Parse 1.6 3 1
+ID00023 FFN_Parse 1.6 3 1 1 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
-ID00024 Blast_candidate 6.13 5 3
+ID00024 Blast_candidate 6.13 5 3 1 1
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
@@ -27148,7 +27148,7 @@ Seq_NC_0025AG05
 BLAST_NC_0025AG05
 blast_candidate.out
 blast_candidate.err
-ID00025 Blast_QRNA 1427.35 930 8
+ID00025 Blast_QRNA 1427.35 930 8 1 1
 xdformat
 blasta
 time
@@ -28087,7 +28087,7 @@ NC_0025AG05_QRNAblast.txt.E0.01.D1.q
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-ID00026 Blast_synteny 33.0 6 1
+ID00026 Blast_synteny 33.0 6 1 1 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
@@ -28095,13 +28095,13 @@ time
 Seq_NC_0025AG05
 NC_0025AG05_parsed.ffn
 NC_0025AG05_synteny.txt
-ID00027 Blast_paralogues 3.57 4 1
+ID00027 Blast_paralogues 3.57 4 1 1 1
 xdformat
 blasta
 time
 Seq_NC_0025AG05
 NC_0025AG05_paralogues.txt
-ID00028 SRNA_annotate 1.52 11 8
+ID00028 SRNA_annotate 1.52 11 8 1 1
 access_matrix.txt
 sRNAPredict.in
 BLAST_NC_0025AG05
@@ -28121,7 +28121,7 @@ QRNA_out
 srna_annotate.err
 srna_annotate.out
 NC_0025AG05_sRNA.out_annotated
-
+ 1 1
 ID00074 1
 ID00059
 ID00073 1

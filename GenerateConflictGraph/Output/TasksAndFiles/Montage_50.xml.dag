@@ -57,13 +57,13 @@ p2mass-atlas-ID00004s-jID00004.fits 3.97250270844
 p2mass-atlas-ID00005s-jID00005_area.fits 3.95098781586
 p2mass-atlas-ID00002s-jID00002.fits 3.96273326874
 
-ID00040 mBackground 10.47 3 2
+ID00040 mBackground 10.47 3 2 1 1
 corrections.tbl
 p2mass-atlas-ID00002s-jID00002.fits
 p2mass-atlas-ID00002s-jID00002_area.fits
 c2mass-atlas-ID00002s-jID00002_area.fits
 c2mass-atlas-ID00002s-jID00002.fits
-ID00034 mDiffFit 10.56 5 2
+ID00034 mDiffFit 10.56 5 2 1 1
 region.hdr
 p2mass-atlas-ID00007s-jID00007.fits
 p2mass-atlas-ID00007s-jID00007_area.fits
@@ -71,7 +71,7 @@ p2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005_area.fits
 fit.txt
 diff.txt
-ID00033 mDiffFit 10.6 5 2
+ID00033 mDiffFit 10.6 5 2 1 1
 region.hdr
 p2mass-atlas-ID00007s-jID00007.fits
 p2mass-atlas-ID00007s-jID00007_area.fits
@@ -79,7 +79,7 @@ p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
 fit.txt
 diff.txt
-ID00028 mDiffFit 10.64 5 2
+ID00028 mDiffFit 10.64 5 2 1 1
 region.hdr
 p2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005_area.fits
@@ -87,7 +87,7 @@ p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
 fit.txt
 diff.txt
-ID00031 mDiffFit 10.68 5 2
+ID00031 mDiffFit 10.68 5 2 1 1
 region.hdr
 p2mass-atlas-ID00006s-jID00006.fits
 p2mass-atlas-ID00006s-jID00006_area.fits
@@ -95,7 +95,7 @@ p2mass-atlas-ID00004s-jID00004.fits
 p2mass-atlas-ID00004s-jID00004_area.fits
 fit.txt
 diff.txt
-ID00030 mDiffFit 10.65 5 2
+ID00030 mDiffFit 10.65 5 2 1 1
 region.hdr
 p2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005_area.fits
@@ -103,7 +103,7 @@ p2mass-atlas-ID00006s-jID00006.fits
 p2mass-atlas-ID00006s-jID00006_area.fits
 fit.txt
 diff.txt
-ID00019 mDiffFit 10.31 5 2
+ID00019 mDiffFit 10.31 5 2 1 1
 region.hdr
 p2mass-atlas-ID00002s-jID00002.fits
 p2mass-atlas-ID00002s-jID00002_area.fits
@@ -111,19 +111,19 @@ p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
 fit.txt
 diff.txt
-ID00018 mDiffFit 10.48 3 2
+ID00018 mDiffFit 10.48 3 2 1 1
 region.hdr
 p2mass-atlas-ID00002s-jID00002.fits
 p2mass-atlas-ID00002s-jID00002_area.fits
 fit.txt
 diff.txt
-ID00035 mDiffFit 10.56 3 2
+ID00035 mDiffFit 10.56 3 2 1 1
 region.hdr
 p2mass-atlas-ID00007s-jID00007.fits
 p2mass-atlas-ID00007s-jID00007_area.fits
 fit.txt
 diff.txt
-ID00029 mDiffFit 10.62 5 2
+ID00029 mDiffFit 10.62 5 2 1 1
 region.hdr
 p2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005_area.fits
@@ -131,7 +131,7 @@ p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
 fit.txt
 diff.txt
-ID00015 mDiffFit 10.54 5 2
+ID00015 mDiffFit 10.54 5 2 1 1
 region.hdr
 p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
@@ -139,13 +139,13 @@ p2mass-atlas-ID00002s-jID00002.fits
 p2mass-atlas-ID00002s-jID00002_area.fits
 fit.txt
 diff.txt
-ID00014 mDiffFit 10.7 3 2
+ID00014 mDiffFit 10.7 3 2 1 1
 region.hdr
 p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
 fit.txt
 diff.txt
-ID00017 mDiffFit 10.71 5 2
+ID00017 mDiffFit 10.71 5 2 1 1
 region.hdr
 p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
@@ -153,7 +153,7 @@ p2mass-atlas-ID00007s-jID00007.fits
 p2mass-atlas-ID00007s-jID00007_area.fits
 fit.txt
 diff.txt
-ID00016 mDiffFit 10.51 5 2
+ID00016 mDiffFit 10.51 5 2 1 1
 region.hdr
 p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
@@ -161,7 +161,7 @@ p2mass-atlas-ID00004s-jID00004.fits
 p2mass-atlas-ID00004s-jID00004_area.fits
 fit.txt
 diff.txt
-ID00011 mDiffFit 10.78 5 2
+ID00011 mDiffFit 10.78 5 2 1 1
 region.hdr
 p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
@@ -169,7 +169,7 @@ p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
 fit.txt
 diff.txt
-ID00010 mDiffFit 10.69 5 2
+ID00010 mDiffFit 10.69 5 2 1 1
 region.hdr
 p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
@@ -177,7 +177,7 @@ p2mass-atlas-ID00002s-jID00002.fits
 p2mass-atlas-ID00002s-jID00002_area.fits
 fit.txt
 diff.txt
-ID00013 mDiffFit 10.59 5 2
+ID00013 mDiffFit 10.59 5 2 1 1
 region.hdr
 p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
@@ -185,7 +185,7 @@ p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
 fit.txt
 diff.txt
-ID00012 mDiffFit 10.56 5 2
+ID00012 mDiffFit 10.56 5 2 1 1
 region.hdr
 p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
@@ -193,49 +193,49 @@ p2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005_area.fits
 fit.txt
 diff.txt
-ID00038 mBackground 10.99 3 2
+ID00038 mBackground 10.99 3 2 1 1
 corrections.tbl
 p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
 c2mass-atlas-ID00000s-jID00000_area.fits
 c2mass-atlas-ID00000s-jID00000.fits
-ID00047 mAdd 4.75 2 2
+ID00047 mAdd 4.75 2 2 1 1
 region.hdr
 newcimages.tbl
 mosaic_ID00047_ID00047.fits
 mosaic_ID00047_ID00047_area.fits
-ID00041 mBackground 10.53 3 2
+ID00041 mBackground 10.53 3 2 1 1
 corrections.tbl
 p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
 c2mass-atlas-ID00003s-jID00003.fits
 c2mass-atlas-ID00003s-jID00003_area.fits
-ID00048 mShrink 4.88 2 1
+ID00048 mShrink 4.88 2 1 1 1
 mosaic_ID00047_ID00047.fits
 mosaic_ID00047_ID00047_area.fits
 shrunken_ID00048_ID00048.fits
-ID00049 mJPEG 1.22 1 1
+ID00049 mJPEG 1.22 1 1 1 1
 shrunken_ID00048_ID00048.fits
 shrunken_ID00048_ID00048.jpg
-ID00044 mBackground 10.54 3 2
+ID00044 mBackground 10.54 3 2 1 1
 corrections.tbl
 p2mass-atlas-ID00006s-jID00006.fits
 p2mass-atlas-ID00006s-jID00006_area.fits
 c2mass-atlas-ID00006s-jID00006_area.fits
 c2mass-atlas-ID00006s-jID00006.fits
-ID00039 mBackground 10.66 3 2
+ID00039 mBackground 10.66 3 2 1 1
 corrections.tbl
 p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
 c2mass-atlas-ID00001s-jID00001_area.fits
 c2mass-atlas-ID00001s-jID00001.fits
-ID00045 mBackground 10.42 3 2
+ID00045 mBackground 10.42 3 2 1 1
 corrections.tbl
 p2mass-atlas-ID00007s-jID00007.fits
 p2mass-atlas-ID00007s-jID00007_area.fits
 c2mass-atlas-ID00007s-jID00007.fits
 c2mass-atlas-ID00007s-jID00007_area.fits
-ID00020 mDiffFit 10.63 5 2
+ID00020 mDiffFit 10.63 5 2 1 1
 region.hdr
 p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
@@ -243,19 +243,19 @@ p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
 fit.txt
 diff.txt
-ID00021 mDiffFit 10.36 3 2
+ID00021 mDiffFit 10.36 3 2 1 1
 region.hdr
 p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
 fit.txt
 diff.txt
-ID00008 mDiffFit 10.65 3 2
+ID00008 mDiffFit 10.65 3 2 1 1
 region.hdr
 p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
 fit.txt
 diff.txt
-ID00009 mDiffFit 10.68 5 2
+ID00009 mDiffFit 10.68 5 2 1 1
 region.hdr
 p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
@@ -263,7 +263,7 @@ p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
 fit.txt
 diff.txt
-ID00024 mDiffFit 10.28 5 2
+ID00024 mDiffFit 10.28 5 2 1 1
 region.hdr
 p2mass-atlas-ID00004s-jID00004.fits
 p2mass-atlas-ID00004s-jID00004_area.fits
@@ -271,7 +271,7 @@ p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
 fit.txt
 diff.txt
-ID00025 mDiffFit 10.51 5 2
+ID00025 mDiffFit 10.51 5 2 1 1
 region.hdr
 p2mass-atlas-ID00004s-jID00004.fits
 p2mass-atlas-ID00004s-jID00004_area.fits
@@ -279,13 +279,13 @@ p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
 fit.txt
 diff.txt
-ID00026 mDiffFit 10.41 3 2
+ID00026 mDiffFit 10.41 3 2 1 1
 region.hdr
 p2mass-atlas-ID00004s-jID00004.fits
 p2mass-atlas-ID00004s-jID00004_area.fits
 fit.txt
 diff.txt
-ID00027 mDiffFit 10.54 5 2
+ID00027 mDiffFit 10.54 5 2 1 1
 region.hdr
 p2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005_area.fits
@@ -293,47 +293,47 @@ p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
 fit.txt
 diff.txt
-ID00002 mProjectPP 13.55 2 2
+ID00002 mProjectPP 13.55 2 2 1 1
 region.hdr
 2mass-atlas-ID00002s-jID00002.fits
 p2mass-atlas-ID00002s-jID00002.fits
 p2mass-atlas-ID00002s-jID00002_area.fits
-ID00003 mProjectPP 13.31 2 2
+ID00003 mProjectPP 13.31 2 2 1 1
 region.hdr
 2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
-ID00000 mProjectPP 13.08 2 2
+ID00000 mProjectPP 13.08 2 2 1 1
 region.hdr
 2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000.fits
 p2mass-atlas-ID00000s-jID00000_area.fits
-ID00001 mProjectPP 13.48 2 2
+ID00001 mProjectPP 13.48 2 2 1 1
 region.hdr
 2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001.fits
 p2mass-atlas-ID00001s-jID00001_area.fits
-ID00006 mProjectPP 13.6 2 2
+ID00006 mProjectPP 13.6 2 2 1 1
 region.hdr
 2mass-atlas-ID00006s-jID00006.fits
 p2mass-atlas-ID00006s-jID00006.fits
 p2mass-atlas-ID00006s-jID00006_area.fits
-ID00007 mProjectPP 13.17 2 2
+ID00007 mProjectPP 13.17 2 2 1 1
 region.hdr
 2mass-atlas-ID00007s-jID00007.fits
 p2mass-atlas-ID00007s-jID00007.fits
 p2mass-atlas-ID00007s-jID00007_area.fits
-ID00004 mProjectPP 13.43 2 2
+ID00004 mProjectPP 13.43 2 2 1 1
 region.hdr
 2mass-atlas-ID00004s-jID00004.fits
 p2mass-atlas-ID00004s-jID00004.fits
 p2mass-atlas-ID00004s-jID00004_area.fits
-ID00005 mProjectPP 13.6 2 2
+ID00005 mProjectPP 13.6 2 2 1 1
 region.hdr
 2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005_area.fits
-ID00046 mImgTbl 3.2 17 1
+ID00046 mImgTbl 3.2 17 1 1 1
 cimages.tbl
 c2mass-atlas-ID00000s-jID00000_area.fits
 c2mass-atlas-ID00000s-jID00000.fits
@@ -352,7 +352,7 @@ c2mass-atlas-ID00006s-jID00006.fits
 c2mass-atlas-ID00007s-jID00007.fits
 c2mass-atlas-ID00007s-jID00007_area.fits
 newcimages.tbl
-ID00032 mDiffFit 10.69 5 2
+ID00032 mDiffFit 10.69 5 2 1 1
 region.hdr
 p2mass-atlas-ID00007s-jID00007.fits
 p2mass-atlas-ID00007s-jID00007_area.fits
@@ -360,7 +360,7 @@ p2mass-atlas-ID00002s-jID00002.fits
 p2mass-atlas-ID00002s-jID00002_area.fits
 fit.txt
 diff.txt
-ID00022 mDiffFit 10.6 5 2
+ID00022 mDiffFit 10.6 5 2 1 1
 region.hdr
 p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
@@ -368,13 +368,13 @@ p2mass-atlas-ID00004s-jID00004.fits
 p2mass-atlas-ID00004s-jID00004_area.fits
 fit.txt
 diff.txt
-ID00043 mBackground 10.49 3 2
+ID00043 mBackground 10.49 3 2 1 1
 corrections.tbl
 p2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005_area.fits
 c2mass-atlas-ID00005s-jID00005_area.fits
 c2mass-atlas-ID00005s-jID00005.fits
-ID00023 mDiffFit 10.56 5 2
+ID00023 mDiffFit 10.56 5 2 1 1
 region.hdr
 p2mass-atlas-ID00003s-jID00003.fits
 p2mass-atlas-ID00003s-jID00003_area.fits
@@ -382,22 +382,22 @@ p2mass-atlas-ID00005s-jID00005.fits
 p2mass-atlas-ID00005s-jID00005_area.fits
 fit.txt
 diff.txt
-ID00042 mBackground 10.74 3 2
+ID00042 mBackground 10.74 3 2 1 1
 corrections.tbl
 p2mass-atlas-ID00004s-jID00004.fits
 p2mass-atlas-ID00004s-jID00004_area.fits
 c2mass-atlas-ID00004s-jID00004.fits
 c2mass-atlas-ID00004s-jID00004_area.fits
-ID00037 mBgModel 4.2 2 1
+ID00037 mBgModel 4.2 2 1 1 1
 pimages.tbl
 fits.tbl
 corrections.tbl
-ID00036 mConcatFit 2.24 3 1
+ID00036 mConcatFit 2.24 3 1 1 1
 fits_list.tbl
 fit.txt
 diff.txt
 fits.tbl
-
+ 1 1
 ID00002 6
 ID00040
 ID00032

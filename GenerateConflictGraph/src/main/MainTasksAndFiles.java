@@ -99,7 +99,7 @@ public class MainTasksAndFiles {
 			HashMap<String, DataTask> hashTasks = new HashMap<>();
 			
 			line = inputFile.readLine();
-			outputFile.write(line + "\n");
+			outputFile.write(line + " 1 1\n");
 			while (!line.isBlank()) {
 //				System.out.println(line);
 				String[] taskLineParts = line.split(" ");
@@ -128,7 +128,7 @@ public class MainTasksAndFiles {
 						                           myOutputFiles));
 				
 				line = inputFile.readLine();
-				outputFile.write(line + "\n");
+				outputFile.write(line + " 1 1\n");
 			}
 			
 			graph = new DigraphAsMatrix(numberOfTasks);
