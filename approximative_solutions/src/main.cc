@@ -52,24 +52,15 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "Input File of the Conflict Graph: " << FLAGS_algorithm;
   // google::FlushLogFiles(google::INFO);
 
-  try {
-    std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
+  std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
 
-    DLOG(INFO) << "... algorithm picked-up ...";
+  DLOG(INFO) << "... algorithm picked-up ...";
 
-    algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
-    algorithm->Run();
+  algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
+  algorithm->Run();
 
-    DLOG(INFO) << "... ending.";
-    gflags::ShutDownCommandLineFlags();
-  } catch(...) {
-   // Catch all exceptions - dangerous!!!
-   // Respond (perhaps only partially) to the exception, then
-   // re-throw to pass the exception to some other handler
-   // ...
-   google::FlushLogFiles(google::INFO);
-   throw;
-  }
+  DLOG(INFO) << "... ending.";
+  gflags::ShutDownCommandLineFlags();
 
   return 0;
 }
