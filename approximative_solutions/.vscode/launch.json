@@ -13,7 +13,7 @@
       "args": [ "--tasks_and_files",
         "/home/ralves/my-dev/Wf-Security/approximative_solutions/input/tasks_and_files/CyberShake_30.xml.dag",
         "--cluster",
-        "/home/ralves/my-dev/Wf-Security/approximative_solutions/input/clouds/cluster.vcl",
+        "/home/ralves/my-dev/Wf-Security/approximative_solutions/input/clouds/cluster2.vcl",
         "--conflict_graph",
         "/home/ralves/my-dev/Wf-Security/approximative_solutions/input/conflict_graph/CyberShake_30.xml.scg",
         "--algorithm", "min_min" ],

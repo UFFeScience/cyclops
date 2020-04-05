@@ -12,9 +12,11 @@
 #define SRC_MODEL_VIRTUAL_MACHINE_H_
 
 #include <string>
+#include <glog/logging.h>
+#include "src/model/storage.h"
 
-class VirtualMachine {
- public:
+class VirtualMachine : public Storage {
+public:
   VirtualMachine(size_t id,
                  std::string name,
                  double slowdown,
@@ -22,39 +24,20 @@ class VirtualMachine {
                  double cost,
                  double bandwidth,
                  int type_id) :
-		id_(id),
-    name_(name),
-    slowdown_(slowdown),
-    storage_(storage),
-    cost_(cost),
-    bandwidth_(bandwidth),
-    type_id_(type_id){}
+		Storage(id, name, storage, cost, bandwidth, type_id),
+    slowdown_(slowdown) {}
 
-  /// Getter for _id
-  size_t get_id() const { return id_; }
+  ~VirtualMachine() {
+    // DLOG(INFO) << "Deleting Virtual Machine " << id_;
+  }
 
-  /// Getter for _name
-  const std::string &get_name() const { return name_; }
-
-  /// Getter for _slowdown
+  /// Getter for slowdown_
   double get_slowdown() const { return slowdown_; }
-
-  /// Getter for _storage
-  double get_storage() const { return storage_; }
-
-  /// Getter for _cost
-  double get_cost() const { return cost_; }
-
-  /// Getter for _bandwidth
-  double get_bandwidth() const { return bandwidth_; }
-
-  /// Getter for _typeId
-  int get_type_id() const { return type_id_; }
 
   friend std::ostream& operator<<(std::ostream& os, const VirtualMachine& a) {
     return a.write(os);
   }
- private:
+private:
   std::ostream& write(std::ostream& os) const {
     return os << "Virtual Machine[id_: " << id_
         << ", name_: " << name_
@@ -66,19 +49,7 @@ class VirtualMachine {
         << "]";
   }
 
-	size_t id_;
-
-	std::string name_;
-
 	double slowdown_;
-
-  double storage_;
-
-  double cost_;
-
-  double bandwidth_;
-
-	int type_id_;
 };
 
 #endif  // SRC_MODEL_VIRTUAL_MACHINE_H_

@@ -53,10 +53,10 @@ class StaticFile : public File {
 
     // std::cout << oss.str() << std::endl;
 
-    return os << "StaticFile[_id: " << id_ << ", "
-      << "_name: " << name_ << ", "
-      << "_size: " << size_ << ", "
-      << "_vms: " << oss.str() << "]";
+    return os << "StaticFile[id_: " << id_
+              << ", name_: " << name_
+              << ", size_: " << size_
+              << ", vms_: " << oss.str() << "]";
   }
 
   std::vector<size_t> vms_;

@@ -54,7 +54,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
   deadline_ = stod(tokens[4]);
   budget_ = stod(tokens[5]);
   file_size_ = static_file_size_ + dynamic_file_size_;
-  size_ = task_size_ + dynamic_file_size_;  // Tasks + Files
+  size_ = task_size_ + file_size_;  // Tasks + Files
 
   // DLOG(INFO) << "_static_file_size: " << static_file_size_;
   // DLOG(INFO) << "_dynamic_file_size: " << dynamic_file_size_;
@@ -349,21 +349,21 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
     }
   }
 
-  for (size_t i = 0; i < succ_.size(); ++i) {
-    std::vector<size_t> list = succ_.find(i)->second;
-    for (size_t j = 0; j < list.size(); ++j) {
-      LOG(INFO) << "i[" << i << "]: " << list[j];
-    }
-  }
+  // for (size_t i = 0; i < succ_.size(); ++i) {
+  //   std::vector<size_t> list = succ_.find(i)->second;
+  //   for (size_t j = 0; j < list.size(); ++j) {
+  //     LOG(INFO) << "i[" << i << "]: " << list[j];
+  //   }
+  // }
 
   prec_ = ReverseMap(succ_);
 
-  for (size_t i = 0; i < succ_.size(); ++i) {
-    std::vector<size_t> list = succ_.find(i)->second;
-    for (size_t j = 0; j < list.size(); ++j) {
-      LOG(INFO) << "i[" << i << "]: " << list[j];
-    }
-  }
+  // for (size_t i = 0; i < succ_.size(); ++i) {
+  //   std::vector<size_t> list = succ_.find(i)->second;
+  //   for (size_t j = 0; j < list.size(); ++j) {
+  //     LOG(INFO) << "i[" << i << "]: " << list[j];
+  //   }
+  // }
 
   in_file.close();
 }
@@ -389,9 +389,9 @@ void Algorithm::ReadCluster(std::string cluster) {
 
   getline(in_cluster, line);  // ignore line
 
-  size_t provider_id = 0ul;
-  size_t vm_id = 0ul;
-  size_t bucket_id = 0ul;
+  // size_t provider_id = 0ul;
+  size_t storage_id = 0ul;
+  // size_t bucket_id = 0ul;
 
   // for (size_t i = 0; i < number_of_providers_; ++i) {
     getline(in_cluster, line);
@@ -403,15 +403,15 @@ void Algorithm::ReadCluster(std::string cluster) {
 
     period_hr_ = stod(strs1[2]);
     vm_size_ = stoul(strs1[4]);
-    bucket_size_ = stoi(strs1[5]);
-    storage_vet_.resize(vm_size_, 0);
+    bucket_size_ = stoul(strs1[5]);
+    // storage_vet_.resize(vm_size_ + bucket_size_, 0.0);
 
-    Provider my_provider(provider_id++);
+    // Provider my_provider(provider_id++);
 
     // size_t vm_id = 0;
     // size_t bucket_id = 0;
 
-    vm_map_.reserve(vm_size_);
+    // vm_map_.reserve(vm_size_);
 
     // Reading VMs information
     for (auto j = 0ul; j < vm_size_; j++) {
@@ -429,18 +429,19 @@ void Algorithm::ReadCluster(std::string cluster) {
       double bandwidth = stod(strs[4]);
       double cost = stod(strs[5]);
 
-      VirtualMachine my_vm(vm_id, vm_name, slowdown, storage, cost, bandwidth, type_id);
-      vm_map_.insert(std::make_pair(vm_id, my_vm));
-      my_provider.AddVirtualMachine(my_vm);
-      storage_vet_[vm_id] = storage;
-      vm_id += 1;
-      total_storage += storage;
+      VirtualMachine my_vm(storage_id, vm_name, slowdown, storage, cost, bandwidth, type_id);
+      vm_map_.insert(std::make_pair(storage_id, my_vm));
+      storage_map_.insert(std::make_pair(storage_id, my_vm));
+      // my_provider.AddVirtualMachine(my_vm);
 
+      // storage_vet_[storage_id] = storage;
+      storage_id += 1;
+      total_storage += storage;
       DLOG(INFO) << my_vm;
     }
 
     // Reading Buckets informations
-    for (auto j = 0; j < bucket_size_; j++) {
+    for (auto j = 0ul; j < bucket_size_; j++) {
       getline(in_cluster, line);
       DLOG(INFO) << "Bucket: " << line;
       google::FlushLogFiles(google::INFO);
@@ -448,24 +449,27 @@ void Algorithm::ReadCluster(std::string cluster) {
       std::vector<std::string> strs;
       boost::split(strs, line, boost::is_any_of(" "));
 
-      // <id-bucket> <capacidade> <numero de intervalos> [<limite superior> <valor contratado por intervalo>] <requirement-1> <requirement-2 (pode assumir 0 1 2{so bucket})>
-
-      // size_t bucketId = stoul(strs[0]);
-      std::string bucketCapacity = strs[1];
-      double bucketNumberOfIntervals = stod(strs[2]);
-      // double storage = stod(strs[3]) * 1024; // GB to MB
-      // double bandwidth = stod(strs[4]);
-      // double cost = stod(strs[5]);
+      int type_id = stoi(strs[0]);
+      std::string name = strs[1];
+      double storage = stod(strs[3]) * 1024; // GB to MB
+      double bandwidth = stod(strs[4]);
+      size_t number_of_intervals = stoul(strs[4]);
+      double cost = stod(strs[6]);
 
       // Bucket my_bucket(bucketId, bucketCapacity, bucketNumberOfIntervals);
-      Bucket my_bucket(bucket_id, bucketCapacity, bucketNumberOfIntervals);
+      // Bucket my_bucket(bucket_id, bucketCapacity, bucketNumberOfIntervals);
+      Bucket my_bucket(storage_id, name, storage, cost, bandwidth, type_id, number_of_intervals);
+      storage_map_.insert(std::make_pair(storage_id, my_bucket));
 
-      my_provider.AddBucket(my_bucket);
+      // my_provider.AddBucket(my_bucket);
       // _vm_map.insert(std::make_pair(vm_id, my_vm));
       // _storage_vet[vm_id] = storage;
-      bucket_id += 1;
-      // total_storage += storage;
+      // bucket_id += 1;
+      // storage_vet_[storage_id] = storage;
+      storage_id += 1;
+      total_storage += storage;
       DLOG(INFO) << my_bucket;
+      google::FlushLogFiles(google::INFO);
     }
     // providers_.push_back(my_provider);
   // }
@@ -477,7 +481,10 @@ void Algorithm::ReadConflictGraph(std::string conflict_graph) {
   std::vector<std::string> tokens;
 
   std::ifstream in_conflict_graph(conflict_graph);
-  conflict_graph_.redefine(size_, size_, 0.0);
+  // conflict_graph_.redefine(size_, size_, 0.0);
+
+  // conflict_graph_ = ConflictGraph(size_);
+  conflict_graph_.Redefine(size_);
 
   // Reading conflict graph informations
   while (getline(in_conflict_graph, line)) {
@@ -486,19 +493,20 @@ void Algorithm::ReadConflictGraph(std::string conflict_graph) {
 
     std::vector<std::string> strs;
     boost::split(strs, line, boost::is_any_of(" "));
-    auto firstFile = strs[0];
-    auto secondFile = strs[1];
-    auto conflictValue = stod(strs[2]);
-    auto firstId = file_map_per_name_.find(firstFile)->second->get_id();
-    auto secondId = file_map_per_name_.find(secondFile)->second->get_id();
+    auto first_file = strs[0];
+    auto second_file = strs[1];
+    auto conflict_value = stod(strs[2]);
+    auto first_file_id = file_map_per_name_.find(first_file)->second->get_id();
+    auto second_file_id = file_map_per_name_.find(second_file)->second->get_id();
     // DLOG(INFO) << "firstFile: " << firstFile;
     // DLOG(INFO) << "secondFile: " << secondFile;
     // DLOG(INFO) << "conflictValue: " << conflictValue;
     // DLOG(INFO) << "firstId: " << firstId;
     // DLOG(INFO) << "secondId: " << secondId;
     // google::FlushLogFiles(google::INFO);
-    conflict_graph_(firstId, secondId) = conflictValue;
-    conflict_graph_(secondId, firstId) = conflictValue;
+    // conflict_graph_(firstId, secondId) = conflictValue;
+    // conflict_graph_(secondId, firstId) = conflictValue;
+    conflict_graph_.AddConflict(first_file_id, second_file_id, conflict_value);
   }
 
   // DLOG(INFO) << "Conflict Graph: " << conflict_graph_;
@@ -518,6 +526,11 @@ void Algorithm::ReadInputFiles(const std::string tasks_and_files,
   ReadTasksAndFiles(tasks_and_files);
   ReadCluster(cluster);
   ReadConflictGraph(conflict_graph);
+  storage_vet_.resize(storage_map_.size(), 0.0);
+  for (auto storage_pair : storage_map_) {
+    Storage storage = storage_pair.second;
+    storage_vet_[storage.get_id()] = storage.get_storage();
+  }
   height_.resize(task_size_, -1);
   ComputeHeight(id_source_, 0);
   for (size_t i = 0; i < height_.size(); ++i) {

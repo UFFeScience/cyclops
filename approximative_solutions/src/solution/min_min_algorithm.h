@@ -18,31 +18,38 @@ class MinMinAlgorithm : public Algorithm {
  public:
 
   ~MinMinAlgorithm();
-  // /**
-  //  * \brief Parametrised constructor.
-  //  */
-  // GreedyAlgorithm(const std::string workflow_file_name,
-  //                 const std::string cluster_file_name,
-  //                 const std::string conflict_graph_file_name)
-  //   : Algorithm(workflow_file_name, cluster_file_name, conflict_graph_file_name) { }
-  double ComputeStartTime(size_t task,
-                          size_t vm,
-                          std::vector<double> ft_vector,
-                          std::vector<double> queue);
 
-  double ComputeFitness(Task task,
-                        VirtualMachine vm,
-                        std::vector<double>& ft_vector,
-                        std::vector<double>& queue,
-                        std::vector<size_t>& file_place,
-                        double lambda);
 
-  void schedule(std::list<Task> avail_tasks,
-                std::vector<double>& ft_vector,
-                std::vector<double>& queue,
-                std::vector<size_t>& file_place,
-                std::list<size_t>& task_ordering,
-                double lambda);
+  double ComputeFileWriteTime(File* file,
+                              VirtualMachine vm,
+                              std::vector<size_t>& allocation_output_files);
+
+  double ComputeTaskReadTime(Task& task,
+                             VirtualMachine& vm,
+                             std::vector<size_t>& allocation_output_files);
+
+  double ComputeTaskWriteTime(Task& task,
+                             VirtualMachine& vm,
+                             std::vector<size_t>& allocation_output_files);
+
+  double ComputeTaskStartTime(size_t task,
+                              size_t vm,
+                              std::vector<double> ft_vector,
+                              std::vector<double> queue);
+
+  double ComputeTaskFitness(Task task,
+                            VirtualMachine vm,
+                            std::vector<double>& ft_vector,
+                            std::vector<double>& queue,
+                            std::vector<size_t>& allocation);
+
+  double CalculateObjectiveFunction();
+
+  void ScheduleAvailTasks(std::list<Task> avail_tasks,
+                       std::vector<double>& ft_vector,
+                       std::vector<double>& queue,
+                       std::vector<size_t>& file_place,
+                       std::list<size_t>& task_ordering);
 
   /// Builds the required geometric representation depending on the simulation
   void Run(void);

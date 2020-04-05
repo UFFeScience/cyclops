@@ -12,21 +12,24 @@
 #define SRC_MODEL_BUCKET_H_
 
 #include <string>
+#include <glog/logging.h>
+#include "src/model/storage.h"
 
-class Bucket {
- public:
+class Bucket : public Storage {
+public:
   Bucket(size_t id,
-         std::string capacity,
+         std::string name,
+         double storage,
+         double cost,
+         double bandwidth,
+         int type_id,
          size_t numberOfIntervals) :
-		  id_(id),
-      capacity_(capacity),
+		  Storage(id, name, storage, cost, bandwidth, type_id),
       numberOfIntervals_(numberOfIntervals) {}
 
-  /// Getter for _id
-  size_t getId() const { return id_; }
-
-  // Getter for _capacity
-  const std::string &getCapacity() const { return capacity_; }
+  ~Bucket() {
+    // DLOG(INFO) << "Deleting Bucket " << id_;
+  }
 
   /// Getter for _numberOfIntervals
   size_t getNumberOfIntervals() const { return numberOfIntervals_; }
@@ -34,20 +37,19 @@ class Bucket {
   friend std::ostream& operator<<(std::ostream& os, const Bucket& a) {
     return a.write(os);
   }
- private:
+private:
   std::ostream& write(std::ostream& os) const {
     return os << "Bucket[id_: " << id_
-        << ", capacity_: " << capacity_
+        << ", name_: " << name_
+        << ", storage_: " << storage_
+        << ", cost_: " << cost_
+        << ", bandwidth_: " << bandwidth_
+        << ", type_id_: " << type_id_
         << ", numberOfIntervals_: " << numberOfIntervals_
         << "]";
   }
 
-	size_t id_;
-
-	std::string capacity_;
-
 	size_t numberOfIntervals_;
 };
-
 
 #endif  // SRC_MODEL_BUCKET_H_

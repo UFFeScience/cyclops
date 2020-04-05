@@ -15,7 +15,7 @@
 #include "src/model/file.h"
 
 class DynamicFile : public File {
- public:
+public:
   /// Parametrised constructor
   explicit DynamicFile(const size_t id, const std::string name, const double size) :
     File(id, name, size) { }
@@ -29,11 +29,11 @@ class DynamicFile : public File {
     return a.write(os);
   }
 
- private:
+private:
   std::ostream& write(std::ostream& os) const {
-    return os << "DynamicFile[_id: " << id_ << ", "
-      << "_name: " << name_ << ", "
-      << "_size: " << size_ << "]";
+    return os << "DynamicFile[id_: " << id_
+              << ", name_: " << name_
+              << ", size_: " << size_ << "]";
   }
 };  // end of class DynamicFile
 

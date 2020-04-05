@@ -17,7 +17,7 @@
 #include <vector>
 
 class Provider {
- public:
+public:
   Provider(size_t id) : id_(id) {}
 
   /// Getter for _id
@@ -32,14 +32,12 @@ class Provider {
   void AddBucket(const Bucket &bucket) {
     buckets_.push_back(bucket);
   }
-
- private:
+private:
 	size_t id_;
 
 	std::vector<VirtualMachine> virtual_machines_;
 
 	std::vector<Bucket> buckets_;
 };
-
 
 #endif  // SRC_MODEL_PROVIDER_H_

@@ -38,16 +38,19 @@ public:
   /// Getter for _name
   const std::string &get_name() const { return name_; }
 
-  /// Getter for _size
+  /// Getter for time_
   double get_time() const { return time_; }
 
-  /// Getter for _size
+  /// Getter for input_files_
   std::vector<File*> get_input_files() const { return input_files_; }
   // std::vector<std::shared_ptr<File>> get_input_files() const { return input_files_; }
 
-  /// Getter for _size
+  /// Getter for output_files_
   std::vector<File*> get_output_files() const { return output_files_; }
   // std::vector<std::shared_ptr<File>> get_output_files() const { return output_files_; }
+
+  /// Getter for requirements_
+  std::vector<double> get_requirements() const { return requirements_; }
 
   /// Adds a input file
   void AddInputFile(File* file) { input_files_.push_back(file); }
@@ -55,6 +58,10 @@ public:
 
   /// Adds a output file
   void AddOutputFile(File* file) { output_files_.push_back(file); }
+  // void AddOutputFile(std::shared_ptr<File> file) { output_files_.push_back(file); }
+
+  /// Adds a output file
+  void AddRequirement(double requirement) { requirements_.push_back(requirement); }
   // void AddOutputFile(std::shared_ptr<File> file) { output_files_.push_back(file); }
 
   bool operator==(const Task &rhs) const {
@@ -119,6 +126,8 @@ private:
 
   std::vector<File*> output_files_;
   // std::vector<std::shared_ptr<File>> output_files_;
+
+  std::vector<double> requirements_;
 };  // end of class Task
 
 #endif  // SRC_MODEL_TASK_H_

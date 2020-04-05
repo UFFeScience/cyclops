@@ -22,7 +22,7 @@ Solution::Solution(Algorithm* algorithm) :
   ComputeHeightSoft(algorithm->get_id_source());
   Encode();
   ComputeFitness();
-}
+}  // Solution::Solution(Algorithm* algorithm)
 
 // Random encode (new chromosome)
 void Solution::Encode() {
@@ -42,7 +42,7 @@ void Solution::Encode() {
   for (size_t i = 0; i < algorithm_->get_size(); i++) {
     allocation[i] = dis(engine_chr);
   }
-}
+}  // void Solution::Encode()
 
 int Solution::ComputeHeightSoft(size_t node) {
   // std::cout << node << std::endl;
@@ -68,18 +68,21 @@ int Solution::ComputeHeightSoft(size_t node) {
 
   return height_soft_[node];
     // return 0;
-}
+}  // int Solution::ComputeHeightSoft(size_t node)
 
 // Start Time
-inline double Solution::TaskStartTime(Task task, VirtualMachine vm, const std::vector<double>& queue) {
+inline double Solution::TaskStartTime(Task task,
+                                      VirtualMachine vm,
+                                      const std::vector<double>& queue) {
   // compute wait time
-  double max_pred_time = 0.0;
+  double wait_time = 0.0;
 
-  for (auto tk : algorithm_->get_predecessors().find(task.get_id())->second)
-    max_pred_time = std::max(max_pred_time, time_vector[tk]);
+  for (auto previous_task_id : algorithm_->get_predecessors().find(task.get_id())->second) {
+    wait_time = std::max(wait_time, time_vector[previous_task_id]);
+  }
 
-  return std::max(max_pred_time, queue[vm.get_id()]);
-}
+  return std::max(wait_time, queue[vm.get_id()]);
+}  // inline double Solution::TaskStartTime(...)
 
 // Read time
 inline double Solution::TaskReadTime(Task task, VirtualMachine vm) {
@@ -100,12 +103,13 @@ inline double Solution::TaskReadTime(Task task, VirtualMachine vm) {
       id_vm_file = static_cast<StaticFile*>(file)->GetFirstVm();
     }
 
-    auto vm_file = algorithm_->get_vm_map().find(id_vm_file)->second;
+    // auto vm_file = algorithm_->get_vm_map().find(id_vm_file)->second;
+    auto vm_file = algorithm_->get_storage_map().find(id_vm_file)->second;
 
     read_time += std::ceil(FileTransferTime(*file, vm, vm_file) + (file->get_size() * algorithm_->get_lambda()));
   }
   return read_time;
-}  //Write time
+}  // inline double Solution::TaskReadTime(Task task, VirtualMachine vm) {
 
 // Write time
 inline double Solution::TaskWriteTime(Task task, VirtualMachine vm) {
@@ -114,7 +118,8 @@ inline double Solution::TaskWriteTime(Task task, VirtualMachine vm) {
 
   for (auto file :task.get_output_files()) {
     // auto file = data->file_map.find(id_file)->second;
-    auto vm_file = algorithm_->get_vm_map().find(allocation[file->get_id()])->second;
+    // auto vm_file = algorithm_->get_vm_map().find(allocation[file->get_id()])->second;
+    auto vm_file = algorithm_->get_storage_map().find(allocation[file->get_id()])->second;
 
     // Update vm queue
     auto f_queue = vm_queue.insert(std::make_pair(vm_file.get_id(), std::vector<size_t>()));
@@ -124,17 +129,20 @@ inline double Solution::TaskWriteTime(Task task, VirtualMachine vm) {
     write_time += std::ceil(FileTransferTime(*file, vm, vm_file) + (file->get_size() * (algorithm_->get_lambda() * 2)));
   }
   return write_time;
-}
+}  // inline double Solution::TaskWriteTime(Task task, VirtualMachine vm) {
 
 // Transfer Time
-inline double Solution::FileTransferTime(File file, VirtualMachine vm1, VirtualMachine vm2) {
-  if (vm1.get_id() != vm2.get_id()) {  // if vm1 != vm2
+inline double Solution::FileTransferTime(File file, Storage storage1, Storage storage2) {
+  double time = 0.0;
+
+  if (storage1.get_id() != storage2.get_id()) {
     // get the smallest link
-    auto link = std::min(vm1.get_bandwidth(), vm2.get_bandwidth());
-    return file.get_size() / link;
+    auto link = std::min(storage1.get_bandwidth(), storage2.get_bandwidth());
+    time = std::ceil(file.get_size() / link);
   }
-  return 0;  // Otherwise
-}
+
+  return time;  // Otherwise
+}  // inline double Solution::FileTransferTime(File file, Storage vm1, Storage vm2) {
 
 // Compute the fitness of Solution
 void Solution::ComputeFitness(bool check_storage, bool check_sequence) {
@@ -154,7 +162,7 @@ void Solution::ComputeFitness(bool check_storage, bool check_sequence) {
   for (auto id_task : ordering) {  // For each task, do
     // If is not root or sink than
     if (id_task != algorithm_->get_id_source() && id_task != algorithm_->get_id_target()) {
-      if (check_sequence && !checkTaskSeq(id_task)) {
+      if (check_sequence && !CheckTaskSequence(id_task)) {
         std::cerr << "Encode error - Solution: Error in the precedence relations." << std::endl;
         throw;
       }
@@ -195,17 +203,17 @@ void Solution::ComputeFitness(bool check_storage, bool check_sequence) {
     }
   }
   fitness = time_vector[algorithm_->get_id_target()];
-}
+}  // void Solution::ComputeFitness(bool check_storage, bool check_sequence) {
 
 /* Checks the sequence of tasks is valid */
-inline bool Solution::checkTaskSeq(size_t task) {
+inline bool Solution::CheckTaskSequence(size_t task) {
   for (auto tk : algorithm_->get_predecessors().find(task)->second) {
     if (time_vector[tk] == -1) {
       return false;
     }
   }
   return true;
-}
+}  // inline bool Solution::CheckTaskSequence(size_t task) {
 
 // Check and organize the file based on the storage capacity
 inline bool Solution::checkFiles() {
@@ -262,20 +270,20 @@ inline bool Solution::checkFiles() {
       auto file_min = algorithm_->get_file_map_per_id().find(min_file)->second;
 
       std::cout << file_min->get_name() << std::endl;
-      //minFile will be move to machine with more empty space
+      // MinFile will be move to machine with more empty space
       allocation[file_min->get_id()] = new_vm;
-      //update aux Storage
+      // Update aux Storage
       aux_storage[old_vm] += file_min->get_size();
       aux_storage[new_vm] -= file_min->get_size();
-      //Update mapFile structure
+      // Update mapFile structure
       map_file[old_vm].erase(remove(map_file[old_vm].begin(), map_file[old_vm].end(), min_file),
-                              map_file[old_vm].end());
+                             map_file[old_vm].end());
       map_file[new_vm].push_back(min_file);
     } else flag = false;
     count++;
   } while (flag && count < algorithm_->get_file_size());
   return !flag;
-}
+}  // inline bool Solution::checkFiles() {
 
 void Solution::print() {
   std::cout << "#!# " << fitness << std::endl;
@@ -295,16 +303,17 @@ void Solution::print() {
 
   std::cout << std::endl;
   std::cout << "Files: " << std::endl;
-  for (auto info: algorithm_->get_vm_map()) {
+  // for (auto info: algorithm_->get_vm_map()) {
+  for (auto info : algorithm_->get_storage_map()) {
     auto vm = info.second;
-    std::cout << vm.get_id() << ": ";
+    std::cout << vm.get_id() << ": " << std::endl;
     for (auto info2 : algorithm_->get_file_map_per_id()) {
       auto file = info2.second;
       // std::shared_ptr<File> file = info2.second;
       size_t vm_id = file->IsStatic() ? static_cast<StaticFile*>(file)->GetFirstVm()
                                       : allocation[file->get_id()];
       if (vm_id == vm.get_id())
-        std::cout << file->get_name() << " ";
+        std::cout << " " << file->get_name() << "\n";
     }
     std::cout << std::endl;
   }
@@ -338,16 +347,17 @@ std::ostream& Solution::write(std::ostream& os) const {
 
   os << std::endl;
   os << "Files: " << std::endl;
-  for (auto info: algorithm_->get_vm_map()) {
+  // for (auto info: algorithm_->get_vm_map()) {
+  for (auto info : algorithm_->get_storage_map()) {
     auto vm = info.second;
-    os << vm.get_id() << ": ";
+    os << vm.get_id() << ": \n";
     for (auto info2 : algorithm_->get_file_map_per_id()) {
       auto file = info2.second;
       // std::shared_ptr<File> file = info2.second;
       size_t vm_id = file->IsStatic() ? static_cast<StaticFile*>(file)->GetFirstVm()
                                       : allocation[file->get_id()];
       if (vm_id == vm.get_id())
-        os << file->get_name() << " ";
+        os << " " << file->get_name() << "\n";
     }
     os << std::endl;
   }

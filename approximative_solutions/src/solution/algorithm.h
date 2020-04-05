@@ -23,6 +23,7 @@
 #include "src/model/bucket.h"
 #include "src/model/provider.h"
 #include "src/model/solution.h"
+#include "src/model/conflict_graph.h"
 
 #include "src/data_structure/matrix.h"
 
@@ -48,7 +49,8 @@ public:
   //     _cluster_file_name(cluster_file_name),
   //     _conflict_graph_file_name(conflict_graph_file_name) { }
 
-  // Algorithm() { }
+  Algorithm() = default;
+
   virtual ~Algorithm();
   /**
    * \brief Read input files.
@@ -78,6 +80,9 @@ public:
 
   /// Getter for _max_value
   std::unordered_map<size_t, VirtualMachine>& get_vm_map() { return vm_map_; }
+
+  /// Getter for _max_value
+  std::unordered_map<size_t, Storage>& get_storage_map() { return storage_map_; }
 
   /// Getter for _max_value
   std::unordered_map<size_t, Task>& get_task_map_per_id() { return task_map_per_id_; }
@@ -160,7 +165,7 @@ protected:
 
   size_t vm_size_;
 
-  std::vector<double> storage_vet_;  //storage of vm
+  std::vector<double> storage_vet_;  // storage of vm
 
   std::vector<Requirement> requirements_;
 
@@ -183,20 +188,23 @@ protected:
   size_t number_of_requirements_;
 
   std::unordered_map<size_t, VirtualMachine> vm_map_;
+  std::unordered_map<size_t, Storage> storage_map_;
 
-  int bucket_size_;
+  size_t bucket_size_;
 
-  std::vector<Provider> providers_;
+  // std::vector<Provider> providers_;
 
   // ConflictGraph _conflictGraph;
 
-  Matrix<double> conflict_graph_;
+  // Matrix<double> conflict_graph_;
 
   std::vector<int> height_;
 
   double lambda_ =  0.000;  // read and write constant
 
-  std::shared_ptr<Solution> solution_;
+  // std::shared_ptr<Solution> solution_;
+
+  ConflictGraph conflict_graph_;
 
  	// int task_size, sfile_size, dfile_size, file_size, size, vm_size, id_sink, id_root;
 	// double period_hr;
