@@ -77,39 +77,38 @@ public:
       // Convert all but the last element to avoid a trailing ","
       for (File* o : a.input_files_) {
       // for (std::shared_ptr<File> o : a.input_files_) {
-        oss << "\tFile[_id: " << o->get_id() << ", "
-            << "_name: " << o->get_name() << ", "
-            << "_size: " << o->get_size() << "]\n";
+        oss << "\tFile[id_: " << o->get_id() << ", "
+            << "name_: " << o->get_name() << ", "
+            << "size_: " << o->get_size() << "]\n";
       }
-      // std::copy(a.input_files_.begin(), a.input_files_.end() - 1,
-      //   std::ostream_iterator<int>(oss, ","));
-
-      // // Now add the last element with no delimiter
-      // oss << a._inputFiles.back();
     }
+
     oss << "}, Output Files: {\n";
     if (!a.output_files_.empty()) {
       // Convert all but the last element to avoid a trailing ","
       for (File* o : a.output_files_) {
       // for (std::shared_ptr<File> o : a.output_files_) {
-        oss << "\tFile[_id: " << o->get_id() << ", "
-            << "_name: " << o->get_name() << ", "
-            << "_size: " << o->get_size() << "]\n";
+        oss << "\tFile[id_: " << o->get_id() << ", "
+            << "name_: " << o->get_name() << ", "
+            << "size_: " << o->get_size() << "]\n";
       }
-      // std::copy(a.output_files_.begin(), a.output_files_.end() - 1,
-      //   std::ostream_iterator<int>(oss, ","));
+    }
 
-      // // Now add the last element with no delimiter
-      // oss << a._outputFiles.back();
+    oss << "}, Requirements: {\n";
+    if (!a.requirements_.empty()) {
+      // Convert all but the last element to avoid a trailing ","
+      for (size_t r = 0ul; r < a.requirements_.size(); ++r) {
+      // for (std::shared_ptr<File> o : a.output_files_) {
+        oss << "Requirement[id_: " << r << ", value_: " << a.requirements_[r] << "]\n";
+      }
     }
     oss << "}";
-    // std::cout << oss.str() << std::endl;
 
-    return strm << "Task[_id: " << a.id_ << ", "
-      << "_tag: " << a.tag_ << ", "
-      << "_name: " << a.name_ << ", "
-      << "_time: " << a.time_ << ", "
-      << oss.str() << "] ";
+    return strm << "Task[id_: " << a.id_ << ", "
+                << "tag_: " << a.tag_ << ", "
+                << "name_: " << a.name_ << ", "
+                << "time_: " << a.time_ << ", "
+                << oss.str() << "] ";
   }
 
 private:

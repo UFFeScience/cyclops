@@ -14,7 +14,8 @@
 #include "src/solution/algorithm.h"
 
 class GreedyAlgorithm : public Algorithm {
- public:
+public:
+  GreedyAlgorithm() = default;
   // /**
   //  * \brief Parametrised constructor.
   //  */
@@ -26,7 +27,7 @@ class GreedyAlgorithm : public Algorithm {
   /// Builds the required geometric representation depending on the simulation
   void Run(void);
 
- private:
+private:
 };  // end of class GreedyAlgorithm
 
 #endif  // SRC_SOLUTION_GREEDY_ALGORITHM_H_

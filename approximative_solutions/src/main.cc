@@ -17,19 +17,35 @@
 
 DEFINE_string(tasks_and_files,
               "CyberShake_30.xml.dag",
-              "comma-separated list of languages to offer in the 'lang' menu");
+              "Task and Files configuration file");
 
 DEFINE_string(cluster,
               "cluster.vcl",
-              "comma-separated list of languages to offer in the 'lang' menu");
+              "Clusters configuration file");
 
 DEFINE_string(conflict_graph,
               "CyberShake_30.xml.scg",
-              "comma-separated list of languages to offer in the 'lang' menu");
+              "Conflict Graph configuration file");
 
 DEFINE_string(algorithm,
               "greedy",
-              "comma-separated list of languages to offer in the 'lang' menu");
+              "Selected algorithm to solve the problem");
+
+DEFINE_double(alpha_time,
+              0.4,
+              "The weight of the time objective");
+
+DEFINE_double(alpha_budget,
+              0.4,
+              "The weight of the budget objective");
+
+DEFINE_double(alpha_security,
+              0.2,
+              "The weight of the security objective");
+
+DEFINE_double(penalt,
+              1.0,
+              "The penalt value");
 
 /**
  * The \c main() function reads the configuration parameters from JSON files,
@@ -49,7 +65,11 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "Input File of the Tasks and Files: " << FLAGS_tasks_and_files;
   DLOG(INFO) << "Input File of the Cluster: " << FLAGS_cluster;
   DLOG(INFO) << "Input File of the Conflict Graph: " << FLAGS_conflict_graph;
-  DLOG(INFO) << "Input File of the Conflict Graph: " << FLAGS_algorithm;
+  DLOG(INFO) << "Selected algorithm: " << FLAGS_algorithm;
+  DLOG(INFO) << "Alpha Time weight: " << FLAGS_alpha_time;
+  DLOG(INFO) << "Alpha Budget weight: " << FLAGS_alpha_budget;
+  DLOG(INFO) << "Alpha Security weight: " << FLAGS_alpha_security;
+  DLOG(INFO) << "Penalt Value: " << FLAGS_penalt;
   // google::FlushLogFiles(google::INFO);
 
   std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
@@ -57,6 +77,9 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "... algorithm picked-up ...";
 
   algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
+  algorithm->SetAlphas(FLAGS_alpha_time, FLAGS_alpha_budget, FLAGS_alpha_security);
+  algorithm->set_penalt(FLAGS_penalt);
+  algorithm->CalculateMaximumSecurityAndPrivacyExposure();
   algorithm->Run();
 
   DLOG(INFO) << "... ending.";

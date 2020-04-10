@@ -49,6 +49,7 @@ public:
   //     _cluster_file_name(cluster_file_name),
   //     _conflict_graph_file_name(conflict_graph_file_name) { }
 
+  // Algorithm() = default;
   Algorithm() = default;
 
   virtual ~Algorithm();
@@ -67,10 +68,10 @@ public:
   size_t get_task_size() const { return task_size_; }
 
   /// Getter for _max_value
-  size_t get_size() const { return size_; }
+  size_t get_tasks_plus_files_size() const { return tasks_plus_files_size_; }
 
   /// Getter for _max_value
-  size_t get_vm_size() const { return vm_size_; }
+  size_t get_virtual_machine_size() const { return vm_size_; }
 
   /// Getter for _max_value
   size_t get_id_source() const { return id_source_; }
@@ -79,7 +80,10 @@ public:
   size_t get_id_target() const { return id_target_; }
 
   /// Getter for _max_value
-  std::unordered_map<size_t, VirtualMachine>& get_vm_map() { return vm_map_; }
+  size_t get_number_of_requirements() const { return number_of_requirements_; }
+
+  /// Getter for _max_value
+  std::unordered_map<size_t, VirtualMachine>& get_virtual_machine_map() { return vm_map_; }
 
   /// Getter for _max_value
   std::unordered_map<size_t, Storage>& get_storage_map() { return storage_map_; }
@@ -95,6 +99,9 @@ public:
 
   /// Getter for _max_value
   std::unordered_map<size_t, std::vector<size_t>>& get_predecessors() { return prec_; }
+
+  /// Getter for conflict_graph_
+  ConflictGraph& get_conflict_graph() { return conflict_graph_; }
 
   /// Getter for _max_value
   std::vector<double>& get_storage_vet() { return storage_vet_; }
@@ -112,12 +119,44 @@ public:
   std::unordered_map<std::string, File*>& get_file_map_per_name_() {
     return file_map_per_name_;
   }
-  // std::unordered_map<std::string, std::shared_ptr<File>> get_file_map_per_name_() const {
-    // return file_map_per_name_;
-  // }
 
   /// Getter for _max_value
   int get_file_size() const { return file_size_; }
+
+  /// Getter for _max_value
+  double get_makespan_max() const { return makespan_max_; }
+
+  /// Getter for _max_value
+  double get_budget_max() const { return budget_max_; }
+
+  /// Getter for _max_value
+  double get_alpha_time() const { return alpha_time_; }
+
+  /// Getter for _max_value
+  double get_alpha_budget() const { return alpha_budget_; }
+
+  /// Getter for _max_value
+  double get_alpha_security() const { return alpha_security_; }
+
+  /// Getter for _max_value
+  double get_penalt() const { return penalt_; }
+
+  /// Getter for _max_value
+  double get_maximum_security_and_privacy_exposure() const {
+    return maximum_security_and_privacy_exposure_;
+  }
+
+  /// Setter for algorithm input parameter initial_time.
+  void SetAlphas(double alpha_time, double alpha_budget, double alpha_security) {
+    alpha_time_ = alpha_time;
+    alpha_budget_ = alpha_budget;
+    alpha_security_ = alpha_security;
+  }
+
+  void set_penalt(double penalt) { penalt_ = penalt; }
+
+  ///
+  void CalculateMaximumSecurityAndPrivacyExposure();
 
   /**
    * \brief Executes the algorithm.
@@ -149,13 +188,13 @@ protected:
 
   size_t requirement_size_;
 
-  double deadline_;
+  double makespan_max_;
 
-  double budget_;
+  double budget_max_;
 
   size_t file_size_;
 
-  size_t size_;
+  size_t tasks_plus_files_size_;
 
   size_t id_source_;
 
@@ -206,6 +245,18 @@ protected:
 
   ConflictGraph conflict_graph_;
 
+  /// The weight of the time
+  double alpha_time_ = 0.4;
+
+  /// The weight of the budget
+  double alpha_budget_ = 0.4;
+
+  /// The weight of the security
+  double alpha_security_ = 0.2;
+
+  double penalt_;
+
+  double maximum_security_and_privacy_exposure_;
  	// int task_size, sfile_size, dfile_size, file_size, size, vm_size, id_sink, id_root;
 	// double period_hr;
 
