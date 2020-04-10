@@ -77,7 +77,7 @@ public:
     ordering_.push_back(task_id);
   }
 
-  double AllocateTask(Task task, VirtualMachine vm);
+  double ScheduleTask(Task task, VirtualMachine vm);
 
   double AllocateOneOutputFileGreedily(File* file,
                                        VirtualMachine vm);
@@ -105,7 +105,7 @@ public:
   // }
 
   /// Compute the makespan
-  double ComputeMakespan(bool check_storage = true, bool check_sequence = false);
+  double ObjectiveFunction(bool check_storage = true, bool check_sequence = false);
 
   /// Compute the cost
   double ComputeCost();
@@ -117,11 +117,13 @@ public:
 
   inline bool checkFiles();
 
-  double MakespanOfAllocatedTask(Task task, VirtualMachine vm);
+  double CalculateMakespanAndAllocateOutputFiles(Task task, VirtualMachine vm);
 
   double CalculateSecurityExposure();
 
   double CalculateCost();
+
+  double ComputeMakespan(bool check_sequence);
 
   std::ostream& write(std::ostream& os) const;
 
@@ -131,7 +133,7 @@ public:
     return a.write(os);
   }
 
-private:
+protected:
 
   // int ComputeHeightSoft(size_t node);
 
@@ -164,6 +166,12 @@ private:
   std::vector<double> start_time_vector_;
 
   double makespan_;
+
+  double cost_;
+
+  double security_exposure_;
+
+  double objective_value_;
 
   double lambda_;
 

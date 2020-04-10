@@ -46,7 +46,7 @@ void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task> avail_tasks, Solution& 
         VirtualMachine& vm = pair.second;
         Solution new_solution = solution;
 
-        double objective_value = new_solution.AllocateTask(task, vm);
+        double objective_value = new_solution.ScheduleTask(task, vm);
 
         VirtualMachine& min_vm = vm_map_.find(min_vm_id)->second;
 
@@ -140,7 +140,7 @@ void MinMinAlgorithm::Run() {
   DLOG(INFO) << "Scheduling done";
   // google::FlushLogFiles(google::INFO);
 
-  solution.ComputeMakespan(false, false);
+  solution.ObjectiveFunction(false, false);
 
   LOG(INFO) << "MinMIn fitness: " << solution.get_fitness() << " seconds";
   LOG(INFO) << "MinMin fitness: " << solution.get_fitness() / 60.0 << " minutes";

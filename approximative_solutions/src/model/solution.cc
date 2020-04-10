@@ -209,30 +209,8 @@ inline double Solution::FileTransferTime(File* file,
   return time + penalts;
 }  // inline double Solution::FileTransferTime(File file, Storage vm1, Storage vm2) {
 
-// Compute the fitness of Solution
-double Solution::ComputeMakespan(bool check_storage, bool check_sequence) {
-
-  DLOG(INFO) << "Compute Makespan: check_storage[" << check_storage << "], check_sequence["
-      << check_sequence << "]";
-
-  if (ordering_.size() != algorithm_->get_task_size()) {
-    LOG(FATAL) << "Ordering has a wrong number of elements";
-  }
-
-  fill(time_vector_.begin(), time_vector_.end(), -1);
-  fill(queue_.begin(), queue_.end(), -1);
-  fill(start_time_vector_.begin(), start_time_vector_.end(), -1);
-
-  // std::vector<double> queue(algorithm_->get_vm_size(), 0);
-  // queue_.clear;
-
-  if (check_storage && !checkFiles()) {
-    std::cerr << "check file error" << std::endl;
-    throw;
-  }
-
-  scheduler_.clear();
-  vm_queue_.clear();
+double Solution::ComputeMakespan(bool check_sequence) {
+  double makespan = 0.0;
 
   // compute makespan
   for (auto id_task : ordering_) {  // For each task, do
@@ -257,14 +235,10 @@ double Solution::ComputeMakespan(bool check_storage, bool check_sequence) {
       f_scheduler.first->second.push_back(task.get_tag());
 
       // Compute Task Times
-      // auto start_time = TaskStartTime(task, vm, queue);
       double start_time = ComputeTaskStartTime(task.get_id(), vm.get_id());
-      // auto read_time = TaskReadTime(task, vm);
       double read_time = ComputeTaskReadTime(task, vm);
-      // auto run_time = std::ceil(task.get_time() * vm.get_slowdown());  // Seconds
       double run_time = std::ceil(task.get_time() * vm.get_slowdown());  // Seconds
       auto write_time = ComputeTaskWriteTime(task, vm);
-      // double write_time = ComputeTaskWriteTime(task, vm);
 
       double finish_time = std::numeric_limits<double>::max();
 
@@ -310,11 +284,57 @@ double Solution::ComputeMakespan(bool check_storage, bool check_sequence) {
     }  // } else {  // Source and Target tasks
   }  // for (auto id_task : ordering_) {  // For each task, do
 
-  makespan_ = time_vector_[algorithm_->get_id_target()];
+  makespan = time_vector_[algorithm_->get_id_target()];
 
-  DLOG(INFO) << "makespan_: " << makespan_;
+  return makespan;
+}  // double Solution::ComputeMakespan() {
 
-  return makespan_;
+// Compute the fitness of Solution
+double Solution::ObjectiveFunction(bool check_storage, bool check_sequence) {
+
+  DLOG(INFO) << "Compute Makespan: check_storage[" << check_storage << "], check_sequence["
+      << check_sequence << "]";
+
+  if (ordering_.size() != algorithm_->get_task_size()) {
+    LOG(FATAL) << "Ordering has a wrong number of elements";
+  }
+
+  fill(time_vector_.begin(), time_vector_.end(), 0.0);
+  fill(queue_.begin(), queue_.end(), 0.0);
+  fill(start_time_vector_.begin(), start_time_vector_.end(), -1);
+
+  // std::vector<double> queue(algorithm_->get_vm_size(), 0);
+  // queue_.clear;
+
+  if (check_storage && !checkFiles()) {
+    std::cerr << "check file error" << std::endl;
+    throw;
+  }
+
+  scheduler_.clear();
+  vm_queue_.clear();
+
+  // 1. Calculates the makespan
+  makespan_ = ComputeMakespan(check_sequence);
+
+  // 2. Calculates the cost
+  cost_ = CalculateCost();
+
+  // 3. Calculates the security exposure
+  security_exposure_ = CalculateSecurityExposure();
+
+  DLOG(INFO) << "makespan: " << makespan_;
+  DLOG(INFO) << "cost: " << cost_;
+  DLOG(INFO) << "security_exposure: " << security_exposure_;
+
+  objective_value_ = algorithm_->get_alpha_time() * (makespan_ / algorithm_->get_makespan_max())
+                   + algorithm_->get_alpha_budget() * (cost_ / algorithm_->get_budget_max())
+                   + algorithm_->get_alpha_security() * (security_exposure_
+                       / algorithm_->get_maximum_security_and_privacy_exposure());
+
+  DLOG(INFO) << "objective_value_: " << objective_value_;
+
+  return objective_value_;
 }  // void Solution::ComputeFitness(bool check_storage, bool check_sequence) {
 
 /* Checks the sequence of tasks is valid */
@@ -398,7 +418,11 @@ inline bool Solution::checkFiles() {
 }  // inline bool Solution::checkFiles() {
 
 std::ostream& Solution::write(std::ostream& os) const {
-  os << "#!# " << makespan_ << std::endl;
+  os << std::endl;
+  os << "makespan_: " << makespan_ << std::endl;
+  os << "cost_: " << cost_ << std::endl;
+  os << "security_exposure_: " << security_exposure_ << std::endl;
+  os << "objective_value_: " << objective_value_ << std::endl;
   os << "Tasks: " << std::endl;
 
   for (auto info : algorithm_->get_virtual_machine_map()) {
@@ -573,7 +597,15 @@ inline double Solution::ComputeTaskReadTime(Task& task, VirtualMachine& vm) {
   return read_time;
 }  // inline double Solution::ComputeTaskReadTime(Task& task, VirtualMachine& vm) {
 
-double Solution::MakespanOfAllocatedTask(Task task, VirtualMachine vm) {
+/**
+ * This method is important for calculate de makespan and to allocate the output files into
+ * Storages(VMs and Buckets)
+ *
+ * \param[in]  task      Task with which the output files will be allocated
+ * \param[in]  vm        VM where the task will be executed
+ * \retval     makespan  The objective value of the solution when inserting the \c task
+ */
+double Solution::CalculateMakespanAndAllocateOutputFiles(Task task, VirtualMachine vm) {
   double start_time = 0.0;
   double read_time = 0.0;
   double write_time = 0.0;
@@ -615,7 +647,7 @@ double Solution::MakespanOfAllocatedTask(Task task, VirtualMachine vm) {
 double Solution::CalculateCost() {
   double cost = 0.0;
   double virtual_machine_cost = 0.0;
-  double bucket_fixed_cost = 0.0;
+  // double bucket_fixed_cost = 0.0;
   double bucket_varible_cost = 0.0;
 
   DLOG(INFO) << "Calculate Cost";
@@ -627,24 +659,24 @@ double Solution::CalculateCost() {
     virtual_machine_cost += queue_[virtual_machine.get_id()] * virtual_machine.get_cost();
   }
 
-  // Accumulate the Bucket fixed cost
-  for (std::pair<size_t, Storage> storage_vm : algorithm_->get_storage_map()) {
-    Storage storage = storage_vm.second;
+  // // Accumulate the Bucket fixed cost
+  // for (std::pair<size_t, Storage> storage_vm : algorithm_->get_storage_map()) {
+  //   Storage storage = storage_vm.second;
 
-    // If the storage is not a Virtual Machine, i.e. it is a Bucket; then verify that it is been
-    // used
-    if (storage.get_id() >= algorithm_->get_virtual_machine_size()) {
-      for (size_t i = algorithm_->get_task_size();
-          i < algorithm_->get_tasks_plus_files_size();
-          ++i) {
-        // If the Bucket is used; then accumulate de cost and break to the next Storage
-        if (allocation_[i] == storage.get_id()) {
-          bucket_fixed_cost += storage.get_cost();
-          break;
-        }
-      }
-    }
-  }
+  //   // If the storage is not a Virtual Machine, i.e. it is a Bucket; then verify that it is been
+  //   // used
+  //   if (storage.get_id() >= algorithm_->get_virtual_machine_size()) {
+  //     for (size_t i = algorithm_->get_task_size();
+  //         i < algorithm_->get_tasks_plus_files_size();
+  //         ++i) {
+  //       // If the Bucket is used; then accumulate de cost and break to the next Storage
+  //       if (allocation_[i] == storage.get_id()) {
+  //         bucket_fixed_cost += storage.get_cost();
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
 
   // Accumulate the Bucket variable cost
   for (std::pair<size_t, Storage> storage_vm : algorithm_->get_storage_map()) {
@@ -666,10 +698,11 @@ double Solution::CalculateCost() {
   }
 
   DLOG(INFO) << "virtual_machine_cost: " << virtual_machine_cost;
-  DLOG(INFO) << "bucket_fixed_cost: " << bucket_fixed_cost;
+  // DLOG(INFO) << "bucket_fixed_cost: " << bucket_fixed_cost;
   DLOG(INFO) << "bucket_varible_cost: " << bucket_varible_cost;
 
-  cost = virtual_machine_cost + bucket_fixed_cost + bucket_varible_cost;
+  // cost = virtual_machine_cost + bucket_fixed_cost + bucket_varible_cost;
+  cost = virtual_machine_cost + bucket_varible_cost;
 
   DLOG(INFO) << "cost: " << cost;
 
@@ -687,6 +720,8 @@ double Solution::CalculateSecurityExposure() {
   for (std::pair<size_t, Task> task_pair : algorithm_->get_task_map_per_id()) {
     Task task = task_pair.second;
     for (double requirement_value : task.get_requirements()) {
+
+      // if requirement_value is bigger than vm.requirement
       task_exposure += requirement_value;
     }
   }
@@ -742,7 +777,7 @@ double Solution::CalculateSecurityExposure() {
  * \param[in]  vm               VM where the task will be executed
  * \retval     objective_value  The objective value of the solution when inserting the \c task
  */
-double Solution::AllocateTask(Task task, VirtualMachine vm) {
+double Solution::ScheduleTask(Task task, VirtualMachine vm) {
   double objective_value = std::numeric_limits<double>::max();
 
   DLOG(INFO) << "Allocate the Task[" << task.get_id() << "] at VM[" << vm.get_id() << "]";
@@ -752,7 +787,7 @@ double Solution::AllocateTask(Task task, VirtualMachine vm) {
   ordering_.push_back(task.get_id());
 
   // 1. Calculates the makespan
-  double makespan = MakespanOfAllocatedTask(task, vm);
+  double makespan = CalculateMakespanAndAllocateOutputFiles(task, vm);
 
   // 2. Calculates the cost
   double cost = CalculateCost();
