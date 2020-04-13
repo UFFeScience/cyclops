@@ -3,18 +3,22 @@
  * \brief Contains the \c Algorithm class methods.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This source file contains the methods from the \c Algorithm class that run the mode the
  * approximate solution.
  */
 
+#include <glog/logging.h>
+
 #include <list>
 #include <vector>
 #include <limits>
 #include <cmath>
 #include <memory>
-#include <glog/logging.h>
+#include <utility>
 
 #include "src/solution/min_min_algorithm.h"
 #include "src/model/static_file.h"
@@ -142,8 +146,8 @@ void MinMinAlgorithm::Run() {
 
   solution.ObjectiveFunction(false, false);
 
-  LOG(INFO) << "MinMIn fitness: " << solution.get_fitness() << " seconds";
-  LOG(INFO) << "MinMin fitness: " << solution.get_fitness() / 60.0 << " minutes";
+  LOG(INFO) << "MinMIn fitness: " << solution.get_makespan() << " seconds";
+  LOG(INFO) << "MinMin fitness: " << solution.get_makespan() / 60.0 << " minutes";
   LOG(INFO) << solution;
   std::cout << solution;
   DLOG(INFO) << "... ending MinMin algorithm";

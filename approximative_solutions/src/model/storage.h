@@ -3,18 +3,21 @@
  * \brief Contains the \c Storage class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This header file contains the \c Storage class.
  */
 
-#ifndef SRC_MODEL_STORAGE_H_
-#define SRC_MODEL_STORAGE_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STORAGE_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STORAGE_H_
 
 #include <string>
+#include <vector>
 
 class Storage {
-public:
+ public:
   Storage(size_t id,
          std::string name,
          double storage,
@@ -48,22 +51,30 @@ public:
   /// Getter for bandwidth_
   double get_type_id() const { return type_id_; }
 
+  /// Adds a requiremnt value
+  void AddRequirement(double requirement) { requirements_.push_back(requirement); }
+
+  /// Get a requiremnt value
+  int GetRequirementValue(size_t requirement_id) const { return requirements_[requirement_id]; }
+
   bool operator==(const Storage &rhs) const {
     return rhs.get_id() == id_;
   }
 
-protected:
-	size_t id_;
+ protected:
+  size_t id_;
 
-	std::string name_;
+  std::string name_;
 
-	double storage_;
+  double storage_;
 
   double cost_;
 
   double bandwidth_;
 
   int type_id_;
+
+  std::vector<int> requirements_;
 };
 
-#endif  // SRC_MODEL_STORAGE_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STORAGE_H_

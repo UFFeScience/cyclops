@@ -3,13 +3,15 @@
  * \brief Contains the \c Algorithm class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This header file contains the \c Algorithm class that handles different execution modes.
  */
 
-#ifndef SRC_SOLUTION_ALGORITHM_H_
-#define SRC_SOLUTION_ALGORITHM_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
 
 #include <string>
 #include <memory>
@@ -38,7 +40,7 @@ class Solution;
  */
 
 class Algorithm {
-public:
+ public:
   /**
    * \brief Parametrised constructor.
    */
@@ -80,7 +82,7 @@ public:
   size_t get_id_target() const { return id_target_; }
 
   /// Getter for _max_value
-  size_t get_number_of_requirements() const { return number_of_requirements_; }
+  // size_t get_number_of_requirements() const { return number_of_requirements_; }
 
   /// Getter for _max_value
   std::unordered_map<size_t, VirtualMachine>& get_virtual_machine_map() { return vm_map_; }
@@ -95,10 +97,10 @@ public:
   std::unordered_map<std::string, Task>& get_task_map_per_name() { return task_map_per_name_; }
 
   /// Getter for _max_value
-  std::unordered_map<size_t, std::vector<size_t>>& get_successors() { return succ_; }
+  std::unordered_map<size_t, std::vector<size_t>>& get_successors() { return successors_; }
 
   /// Getter for _max_value
-  std::unordered_map<size_t, std::vector<size_t>>& get_predecessors() { return prec_; }
+  std::unordered_map<size_t, std::vector<size_t>>& get_predecessors() { return predecessors_; }
 
   /// Getter for conflict_graph_
   ConflictGraph& get_conflict_graph() { return conflict_graph_; }
@@ -139,9 +141,6 @@ public:
   double get_alpha_security() const { return alpha_security_; }
 
   /// Getter for _max_value
-  double get_penalt() const { return penalt_; }
-
-  /// Getter for _max_value
   double get_maximum_security_and_privacy_exposure() const {
     return maximum_security_and_privacy_exposure_;
   }
@@ -152,8 +151,6 @@ public:
     alpha_budget_ = alpha_budget;
     alpha_security_ = alpha_security;
   }
-
-  void set_penalt(double penalt) { penalt_ = penalt; }
 
   ///
   void CalculateMaximumSecurityAndPrivacyExposure();
@@ -171,7 +168,7 @@ public:
   std::unordered_map<size_t, std::vector<size_t>> ReverseMap(
       std::unordered_map<size_t, std::vector<size_t>> amap);
 
-protected:
+ protected:
   void ReadTasksAndFiles(std::string);
 
   void ReadCluster(std::string);
@@ -219,12 +216,12 @@ protected:
   std::unordered_map<std::string, Task> task_map_per_name_;
 
   // Workflow task Graphs
-  std::unordered_map<size_t, std::vector<size_t>> succ_;
-  std::unordered_map<size_t, std::vector<size_t>> prec_;
+  std::unordered_map<size_t, std::vector<size_t>> successors_;
+  std::unordered_map<size_t, std::vector<size_t>> predecessors_;
 
-  size_t number_of_providers_;
+  // size_t number_of_providers_;
 
-  size_t number_of_requirements_;
+  // size_t number_of_requirements_;
 
   std::unordered_map<size_t, VirtualMachine> vm_map_;
   std::unordered_map<size_t, Storage> storage_map_;
@@ -254,33 +251,7 @@ protected:
   /// The weight of the security
   double alpha_security_ = 0.2;
 
-  double penalt_;
-
   double maximum_security_and_privacy_exposure_;
- 	// int task_size, sfile_size, dfile_size, file_size, size, vm_size, id_sink, id_root;
-	// double period_hr;
-
-  /**
-     * \brief The file name of the tasks and files.
-     *
-     * This file contains the description of files, tasks, and adjacencies of the tasks.
-     */
-  // std::string _tasks_and_files;
-
-  /**
-     * \brief The cluster file name.
-     *
-     * This file contains the public and private cluster definitions.
-     */
-  // std::string _cluster_file_name;
-
-  /**
-     * \brief The conflict graph file name.
-     *
-     * This file contains the conflict between from the files of consecutive tasks, and
-     * task in the same hierarquical level.
-     */
-  // std::string _conflict_graph_file_name;
 };  // end of class Algorithm
 
-#endif  // SRC_SOLUTION_ALGORITHM_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_

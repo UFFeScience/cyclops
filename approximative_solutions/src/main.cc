@@ -3,6 +3,8 @@
  * \brief Run the Wf-Security Greedy Solution executable.
  *
  * \author Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This source file contains the \c main() function that reads the execution mode from the
@@ -43,10 +45,6 @@ DEFINE_double(alpha_security,
               0.2,
               "The weight of the security objective");
 
-DEFINE_double(penalt,
-              1.0,
-              "The penalt value");
-
 /**
  * The \c main() function reads the configuration parameters from JSON files,
  * loads the desired input file, applies the required algorithms and writes
@@ -69,7 +67,6 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "Alpha Time weight: " << FLAGS_alpha_time;
   DLOG(INFO) << "Alpha Budget weight: " << FLAGS_alpha_budget;
   DLOG(INFO) << "Alpha Security weight: " << FLAGS_alpha_security;
-  DLOG(INFO) << "Penalt Value: " << FLAGS_penalt;
   // google::FlushLogFiles(google::INFO);
 
   std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
@@ -78,7 +75,6 @@ int main(int argc, char **argv) {
 
   algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
   algorithm->SetAlphas(FLAGS_alpha_time, FLAGS_alpha_budget, FLAGS_alpha_security);
-  algorithm->set_penalt(FLAGS_penalt);
   algorithm->CalculateMaximumSecurityAndPrivacyExposure();
   algorithm->Run();
 

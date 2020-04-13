@@ -3,25 +3,30 @@
  * \brief Contains the \c Algorithm class methods.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This source file contains the methods from the \c Algorithm class that run the mode the
  * approximate solution.
  */
 
-#include <boost/algorithm/string.hpp>
-#include <boost/iterator/counting_iterator.hpp>
-#include <boost/bimap.hpp>
-#include <iostream>
-#include <fstream>
-#include <glog/logging.h>
+#include "src/solution/algorithm.h"
+
 #include <gflags/gflags.h>
-#include <unordered_map>
-#include <vector>
-#include <utility>
+#include <glog/logging.h>
+
+#include <fstream>
+#include <iostream>
 #include <sstream>
 #include <new>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
+#include <boost/algorithm/string.hpp>
+#include <boost/bimap.hpp>
+#include <boost/iterator/counting_iterator.hpp>
 #include "src/model/file.h"
 #include "src/model/static_file.h"
 #include "src/model/dynamic_file.h"
@@ -29,12 +34,11 @@
 #include "src/model/task.h"
 #include "src/model/bucket.h"
 #include "src/model/virtual_machine.h"
-#include "src/solution/algorithm.h"
 #include "src/solution/greedy_algorithm.h"
 #include "src/solution/min_min_algorithm.h"
 
 void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
-	double total_file = 0.0;
+  double total_file = 0.0;
   // DLOG(INFO) << "total_file: " << total_file;
 
   // Reading file
@@ -65,7 +69,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
   // DLOG(INFO) << "file_size_: " << file_size_;
   // DLOG(INFO) << "tasks_plus_files_size_: " << tasks_plus_files_size_;
 
-  getline(in_file, line); // Reading blank line
+  getline(in_file, line);  // Reading blank line
 
   // Start initial integer_id of elements
   // Tasks, dynamic files, and static files do share the same range of IDs
@@ -88,7 +92,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
     DLOG(INFO) << my_requirement;
   }
 
-  getline(in_file, line); // reading blank line
+  getline(in_file, line);  // reading blank line
 
   file_map_per_id_.reserve(file_size_);
   file_map_per_name_.reserve(file_size_);
@@ -151,7 +155,6 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
   task_map_per_id_.reserve(task_size_);
   task_map_per_name_.reserve(task_size_);
 
-  //read tasks
   // Reading information about tasks
   for (size_t i = 1; i < task_size_ - 1; i++) {
     getline(in_file, line);
@@ -175,13 +178,13 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
     Task my_task(i, tag, task_name, base_time);
 
     // Adding requirement to the task
-    for (size_t j = 5ul; j < 5ul + number_of_requirements_; ++j) {
-      auto requirement_value = stod(strs[i]);
+    for (size_t j = 5ul; j < 5ul + requirement_size_; ++j) {
+      auto requirement_value = stod(strs[j]);
       my_task.AddRequirement(requirement_value);
     }
 
     // reading input files
-    for (size_t j = 0; j < in_size; j++){
+    for (size_t j = 0; j < in_size; j++) {
       getline(in_file, line);
       DLOG(INFO) << "Input file: " << line;
       google::FlushLogFiles(google::INFO);
@@ -191,7 +194,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
     }
 
     // reading output files
-    for (size_t j = 0; j < out_size; j++){
+    for (size_t j = 0; j < out_size; j++) {
       getline(in_file, line);
       DLOG(INFO) << "Output file: " << line;
       google::FlushLogFiles(google::INFO);
@@ -216,7 +219,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
     DLOG(INFO) << "Task: " << task.second;
   }
 
-  getline(in_file, line); // reading blank line
+  getline(in_file, line);  // reading blank line
 
   // Update Source and Target tasks
   id_source_ = 0;
@@ -227,14 +230,19 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
   // key_map.insert(make_pair("root", id_source));
   // key_map.insert(make_pair("sink", id_target));
 
-  Task sourceTask(id_source_, "source", "SOURCE", 0.0);
-  Task targetTask(id_target_, "target", "TARGET", 0.0);
+  Task source_task(id_source_, "source", "SOURCE", 0.0);
+  Task target_task(id_target_, "target", "TARGET", 0.0);
 
-  task_map_per_id_.insert(std::make_pair(id_source_, sourceTask));
-  task_map_per_id_.insert(std::make_pair(id_target_, targetTask));
+  for (size_t i = 0; i < requirement_size_; ++i) {
+    source_task.AddRequirement(0);
+    target_task.AddRequirement(0);
+  }
 
-  task_map_per_name_.insert(std::make_pair("source", sourceTask));
-  task_map_per_name_.insert(std::make_pair("target", targetTask));
+  task_map_per_id_.insert(std::make_pair(id_source_, source_task));
+  task_map_per_id_.insert(std::make_pair(id_target_, target_task));
+
+  task_map_per_name_.insert(std::make_pair("source", source_task));
+  task_map_per_name_.insert(std::make_pair("target", target_task));
 
   // for (auto pair : task_map_per_name_) {
   //   DLOG(INFO) << "task_map_[" << pair.first << ", " << pair.second << "]";
@@ -242,8 +250,8 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
 
   // }
 
-  auto f_source = succ_.insert(std::make_pair(id_source_, std::vector<size_t>()));
-  succ_.insert(std::make_pair(id_target_, std::vector<size_t>()));
+  auto f_source = successors_.insert(std::make_pair(id_source_, std::vector<size_t>()));
+  successors_.insert(std::make_pair(id_target_, std::vector<size_t>()));
 
   std::vector<int> aux(task_size_, -1);
   aux[id_source_] = 0;
@@ -263,7 +271,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
 
     std::vector<size_t> children;
     // Reading children task
-    for (int j = 0; j < number_of_successors; j++){
+    for (int j = 0; j < number_of_successors; j++) {
       getline(in_file, line);
 
       DLOG(INFO) << "Child: " << line;
@@ -284,7 +292,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
     // auto task_id = key_map.find(task_tag)->second;
     auto task = task_map_per_name_.find(task_tag)->second;
 
-    succ_.insert(make_pair(task.get_id(), children));
+    successors_.insert(make_pair(task.get_id(), children));
   }
 
   // Add synthetic source task
@@ -295,24 +303,10 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
     }
   }
 
-  // for (size_t i = 0; i < succ_.size(); ++i) {
-  //   std::vector<size_t> list = succ_.find(i)->second;
-  //   for (size_t j = 0; j < list.size(); ++j) {
-  //     LOG(INFO) << "i[" << i << "]: " << list[j];
-  //   }
-  // }
-
-  prec_ = ReverseMap(succ_);
-
-  // for (size_t i = 0; i < succ_.size(); ++i) {
-  //   std::vector<size_t> list = succ_.find(i)->second;
-  //   for (size_t j = 0; j < list.size(); ++j) {
-  //     LOG(INFO) << "i[" << i << "]: " << list[j];
-  //   }
-  // }
+  predecessors_ = ReverseMap(successors_);
 
   in_file.close();
-}
+}  // void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
 
 void Algorithm::ReadCluster(std::string cluster) {
   double total_storage = 0.0;
@@ -330,8 +324,8 @@ void Algorithm::ReadCluster(std::string cluster) {
 
   boost::split(tokens, line, boost::is_any_of(" "));
 
-  number_of_providers_ = stoul(tokens[0]);
-  number_of_requirements_ = stoul(tokens[1]);
+  // size_t number_of_providers = stoul(tokens[0]);
+  size_t number_of_requirements = stoul(tokens[1]);
 
   getline(in_cluster, line);  // ignore line
 
@@ -350,14 +344,6 @@ void Algorithm::ReadCluster(std::string cluster) {
     period_hr_ = stod(strs1[2]);
     vm_size_ = stoul(strs1[4]);
     bucket_size_ = stoul(strs1[5]);
-    // storage_vet_.resize(vm_size_ + bucket_size_, 0.0);
-
-    // Provider my_provider(provider_id++);
-
-    // size_t vm_id = 0;
-    // size_t bucket_id = 0;
-
-    // vm_map_.reserve(vm_size_);
 
     // Reading VMs information
     for (auto j = 0ul; j < vm_size_; j++) {
@@ -371,16 +357,20 @@ void Algorithm::ReadCluster(std::string cluster) {
       int type_id = stoi(strs[0]);
       std::string vm_name = strs[1];
       double slowdown = stod(strs[2]);
-      double storage = stod(strs[3]) * 1024; // GB to MB
+      double storage = stod(strs[3]) * 1024;  // GB to MB
       double bandwidth = stod(strs[4]);
       double cost = stod(strs[5]);
 
       VirtualMachine my_vm(storage_id, vm_name, slowdown, storage, cost, bandwidth, type_id);
+
+      // Adding requirement to the task
+      for (size_t l = 6ul; l < 6ul + number_of_requirements; ++l) {
+        auto requirement_value = stod(strs[l]);
+        my_vm.AddRequirement(requirement_value);
+      }
+
       vm_map_.insert(std::make_pair(storage_id, my_vm));
       storage_map_.insert(std::make_pair(storage_id, my_vm));
-      // my_provider.AddVirtualMachine(my_vm);
-
-      // storage_vet_[storage_id] = storage;
       storage_id += 1;
       total_storage += storage;
       DLOG(INFO) << my_vm;
@@ -397,21 +387,20 @@ void Algorithm::ReadCluster(std::string cluster) {
 
       int type_id = stoi(strs[0]);
       std::string name = strs[1];
-      double storage = stod(strs[3]) * 1024; // GB to MB
-      double bandwidth = stod(strs[4]);
-      size_t number_of_intervals = stoul(strs[4]);
-      double cost = stod(strs[6]);
+      double storage = stod(strs[2]) * 1024;  // GB to MB
+      double bandwidth = stod(strs[3]);
+      size_t number_of_intervals = 1ul;
+      double cost = stod(strs[4]);
 
-      // Bucket my_bucket(bucketId, bucketCapacity, bucketNumberOfIntervals);
-      // Bucket my_bucket(bucket_id, bucketCapacity, bucketNumberOfIntervals);
       Bucket my_bucket(storage_id, name, storage, cost, bandwidth, type_id, number_of_intervals);
-      storage_map_.insert(std::make_pair(storage_id, my_bucket));
 
-      // my_provider.AddBucket(my_bucket);
-      // _vm_map.insert(std::make_pair(vm_id, my_vm));
-      // _storage_vet[vm_id] = storage;
-      // bucket_id += 1;
-      // storage_vet_[storage_id] = storage;
+      // Adding requirement to the task
+      for (size_t l = 5ul; l < 5ul + number_of_requirements; ++l) {
+        auto requirement_value = stod(strs[l]);
+        my_bucket.AddRequirement(requirement_value);
+      }
+
+      storage_map_.insert(std::make_pair(storage_id, my_bucket));
       storage_id += 1;
       total_storage += storage;
       DLOG(INFO) << my_bucket;
@@ -542,7 +531,7 @@ void Algorithm::ComputeHeight(size_t node, int n) {
   // google::FlushLogFiles(google::INFO);
   if (height_[node] < n) {
     height_[node] = n;
-    auto vet = succ_.find(node)->second;
+    auto vet = successors_.find(node)->second;
     for (auto j : vet) {
       // DLOG(INFO) << "vet[" << j << "]";
       // google::FlushLogFiles(google::INFO);
@@ -575,20 +564,21 @@ Algorithm::~Algorithm() {
 }
 
 void Algorithm::CalculateMaximumSecurityAndPrivacyExposure() {
-  double task_exposure = 0.0;
+  double maximum_task_exposure = 0.0;
 
   DLOG(INFO) << "Calculate the Maximum Security and Privace Exposure";
 
   for (Requirement requirement : requirements_) {
-    task_exposure += task_size_ * requirement.get_max_value();
+    maximum_task_exposure += static_cast<double>(task_size_)
+                   * static_cast<double>(requirement.get_max_value());
   }
 
-  DLOG(INFO) << "task_exposure: " << task_exposure;
+  DLOG(INFO) << "task_exposure: " << maximum_task_exposure;
 
-  double privacy_exposure =
-      static_cast<double>(conflict_graph_.get_number_of_soft_constraints()) * penalt_;
+  double maximum_privacy_exposure =
+      static_cast<double>(conflict_graph_.get_maximum_of_soft_constraints());
 
-  maximum_security_and_privacy_exposure_ = task_exposure + privacy_exposure;
+  maximum_security_and_privacy_exposure_ = maximum_task_exposure + maximum_privacy_exposure;
 
   DLOG(INFO) << "maximum_security_and_privacy_exposure_: "
       << maximum_security_and_privacy_exposure_;

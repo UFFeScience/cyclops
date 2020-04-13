@@ -1,19 +1,24 @@
 /**
- * \file src/model/StaticFile.h
+ * \file src/model/static_file.h
  * \brief Contains the \c StaticFile class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This header file contains the \c StaticFile class.
  */
 
-#ifndef SRC_MODEL_STATIC_FILE_H_
-#define SRC_MODEL_STATIC_FILE_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STATIC_FILE_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STATIC_FILE_H_
 
-#include <iterator>
-#include <vector>
 #include <glog/logging.h>
+
+#include <algorithm>
+#include <iterator>
+#include <string>
+#include <vector>
 
 #include "src/model/file.h"
 
@@ -30,9 +35,6 @@ class StaticFile : public File {
 
   /// Getter the first virtual machine from the list vms_
   size_t GetFirstVm() const { return vms_[0]; }
-
-  /// Getter for _static
-  bool IsStatic() { return true; };
 
   friend std::ostream& operator<<(std::ostream& os, const StaticFile& a) {
     return a.write(os);
@@ -62,4 +64,4 @@ class StaticFile : public File {
   std::vector<size_t> vms_;
 };  // end of class StaticFile
 
-#endif  // SRC_MODEL_STATIC_FILE_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STATIC_FILE_H_

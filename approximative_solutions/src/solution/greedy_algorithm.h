@@ -3,18 +3,20 @@
  * \brief Contains the \c GreedyAlgorithm class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This header file contains the \c GreedyAlgorithm class that handles different execution modes.
  */
 
-#ifndef SRC_SOLUTION_GREEDY_ALGORITHM_H_
-#define SRC_SOLUTION_GREEDY_ALGORITHM_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GREEDY_ALGORITHM_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GREEDY_ALGORITHM_H_
 
 #include "src/solution/algorithm.h"
 
 class GreedyAlgorithm : public Algorithm {
-public:
+ public:
   GreedyAlgorithm() = default;
   // /**
   //  * \brief Parametrised constructor.
@@ -27,7 +29,7 @@ public:
   /// Builds the required geometric representation depending on the simulation
   void Run(void);
 
-private:
+ private:
 };  // end of class GreedyAlgorithm
 
-#endif  // SRC_SOLUTION_GREEDY_ALGORITHM_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GREEDY_ALGORITHM_H_
