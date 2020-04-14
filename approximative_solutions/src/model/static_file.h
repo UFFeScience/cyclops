@@ -28,7 +28,7 @@ class StaticFile : public File {
   explicit StaticFile(const size_t id, const std::string name, const double size) :
     File(id, name, size) { }
 
-  ~StaticFile() { DLOG(INFO) << "deleting static file " << id_; }
+  ~StaticFile() = default;
 
   /// Adds a vm
   void AddVm(size_t vmId) { vms_.push_back(vmId); }
