@@ -1,5 +1,5 @@
 /**
- * \file src/exec_manager/execution.cc
+ * \file src/solution/algorithm.cc
  * \brief Contains the \c Algorithm class methods.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
@@ -450,10 +450,11 @@ void Algorithm::ReadConflictGraph(std::string conflict_graph) {
 }
 
 /**
- * The \c RunSetup() method calls \c DigitalRock methods involved in loading the greyscale cube and
- * calculating the greyscale histogram for later segmentation.
+ * The the three input files.
  *
- * \param[in] json_file_name  Name of JSON file containing setup-related parameters.
+ * \param[in] tasks_and_files  Name of the Task and Files input file
+ * \param[in] cluster          Name of the Cluster input file
+ * \param[in] conflict_graph   Name of the Conflict Graph input file
  */
 void Algorithm::ReadInputFiles(const std::string tasks_and_files,
                                const std::string cluster,
@@ -494,11 +495,11 @@ void Algorithm::ReadInputFiles(const std::string tasks_and_files,
 }  // end of Algorithm::ReadInputFiles method
 
 /**
- * The \c getAlgorithm() returns an object derived from \c Algorithm depending on the
- * \c name parameter.
+ * The \c ReturnAlgorithm() returns an object derived from \c Algorithm depending on the
+ * \c algorithm parameter.
  *
- * \param[in] name      Name of the \c Algorithm object to be instantiated.
- * \retval    algorithm Instance of an \c Algorithm object.
+ * \param[in] algorithm  Name of the \c Algorithm object to be instantiated
+ * \retval    object     Instance of an \c Algorithm object
  */
 std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string algorithm) {
   if (algorithm == "greedy") {

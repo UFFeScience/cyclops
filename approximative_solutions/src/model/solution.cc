@@ -144,8 +144,9 @@ Solution::Solution(Algorithm* algorithm)
  *      \sum_{(d_1,d_2) \in E_s} \frac{p_{d_1d_2} w_{d_1d_2}}{s_{max}}) \label{fo3} &
  *   \f]
  *
- * \param[in]  file        buga buga buga
- * \retval     write_time  buga buga buga
+ * \param[in]  check_storage    Wheter to check the storage or not
+ * \param[in]  check_sequence   Wheter to check the sequence or not
+ * \retval     objective_value  The sum of the normalized values of makespan, cost and security exposure
  */
 double Solution::ObjectiveFunction(bool check_storage, bool check_sequence) {
   DLOG(INFO) << "Compute Makespan: check_storage[" << check_storage << "], check_sequence["
@@ -194,12 +195,13 @@ double Solution::ObjectiveFunction(bool check_storage, bool check_sequence) {
 }  // void Solution::ComputeFitness(bool check_storage, bool check_sequence) {
 
 /**
+ * Time necessary to write all output files of the \c task executed in the \c virtual_machine
  *
- *
- * \param[in]  file        buga buga buga
- * \retval     write_time  buga buga buga
+ * \param[in]  task             Task that will be executed at \c virtual_machine
+ * \param[in]  virtual_machine  Virtual machine where the \c task will be executed
+ * \retval     write_time       The accumulated time to write all output files of the \c task
  */
-inline double Solution::ComputeTaskWriteTime(Task task, VirtualMachine vm) {
+inline double Solution::ComputeTaskWriteTime(Task task, VirtualMachine virtual_machine) {
   // Compute the write time
   double write_time = 0;
 
@@ -212,7 +214,7 @@ inline double Solution::ComputeTaskWriteTime(Task task, VirtualMachine vm) {
                                                         std::vector<size_t>()));
     f_queue.first->second.push_back(file->get_id());
 
-    write_time += std::ceil(ComputeFileTransferTime(file, vm, storage_of_the_file)
+    write_time += std::ceil(ComputeFileTransferTime(file, virtual_machine, storage_of_the_file)
                             + (file->get_size() * (algorithm_->get_lambda() * 2)));
   }
 
@@ -233,9 +235,10 @@ inline double Solution::ComputeTaskWriteTime(Task task, VirtualMachine vm) {
  * \f$ storage2.bandwidth() \f$ is the transfer rate of the \c storage2
  * \f$ bandwidth \f$ is the minimal transfer rate between the storage1.bandwidth() and storage2.bandwidth()
  *
- * \param[in]  file            File to be transfered
- * \param[in]  storage1        Storage origin/destination
- * \param[in]  storage2        Storage origin/destination
+ * \param[in]  file               File to be transfered
+ * \param[in]  storage1           Storage origin/destination
+ * \param[in]  storage2           Storage origin/destination
+ * \param[in]  check_constraints  Check for hard constraint before computation
  * \retval     time + penalts  The time to transfer \c file from \c file_vm to \c vm with possible
  *                             applied penalts
  */
@@ -569,12 +572,10 @@ double Solution::AllocateOneOutputFileGreedily(File* file, VirtualMachine virtua
  *
  * Where:
  * \f$ time \f$ is the maximum finish time of all previous task of the task identified by \c task_id
- * \f$ fitness_{previous_task_id}} is the finish time of the previous task
+ * \f$ fitness_{previous_task_id}} \f$ is the finish time of the previous task
  *
  * \param[in]  task_id          Task id for which we want to find the start time
- * \param[in]  vm               VM where the task will be executed
- * \param[in]  fittness_vector  A vector containing fitness of all tasks
- * \param[in]  queue            A vector containing fitness time on the VMs
+ * \param[in]  vm_id            VM where the task will be executed
  * \retval     start_time       The time at the task identified by \c task_id will start executing
  */
 inline double Solution::ComputeTaskStartTime(size_t task_id,
@@ -641,9 +642,9 @@ inline double Solution::ComputeTaskReadTime(Task& task, VirtualMachine& vm) {
  * This method is important for calculate de makespan and to allocate the output files into
  * Storages(VMs and Buckets)
  *
- * \param[in]  task      Task with which the output files will be allocated
- * \param[in]  vm        VM where the task will be executed
- * \retval     makespan  The objective value of the solution when inserting the \c task
+ * \param[in]  task             Task with which the output files will be allocated
+ * \param[in]  virtual_machine  VM where the task will be executed
+ * \retval     makespan         The objective value of the solution when inserting the \c task
  */
 double Solution::CalculateMakespanAndAllocateOutputFiles(Task task,
                                                          VirtualMachine virtual_machine) {

@@ -1,5 +1,5 @@
 /**
- * \file src/model/Provider.h
+ * \file src/model/provider.h
  * \brief Contains the \c Provider class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>

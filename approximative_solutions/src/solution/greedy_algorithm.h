@@ -1,5 +1,5 @@
 /**
- * \file src/exec_manager/exec_manager.h
+ * \file src/solution/greedy_algorithm.h
  * \brief Contains the \c GreedyAlgorithm class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>

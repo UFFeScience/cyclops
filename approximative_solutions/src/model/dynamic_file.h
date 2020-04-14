@@ -1,5 +1,5 @@
 /**
- * \file src/model/DynamicFile.h
+ * \file src/model/dynamic_file.h
  * \brief Contains the \c DynamicFile class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>

@@ -1,5 +1,5 @@
 /**
- * \file src/model/File.h
+ * \file src/model/file.h
  * \brief Contains the \c File class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>

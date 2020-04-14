@@ -1,5 +1,5 @@
 /**
- * \file src/exec_manager/execution.cc
+ * \file src/solution/greedy_algorithm.cc
  * \brief Contains the \c Algorithm class methods.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>

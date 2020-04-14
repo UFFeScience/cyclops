@@ -1,5 +1,5 @@
 /**
- * \file src/solution/MinMin.h
+ * \file src/solution/min_min_algorithm.h
  * \brief Contains the \c MinMin class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>

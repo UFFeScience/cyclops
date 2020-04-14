@@ -32,7 +32,7 @@
 class Solution;
 
 /**
- * \class Execution execution.h "src/solution/algorithm.h"
+ * \class Algorithm algorithm.h "src/solution/algorithm.h"
  * \brief Executes the appropriate routines.
  *
  * This class is responsible for calling the appropriate methods for read the input files and
@@ -41,23 +41,10 @@ class Solution;
 
 class Algorithm {
  public:
-  /**
-   * \brief Parametrised constructor.
-   */
-  // Algorithm(const std::string workflow_file_name,
-  //           const std::string cluster_file_name,
-  //           const std::string conflict_graph_file_name)
-  //   : _tasks_and_files(workflow_file_name),
-  //     _cluster_file_name(cluster_file_name),
-  //     _conflict_graph_file_name(conflict_graph_file_name) { }
-
-  // Algorithm() = default;
   Algorithm() = default;
 
   virtual ~Algorithm();
-  /**
-   * \brief Read input files.
-   */
+  /// Read input files.
   void ReadInputFiles(const std::string tasks_and_files,
                       const std::string cluster,
                       const std::string conflict_graph);
