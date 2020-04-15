@@ -22,8 +22,8 @@
 #include "src/model/dynamic_file.h"
 #include "src/model/static_file.h"
 
-std::random_device rd_chr;
-std::mt19937 engine_chr(rd_chr());
+std::random_device random_device;
+std::mt19937 random_generator(random_device());
 
 /// Parameterised constructor
 Solution::Solution(Algorithm* algorithm)
@@ -33,6 +33,8 @@ Solution::Solution(Algorithm* algorithm)
       queue_(algorithm->get_virtual_machine_size(), 0.0),
       start_time_vector_(algorithm->get_task_size(), -1),
       makespan_(std::numeric_limits<double>::max()),
+      cost_(std::numeric_limits<double>::max()),
+      security_exposure_(std::numeric_limits<double>::max()),
       lambda_(algorithm->get_lambda()) {
 }  // Solution::Solution(Algorithm* algorithm)
 
@@ -457,7 +459,8 @@ inline bool Solution::checkFiles() {
 
 std::ostream& Solution::write(std::ostream& os) const {
   os << std::endl;
-  os << "makespan_: " << makespan_ << std::endl;
+  os << "makespan_: " << makespan_ << " seconds" << std::endl;
+  os << "makespan_: " << makespan_ / 60.0 << " minutes" << std::endl;
   os << "cost_: " << cost_ << std::endl;
   os << "security_exposure_: " << security_exposure_ << std::endl;
   os << "objective_value_: " << objective_value_ << std::endl;
@@ -596,8 +599,15 @@ inline double Solution::ComputeTaskStartTime(size_t task_id,
 inline double Solution::AllocateOutputFiles(Task& task, VirtualMachine& vm) {
   double write_time = 0.0;
 
+  std::vector<File*> my_files = task.get_output_files();
+
+  // Shuffle the output files for better ramdomness between the solutions
+  if (my_files.size() > 1) {
+    std::shuffle(my_files.begin(), my_files.end(), random_generator);
+  }
+
   // For each output file allocate the storage that impose the minor write time
-  for (auto& file : task.get_output_files()) {
+  for (auto& file : my_files) {
     write_time += AllocateOneOutputFileGreedily(file, vm);
   }
 
@@ -656,7 +666,7 @@ double Solution::CalculateMakespanAndAllocateOutputFiles(Task task,
 
   DLOG(INFO) << "Makespan of the allocated Task[" << task.get_id() << "] at VM["
       << virtual_machine.get_id() << "]";
-  google::FlushLogFiles(google::INFO);
+  // google::FlushLogFiles(google::INFO);
 
   if (task.get_id() != algorithm_->get_id_source()
       && task.get_id() != algorithm_->get_id_target()) {
@@ -924,6 +934,11 @@ double Solution::ScheduleTask(Task task, VirtualMachine vm) {
                   + algorithm_->get_alpha_budget() * (cost / algorithm_->get_budget_max())
                   + algorithm_->get_alpha_security() * (security_exposure
                       / algorithm_->get_maximum_security_and_privacy_exposure());
+
+  makespan_ = makespan;
+  cost_ = cost;
+  security_exposure_ = security_exposure;
+  objective_value_ = objective_value;
 
   return objective_value;
 }  // inline double Solution::AllocateTask(...)

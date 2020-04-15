@@ -11,6 +11,8 @@
  * approximate solution.
  */
 
+#include "src/solution/min_min_algorithm.h"
+
 #include <glog/logging.h>
 
 #include <list>
@@ -20,7 +22,6 @@
 #include <memory>
 #include <utility>
 
-#include "src/solution/min_min_algorithm.h"
 #include "src/model/static_file.h"
 #include "src/model/storage.h"
 
@@ -35,7 +36,7 @@
  */
 void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task> avail_tasks, Solution& solution) {
   while (!avail_tasks.empty()) {
-    double iteration_minimal_time = std::numeric_limits<double>::max();
+    double iteration_minimal_objective_value = std::numeric_limits<double>::max();
     size_t iteration_minimal_vm_id;
     size_t iteration_minimal_task_id;
     Solution best_solution = solution;
@@ -70,9 +71,9 @@ void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task> avail_tasks, Solution& 
           min_vm_id = vm.get_id();
         }
 
-        if (iteration_minimal_time > min_objective_function) {
+        if (iteration_minimal_objective_value > min_objective_function) {
           iteration_minimal_task_id = task.get_id();
-          iteration_minimal_time = min_objective_function;
+          iteration_minimal_objective_value = min_objective_function;
           iteration_minimal_vm_id = min_vm_id;
           best_solution = new_solution;
         }
@@ -146,8 +147,6 @@ void MinMinAlgorithm::Run() {
 
   solution.ObjectiveFunction(false, false);
 
-  LOG(INFO) << "MinMIn fitness: " << solution.get_makespan() << " seconds";
-  LOG(INFO) << "MinMin fitness: " << solution.get_makespan() / 60.0 << " minutes";
   LOG(INFO) << solution;
   std::cout << solution;
   DLOG(INFO) << "... ending MinMin algorithm";

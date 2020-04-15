@@ -34,7 +34,7 @@
 #include "src/model/task.h"
 #include "src/model/bucket.h"
 #include "src/model/virtual_machine.h"
-#include "src/solution/greedy_algorithm.h"
+#include "src/solution/greedy_randomized_constructive_heuristic.h"
 #include "src/solution/min_min_algorithm.h"
 
 void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
@@ -502,8 +502,8 @@ void Algorithm::ReadInputFiles(const std::string tasks_and_files,
  * \retval    object     Instance of an \c Algorithm object
  */
 std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string algorithm) {
-  if (algorithm == "greedy") {
-    return std::make_shared<GreedyAlgorithm>();
+  if (algorithm == "greedy_randomized_constructive_heuristic") {
+    return std::make_shared<GreedyRandomizedConstructiveHeuristic>();
   } else if (algorithm == "min_min") {
     return std::make_shared<MinMinAlgorithm>();
   } else {

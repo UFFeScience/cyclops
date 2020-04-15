@@ -45,6 +45,14 @@ DEFINE_double(alpha_security,
               0.2,
               "The weight of the security objective");
 
+DEFINE_double(alpha_restrict_candidate_list,
+              0.5,
+              "The threshold parameter to truncate the candidate list");
+
+DEFINE_uint64(number_of_iteration,
+              100ul,
+              "Number of attempts to build the solution");
+
 /**
  * The \c main() function reads the configuration parameters from JSON files,
  * loads the desired input file, applies the required algorithms and writes
@@ -67,6 +75,8 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "Alpha Time weight: " << FLAGS_alpha_time;
   DLOG(INFO) << "Alpha Budget weight: " << FLAGS_alpha_budget;
   DLOG(INFO) << "Alpha Security weight: " << FLAGS_alpha_security;
+  DLOG(INFO) << "Alpha Restrict Candidate List threshold: " << FLAGS_alpha_restrict_candidate_list;
+  DLOG(INFO) << "Number_of_iteration: " << FLAGS_number_of_iteration;
   // google::FlushLogFiles(google::INFO);
 
   std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
@@ -74,7 +84,10 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "... algorithm picked-up ...";
 
   algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
-  algorithm->SetAlphas(FLAGS_alpha_time, FLAGS_alpha_budget, FLAGS_alpha_security);
+  algorithm->SetAlphas(FLAGS_alpha_time,
+                       FLAGS_alpha_budget,
+                       FLAGS_alpha_security,
+                       FLAGS_alpha_restrict_candidate_list);
   algorithm->CalculateMaximumSecurityAndPrivacyExposure();
   algorithm->Run();
 

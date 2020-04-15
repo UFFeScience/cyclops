@@ -133,10 +133,14 @@ class Algorithm {
   }
 
   /// Setter for algorithm input parameter initial_time.
-  void SetAlphas(double alpha_time, double alpha_budget, double alpha_security) {
+  void SetAlphas(double alpha_time,
+                 double alpha_budget,
+                 double alpha_security,
+                 double alpha_restrict_candidate_list) {
     alpha_time_ = alpha_time;
     alpha_budget_ = alpha_budget;
     alpha_security_ = alpha_security;
+    alpha_restrict_candidate_list_ = alpha_restrict_candidate_list;
   }
 
   ///
@@ -230,13 +234,16 @@ class Algorithm {
   ConflictGraph conflict_graph_;
 
   /// The weight of the time
-  double alpha_time_ = 0.4;
+  double alpha_time_;
 
   /// The weight of the budget
-  double alpha_budget_ = 0.4;
+  double alpha_budget_;
 
   /// The weight of the security
-  double alpha_security_ = 0.2;
+  double alpha_security_;
+
+  ///
+  double alpha_restrict_candidate_list_;
 
   double maximum_security_and_privacy_exposure_;
 };  // end of class Algorithm

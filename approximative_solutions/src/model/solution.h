@@ -36,29 +36,36 @@ class Solution {
   explicit Solution(Algorithm* algorithm);
 
   /// Copy constructor
-  Solution(const Solution &other)
-      : algorithm_(other.algorithm_),
-        allocation_(other.allocation_),
-        ordering_(other.ordering_),
-        time_vector_(other.time_vector_),
-        queue_(other.queue_),
-        start_time_vector_(other.start_time_vector_),
-        makespan_(other.makespan_),
-        lambda_(other.lambda_),
-        scheduler_(other.scheduler_),
-        storage_queue_(other.storage_queue_) { }
+  Solution(const Solution &other) = default;
+  // Solution(const Solution &other)
+  //     : algorithm_(other.algorithm_),
+  //       allocation_(other.allocation_),
+  //       ordering_(other.ordering_),
+  //       time_vector_(other.time_vector_),
+  //       queue_(other.queue_),
+  //       start_time_vector_(other.start_time_vector_),
+  //       makespan_(other.makespan_),
+  //       lambda_(other.lambda_),
+  //       scheduler_(other.scheduler_),
+  //       storage_queue_(other.storage_queue_) { }
 
   /// Destructor
   ~Solution() { algorithm_ = nullptr; }
-
-  /// Getter for makespan of the solution
-  double get_makespan() const { return makespan_; }
 
   /// Getter for \c allocation_
   std::vector<size_t> get_allocation() const { return allocation_; }
 
   /// Getter for \c ordering_
   std::vector<size_t> get_ordering() const { return ordering_; }
+
+  /// Getter for makespan of the solution
+  double get_makespan() const { return makespan_; }
+
+  /// Getter for cost of the solution
+  double get_cost() const { return cost_; }
+
+  /// Getter for \c objective_value_
+  double get_objective_value() const { return objective_value_; }
 
   /// Adds a Virtual Machine/Storage to a Task/File
   void SetAllocation(size_t position, size_t storage_id) {
@@ -164,7 +171,7 @@ class Solution {
   double security_exposure_;
 
   /// Objective value based on \c makespan_, \c cost_ and \c security_exposure_
-  double objective_value_;
+  double objective_value_ = std::numeric_limits<double>::max();
 
   ///
   double lambda_;
