@@ -11,4 +11,3 @@ export GLOG_log_dir=`pwd`/log
   --alpha_budget 0.3 \
   --alpha_security 0.4
 cd shell
-
