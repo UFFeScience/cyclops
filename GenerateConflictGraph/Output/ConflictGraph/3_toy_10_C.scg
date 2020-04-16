@@ -1,8 +1,8 @@
-file1 file2 1
-file1 file3 0
-file2 file3 0
-file1 file4 0
-file2 file4 0
-file3 file5 0
-file4 file5 0
-file3 file4 1
+file1 file2 -1
+file1 file3 1
+file2 file3 1
+file1 file4 1
+file2 file4 1
+file3 file5 1
+file4 file5 1
+file3 file4 -1

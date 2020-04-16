@@ -1,48 +1,53 @@
 /**
- * \file src/model/Requirement.h
+ * \file src/model/requirement.h
  * \brief Contains the \c Requirement class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
- * This header file contains the \c Requirement class. There are two types of requirements:
- *
- *  1.
- *  2.
- *
- *
+ * This header file contains the \c Requirement class.
  */
 
-#ifndef SRC_MODEL_REQUIREMENT_H_
-#define SRC_MODEL_REQUIREMENT_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_REQUIREMENT_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_REQUIREMENT_H_
 
 #include <string>
 #include <iostream>
 #include <fstream>
 
+/**
+ * \class Requirement requirement.h "src/model/requirement.h"
+ * \brief Represents the requirement needed for the execution of the \c Task in a Virtual Machine
+ */
 class Requirement {
-
-public:
+ public:
   /// Parametrised constructor
   explicit Requirement(const size_t id, const double max_value) : id_(id), max_value_(max_value) { }
 
-  /// Getter for _id
+  /// Getter for ID of the \c Requirement
   size_t get_id() const { return id_; }
 
-  /// Getter for _max_value
-  double get_max_value() const { return max_value_; }
+  /// Getter for maximum integer value that a specific Requirement can have
+  int get_max_value() const { return max_value_; }
 
+  // Concatenate operator
   friend std::ostream& operator<<(std::ostream& os, const Requirement& a) {
     return a.write(os);
   }
-private:
+
+ private:
+  /// Print the \c Requirement object to the output stream
   std::ostream& write(std::ostream& os) const {
     return os << "Requirement[_id: " << id_ << ", " << "_max_value: " << max_value_ << "]";
   }
 
+  /// The ID of the \c Requirement
   size_t id_;
 
-  double max_value_;
+  /// The maximum value that a \c Requirement can have
+  int max_value_;
 };  // end of class Requirement
 
-#endif  // SRC_MODEL_REQUIREMENT_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_REQUIREMENT_H_

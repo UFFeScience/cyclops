@@ -176,7 +176,7 @@ public class MainConflictGraph {
 				for (int i = 0; i < dataFiles.size() - 1; ++i) {
 					for(int j = i + 1; j < dataFiles.size(); ++j) {
 						outputFile.write(dataFiles.get(i).getName() + " " 
-							+ dataFiles.get(j).getName() + " " + "1\n");
+							+ dataFiles.get(j).getName() + " " + "-1\n");
 					}
 				}
 			}
@@ -192,7 +192,7 @@ public class MainConflictGraph {
 				
 				for (DataFile dfOfU : u.getOutputFiles()) {
 					for (DataFile dfOfV : v.getOutputFiles()) {
-						outputFile.write(dfOfU.getName() + " " + dfOfV.getName() + " " + "0\n");
+						outputFile.write(dfOfU.getName() + " " + dfOfV.getName() + " " + "1\n");
 					}
 				}
 			}
@@ -219,7 +219,7 @@ public class MainConflictGraph {
 							for (DataFile dfOfU : u.getOutputFiles()) {
 								for (DataFile dfOfV : v.getOutputFiles()) {
 									outputFile.write(dfOfU.getName() + " " + dfOfV.getName() + " " 
-											+ "1\n");
+											+ "-1\n");
 								}
 							}
 						}
