@@ -41,14 +41,14 @@ std::mt19937 engine_chr(rd_chr());
  * \param[in]  avail_tasks     Avail tasks to be processed
  * \param[in]  solution        The solution to be built
  */
-void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task> avail_tasks,
+void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task*> avail_tasks,
                                                                Solution& solution) {
 
   while (!avail_tasks.empty()) {
     double total_minimal_objective_value = std::numeric_limits<double>::max();
     double total_maximum_objective_value = 0.0;
 
-    std::list<std::pair<Task, Solution>> avail_solutions;
+    std::list<std::pair<Task*, Solution>> avail_solutions;
 
     // 1. Compute time phase
     for (auto task : avail_tasks) {
@@ -58,28 +58,28 @@ void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task> a
       double task_minimal_objective_value = std::numeric_limits<double>::max();
       size_t min_vm_id = 0;
 
-      for (std::pair<size_t, VirtualMachine> pair : vm_map_) {
-        VirtualMachine& vm = pair.second;
+      for (std::pair<size_t, VirtualMachine*> pair : vm_map_) {
+        VirtualMachine* vm = pair.second;
         Solution new_solution = solution;
 
         double objective_value = new_solution.ScheduleTask(task, vm);
 
-        VirtualMachine& min_vm = vm_map_.find(min_vm_id)->second;
+        VirtualMachine* min_vm = vm_map_.find(min_vm_id)->second;
 
         if (objective_value < task_minimal_objective_value) {
           task_minimal_objective_value = objective_value;
-          min_vm_id = vm.get_id();
+          min_vm_id = vm->get_id();
           best_solution = new_solution;
         } else if (objective_value == task_minimal_objective_value
-            && vm.get_cost() < min_vm.get_cost()) {
+            && vm->get_cost() < min_vm->get_cost()) {
           task_minimal_objective_value = objective_value;
-          min_vm_id = vm.get_id();
+          min_vm_id = vm->get_id();
           best_solution = new_solution;
         } else if (objective_value == task_minimal_objective_value
-            && vm.get_cost() == min_vm.get_cost()
-            && vm.get_slowdown() < min_vm.get_slowdown()) {
+            && vm->get_cost() == min_vm->get_cost()
+            && vm->get_slowdown() < min_vm->get_slowdown()) {
           task_minimal_objective_value = objective_value;
-          min_vm_id = vm.get_id();
+          min_vm_id = vm->get_id();
           best_solution = new_solution;
         }
       }  // for (std::pair<size_t, VirtualMachine> pair : vm_map_) {
@@ -95,9 +95,9 @@ void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task> a
       avail_solutions.push_back(std::make_pair(task, best_solution));
     }  // for (auto task : avail_tasks) {
 
-    std::list<std::pair<Task, Solution>> retricted_candidate_list;
+    std::list<std::pair<Task*, Solution>> retricted_candidate_list;
 
-    for (std::pair<Task, Solution> candidate_pair : avail_solutions) {
+    for (std::pair<Task*, Solution> candidate_pair : avail_solutions) {
       if (candidate_pair.second.get_objective_value()
           <= total_minimal_objective_value + (alpha_restrict_candidate_list_
                                               * (total_maximum_objective_value
@@ -106,14 +106,14 @@ void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task> a
       }
     }
 
-    retricted_candidate_list.sort([&](const std::pair<Task, Solution>& a,
-                                      const std::pair<Task, Solution>& b) {
+    retricted_candidate_list.sort([&](const std::pair<Task*, Solution>& a,
+                                      const std::pair<Task*, Solution>& b) {
       return a.second.get_objective_value() < b.second.get_objective_value();
     });
 
     size_t position = static_cast<size_t>(rand()) % retricted_candidate_list.size();
 
-    std::list<std::pair<Task, Solution>>::iterator selected_candidate =
+    std::list<std::pair<Task*, Solution>>::iterator selected_candidate =
         std::next(retricted_candidate_list.begin(), static_cast<unsigned int>(position));
 
     solution = selected_candidate->second;
@@ -134,8 +134,8 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
   Solution best_solution(this);
 
   for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
-    std::list<Task> task_list;
-    std::list<Task> avail_tasks;
+    std::list<Task*> task_list;
+    std::list<Task*> avail_tasks;
 
     Solution solution(this);
 
@@ -155,8 +155,8 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
 
     // Order by height
     DLOG(INFO) << "Order by height";
-    task_list.sort([&](const Task& a, const Task& b) {
-      return height_[a.get_id()] < height_[b.get_id()];
+    task_list.sort([&](const Task* a, const Task* b) {
+      return height_[a->get_id()] < height_[b->get_id()];
     });
 
     // The task_list is sorted by the height(t). While task_list is not empty do
@@ -167,9 +167,9 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
 
       avail_tasks.clear();
       while (!task_list.empty()
-          && height_[task.get_id()] == height_[task_list.front().get_id()]) {
+          && height_[task->get_id()] == height_[task_list.front()->get_id()]) {
         // build list of ready tasks, that is the tasks which the predecessor was finish
-        DLOG(INFO) << "Putting " << task_list.front().get_id() << " in avail_tasks";
+        DLOG(INFO) << "Putting " << task_list.front()->get_id() << " in avail_tasks";
         avail_tasks.push_back(task_list.front());
         task_list.pop_front();
       }

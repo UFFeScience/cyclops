@@ -72,16 +72,16 @@ class Algorithm {
   // size_t get_number_of_requirements() const { return number_of_requirements_; }
 
   /// Getter for _max_value
-  std::unordered_map<size_t, VirtualMachine>& get_virtual_machine_map() { return vm_map_; }
+  std::unordered_map<size_t, VirtualMachine*>& get_virtual_machine_map() { return vm_map_; }
 
   /// Getter for _max_value
-  std::unordered_map<size_t, Storage>& get_storage_map() { return storage_map_; }
+  std::unordered_map<size_t, Storage*>& get_storage_map() { return storage_map_; }
 
   /// Getter for _max_value
-  std::unordered_map<size_t, Task>& get_task_map_per_id() { return task_map_per_id_; }
+  std::unordered_map<size_t, Task*>& get_task_map_per_id() { return task_map_per_id_; }
 
   /// Getter for _max_value
-  std::unordered_map<std::string, Task>& get_task_map_per_name() { return task_map_per_name_; }
+  std::unordered_map<std::string, Task*>& get_task_map_per_name() { return task_map_per_name_; }
 
   /// Getter for _max_value
   std::unordered_map<size_t, std::vector<size_t>>& get_successors() { return successors_; }
@@ -203,8 +203,8 @@ class Algorithm {
   // std::unordered_map<std::string, std::shared_ptr<File>> file_map_per_name_;
 
   // unordered_map<int, Task> task_map;
-  std::unordered_map<size_t, Task> task_map_per_id_;
-  std::unordered_map<std::string, Task> task_map_per_name_;
+  std::unordered_map<size_t, Task*> task_map_per_id_;
+  std::unordered_map<std::string, Task*> task_map_per_name_;
 
   // Workflow task Graphs
   std::unordered_map<size_t, std::vector<size_t>> successors_;
@@ -214,8 +214,8 @@ class Algorithm {
 
   // size_t number_of_requirements_;
 
-  std::unordered_map<size_t, VirtualMachine> vm_map_;
-  std::unordered_map<size_t, Storage> storage_map_;
+  std::unordered_map<size_t, VirtualMachine*> vm_map_;
+  std::unordered_map<size_t, Storage*> storage_map_;
 
   size_t bucket_size_;
 

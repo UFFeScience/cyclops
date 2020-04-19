@@ -203,16 +203,16 @@ double Solution::ObjectiveFunction(bool check_storage, bool check_sequence) {
  * \param[in]  virtual_machine  Virtual machine where the \c task will be executed
  * \retval     write_time       The accumulated time to write all output files of the \c task
  */
-inline double Solution::ComputeTaskWriteTime(Task task, VirtualMachine virtual_machine) {
+inline double Solution::ComputeTaskWriteTime(Task* task, VirtualMachine* virtual_machine) {
   // Compute the write time
   double write_time = 0;
 
-  for (auto file : task.get_output_files()) {
+  for (auto file : task->get_output_files()) {
     auto storage_of_the_file = algorithm_->get_storage_map().find(
         allocation_[file->get_id()])->second;
 
     // Update vm queue
-    auto f_queue = storage_queue_.insert(std::make_pair(storage_of_the_file.get_id(),
+    auto f_queue = storage_queue_.insert(std::make_pair(storage_of_the_file->get_id(),
                                                         std::vector<size_t>()));
     f_queue.first->second.push_back(file->get_id());
 
@@ -245,14 +245,14 @@ inline double Solution::ComputeTaskWriteTime(Task task, VirtualMachine virtual_m
  *                             applied penalts
  */
 inline double Solution::ComputeFileTransferTime(File* file,
-                                         Storage storage1,
-                                         Storage storage2,
-                                         bool check_constraints) {
+                                                Storage* storage1,
+                                                Storage* storage2,
+                                                bool check_constraints) {
   double time = std::numeric_limits<double>::max();
   double penalts = 0.0;
 
   DLOG(INFO) << "Compute the transfer time of File[" << file->get_id() << "] to/from VM["
-      << storage1.get_id() << "] to Storage[" << storage2.get_id() << "], check_constraints["
+      << storage1->get_id() << "] to Storage[" << storage2->get_id() << "], check_constraints["
       << check_constraints << "]";
 
   if (check_constraints) {
@@ -260,7 +260,7 @@ inline double Solution::ComputeFileTransferTime(File* file,
       size_t storage_id = allocation_[i];
 
       // If file 'i' is to be transfered to the same place that file->get_id()
-      if (storage_id == storage2.get_id()) {
+      if (storage_id == storage2->get_id()) {
         int conflict_value = algorithm_->get_conflict_graph().ReturnConflict(i, file->get_id());
 
         if (conflict_value < 0) {
@@ -275,9 +275,9 @@ inline double Solution::ComputeFileTransferTime(File* file,
   // or if check_constraints is false
 
   // Calculate time
-  if (storage1.get_id() != storage2.get_id()) {
+  if (storage1->get_id() != storage2->get_id()) {
     // get the smallest link
-    auto link = std::min(storage1.get_bandwidth(), storage2.get_bandwidth());
+    auto link = std::min(storage1->get_bandwidth(), storage2->get_bandwidth());
     time = std::ceil(file->get_size() / link);
   } else {
     time = 0.0;
@@ -305,17 +305,17 @@ double Solution::ComputeMakespan(bool check_sequence) {
       auto task = algorithm_->get_task_map_per_id().find(id_task)->second;
 
       // update vm queue
-      auto f_queue = storage_queue_.insert(std::make_pair(vm.get_id(), std::vector<size_t>()));
-      f_queue.first->second.push_back(task.get_id());
+      auto f_queue = storage_queue_.insert(std::make_pair(vm->get_id(), std::vector<size_t>()));
+      f_queue.first->second.push_back(task->get_id());
 
       // update scheduler
-      auto f_scheduler = scheduler_.insert(std::make_pair(vm.get_id(), std::vector<std::string>()));
-      f_scheduler.first->second.push_back(task.get_tag());
+      auto f_scheduler = scheduler_.insert(std::make_pair(vm->get_id(), std::vector<std::string>()));
+      f_scheduler.first->second.push_back(task->get_tag());
 
       // Compute Task Times
-      double start_time = ComputeTaskStartTime(task.get_id(), vm.get_id());
+      double start_time = ComputeTaskStartTime(task->get_id(), vm->get_id());
       double read_time = ComputeTaskReadTime(task, vm);
-      double run_time = std::ceil(task.get_time() * vm.get_slowdown());  // Seconds
+      double run_time = std::ceil(task->get_time() * vm->get_slowdown());  // Seconds
       auto write_time = ComputeTaskWriteTime(task, vm);
 
       double finish_time = std::numeric_limits<double>::max();
@@ -346,7 +346,7 @@ double Solution::ComputeMakespan(bool check_sequence) {
       // Update structures
       time_vector_[id_task] = finish_time;
       start_time_vector_[id_task] = start_time;
-      queue_[vm.get_id()] = finish_time;
+      queue_[vm->get_id()] = finish_time;
     } else {  // Source and Target tasks
       if (id_task == algorithm_->get_id_source()) {  // Source task
         time_vector_[id_task] = 0;
@@ -468,9 +468,9 @@ std::ostream& Solution::write(std::ostream& os) const {
 
   for (auto info : algorithm_->get_virtual_machine_map()) {
     auto vm = info.second;
-    os << vm.get_id() << ": ";
+    os << vm->get_id() << ": ";
     // os << "[" << vm.get_id() << "]" << " <" << vm.get_name() << "> : ";
-    auto f = scheduler_.find(vm.get_id());
+    auto f = scheduler_.find(vm->get_id());
     if (f != scheduler_.end()) {
       for (auto task_tag : f->second)
         os << task_tag << " ";
@@ -483,7 +483,7 @@ std::ostream& Solution::write(std::ostream& os) const {
   // for (auto info: algorithm_->get_vm_map()) {
   for (auto info : algorithm_->get_storage_map()) {
     auto vm = info.second;
-    os << vm.get_id() << ": \n";
+    os << vm->get_id() << ": \n";
     for (auto info2 : algorithm_->get_file_map_per_id()) {
       auto file = info2.second;
       size_t vm_id;
@@ -496,7 +496,7 @@ std::ostream& Solution::write(std::ostream& os) const {
 
       // size_t vm_id = file->IsStatic() ? static_cast<StaticFile*>(file)->GetFirstVm()
       //                                 : allocation_[file->get_id()];
-      if (vm_id == vm.get_id())
+      if (vm_id == vm->get_id())
         os << " " << file->get_name() << "\n";
     }
     os << std::endl;
@@ -507,49 +507,59 @@ std::ostream& Solution::write(std::ostream& os) const {
   for (auto task_id : ordering_) {
     if (task_id != algorithm_->get_id_source()
         && task_id != algorithm_->get_id_target()) {
-      os << algorithm_->get_task_map_per_id().find(task_id)->second.get_name() <<  ", ";
+      os << algorithm_->get_task_map_per_id().find(task_id)->second->get_name() <<  ", ";
     }
   }
   return os << std::endl;
 }  // std::ostream& Solution::write(std::ostream& os) const {
 
-double Solution::AllocateOneOutputFileGreedily(File* file, VirtualMachine virtual_machine) {
+double Solution::AllocateOneOutputFileGreedily(File* file, VirtualMachine* virtual_machine) {
   double objective_value = std::numeric_limits<double>::max();
   double min_objective_value = std::numeric_limits<double>::max();
   size_t min_storage = std::numeric_limits<size_t>::max();
 
   DLOG(INFO) << "Computing time for write the File[" << file->get_id() << "] into VM["
-      << virtual_machine.get_id() << "]";
+      << virtual_machine->get_id() << "]";
 
   std::unordered_map<size_t, int> available_storages;
 
   // for all possible storage; compute the transfer time
-  for (std::pair<size_t, Storage> storage_pair : algorithm_->get_storage_map()) {
+  for (std::pair<size_t, Storage*> storage_pair : algorithm_->get_storage_map()) {
     // 1. Calculates the File Transfer Time
-    double time = ComputeFileTransferTime(file, virtual_machine, storage_pair.second, true);
+    double time = ComputeFileTransferTime(file, virtual_machine, storage_pair.second, false);
 
     // 2. Calculates the File Contribution to the Cost
-    double cost = ComputeFileCostContribution(file, virtual_machine, storage_pair.second, time);
+    // double cost = ComputeFileCostContribution(file, virtual_machine, storage_pair.second, time);
+    // double cost = 0.0;
 
     // 3. Calculates the File Security Exposure Contribution
-    double security_exposure = ComputeFileSecurityExposureContribution(storage_pair.second,
-                                                                         file);
+    // double security_exposure = ComputeFileSecurityExposureContribution(storage_pair.second,
+    //                                                                    file);
+    // double security_exposure = 0.0;
 
     DLOG(INFO) << "makespan: " << time;
-    DLOG(INFO) << "cost: " << cost;
-    DLOG(INFO) << "security_exposure: " << security_exposure;
+    // DLOG(INFO) << "cost: " << cost;
+    // DLOG(INFO) << "security_exposure: " << security_exposure;
 
     // Normalize
-    objective_value = algorithm_->get_alpha_time() * (time / algorithm_->get_makespan_max())
-                    + algorithm_->get_alpha_budget() * (cost / algorithm_->get_budget_max())
-                    + algorithm_->get_alpha_security() * (security_exposure
-                        / algorithm_->get_maximum_security_and_privacy_exposure());
+    objective_value = time;
 
-    if (min_objective_value > objective_value) {
+    if (objective_value < std::numeric_limits<double>::max()) {
       min_objective_value = objective_value;
       min_storage = storage_pair.first;
+      break;
     }
-  }
+
+    // objective_value = algorithm_->get_alpha_time() * (time / algorithm_->get_makespan_max())
+    //                 + algorithm_->get_alpha_budget() * (cost / algorithm_->get_budget_max())
+    //                 + algorithm_->get_alpha_security() * (security_exposure
+    //                     / algorithm_->get_maximum_security_and_privacy_exposure());
+
+    // if (min_objective_value > objective_value) {
+    //   min_objective_value = objective_value;
+    //   min_storage = storage_pair.first;
+    // }
+  }  // for (std::pair<size_t, Storage> storage_pair : algorithm_->get_storage_map()) {
 
   if (min_objective_value == std::numeric_limits<double>::max()) {
     LOG(FATAL) << "There is no storage available";
@@ -596,10 +606,10 @@ inline double Solution::ComputeTaskStartTime(size_t task_id,
   return std::max(start_time, queue_[vm_id]);
 }  // inline double MinMinAlgorithm::ComputeStartTime(...)
 
-inline double Solution::AllocateOutputFiles(Task& task, VirtualMachine& vm) {
+inline double Solution::AllocateOutputFiles(Task* task, VirtualMachine* vm) {
   double write_time = 0.0;
 
-  std::vector<File*> my_files = task.get_output_files();
+  std::vector<File*> my_files = task->get_output_files();
 
   // Shuffle the output files for better ramdomness between the solutions
   if (my_files.size() > 1) {
@@ -614,13 +624,13 @@ inline double Solution::AllocateOutputFiles(Task& task, VirtualMachine& vm) {
   return write_time;
 }
 
-inline double Solution::ComputeTaskReadTime(Task& task, VirtualMachine& vm) {
+inline double Solution::ComputeTaskReadTime(Task* task, VirtualMachine* vm) {
   double read_time = 0.0;
 
-  DLOG(INFO) << "Compute Read Time of the Task[" << task.get_id() << "] at VM[" << vm.get_id()
+  DLOG(INFO) << "Compute Read Time of the Task[" << task->get_id() << "] at VM[" << vm->get_id()
       << "]";
 
-  for (File* file : task.get_input_files()) {
+  for (File* file : task->get_input_files()) {
     size_t vm_id;
 
     if (StaticFile* static_file = dynamic_cast<StaticFile*>(file)) {
@@ -629,7 +639,7 @@ inline double Solution::ComputeTaskReadTime(Task& task, VirtualMachine& vm) {
       vm_id = allocation_[file->get_id()];
     }
 
-    Storage file_vm = algorithm_->get_storage_map().find(vm_id)->second;
+    Storage* file_vm = algorithm_->get_storage_map().find(vm_id)->second;
 
     // Ceil of File Transfer Time + File Size * lambda
     double one_file_read_time = ComputeFileTransferTime(file, file_vm, vm)
@@ -656,30 +666,30 @@ inline double Solution::ComputeTaskReadTime(Task& task, VirtualMachine& vm) {
  * \param[in]  virtual_machine  VM where the task will be executed
  * \retval     makespan         The objective value of the solution when inserting the \c task
  */
-double Solution::CalculateMakespanAndAllocateOutputFiles(Task task,
-                                                         VirtualMachine virtual_machine) {
+double Solution::CalculateMakespanAndAllocateOutputFiles(Task* task,
+                                                         VirtualMachine* virtual_machine) {
   double start_time = 0.0;
   double read_time = 0.0;
   double write_time = 0.0;
   double run_time = 0.0;
   double makespan = std::numeric_limits<double>::max();
 
-  DLOG(INFO) << "Makespan of the allocated Task[" << task.get_id() << "] at VM["
-      << virtual_machine.get_id() << "]";
+  DLOG(INFO) << "Makespan of the allocated Task[" << task->get_id() << "] at VM["
+      << virtual_machine->get_id() << "]";
   // google::FlushLogFiles(google::INFO);
 
-  if (task.get_id() != algorithm_->get_id_source()
-      && task.get_id() != algorithm_->get_id_target()) {
-    start_time = ComputeTaskStartTime(task.get_id(), virtual_machine.get_id());
+  if (task->get_id() != algorithm_->get_id_source()
+      && task->get_id() != algorithm_->get_id_target()) {
+    start_time = ComputeTaskStartTime(task->get_id(), virtual_machine->get_id());
     read_time = ComputeTaskReadTime(task, virtual_machine);
     write_time = AllocateOutputFiles(task, virtual_machine);
-  } else if (task.get_id() == algorithm_->get_id_target()) {
-    for (auto task_id : algorithm_->get_predecessors().find(task.get_id())->second) {
+  } else if (task->get_id() == algorithm_->get_id_target()) {
+    for (auto task_id : algorithm_->get_predecessors().find(task->get_id())->second) {
       start_time = std::max(start_time, time_vector_[task_id]);
     }
   }
 
-  run_time = ceil(task.get_time() * virtual_machine.get_slowdown());
+  run_time = ceil(task->get_time() * virtual_machine->get_slowdown());
 
   if (start_time != std::numeric_limits<double>::max()
       && read_time != std::numeric_limits<double>::max()
@@ -705,10 +715,10 @@ double Solution::ComputeCost() {
   DLOG(INFO) << "Calculate Cost";
 
   // Accumulate the Virtual Machine cost
-  for (std::pair<size_t, VirtualMachine> vm_pair : algorithm_->get_virtual_machine_map()) {
-    VirtualMachine virtual_machine = vm_pair.second;
+  for (std::pair<size_t, VirtualMachine*> vm_pair : algorithm_->get_virtual_machine_map()) {
+    VirtualMachine* virtual_machine = vm_pair.second;
 
-    virtual_machine_cost += queue_[virtual_machine.get_id()] * virtual_machine.get_cost();
+    virtual_machine_cost += queue_[virtual_machine->get_id()] * virtual_machine->get_cost();
   }
 
   // // Accumulate the Bucket fixed cost
@@ -731,20 +741,20 @@ double Solution::ComputeCost() {
   // }
 
   // Accumulate the Bucket variable cost
-  for (std::pair<size_t, Storage> storage_vm : algorithm_->get_storage_map()) {
-    Storage storage = storage_vm.second;
+  for (std::pair<size_t, Storage*> storage_vm : algorithm_->get_storage_map()) {
+    Storage* storage = storage_vm.second;
 
     // If the storage is not a Virtual Machine, i.e. it is a Bucket; then calculate the bucket
     // variable cost
-    if (storage.get_id() >= algorithm_->get_virtual_machine_size()) {
+    if (storage->get_id() >= algorithm_->get_virtual_machine_size()) {
       for (size_t i = algorithm_->get_task_size();
           i < algorithm_->get_tasks_plus_files_size();
           ++i) {
         // If the Bucket is used; then accumulate de cost and break to the next Storage
-        if (allocation_[i] == storage.get_id()) {
+        if (allocation_[i] == storage->get_id()) {
           File* file = algorithm_->get_file_map_per_id().find(i)->second;
 
-          bucket_varible_cost += storage.get_cost() * file->get_size();
+          bucket_varible_cost += storage->get_cost() * file->get_size();
         }
       }
     }
@@ -791,7 +801,7 @@ double Solution::ComputeFileCostContribution(File* file,
   return cost;
 }  // double Solution::CalculateCost() {
 
-double Solution::ComputeFileSecurityExposureContribution(Storage storage, File* file) {
+double Solution::ComputeFileSecurityExposureContribution(Storage* storage, File* file) {
   double security_exposure = 0.0;
   double task_exposure = 0.0;
   double privacy_exposure = 0.0;
@@ -805,9 +815,9 @@ double Solution::ComputeFileSecurityExposureContribution(Storage storage, File* 
     size_t storage1_id = allocation_[i];
 
     if (storage1_id != std::numeric_limits<size_t>::max()
-        && storage.get_id() != std::numeric_limits<size_t>::max()
-        && storage1_id == storage.get_id()) {
-      int conflict_value = algorithm_->get_conflict_graph().ReturnConflict(i, storage.get_id());
+        && storage->get_id() != std::numeric_limits<size_t>::max()
+        && storage1_id == storage->get_id()) {
+      int conflict_value = algorithm_->get_conflict_graph().ReturnConflict(i, storage->get_id());
 
       if (conflict_value > 0) {
         DLOG(INFO) << "File[" << i << "] has conflict with File[" << file->get_id() << "]";
@@ -835,20 +845,20 @@ double Solution::ComputeSecurityExposure() {
   DLOG(INFO) << "Calculate Security Exposure";
 
   // Accumulate the task exposure
-  for (std::pair<size_t, Task> task_pair : algorithm_->get_task_map_per_id()) {
-    Task task = task_pair.second;
+  for (std::pair<size_t, Task*> task_pair : algorithm_->get_task_map_per_id()) {
+    Task* task = task_pair.second;
 
     // for (double requirement_value : task.get_requirements()) {
-    for (size_t i = 0; i < task.get_requirements().size(); ++i) {
-      size_t virtual_machine_id = allocation_[task.get_id()];
+    for (size_t i = 0; i < task->get_requirements().size(); ++i) {
+      size_t virtual_machine_id = allocation_[task->get_id()];
 
       // If the task is allocated
       if (virtual_machine_id != std::numeric_limits<size_t>::max()) {
-        VirtualMachine virtual_machine = algorithm_->get_virtual_machine_map().find(
+        VirtualMachine* virtual_machine = algorithm_->get_virtual_machine_map().find(
             virtual_machine_id)->second;
 
-        if (task.GetRequirementValue(i) > virtual_machine.GetRequirementValue(i)) {
-          task_exposure += task.GetRequirementValue(i) - virtual_machine.GetRequirementValue(i);
+        if (task->GetRequirementValue(i) > virtual_machine->GetRequirementValue(i)) {
+          task_exposure += task->GetRequirementValue(i) - virtual_machine->GetRequirementValue(i);
         }
       }
     }
@@ -863,7 +873,7 @@ double Solution::ComputeSecurityExposure() {
     for (size_t j = algorithm_->get_task_size() + 1;
          j < algorithm_->get_tasks_plus_files_size();
          ++j) {
-      size_t storage2_id = allocation_[j];
+      const size_t storage2_id = allocation_[j];
 
       if (storage1_id != std::numeric_limits<size_t>::max()
           && storage2_id != std::numeric_limits<size_t>::max()
@@ -903,28 +913,30 @@ double Solution::ComputeSecurityExposure() {
  * \param[in]  vm               VM where the task will be executed
  * \retval     objective_value  The objective value of the solution when inserting the \c task
  */
-double Solution::ScheduleTask(Task task, VirtualMachine vm) {
+double Solution::ScheduleTask(Task* task, VirtualMachine* vm) {
   double objective_value = std::numeric_limits<double>::max();
 
-  DLOG(INFO) << "Allocate the Task[" << task.get_id() << "] at VM[" << vm.get_id() << "]";
+  DLOG(INFO) << "Allocate the Task[" << task->get_id() << "] at VM[" << vm->get_id() << "]";
   google::FlushLogFiles(google::INFO);
 
-  allocation_[task.get_id()] = vm.get_id();
-  ordering_.push_back(task.get_id());
+  allocation_[task->get_id()] = vm->get_id();
+  ordering_.push_back(task->get_id());
 
   // 1. Calculates the makespan
   double makespan = CalculateMakespanAndAllocateOutputFiles(task, vm);
 
   // Update auxiliary structures (queue_ and time_vector_)
   // This update is important for the cost calculation
-  time_vector_[task.get_id()] = makespan;
-  queue_[vm.get_id()] = makespan;
+  time_vector_[task->get_id()] = makespan;
+  queue_[vm->get_id()] = makespan;
 
   // 2. Calculates the cost
-  double cost = ComputeCost();
+  // double cost = ComputeCost();
+  double cost = 0.0;
 
   // 3. Calculates the security exposure
-  double security_exposure = ComputeSecurityExposure();
+  // double security_exposure = ComputeSecurityExposure();
+  double security_exposure = 0.0;
 
   DLOG(INFO) << "makespan: " << makespan;
   DLOG(INFO) << "cost: " << cost;

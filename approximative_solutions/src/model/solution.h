@@ -76,7 +76,7 @@ class Solution {
   double ObjectiveFunction(bool check_storage = true, bool check_sequence = false);
 
   /// Schedule the \c task to be executed at \c virtual_machine
-  double ScheduleTask(Task task, VirtualMachine virtual_machine);
+  double ScheduleTask(Task* task, VirtualMachine* virtual_machine);
 
   /// Verify that que sequence of the task; terminate if the sequence is broken
   inline bool CheckTaskSequence(size_t);
@@ -102,7 +102,7 @@ class Solution {
   }
 
   /// Computes the time of reading input files for the execution of the \c task
-  double ComputeTaskReadTime(Task& task, VirtualMachine& vm);
+  double ComputeTaskReadTime(Task* task, VirtualMachine* vm);
 
   /// Compute the starting time of the \c task
   double ComputeTaskStartTime(size_t task, size_t vm);
@@ -117,22 +117,22 @@ class Solution {
   double ComputeSecurityExposure();
 
   /// Compute the time for write all output files of the \c task executed at \c virtual_machine
-  inline double ComputeTaskWriteTime(Task task, VirtualMachine virtual_machine);
+  inline double ComputeTaskWriteTime(Task* task, VirtualMachine* virtual_machine);
 
   /// Compute the file transfer time
   inline double ComputeFileTransferTime(File* file,
-                                        Storage vm1,
-                                        Storage vm2,
+                                        Storage* vm1,
+                                        Storage* vm2,
                                         bool check_constraints = false);
 
   /// Allocate just one output file selecting storage with minimal time transfer
-  double AllocateOneOutputFileGreedily(File* file, VirtualMachine vm);
+  double AllocateOneOutputFileGreedily(File* file, VirtualMachine* vm);
 
   /// Define where the output files of the execution of the \c task will be stored
-  double AllocateOutputFiles(Task& task, VirtualMachine& vm);
+  double AllocateOutputFiles(Task* task, VirtualMachine* vm);
 
   /// Calculate the actual makespan and allocate the output files
-  double CalculateMakespanAndAllocateOutputFiles(Task task, VirtualMachine vm);
+  double CalculateMakespanAndAllocateOutputFiles(Task* task, VirtualMachine* vm);
 
   /// Compute the file contribution to the cost
   double ComputeFileCostContribution(File* file,
@@ -141,7 +141,7 @@ class Solution {
                                      double time);
 
   /// Compute the file contribution to the security exposure
-  double ComputeFileSecurityExposureContribution(Storage storage, File* file);
+  double ComputeFileSecurityExposureContribution(Storage* storage, File* file);
 
   /// A pointer to the Algorithm object that contain the all necessary data
   Algorithm* algorithm_;

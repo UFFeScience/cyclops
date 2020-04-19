@@ -12,6 +12,7 @@
  */
 
 #include "src/main.h"
+
 #include <glog/logging.h>
 #include <gflags/gflags.h>
 #include <exception>
@@ -54,9 +55,8 @@ DEFINE_uint64(number_of_iteration,
               "Number of attempts to build the solution");
 
 /**
- * The \c main() function reads the configuration parameters from JSON files,
- * loads the desired input file, applies the required algorithms and writes
- * output data files.
+ * The \c main() function reads the loads the desired input files, applies the required algorithms
+ * and writes output data files.
  */
 int main(int argc, char **argv) {
   // Initialise Google's logging library

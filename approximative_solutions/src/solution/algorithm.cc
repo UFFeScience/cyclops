@@ -175,12 +175,12 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
     // DLOG(INFO) << "in_size: " << in_size;
     // DLOG(INFO) << "out_size: " << out_size;
 
-    Task my_task(i, tag, task_name, base_time);
+    Task* my_task = new Task(i, tag, task_name, base_time);
 
     // Adding requirement to the task
     for (size_t j = 5ul; j < 5ul + requirement_size_; ++j) {
       auto requirement_value = stod(strs[j]);
-      my_task.AddRequirement(requirement_value);
+      my_task->AddRequirement(requirement_value);
     }
 
     // reading input files
@@ -190,7 +190,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
       google::FlushLogFiles(google::INFO);
 
       File* my_file = file_map_per_name_.find(line)->second;
-      my_task.AddInputFile(my_file);
+      my_task->AddInputFile(my_file);
     }
 
     // reading output files
@@ -200,7 +200,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
       google::FlushLogFiles(google::INFO);
 
       File* my_file = file_map_per_name_.find(line)->second;
-      my_task.AddOutputFile(my_file);
+      my_task->AddOutputFile(my_file);
     }
 
     task_map_per_id_.insert(std::make_pair(i, my_task));
@@ -230,12 +230,12 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
   // key_map.insert(make_pair("root", id_source));
   // key_map.insert(make_pair("sink", id_target));
 
-  Task source_task(id_source_, "source", "SOURCE", 0.0);
-  Task target_task(id_target_, "target", "TARGET", 0.0);
+  Task* source_task = new Task(id_source_, "source", "SOURCE", 0.0);
+  Task* target_task = new Task(id_target_, "target", "TARGET", 0.0);
 
   for (size_t i = 0; i < requirement_size_; ++i) {
-    source_task.AddRequirement(0);
-    target_task.AddRequirement(0);
+    source_task->AddRequirement(0);
+    target_task->AddRequirement(0);
   }
 
   task_map_per_id_.insert(std::make_pair(id_source_, source_task));
@@ -280,8 +280,8 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
       // auto child_id = key_map.find(line)->second;
       auto child_task = task_map_per_name_.find(line)->second;
 
-      children.push_back(child_task.get_id());
-      aux[child_task.get_id()] = 0;
+      children.push_back(child_task->get_id());
+      aux[child_task->get_id()] = 0;
     }
 
     // Target task
@@ -292,7 +292,7 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
     // auto task_id = key_map.find(task_tag)->second;
     auto task = task_map_per_name_.find(task_tag)->second;
 
-    successors_.insert(make_pair(task.get_id(), children));
+    successors_.insert(make_pair(task->get_id(), children));
   }
 
   // Add synthetic source task
@@ -361,12 +361,18 @@ void Algorithm::ReadCluster(std::string cluster) {
       double bandwidth = stod(strs[4]);
       double cost = stod(strs[5]);
 
-      VirtualMachine my_vm(storage_id, vm_name, slowdown, storage, cost, bandwidth, type_id);
+      VirtualMachine* my_vm = new VirtualMachine(storage_id,
+                                                 vm_name,
+                                                 slowdown,
+                                                 storage,
+                                                 cost,
+                                                 bandwidth,
+                                                 type_id);
 
       // Adding requirement to the task
       for (size_t l = 6ul; l < 6ul + number_of_requirements; ++l) {
         auto requirement_value = stod(strs[l]);
-        my_vm.AddRequirement(requirement_value);
+        my_vm->AddRequirement(requirement_value);
       }
 
       vm_map_.insert(std::make_pair(storage_id, my_vm));
@@ -392,12 +398,18 @@ void Algorithm::ReadCluster(std::string cluster) {
       size_t number_of_intervals = 1ul;
       double cost = stod(strs[4]);
 
-      Bucket my_bucket(storage_id, name, storage, cost, bandwidth, type_id, number_of_intervals);
+      Bucket* my_bucket = new Bucket(storage_id,
+                                     name,
+                                     storage,
+                                     cost,
+                                     bandwidth,
+                                     type_id,
+                                     number_of_intervals);
 
-      // Adding requirement to the task
+      // Adding requirement to the bucket
       for (size_t l = 5ul; l < 5ul + number_of_requirements; ++l) {
         auto requirement_value = stod(strs[l]);
-        my_bucket.AddRequirement(requirement_value);
+        my_bucket->AddRequirement(requirement_value);
       }
 
       storage_map_.insert(std::make_pair(storage_id, my_bucket));
@@ -464,8 +476,8 @@ void Algorithm::ReadInputFiles(const std::string tasks_and_files,
   ReadConflictGraph(conflict_graph);
   storage_vet_.resize(storage_map_.size(), 0.0);
   for (auto storage_pair : storage_map_) {
-    Storage storage = storage_pair.second;
-    storage_vet_[storage.get_id()] = storage.get_storage();
+    Storage* storage = storage_pair.second;
+    storage_vet_[storage->get_id()] = storage->get_storage();
   }
   height_.resize(task_size_, -1);
   ComputeHeight(id_source_, 0);
@@ -558,6 +570,14 @@ Algorithm::~Algorithm() {
 
   for (std::pair<size_t, File*> p : file_map_per_id_) {
     delete p.second;
+  }
+
+  for (std::pair<size_t, Storage*> s : storage_map_) {
+    delete s.second;
+  }
+
+  for (std::pair<size_t, Task*> t : task_map_per_id_) {
+    delete t.second;
   }
 
   DLOG(INFO) << "deleting done";
