@@ -4,6 +4,9 @@ project(wf_security_approximate_solutions)
 set(WF_SECURITY_VERSION_MAJOR 0)
 set(WF_SECURITY_VERSION_MINOR 1)
 
+# auxiliary cmake files should be placed in /cmake/Modules/ .
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
