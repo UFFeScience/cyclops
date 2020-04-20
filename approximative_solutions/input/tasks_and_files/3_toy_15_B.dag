@@ -1,0 +1,45 @@
+2 8 5 2 100.00 100.00
+
+0 1
+1 1
+
+file0 10 1 0
+file8 10 1 0
+file1 10
+file2 20
+file3 30
+file4 30
+file5 30
+file6 30
+file7 20
+file9 20
+
+t0 task0 2.0 1 3 1 1
+file0
+file1
+file2
+file3
+t1 task1 0.50 1 2 1 1
+file2
+file4
+file5
+t2 task2 0.20 1 1 1 1
+file1
+file6
+t3 task3 0.50 1 1 1 1
+file3
+file7
+t4 task4 1.00 2 1 1 1
+file3
+file8
+file9
+ 1 1
+t0 4
+t1
+t2
+t3
+t4
+t1 0
+t2 0
+t3 0
+t4 0
