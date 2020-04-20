@@ -44,7 +44,7 @@ file(GLOB_RECURSE SOURCES "src/*/*.cc")
 ##### executables
 # include_directories(SYSTEM ${Gflags_INCLUDE_DIR})
 add_executable(wf_security_greedy.x ${MAIN} ${HEADERS} ${SOURCES})
-target_link_libraries(wf_security_greedy.x glog::glog gflags)
+target_link_libraries(wf_security_greedy.x ${GLOG_LIBRARIES} gflags)
 
 ##### auxiliary make directives
 # cpplint
