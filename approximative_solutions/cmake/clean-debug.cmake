@@ -1,7 +1,4 @@
-set(debug ${CMAKE_SOURCE_DIR}/bin/nanoEORsimulator.x.dSYM
-          ${CMAKE_SOURCE_DIR}/bin/nanoEORsimulator-test.x.dSYM
-          ${CMAKE_SOURCE_DIR}/bin/nanoEORsimulator-stress-test.x.dSYM
-)
+set(debug ${CMAKE_SOURCE_DIR}/bin/wf_security_greedy.x.dSYM)
 
 foreach(folder ${debug})
   if (EXISTS ${folder})
