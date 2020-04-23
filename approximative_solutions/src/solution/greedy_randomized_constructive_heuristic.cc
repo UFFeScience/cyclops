@@ -181,7 +181,7 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
     DLOG(INFO) << "Scheduling done";
     // google::FlushLogFiles(google::INFO);
 
-    solution.ObjectiveFunction(false, false);
+    // solution.ObjectiveFunction(false, false);
 
     if (best_solution.get_objective_value() > solution.get_objective_value()) {
       best_solution = solution;

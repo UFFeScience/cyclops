@@ -914,7 +914,7 @@ double Solution::ComputeSecurityExposure() {
  * \retval     objective_value  The objective value of the solution when inserting the \c task
  */
 double Solution::ScheduleTask(Task* task, VirtualMachine* vm) {
-  double objective_value = std::numeric_limits<double>::max();
+  // double objective_value = std::numeric_limits<double>::max();
 
   DLOG(INFO) << "Allocate the Task[" << task->get_id() << "] at VM[" << vm->get_id() << "]";
   google::FlushLogFiles(google::INFO);
@@ -923,34 +923,44 @@ double Solution::ScheduleTask(Task* task, VirtualMachine* vm) {
   ordering_.push_back(task->get_id());
 
   // 1. Calculates the makespan
-  double makespan = CalculateMakespanAndAllocateOutputFiles(task, vm);
+  makespan_ = CalculateMakespanAndAllocateOutputFiles(task, vm);
 
   // Update auxiliary structures (queue_ and time_vector_)
   // This update is important for the cost calculation
-  time_vector_[task->get_id()] = makespan;
-  queue_[vm->get_id()] = makespan;
+  time_vector_[task->get_id()] = makespan_;
+  queue_[vm->get_id()] = makespan_;
 
   // 2. Calculates the cost
   // double cost = ComputeCost();
-  double cost = 0.0;
+  cost_ = 0.0;
 
   // 3. Calculates the security exposure
   // double security_exposure = ComputeSecurityExposure();
-  double security_exposure = 0.0;
+  security_exposure_ = 0.0;
 
-  DLOG(INFO) << "makespan: " << makespan;
-  DLOG(INFO) << "cost: " << cost;
-  DLOG(INFO) << "security_exposure: " << security_exposure;
+  DLOG(INFO) << "makespan: " << makespan_;
+  DLOG(INFO) << "cost: " << cost_;
+  DLOG(INFO) << "security_exposure: " << security_exposure_;
 
-  objective_value = algorithm_->get_alpha_time() * (makespan / algorithm_->get_makespan_max())
-                  + algorithm_->get_alpha_budget() * (cost / algorithm_->get_budget_max())
-                  + algorithm_->get_alpha_security() * (security_exposure
+  if (makespan_ == std::numeric_limits<double>::max()
+      || cost_ == std::numeric_limits<double>::max()
+      || security_exposure_ == std::numeric_limits<double>::max()) {
+    objective_value_ = std::numeric_limits<double>::max();
+    // makespan_ = makespan;
+    // cost_ = cost;
+    // security_exposure_ = security_exposure;
+    return objective_value_;
+  }
+
+  objective_value_ = algorithm_->get_alpha_time() * (makespan_ / algorithm_->get_makespan_max())
+                   + algorithm_->get_alpha_budget() * (cost_ / algorithm_->get_budget_max())
+                   + algorithm_->get_alpha_security() * (security_exposure_
                       / algorithm_->get_maximum_security_and_privacy_exposure());
 
-  makespan_ = makespan;
-  cost_ = cost;
-  security_exposure_ = security_exposure;
-  objective_value_ = objective_value;
+  // makespan_ = makespan;
+  // cost_ = cost;
+  // security_exposure_ = security_exposure;
+  // objective_value_ = objective_value;
 
-  return objective_value;
+  return objective_value_;
 }  // inline double Solution::AllocateTask(...)
