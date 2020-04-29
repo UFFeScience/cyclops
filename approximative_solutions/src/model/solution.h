@@ -37,39 +37,40 @@ class Solution {
 
   /// Copy constructor
   Solution(const Solution &other) = default;
-  // Solution(const Solution &other)
-  //     : algorithm_(other.algorithm_),
-  //       allocation_(other.allocation_),
-  //       ordering_(other.ordering_),
-  //       time_vector_(other.time_vector_),
-  //       queue_(other.queue_),
-  //       start_time_vector_(other.start_time_vector_),
-  //       makespan_(other.makespan_),
-  //       lambda_(other.lambda_),
-  //       scheduler_(other.scheduler_),
-  //       storage_queue_(other.storage_queue_) { }
 
   /// Destructor
   ~Solution() { algorithm_ = nullptr; }
 
-  /// Getter for \c allocation_
-  std::vector<size_t> get_allocation() const { return allocation_; }
-
-  /// Getter for \c ordering_
-  std::vector<size_t> get_ordering() const { return ordering_; }
-
-  /// Getter for makespan of the solution
+  /// Getter for \c makespan_
   double get_makespan() const { return makespan_; }
 
-  /// Getter for cost of the solution
+  /// Getter for \c cost_
   double get_cost() const { return cost_; }
+
+  /// Getter for \c security_exposure_
+  double get_security_exposure() const { return security_exposure_; }
 
   /// Getter for \c objective_value_
   double get_objective_value() const { return objective_value_; }
 
-  /// Adds a Virtual Machine/Storage to a Task/File
-  void SetAllocation(size_t position, size_t storage_id) {
-    allocation_[position] = storage_id;
+  /// Return the id of the Virtual Machine allocated to the \c Task identified by \c task_id
+  size_t GetTaskAllocation(size_t task_id) const {
+    return task_allocations_[task_id];
+  }
+
+  /// Return the id of the Virtual Machine allocated to the \c Task identified by \c task_id
+  size_t GetFileAllocation(size_t file_id) const {
+    return file_allocations_[file_id];
+  }
+
+  /// Adds a Virtual Machine to a Task
+  void SetTaskAllocation(size_t position, size_t vm_id) {
+    task_allocations_[position] = vm_id;
+  }
+
+  /// Adds a Storage to a File
+  void SetFileAllocation(size_t position, size_t storage_id) {
+    file_allocations_[position] = storage_id;
   }
 
   /// Calculate de Objective Function of the solution
@@ -135,10 +136,7 @@ class Solution {
   double CalculateMakespanAndAllocateOutputFiles(Task* task, VirtualMachine* vm);
 
   /// Compute the file contribution to the cost
-  double ComputeFileCostContribution(File* file,
-                                     VirtualMachine virtual_machine,
-                                     Storage storage,
-                                     double time);
+  double ComputeFileCostContribution(File* file, Storage* storage);
 
   /// Compute the file contribution to the security exposure
   double ComputeFileSecurityExposureContribution(Storage* storage, File* file);
@@ -146,8 +144,11 @@ class Solution {
   /// A pointer to the Algorithm object that contain the all necessary data
   Algorithm* algorithm_;
 
-  /// Allocation of task and files in theirs respective VM or storages
-  std::vector<size_t> allocation_;
+  /// Allocation of task in theirs VM
+  std::vector<size_t> task_allocations_;
+
+  /// Allocation offiles in theirs storages
+  std::vector<size_t> file_allocations_;
 
   /// Order of the allocated tasks
   std::vector<size_t> ordering_;
@@ -157,9 +158,6 @@ class Solution {
 
   // Final time of each Virtual Machine
   std::vector<double> queue_;
-
-  /// Start time of each task
-  std::vector<double> start_time_vector_;
 
   /// Makespan of the solution
   double makespan_;
@@ -172,15 +170,6 @@ class Solution {
 
   /// Objective value based on \c makespan_, \c cost_ and \c security_exposure_
   double objective_value_ = std::numeric_limits<double>::max();
-
-  ///
-  double lambda_;
-
-  /// The list of the task to be executed
-  std::unordered_map<int, std::vector<std::string>> scheduler_;
-
-  /// Map containing the list of files by storage
-  std::unordered_map<size_t, std::vector<size_t>> storage_queue_;
 };
 
 #endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_SOLUTION_H_

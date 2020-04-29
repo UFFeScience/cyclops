@@ -32,7 +32,7 @@ public class MainTasksAndFiles {
 		BufferedWriter outputFile = null;
 
 		try {
-//			System.out.println(inputFileName);
+			System.out.println(inputFileName);
 			
 			inputFile = new BufferedReader(new InputStreamReader(new FileInputStream(
 					new File(inputFileName))));
@@ -101,7 +101,7 @@ public class MainTasksAndFiles {
 			line = inputFile.readLine();
 			outputFile.write(line + " 1 1\n");
 			while (!line.isBlank()) {
-//				System.out.println(line);
+				System.out.println(line);
 				String[] taskLineParts = line.split(" ");
 				String taskId = taskLineParts[0];
 				String taskName = taskLineParts[1];
@@ -142,7 +142,7 @@ public class MainTasksAndFiles {
 			line = inputFile.readLine();
 			outputFile.write(line + "\n");
 			while (line != null && !line.isBlank()) {
-//				System.out.println(line);
+				System.out.println(line);
 				String[] taskHead = line.split(" ");
 				
 				String taskId = taskHead[0];

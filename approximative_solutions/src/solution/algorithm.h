@@ -44,90 +44,76 @@ class Algorithm {
   Algorithm() = default;
 
   virtual ~Algorithm();
+
   /// Read input files.
   void ReadInputFiles(const std::string tasks_and_files,
                       const std::string cluster,
                       const std::string conflict_graph);
 
-
-  /// Getter for _max_value
+  /// Getter for \c lambda_
   size_t get_lambda() const { return lambda_; }
 
-  /// Getter for _max_value
-  size_t get_task_size() const { return task_size_; }
-
-  /// Getter for _max_value
-  size_t get_tasks_plus_files_size() const { return tasks_plus_files_size_; }
-
-  /// Getter for _max_value
-  size_t get_virtual_machine_size() const { return vm_size_; }
-
-  /// Getter for _max_value
+  /// Getter for \c id_source_
   size_t get_id_source() const { return id_source_; }
 
-  /// Getter for _max_value
+  /// Getter for \c id_target_
   size_t get_id_target() const { return id_target_; }
 
-  /// Getter for _max_value
-  // size_t get_number_of_requirements() const { return number_of_requirements_; }
-
-  /// Getter for _max_value
-  std::unordered_map<size_t, VirtualMachine*>& get_virtual_machine_map() { return vm_map_; }
-
-  /// Getter for _max_value
-  std::unordered_map<size_t, Storage*>& get_storage_map() { return storage_map_; }
-
-  /// Getter for _max_value
-  std::unordered_map<size_t, Task*>& get_task_map_per_id() { return task_map_per_id_; }
-
-  /// Getter for _max_value
-  std::unordered_map<std::string, Task*>& get_task_map_per_name() { return task_map_per_name_; }
-
-  /// Getter for _max_value
-  std::unordered_map<size_t, std::vector<size_t>>& get_successors() { return successors_; }
-
-  /// Getter for _max_value
-  std::unordered_map<size_t, std::vector<size_t>>& get_predecessors() { return predecessors_; }
-
-  /// Getter for conflict_graph_
+  /// Getter for \c conflict_graph_
   ConflictGraph& get_conflict_graph() { return conflict_graph_; }
 
-  /// Getter for _max_value
+  /// Getter for \c storage_vet_
   std::vector<double>& get_storage_vet() { return storage_vet_; }
 
-  /// Getter for _max_value
+  /// Getter for \c height_
   std::vector<int>& get_height() { return height_; }
 
-  /// Getter for _max_value
-  std::unordered_map<size_t, File*>& get_file_map_per_id() { return file_map_per_id_; }
-  // std::unordered_map<size_t, std::shared_ptr<File>> get_file_map_per_id() const {
-    // return file_map_per_id_;
-  // }
+  /// Return the size of the \c tasks_
+  size_t GetTaskSize() const { return tasks_.size(); }
 
-  /// Getter for _max_value
-  std::unordered_map<std::string, File*>& get_file_map_per_name_() {
-    return file_map_per_name_;
-  }
+  /// Return the size of the \c files_
+  size_t GetFileSize() const { return files_.size(); }
 
-  /// Getter for _max_value
-  int get_file_size() const { return file_size_; }
+  /// Return the size of the \c virtual_machines
+  size_t GetVirtualMachineSize() const { return virtual_machines_.size(); }
 
-  /// Getter for _max_value
+  /// Return the size of the \c storages_
+  size_t GetStorageSize() const { return storages_.size(); }
+
+  /// Return a pointer to the \c File identified by \c id
+  File* GetFilePerId(size_t id) { return files_[id]; }
+
+  /// Return a pointer to the \c Task identified by \c id
+  Task* GetTaskPerId(size_t id) { return tasks_[id]; }
+
+  /// Return a pointer to the \c Storage identified by \c id
+  Storage* GetStoragePerId(size_t id) { return storages_[id]; }
+
+  /// Return a pointer to the \c Storage identified by \c id
+  VirtualMachine* GetVirtualMachinePerId(size_t id) { return virtual_machines_[id]; }
+
+  /// Return a reference to the successors of the \c Task identified by \c task_id
+  std::vector<size_t>& GetSuccessors(size_t task_id) { return successors_[task_id]; }
+
+  /// Return a reference to the predecessors of the \c Task identified by \c task_id
+  std::vector<size_t>& GetPredecessors(size_t task_id) { return predecessors_[task_id]; }
+
+  /// Getter for makespan_max_
   double get_makespan_max() const { return makespan_max_; }
 
-  /// Getter for _max_value
+  /// Getter for \c budget_max_
   double get_budget_max() const { return budget_max_; }
 
-  /// Getter for _max_value
+  /// Getter for \c alpha_time_
   double get_alpha_time() const { return alpha_time_; }
 
-  /// Getter for _max_value
+  /// Getter for \c alpha_budget_
   double get_alpha_budget() const { return alpha_budget_; }
 
-  /// Getter for _max_value
+  /// Getter for \c alpha_security_
   double get_alpha_security() const { return alpha_security_; }
 
-  /// Getter for _max_value
+  /// Getter for \c maximum_security_and_privacy_exposure_
   double get_maximum_security_and_privacy_exposure() const {
     return maximum_security_and_privacy_exposure_;
   }
@@ -160,11 +146,11 @@ class Algorithm {
       std::unordered_map<size_t, std::vector<size_t>> amap);
 
  protected:
-  void ReadTasksAndFiles(std::string);
+  void ReadTasksAndFiles(std::string, std::unordered_map<std::string, File*>&);
 
   void ReadCluster(std::string);
 
-  void ReadConflictGraph(std::string);
+  void ReadConflictGraph(std::string, std::unordered_map<std::string, File*>&);
 
   void ComputeHeight(size_t, int);
 
@@ -172,17 +158,11 @@ class Algorithm {
 
   size_t dynamic_file_size_;
 
-  size_t task_size_;
-
-  size_t requirement_size_;
-
   double makespan_max_;
 
   double budget_max_;
 
-  size_t file_size_;
-
-  size_t tasks_plus_files_size_;
+  // size_t tasks_plus_files_size_;
 
   size_t id_source_;
 
@@ -190,46 +170,26 @@ class Algorithm {
 
   double period_hr_;
 
-  size_t vm_size_;
+  std::vector<Requirement> requirements_;
 
   std::vector<double> storage_vet_;  // storage of vm
 
-  std::vector<Requirement> requirements_;
+  std::vector<File*> files_;
 
-  // std::unordered_map<int, File> file_map;
-  std::unordered_map<size_t, File*> file_map_per_id_;
-  std::unordered_map<std::string, File*> file_map_per_name_;
-  // std::unordered_map<size_t, std::shared_ptr<File>> file_map_per_id_;
-  // std::unordered_map<std::string, std::shared_ptr<File>> file_map_per_name_;
+  std::vector<Task*> tasks_;
 
-  // unordered_map<int, Task> task_map;
-  std::unordered_map<size_t, Task*> task_map_per_id_;
-  std::unordered_map<std::string, Task*> task_map_per_name_;
+  std::vector<Storage*> storages_;
+
+  std::vector<VirtualMachine*> virtual_machines_;
 
   // Workflow task Graphs
-  std::unordered_map<size_t, std::vector<size_t>> successors_;
-  std::unordered_map<size_t, std::vector<size_t>> predecessors_;
+  std::vector<std::vector<size_t>> successors_;
 
-  // size_t number_of_providers_;
-
-  // size_t number_of_requirements_;
-
-  std::unordered_map<size_t, VirtualMachine*> vm_map_;
-  std::unordered_map<size_t, Storage*> storage_map_;
+  std::vector<std::vector<size_t>> predecessors_;
 
   size_t bucket_size_;
 
-  // std::vector<Provider> providers_;
-
-  // ConflictGraph _conflictGraph;
-
-  // Matrix<double> conflict_graph_;
-
   std::vector<int> height_;
-
-  double lambda_ =  0.000;  // read and write constant
-
-  // std::shared_ptr<Solution> solution_;
 
   ConflictGraph conflict_graph_;
 
@@ -246,6 +206,8 @@ class Algorithm {
   double alpha_restrict_candidate_list_;
 
   double maximum_security_and_privacy_exposure_;
+
+  double lambda_ =  0.0;  // read and write constant
 };  // end of class Algorithm
 
 #endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_

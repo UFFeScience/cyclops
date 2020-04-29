@@ -47,13 +47,12 @@ void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution&
       double min_objective_function = std::numeric_limits<double>::max();
       size_t min_vm_id = 0;
 
-      for (std::pair<size_t, VirtualMachine*> pair : vm_map_) {
-        VirtualMachine* vm = pair.second;
+      for (VirtualMachine* vm : virtual_machines_) {
         Solution new_solution = solution;
 
         double objective_value = new_solution.ScheduleTask(task, vm);
 
-        VirtualMachine* min_vm = vm_map_.find(min_vm_id)->second;
+        VirtualMachine* min_vm = virtual_machines_[min_vm_id];
 
         // It is necessary to determine another information, when it is draw
         // when it is equal, select the cheapest one.
@@ -86,7 +85,7 @@ void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution&
     solution = best_solution;
 
     DLOG(INFO) << "Removing Task[" << iteration_minimal_task_id << "]";
-    Task* my_task = get_task_map_per_id().find(iteration_minimal_task_id)->second;
+    Task* my_task = tasks_[iteration_minimal_task_id];
     avail_tasks.remove(my_task);  // Remove task scheduled
   }  // while (!avail_tasks.empty()) {
 }  // void MinMinAlgorithm::schedule(...)
@@ -104,17 +103,16 @@ void MinMinAlgorithm::Run() {
   Solution solution(this);
 
   // Initialize the allocation with the static files place information (VM or Bucket)
-  for (std::pair<size_t, File*> file_pair : file_map_per_id_) {
-    File* file = file_pair.second;
+  for (File* file : files_) {
     if (StaticFile* static_file = dynamic_cast<StaticFile*>(file)) {
-      solution.SetAllocation(file->get_id(), static_file->GetFirstVm());
+      solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
     }
   }
 
   // Start task list
   DLOG(INFO) << "Initialize task list";
-  for (auto task : task_map_per_id_) {
-    task_list.push_back(task.second);
+  for (auto task : tasks_) {
+    task_list.push_back(task);
   }
 
   // Order by height

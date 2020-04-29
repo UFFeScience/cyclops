@@ -10,5 +10,6 @@ export GLOG_log_dir=`pwd`/log
   --alpha_time 0.3 \
   --alpha_budget 0.3 \
   --alpha_security 0.4 \
-  --number_of_iteration 100
+  --number_of_iteration 100 \
+  --number_of_allocation_experiments 1
 cd shell

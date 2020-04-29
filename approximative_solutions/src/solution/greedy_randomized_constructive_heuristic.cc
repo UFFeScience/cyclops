@@ -29,8 +29,8 @@
 
 DECLARE_uint64(number_of_iteration);
 
-std::random_device rd_chr;
-std::mt19937 engine_chr(rd_chr());
+// std::random_device rd_chr;
+// std::mt19937 engine_chr(rd_chr());
 
 /**
  * Do the scheduling
@@ -43,7 +43,6 @@ std::mt19937 engine_chr(rd_chr());
  */
 void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task*> avail_tasks,
                                                                Solution& solution) {
-
   while (!avail_tasks.empty()) {
     double total_minimal_objective_value = std::numeric_limits<double>::max();
     double total_maximum_objective_value = 0.0;
@@ -58,13 +57,12 @@ void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task*> 
       double task_minimal_objective_value = std::numeric_limits<double>::max();
       size_t min_vm_id = 0;
 
-      for (std::pair<size_t, VirtualMachine*> pair : vm_map_) {
-        VirtualMachine* vm = pair.second;
+      for (VirtualMachine* vm : virtual_machines_) {
         Solution new_solution = solution;
 
         double objective_value = new_solution.ScheduleTask(task, vm);
 
-        VirtualMachine* min_vm = vm_map_.find(min_vm_id)->second;
+        VirtualMachine* min_vm = virtual_machines_[min_vm_id];
 
         if (objective_value < task_minimal_objective_value) {
           task_minimal_objective_value = objective_value;
@@ -129,7 +127,7 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
   DLOG(INFO) << "Executing Greedy Randomized Constructive Heuristic ...";
   // google::FlushLogFiles(google::INFO);
 
-  std::srand(unsigned(std::time(0)));
+  // std::srand(unsigned(std::time(0)));
 
   Solution best_solution(this);
 
@@ -140,17 +138,17 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
     Solution solution(this);
 
     // Initialize the allocation with the static files place information (VM or Bucket)
-    for (std::pair<size_t, File*> file_pair : file_map_per_id_) {
-      File* file = file_pair.second;
+    for (File* file : files_) {
       if (StaticFile* static_file = dynamic_cast<StaticFile*>(file)) {
-        solution.SetAllocation(file->get_id(), static_file->GetFirstVm());
+        solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
       }
     }
 
     // Start task list
     DLOG(INFO) << "Initialize task list";
-    for (auto task : task_map_per_id_) {
-      task_list.push_back(task.second);
+    // for (auto task : task_map_per_id_) {
+    for (Task* task : tasks_) {
+      task_list.push_back(task);
     }
 
     // Order by height
@@ -190,7 +188,20 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
     LOG(INFO) << solution;
   }  // for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
 
+  // std::cout << best_solution << std::endl;
+
+  // best_solution.ObjectiveFunction(false, false);
+
   DLOG(INFO) << best_solution;
-  std::cout << best_solution;
+  // std::cerr << best_solution;
+
+  // best_solution.ObjectiveFunction(false, false);
+  // std::cout << best_solution;
+
+  std::cout << best_solution.get_makespan()
+      << " " << best_solution.get_cost()
+      << " " << best_solution.get_security_exposure()
+      << " " << best_solution.get_objective_value() << std::endl;
+
   DLOG(INFO) << "... ending Greedy Randomized Constructive Heuristic";
 }  // end of GreedyRandomizedConstructiveHeuristic::run() method
