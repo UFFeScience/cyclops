@@ -4,11 +4,18 @@ project(wf_security_approximate_solutions)
 set(WF_SECURITY_VERSION_MAJOR 0)
 set(WF_SECURITY_VERSION_MINOR 1)
 
+# auxiliary cmake files should be placed in /cmake/Modules/ .
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Default C++ flags
+# set(COMMON "-fdiagnostics-color -g -DIL_STD -m64")
+# set(WARNINGS "-Wall -Wextra -Wshadow -Wsign-conversion -Wsign-promo -Wpedantic")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON} ${WARNINGS}")
 # Default C++ flags
 set(COMMON "-fdiagnostics-color")
 set(WARNINGS "-Wall -Wextra -Wshadow -Wsign-conversion -Wsign-promo -Wpedantic")
@@ -22,6 +29,21 @@ include(CMakeToolsHelpers OPTIONAL)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE ON)
 
+# for CPLEX execution
+
+# set(CMAKE_MODULE_PATH               "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+# set(CMAKE_CXX_FLAGS                 "${CMAKE_CXX_FLAGS} -std=c++14 -DIL_STD -m64 -Wall -Werror")
+# set(CMAKE_CXX_FLAGS_DEBUG           "${CMAKE_CXX_FLAGS_DEBUG} -Og -ggdb")
+# set(CMAKE_CXX_FLAGS_RELEASE         "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -O3 -flto")
+# set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX   "-isystem ")
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/build")
+# set(LINKER_OPTIONS                  -flto -Wl,--no-as-needed)
+
+# if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    # set(CMAKE_CXX_FLAGS_DEBUG       "${CMAKE_CXX_FLAGS_DEBUG} -save-temps=obj")
+# endif()
+
+
 # additional include directories (-I in g++).
 include_directories(./)
 
@@ -29,6 +51,7 @@ include_directories(./)
 
 find_package(Glog REQUIRED)
 find_package(gflags REQUIRED)
+find_package(Cplex REQUIRED)
 
 set(gflags_DIR /usr/lib64/cmake/gflags)
 
@@ -41,7 +64,7 @@ file(GLOB_RECURSE SOURCES "src/*/*.cc")
 ##### executables
 # include_directories(SYSTEM ${Gflags_INCLUDE_DIR})
 add_executable(wf_security_greedy.x ${MAIN} ${HEADERS} ${SOURCES})
-target_link_libraries(wf_security_greedy.x glog::glog gflags)
+target_link_libraries(wf_security_greedy.x ilocplex ${GLOG_LIBRARIES} gflags dl)
 
 ##### auxiliary make directives
 # cpplint

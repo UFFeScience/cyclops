@@ -34,7 +34,7 @@
  * \param[in]  avail_tasks     Avail tasks to be processed
  * \param[in]  solution        The solution to be built
  */
-void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task> avail_tasks, Solution& solution) {
+void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution) {
   while (!avail_tasks.empty()) {
     double iteration_minimal_objective_value = std::numeric_limits<double>::max();
     size_t iteration_minimal_vm_id;
@@ -47,32 +47,31 @@ void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task> avail_tasks, Solution& 
       double min_objective_function = std::numeric_limits<double>::max();
       size_t min_vm_id = 0;
 
-      for (std::pair<size_t, VirtualMachine> pair : vm_map_) {
-        VirtualMachine& vm = pair.second;
+      for (VirtualMachine* vm : virtual_machines_) {
         Solution new_solution = solution;
 
         double objective_value = new_solution.ScheduleTask(task, vm);
 
-        VirtualMachine& min_vm = vm_map_.find(min_vm_id)->second;
+        VirtualMachine* min_vm = virtual_machines_[min_vm_id];
 
         // It is necessary to determine another information, when it is draw
         // when it is equal, select the cheapest one.
         if (objective_value < min_objective_function) {  // Get minimum OF and minimum VM
           min_objective_function = objective_value;
-          min_vm_id = vm.get_id();
+          min_vm_id = vm->get_id();
         } else if (objective_value == min_objective_function
-            && vm.get_cost() < min_vm.get_cost()) {
+            && vm->get_cost() < min_vm->get_cost()) {
           min_objective_function = objective_value;
-          min_vm_id = vm.get_id();
+          min_vm_id = vm->get_id();
         } else if (objective_value == min_objective_function
-            && vm.get_cost() == min_vm.get_cost()
-            && vm.get_slowdown() < min_vm.get_slowdown()) {
+            && vm->get_cost() == min_vm->get_cost()
+            && vm->get_slowdown() < min_vm->get_slowdown()) {
           min_objective_function = objective_value;
-          min_vm_id = vm.get_id();
+          min_vm_id = vm->get_id();
         }
 
         if (iteration_minimal_objective_value > min_objective_function) {
-          iteration_minimal_task_id = task.get_id();
+          iteration_minimal_task_id = task->get_id();
           iteration_minimal_objective_value = min_objective_function;
           iteration_minimal_vm_id = min_vm_id;
           best_solution = new_solution;
@@ -86,7 +85,7 @@ void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task> avail_tasks, Solution& 
     solution = best_solution;
 
     DLOG(INFO) << "Removing Task[" << iteration_minimal_task_id << "]";
-    Task my_task = get_task_map_per_id().find(iteration_minimal_task_id)->second;
+    Task* my_task = tasks_[iteration_minimal_task_id];
     avail_tasks.remove(my_task);  // Remove task scheduled
   }  // while (!avail_tasks.empty()) {
 }  // void MinMinAlgorithm::schedule(...)
@@ -98,29 +97,28 @@ void MinMinAlgorithm::Run() {
   DLOG(INFO) << "Executing MinMin algorithm...";
   // google::FlushLogFiles(google::INFO);
 
-  std::list<Task> task_list;
-  std::list<Task> avail_tasks;
+  std::list<Task*> task_list;
+  std::list<Task*> avail_tasks;
 
   Solution solution(this);
 
   // Initialize the allocation with the static files place information (VM or Bucket)
-  for (std::pair<size_t, File*> file_pair : file_map_per_id_) {
-    File* file = file_pair.second;
+  for (File* file : files_) {
     if (StaticFile* static_file = dynamic_cast<StaticFile*>(file)) {
-      solution.SetAllocation(file->get_id(), static_file->GetFirstVm());
+      solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
     }
   }
 
   // Start task list
   DLOG(INFO) << "Initialize task list";
-  for (auto task : task_map_per_id_) {
-    task_list.push_back(task.second);
+  for (auto task : tasks_) {
+    task_list.push_back(task);
   }
 
   // Order by height
   DLOG(INFO) << "Order by height";
-  task_list.sort([&](const Task& a, const Task& b) {
-    return height_[a.get_id()] < height_[b.get_id()];
+  task_list.sort([&](const Task* a, const Task* b) {
+    return height_[a->get_id()] < height_[b->get_id()];
   });
 
   // The task_list is sorted by the height(t). While task_list is not empty do
@@ -131,9 +129,9 @@ void MinMinAlgorithm::Run() {
 
     avail_tasks.clear();
     while (!task_list.empty()
-        && height_[task.get_id()] == height_[task_list.front().get_id()]) {
+        && height_[task->get_id()] == height_[task_list.front()->get_id()]) {
       // build list of ready tasks, that is the tasks which the predecessor was finish
-      DLOG(INFO) << "Putting " << task_list.front().get_id() << " in avail_tasks";
+      DLOG(INFO) << "Putting " << task_list.front()->get_id() << " in avail_tasks";
       avail_tasks.push_back(task_list.front());
       task_list.pop_front();
     }

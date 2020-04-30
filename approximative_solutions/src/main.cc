@@ -12,6 +12,7 @@
  */
 
 #include "src/main.h"
+
 #include <glog/logging.h>
 #include <gflags/gflags.h>
 #include <exception>
@@ -53,10 +54,17 @@ DEFINE_uint64(number_of_iteration,
               100ul,
               "Number of attempts to build the solution");
 
+DEFINE_uint64(number_of_allocation_experiments,
+              4ul,
+              "Number of allocation experiments");
+
+DEFINE_string(cplex_input_file,
+              "graph1.col",
+              "Example of input-file name");
+
 /**
- * The \c main() function reads the configuration parameters from JSON files,
- * loads the desired input file, applies the required algorithms and writes
- * output data files.
+ * The \c main() function reads the loads the desired input files, applies the required algorithms
+ * and writes output data files.
  */
 int main(int argc, char **argv) {
   // Initialise Google's logging library
@@ -76,7 +84,9 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "Alpha Budget weight: " << FLAGS_alpha_budget;
   DLOG(INFO) << "Alpha Security weight: " << FLAGS_alpha_security;
   DLOG(INFO) << "Alpha Restrict Candidate List threshold: " << FLAGS_alpha_restrict_candidate_list;
-  DLOG(INFO) << "Number_of_iteration: " << FLAGS_number_of_iteration;
+  DLOG(INFO) << "Number of iteration: " << FLAGS_number_of_iteration;
+  DLOG(INFO) << "Number of allocation experiments: " << FLAGS_number_of_allocation_experiments;
+  DLOG(INFO) << "CPLEX input file: " << FLAGS_cplex_input_file;
   // google::FlushLogFiles(google::INFO);
 
   std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);

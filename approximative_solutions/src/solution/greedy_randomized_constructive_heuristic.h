@@ -25,7 +25,7 @@ class GreedyRandomizedConstructiveHeuristic : public Algorithm {
   ~GreedyRandomizedConstructiveHeuristic() = default;
 
   /// Schedule the avail task, one-by-one
-  void ScheduleAvailTasks(std::list<Task> avail_tasks, Solution& solution);
+  void ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution);
 
   ///
   void Run(void);
