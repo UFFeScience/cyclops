@@ -3,59 +3,64 @@
  * \brief Contains the \c ConflictGraph class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This header file contains the \c ConflictGraph class.
  */
 
-#ifndef SRC_MODEL_CONFLICT_GRAPH_H_
-#define SRC_MODEL_CONFLICT_GRAPH_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_
 
 #include <vector>
 #include <utility>
+#include "src/data_structure/matrix.h"
 
+/**
+ * \class ConflictGraph conflict_graph.h "src/model/conflict_graph.h"
+ * \brief Represents the Conflict Graph; store the conflict value between files for all pair of files
+ */
 class ConflictGraph {
-public:
+ public:
+  /// Default constructor
   ConflictGraph() = default;
-  /// Parametrised constructor
-  // explicit ConflictGraph(const int size) {
-  //   for (int i = 0; i < size; ++i) {
-  //     std::vector<int> row(static_cast<long unsigned int>(size), -1);
-  //     _conflicts.push_back(row);
-  //   }
-  // }
 
-  ConflictGraph(size_t size) {
-    for (size_t i = 0; i < size; ++i) {
-      conflicts_.push_back(std::vector<std::pair<size_t, int>>());
-    }
-  }
+  /// Parameterized constructor with full member initialisation
+  // ConflictGraph(size_t size) : conflicts_(size, size, -1) { }
 
+  /// Default constructor
   ~ConflictGraph() = default;
 
+  /// Getter for the accumulated values of soft constraints
+  size_t get_maximum_of_soft_constraints() const { return maximum_of_soft_constraints; }
+
+  /// Redefine the size of the conflict graph
   void Redefine(const int size) {
-    // for (int i = 0; i < size; ++i) {
-    //   std::vector<int> row(size, -1);
-    //   _conflicts.push_back(row);
-    // }
-    for (int i = 0; i < size; ++i) {
-      conflicts_.push_back(std::vector<std::pair<size_t, int>>());
+    conflicts_.redefine(size, size, 0);
+  }
+
+  /// Return the conflict value between the file with ID \c i and file with ID \c j
+  int ReturnConflict(size_t i, size_t j) {
+    return conflicts_(i, j);
+  }
+
+  /// Add a new conflict value between the file with ID \c i and file with ID \c j
+  void AddConflict(const size_t i, const size_t j, const int value) {
+    conflicts_(i, j) = value;
+    conflicts_(j, i) = value;
+
+    if (value > 0) {
+      maximum_of_soft_constraints += static_cast<size_t>(value);
     }
   }
 
-  /// Getter for _id
-  std::vector<std::pair<size_t, int>>& ReturnConflictVector(const size_t i) {
-    return conflicts_[i];
-  }
+ private:
+  /// The matrix containing all conflict values
+  Matrix<int> conflicts_;
 
-  /// Setter for _id
-  void AddConflict(const size_t i, const size_t j, const int value) {
-    conflicts_[i].push_back(std::make_pair(j, value));
-    conflicts_[j].push_back(std::make_pair(i, value));;
-  }
-
-private:
-  std::vector<std::vector<std::pair<size_t, int>>> conflicts_;
+  /// A positive integer that contain the sum of all soft conflict value
+  size_t maximum_of_soft_constraints = 0ul;
 };  // end of class ConflictGraph
 
-#endif  // SRC_MODEL_CONFLICT_GRAPH_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_

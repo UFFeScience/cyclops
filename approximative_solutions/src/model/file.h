@@ -1,15 +1,17 @@
 /**
- * \file src/model/File.h
+ * \file src/model/file.h
  * \brief Contains the \c File class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This header file contains the \c File class.
  */
 
-#ifndef SRC_MODEL_FILE_H_
-#define SRC_MODEL_FILE_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_
 
 #include <string>
 #include <vector>
@@ -19,59 +21,53 @@
 
 #include <limits>
 
+/**
+ * \class File file.h "src/model/file.h"
+ * \brief It is a file abstraction used by the \c DynamicFile and the \c StaticFile
+ */
 class File {
  public:
+  /// Parametrized constructor
+  explicit File(const size_t id,
+                const std::string name,
+                const double size)
+      : id_(id),
+        name_(name),
+        size_(size) { }
 
-  virtual ~File() { }
+  /// Default destructor
+  virtual ~File() = default;
 
-  /// Parametrised constructor
-  explicit File(const size_t id, const std::string name, const double size, const size_t place) :
-    id_(id), name_(name), size_(size), place_(place) { }
-
-  /// Parametrised constructor
-  explicit File(const size_t id, const std::string name, const double size) :
-    id_(id), name_(name), size_(size) { place_ = std::numeric_limits<size_t>::max(); }
-
-  /// Getter for _id
+  /// Getter for the ID of the file
   size_t get_id() const { return id_; }
 
-  /// Getter for _name
+  /// Getter for name of the file
   const std::string &get_name() const { return name_; }
 
-  /// Getter for _size
+  /// Getter for size in MBs of the file
   double get_size() const { return size_; }
 
-  /// Getter for _place
-  size_t get_place() const { return place_; }
-
-  /// Getter for _static
-  virtual bool IsStatic() { return false; };
-
+  /// Concatenate operator
   friend std::ostream& operator<<(std::ostream& os, const File& a) {
     return a.write(os);
   }
 
  protected:
+  /// Print the File object to the output stream
   std::ostream& write(std::ostream& os) const {
     return os << "File[_id: " << id_ << ", "
-      << "_name: " << name_ << ", "
-      << "_size: " << size_ << "]";
-  };
+              << "name_: " << name_ << ", "
+              << "size_: " << size_ << "]";
+  }
 
-  //  std::ostream& write(std::ostream& os) const {
-  //   return os << "File[_id: " << a.id_ << ", "
-  //     << "_name: " << a.name_ << ", "
-  //     << "_size: " << a.size_ << "]";
-
-  // }
-
+  /// The ID of the file
   size_t id_;
 
+  /// The file name
   std::string name_;
 
-	double size_;
-
-  size_t place_;
+  /// The file size in MBs
+  double size_;
 };  // end of class File
 
-#endif  // SRC_MODEL_FILE_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_

@@ -1,8 +1,8 @@
 bin
 build/
-input/clouds
-input/conflict_graph
-input/tasks_and_files
+#input/clouds
+#input/conflict_graph
+#input/tasks_and_files
 log/
 .vscode/
 docs/

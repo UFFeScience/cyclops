@@ -1,60 +1,40 @@
 /**
- * \file src/solution/MinMin.h
+ * \file src/solution/min_min_algorithm.h
  * \brief Contains the \c MinMin class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This header file contains the \c MinMin class that handles different execution modes.
  */
 
-#ifndef SRC_SOLUTION_MIN_MIN_H_
-#define SRC_SOLUTION_MIN_MIN_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_
 
 #include <list>
 #include "src/solution/algorithm.h"
 
+/**
+ * \class MinMinAlgorithm min_min_algorithm.h "src/solution/min_min_algorithm.h"
+ * \brief Implements the business logic for the execution of the heuristic
+ */
 class MinMinAlgorithm : public Algorithm {
  public:
+  /// Default constructor
+  MinMinAlgorithm() = default;
 
-  ~MinMinAlgorithm();
+  /// Default destructor
+  ~MinMinAlgorithm() = default;
 
+  /// Schedule the avail task, one-by-one
+  void ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution);
 
-  double ComputeFileWriteTime(File* file,
-                              VirtualMachine vm,
-                              std::vector<size_t>& allocation_output_files);
-
-  double ComputeTaskReadTime(Task& task,
-                             VirtualMachine& vm,
-                             std::vector<size_t>& allocation_output_files);
-
-  double ComputeTaskWriteTime(Task& task,
-                             VirtualMachine& vm,
-                             std::vector<size_t>& allocation_output_files);
-
-  double ComputeTaskStartTime(size_t task,
-                              size_t vm,
-                              std::vector<double> ft_vector,
-                              std::vector<double> queue);
-
-  double ComputeTaskFitness(Task task,
-                            VirtualMachine vm,
-                            std::vector<double>& ft_vector,
-                            std::vector<double>& queue,
-                            std::vector<size_t>& allocation);
-
-  double CalculateObjectiveFunction();
-
-  void ScheduleAvailTasks(std::list<Task> avail_tasks,
-                       std::vector<double>& ft_vector,
-                       std::vector<double>& queue,
-                       std::vector<size_t>& file_place,
-                       std::list<size_t>& task_ordering);
-
-  /// Builds the required geometric representation depending on the simulation
+  /// Create variables; initialize variable; schedule tasks in parts; print solution
   void Run(void);
 
  private:
-};  // end of class GreedyAlgorithm
+};  // end of class MinMinAlgorithm
 
-#endif  // SRC_SOLUTION_MIN_MIN_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_

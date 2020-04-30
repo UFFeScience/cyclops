@@ -1,35 +1,44 @@
 /**
- * \file src/model/DynamicFile.h
+ * \file src/model/dynamic_file.h
  * \brief Contains the \c DynamicFile class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * This header file contains the \c DynamicFile class.
  */
 
-#ifndef SRC_MODEL_DYNAMIC_FILE_H_
-#define SRC_MODEL_DYNAMIC_FILE_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_DYNAMIC_FILE_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_DYNAMIC_FILE_H_
 
 #include <glog/logging.h>
+
+#include <string>
+
 #include "src/model/file.h"
 
+/**
+ * \class DynamicFile dynamic_file.h "src/model/dynamic_file.h"
+ * \brief Represents the Dynamic File; a file produced by the executaion of a \c Task
+ */
 class DynamicFile : public File {
-public:
-  /// Parametrised constructor
+ public:
+  /// Parametrized constructor
   explicit DynamicFile(const size_t id, const std::string name, const double size) :
     File(id, name, size) { }
 
-  ~DynamicFile() { DLOG(INFO) << "deleting dynamic file " << id_; }
+  /// Default destructor
+  ~DynamicFile() = default;
 
-  /// Getter for _static
-  bool isStatic() { return false; };
-
+  /// Concatenator operator
   friend std::ostream& operator<<(std::ostream& os, const DynamicFile& a) {
     return a.write(os);
   }
 
-private:
+ private:
+  /// Writes the Dynamic File object to the output stream
   std::ostream& write(std::ostream& os) const {
     return os << "DynamicFile[id_: " << id_
               << ", name_: " << name_
@@ -37,4 +46,4 @@ private:
   }
 };  // end of class DynamicFile
 
-#endif  // SRC_MODEL_DYNAMIC_FILE_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_DYNAMIC_FILE_H_

@@ -1,5 +1,7 @@
-/**
+  /**
  * \mainpage Wf-Security User/Developer Manual
+ * \copyright Fluminense Federal University (UFF)
+ * \copyright Computer Science Department
  * \date 2020
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
@@ -12,9 +14,7 @@
  * <a href="../stats/index.html">Statistics (gitstats)</a>
  */
 
-#ifndef SRC_MAIN_H_
-#define SRC_MAIN_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MAIN_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_MAIN_H_
 
-
-
-#endif  // SRC_MAIN_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MAIN_H_
