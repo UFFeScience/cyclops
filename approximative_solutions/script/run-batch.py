@@ -93,7 +93,7 @@ def print_warning(msg):
         print(msg)
 
 
-def exec_dmer(repeat, i_file):
+def exec_dmer(repeat, i_file, i_cluster):
     # Defining the programs to run
     versions = []
     versions.append("greedy-randomized-constructive-heuristic")
@@ -106,6 +106,7 @@ def exec_dmer(repeat, i_file):
     exec_batch(versions,
                repeat,
                task_and_files=i_file,
+               cluster=i_cluster,
                conflict_graph=i_file)
 
 
@@ -118,7 +119,7 @@ def exec_batch(versions,
                alpha_cost=0.3,
                alpha_security=0.4,
                number_of_iterations=100,
-               allocation_experiments=4):
+               allocation_experiments=30000):
     out_file = ""
     for version in versions:
         # with open(output_file_name, "a") as f:
@@ -291,47 +292,47 @@ with open(average_output_file_name, "w") as f:
 file_name = "3_toy_5_A"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "3_toy_5_B"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "3_toy_5_C"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "3_toy_10_A"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "3_toy_10_B"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "3_toy_10_C"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "3_toy_15_A"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "3_toy_15_B"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "3_toy_15_C"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 # file_name = "5_toy_5_A"
 # with open(output_file_name, "a") as f:
@@ -352,81 +353,81 @@ exec_dmer(repeat, file_name)
 file_name = "CyberShake_30.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "CyberShake_50.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "CyberShake_100.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 
 file_name = "Epigenomics_24.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "Epigenomics_46.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "Epigenomics_100.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
-
-
-file_name = "Montage_25.xml"
-with open(output_file_name, "a") as f:
-    f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
-
-file_name = "Montage_50.xml"
-with open(output_file_name, "a") as f:
-    f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
-
-file_name = "Montage_100.xml"
-with open(output_file_name, "a") as f:
-    f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 
 file_name = "Inspiral_30.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "Inspiral_50.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "Inspiral_100.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
+
+
+file_name = "Montage_25.xml"
+with open(output_file_name, "a") as f:
+    f.write(file_name + "\n")
+exec_dmer(repeat, file_name, "cluster_" + file_name)
+
+file_name = "Montage_50.xml"
+with open(output_file_name, "a") as f:
+    f.write(file_name + "\n")
+exec_dmer(repeat, file_name, "cluster_" + file_name)
+
+file_name = "Montage_100.xml"
+with open(output_file_name, "a") as f:
+    f.write(file_name + "\n")
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 
 file_name = "Sipht_30.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "Sipht_60.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 file_name = "Sipht_100.xml"
 with open(output_file_name, "a") as f:
     f.write(file_name + "\n")
-exec_dmer(repeat, file_name)
+exec_dmer(repeat, file_name, "cluster_" + file_name)
 
 
 # file_name = "SciPhy_200"

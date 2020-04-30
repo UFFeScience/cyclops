@@ -1,5 +1,5 @@
 /**
- * \file src/solution/greedy_algorithm.cc
+ * \file src/solution/greedy_ramdomized_constructive_heuristic.cc
  * \brief Contains the \c Algorithm class methods.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
@@ -7,8 +7,8 @@
  * \copyright Computer Science Department
  * \date 2020
  *
- * This source file contains the methods from the \c Algorithm class that run the mode the
- * approximate solution.
+ * This source file contains the methods from the \c GreedyRandomizedConstructiveHeuristic class
+ * that run the mode the approximate solution.
  */
 
 #include "src/solution/greedy_randomized_constructive_heuristic.h"

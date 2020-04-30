@@ -36,6 +36,7 @@
 #include "src/model/virtual_machine.h"
 #include "src/solution/greedy_randomized_constructive_heuristic.h"
 #include "src/solution/min_min_algorithm.h"
+#include "src/solution/cplex.h"
 
 void Algorithm::ReadTasksAndFiles(std::string tasks_and_files,
                                   std::unordered_map<std::string, File*>& file_map_per_name) {
@@ -534,6 +535,8 @@ std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string algorith
     return std::make_shared<GreedyRandomizedConstructiveHeuristic>();
   } else if (algorithm == "min_min") {
     return std::make_shared<MinMinAlgorithm>();
+  } else if (algorithm == "cplex") {
+    return std::make_shared<Cplex>();
   } else {
     std::fprintf(stderr, "Please select a valid algorithm.\n");
     std::exit(-1);
