@@ -3,7 +3,7 @@
  * \brief Contains the \c Algorithm class methods.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
- * \authors Yuri Frota
+ * \authors Yuri Frota \<abitbol@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
  * \date 2020
