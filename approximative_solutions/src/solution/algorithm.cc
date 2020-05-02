@@ -357,7 +357,7 @@ void Algorithm::ReadCluster(std::string cluster) {
 
     period_hr_ = stod(strs1[2]);
     vm_size = stoul(strs1[4]);
-    bucket_size_ = stoul(strs1[5]);
+    size_t bucket_size = stoul(strs1[5]);
 
     // Reading VMs information
     for (auto j = 0ul; j < vm_size; j++) {
@@ -397,7 +397,7 @@ void Algorithm::ReadCluster(std::string cluster) {
     }
 
     // Reading Buckets informations
-    for (auto j = 0ul; j < bucket_size_; j++) {
+    for (auto j = 0ul; j < bucket_size; j++) {
       getline(in_cluster, line);
       DLOG(INFO) << "Bucket: " << line;
       google::FlushLogFiles(google::INFO);

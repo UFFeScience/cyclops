@@ -4,6 +4,7 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+
     {
       "name": "g++ - Build and debug active file",
       "type": "cppdbg",
@@ -41,6 +42,31 @@
         "--conflict_graph",
         "/home/ralves/my-dev/Wf-Security/approximative_solutions/input/conflict_graph/CyberShake_30.xml.scg",
         "--algorithm", "greedy_randomized_constructive_heuristic" ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "CPLEX",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/home/ralves/my-dev/Wf-Security/approximative_solutions/bin/wf_security_greedy.x",
+      "args": [ "--tasks_and_files",
+        "/home/ralves/my-dev/Wf-Security/approximative_solutions/input/tasks_and_files/CyberShake_30.xml.dag",
+        "--cluster",
+        "/home/ralves/my-dev/Wf-Security/approximative_solutions/input/clouds/cluster2.vcl",
+        "--conflict_graph",
+        "/home/ralves/my-dev/Wf-Security/approximative_solutions/input/conflict_graph/CyberShake_30.xml.scg",
+        "--algorithm", "cplex" ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
