@@ -46,29 +46,17 @@ void Cplex::Run() {
     char var_name[100];
 
     // Estrutura do Cplex (ambiente, modelo e variaveis)
-    struct CPLEX cplx(int n, int d, int m, int numvert, int numr, int numb);
+    struct CPLEX cplx(GetTaskSize(), GetFileSize(), GetVirtualMachineSize(), GetRequirementsSize(), get_bucket_size());
 
- /* **** RODIRGO **** n: numero de tarefas, d: numero de dados, m: numero de maquinas,
- numvert: numero de vertices do grafo de
- conflito, numr: numero de  requerimentos de segurança, numb: numero de buckts */
-  GetTaskSize();
-  GetFileSize();  // também é o tamanho do grafo de conflitos.
-  GetVirtualMachineSize();
-  // conflict_graph_.ReturnConflict(0, 0);  // (file_id, file_id)
-  GetRequirementsSize();
-  get_bucket_size();
-/* **** RODRIGO **** t: tempo maximo */
-  makespan_max_
-
-    // variaveis de execucao
+   // variaveis de execucao
   // X_IJT => a tarefa I que esta na maquina J, comeca a executar no periodo T
-  for(int i=0; i < n; i++)
+  for(int i=0; i < GetTaskSize(); i++)
     {
-      cplx.x[i] =  IloArray<IloBoolVarArray>(cplx.env, m);
-      for(int j=0; j < m; j++)
+      cplx.x[i] =  IloArray<IloBoolVarArray>(cplx.env, GetVirtualMachineSize());
+      for(int j=0; j < GetVirtualMachineSize(); j++)
 	    {
-	       cplx.x[i][j] = IloBoolVarArray(cplx.env, t);
-	       for(int k=0; k < t; k++)
+	       cplx.x[i][j] = IloBoolVarArray(cplx.env, makespan_max_);
+	       for(int k=0; k < makespan_max_; k++)
 	       {
 	        sprintf (var_name, "x_%d_%d_%d", (int)i,(int)j, (int)k);              // nome da variavel
 	        cplx.x[i][j][k] = IloBoolVar(cplx.env, var_name);                     // aloca variavel
@@ -76,7 +64,6 @@ void Cplex::Run() {
 	       }
 	    }
     }
-
 
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
   solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp

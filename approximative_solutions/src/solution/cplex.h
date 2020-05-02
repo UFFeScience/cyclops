@@ -35,7 +35,7 @@ struct CPLEX
   IloNumVarArray z;
   IloNumVarArray z_max;
   
-  CPLEX(int n, int d, int m, int numvert, int numr, int numb) :
+  CPLEX(int n, int d, int m, int numr, int numb) :
     env(),
     model(env),
     x(env, n),
@@ -43,7 +43,7 @@ struct CPLEX
     w(env, n),
     y(env, d),
     yb(env, d),
-    ws(env, numvert),
+    ws(env, d),
     e(env, numr),
     b(env, numb),
     q(env, numb),
