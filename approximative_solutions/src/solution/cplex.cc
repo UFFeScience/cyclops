@@ -3,6 +3,7 @@
  * \brief Contains the \c Algorithm class methods.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Yuri Frota
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
  * \date 2020
@@ -10,7 +11,7 @@
  * This source file contains the methods from the \c Cplex class that run the mode of the
  * exact solution.
  */
-// yuri frota 
+
 #include "src/solution/cplex.h"
 
 #include <gflags/gflags.h>
