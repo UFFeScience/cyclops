@@ -430,7 +430,8 @@ void Algorithm::ReadCluster(std::string cluster) {
       storage_id += 1;
       total_storage += storage;
       DLOG(INFO) << my_bucket;
-      google::FlushLogFiles(google::INFO);
+      ++bucket_size_;
+      // google::FlushLogFiles(google::INFO);
     }
     // providers_.push_back(my_provider);
   // }

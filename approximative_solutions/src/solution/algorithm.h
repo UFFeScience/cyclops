@@ -68,6 +68,9 @@ class Algorithm {
   /// Getter for \c height_
   std::vector<int>& get_height() { return height_; }
 
+  /// Getter for \c bucket_size_
+  size_t get_bucket_size() { return bucket_size_; }
+
   /// Return the size of the \c tasks_
   size_t GetTaskSize() const { return tasks_.size(); }
 
@@ -79,6 +82,9 @@ class Algorithm {
 
   /// Return the size of the \c storages_
   size_t GetStorageSize() const { return storages_.size(); }
+
+  /// Return the size of the \c requirements_
+  size_t GetRequirementsSize() const { return requirements_.size(); }
 
   /// Return a pointer to the \c File identified by \c id
   File* GetFilePerId(size_t id) { return files_[id]; }
@@ -207,7 +213,10 @@ class Algorithm {
 
   double maximum_security_and_privacy_exposure_;
 
-  double lambda_ =  0.0;  // read and write constant
+  /// The number of buckets
+  size_t bucket_size_ = 0ul;
+
+  // double lambda_ =  0.0;  // read and write constant
 };  // end of class Algorithm
 
 #endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_

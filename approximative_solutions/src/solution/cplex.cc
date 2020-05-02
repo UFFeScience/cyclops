@@ -41,17 +41,24 @@ DECLARE_string(cplex_input_file);
 ILOSTLBEGIN
 void Cplex::Run() {
     bool DEPU = false;
-  
+
     // nome das variaveis
     char var_name[100];
 
     // Estrutura do Cplex (ambiente, modelo e variaveis)
-    struct CPLEX cplx(int n, int d, int m, int numvert, int numr, int numb); 
- 
- /* **** RODIRGO **** n: numero de tarefas, d: numero de dados, m: numero de maquinas, numvert: numero de vertices do grafo de 
- conflito, numr: numero de  requerimentos de segurança, numb: numero de buckts */
+    struct CPLEX cplx(int n, int d, int m, int numvert, int numr, int numb);
 
+ /* **** RODIRGO **** n: numero de tarefas, d: numero de dados, m: numero de maquinas,
+ numvert: numero de vertices do grafo de
+ conflito, numr: numero de  requerimentos de segurança, numb: numero de buckts */
+  GetTaskSize();
+  GetFileSize();  // também é o tamanho do grafo de conflitos.
+  GetVirtualMachineSize();
+  // conflict_graph_.ReturnConflict(0, 0);  // (file_id, file_id)
+  GetRequirementsSize();
+  get_bucket_size();
 /* **** RODRIGO **** t: tempo maximo */
+  makespan_max_
 
     // variaveis de execucao
   // X_IJT => a tarefa I que esta na maquina J, comeca a executar no periodo T
@@ -64,16 +71,16 @@ void Cplex::Run() {
 	       for(int k=0; k < t; k++)
 	       {
 	        sprintf (var_name, "x_%d_%d_%d", (int)i,(int)j, (int)k);              // nome da variavel
-	        cplx.x[i][j][k] = IloBoolVar(cplx.env, var_name);                     // aloca variavel 
+	        cplx.x[i][j][k] = IloBoolVar(cplx.env, var_name);                     // aloca variavel
 	        cplx.model.add(cplx.x[i][j][k]);                                      // adiciona variavel ao modelo
 	       }
 	    }
-    } 
+    }
 
-  
+
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
   solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
 
 
-  
-}  
+
+}
