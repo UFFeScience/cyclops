@@ -10,7 +10,7 @@
  * This source file contains the methods from the \c Cplex class that run the mode of the
  * exact solution.
  */
-// yuri
+// yuri frota 
 #include "src/solution/cplex.h"
 
 #include <gflags/gflags.h>
