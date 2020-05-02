@@ -50,9 +50,6 @@ class Algorithm {
                       const std::string cluster,
                       const std::string conflict_graph);
 
-  /// Getter for \c lambda_
-  size_t get_lambda() const { return lambda_; }
-
   /// Getter for \c id_source_
   size_t get_id_source() const { return id_source_; }
 
@@ -193,7 +190,8 @@ class Algorithm {
 
   std::vector<std::vector<size_t>> predecessors_;
 
-  size_t bucket_size_;
+  /// Number of the buckets
+  size_t bucket_size_ = 0ul;
 
   std::vector<int> height_;
 
@@ -212,10 +210,6 @@ class Algorithm {
   double alpha_restrict_candidate_list_;
 
   double maximum_security_and_privacy_exposure_;
-
-  /// The number of buckets
-  size_t bucket_size_ = 0ul;
-
   // double lambda_ =  0.0;  // read and write constant
 };  // end of class Algorithm
 
