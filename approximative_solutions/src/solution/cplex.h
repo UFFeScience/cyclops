@@ -27,14 +27,14 @@ struct CPLEX
   IloArray<IloArray<IloArray<IloArray<IloBoolVarArray>>>> w;
   IloArray<IloArray<IloBoolVarArray>> y;
   IloArray<IloBoolVarArray> yb;
-  IloArray<IloBoolVarArray> ws;  
-  IloArray<IloNumVarArray> e;    
-  IloArray<IloBoolVarArray> b; 
+  IloArray<IloBoolVarArray> ws;
+  IloArray<IloNumVarArray> e;
+  IloArray<IloBoolVarArray> b;
   IloArray<IloNumVarArray> q;
   IloArray<IloBoolVarArray> v;
   IloNumVarArray z;
   IloNumVarArray z_max;
-  
+
   CPLEX(int n, int d, int m, int numr, int numb) :
     env(),
     model(env),
@@ -50,7 +50,7 @@ struct CPLEX
     v(env, m),
     z(env, m),
     z_max(env, 1) {}
- 
+
 };
 
 

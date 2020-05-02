@@ -40,30 +40,33 @@ DECLARE_string(cplex_input_file);
 
 ILOSTLBEGIN
 void Cplex::Run() {
-    bool DEPU = false;
+  // bool DEPU = false;
 
-    // nome das variaveis
-    char var_name[100];
+  // nome das variaveis
+  char var_name[100];
 
-    // Estrutura do Cplex (ambiente, modelo e variaveis)
-    struct CPLEX cplx(GetTaskSize(), GetFileSize(), GetVirtualMachineSize(), GetRequirementsSize(), get_bucket_size());
+  // Estrutura do Cplex (ambiente, modelo e variaveis)
+  int n = static_cast<int>(GetTaskSize());
+  int d = static_cast<int>(GetFileSize());
+  int m = static_cast<int>(GetVirtualMachineSize());
+  int numr = static_cast<int>(GetRequirementsSize());
+  int numb = static_cast<int>(get_bucket_size());
+
+  struct CPLEX cplx(n, d, m, numr, numb);
 
    // variaveis de execucao
   // X_IJT => a tarefa I que esta na maquina J, comeca a executar no periodo T
-  for(int i=0; i < GetTaskSize(); i++)
-    {
-      cplx.x[i] =  IloArray<IloBoolVarArray>(cplx.env, GetVirtualMachineSize());
-      for(int j=0; j < GetVirtualMachineSize(); j++)
-	    {
-	       cplx.x[i][j] = IloBoolVarArray(cplx.env, makespan_max_);
-	       for(int k=0; k < makespan_max_; k++)
-	       {
-	        sprintf (var_name, "x_%d_%d_%d", (int)i,(int)j, (int)k);              // nome da variavel
-	        cplx.x[i][j][k] = IloBoolVar(cplx.env, var_name);                     // aloca variavel
-	        cplx.model.add(cplx.x[i][j][k]);                                      // adiciona variavel ao modelo
-	       }
-	    }
+  for (int i = 0; i < n; i++) {
+    cplx.x[i] =  IloArray<IloBoolVarArray>(cplx.env, m);
+    for (int j = 0; j < m; j++) {
+      cplx.x[i][j] = IloBoolVarArray(cplx.env, makespan_max_);
+      for (int k = 0; k < makespan_max_; k++) {
+      sprintf (var_name, "x_%d_%d_%d", (int)i,(int)j, (int)k);              // nome da variavel
+      cplx.x[i][j][k] = IloBoolVar(cplx.env, var_name);                     // aloca variavel
+      cplx.model.add(cplx.x[i][j][k]);                                      // adiciona variavel ao modelo
+      }
     }
+  }
 
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
   solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
