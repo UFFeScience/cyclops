@@ -262,14 +262,30 @@ void Cplex::Run() {
   fo = alpha_time_ * (cplx.z_max[0] / _t);
 
   // Custo Financeiro
-  for (int j = 0; j < _m; j++) 
+  for (int j = 0; j < _m; j++)
   {
     VirtualMachine* virtual_machine = GetVirtualMachinePerId(j);
     fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / _cmax);        // constroi função objetivo
-   }
-   
 
-  
+
+    // Accumulate the Bucket variable cost
+    for (size_t i = GetVirtualMachineSize(); i < GetStorageSize(); ++i) {
+      Storage* storage = GetStoragePerId(i);
+
+      // Calculate the bucket variable cost
+      for (size_t j = 0ul; j < GetFileSize(); ++j) {
+        // If the Bucket is used; then accumulate de cost and break to the next Storage
+        if (file_allocations_[j] == storage->get_id()) {
+          File* file = algorithm_->GetFilePerId(j);
+
+          bucket_varible_cost += storage->get_cost() * file->get_size();
+        }
+      }
+    }
+  }
+
+
+
     get_maximum_security_and_privacy_exposure();
 
   cplx.model.add(IloMinimize(cplx.env,fo,"fo"));                            // adiciona função objetivo ao modelo
