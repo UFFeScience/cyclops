@@ -233,7 +233,7 @@ void Cplex::Run() {
       for(int j=0; j < _t; j++)
   	  {
 	      sprintf (var_name, "v_%d_%d", (int)i,(int)j);                       // nome da variavel
-	      cplx.v[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel 
+	      cplx.v[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
 	      cplx.model.add(cplx.v[i][j]);                                       // adiciona variavel ao modelo
 	    }
     }
@@ -243,7 +243,7 @@ void Cplex::Run() {
   for(int i=0; i < _m; i++)
     {
       sprintf (var_name, "z_%d", (int)i);                         // nome da variavel
-      cplx.z[i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel 
+      cplx.z[i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel
       cplx.model.add(cplx.z[i]);                                  // adiciona variavel ao modelo
     }
 
@@ -251,16 +251,21 @@ void Cplex::Run() {
   //variaveis de tempo total (makespam)
   // Z_MAX => makespam do workflow
   sprintf (var_name, "z_max");                                    // nome da variavel
-  cplx.z_max[0] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel 
+  cplx.z_max[0] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel
   cplx.model.add(cplx.z_max[0]);                                  // adiciona variavel ao modelo
 
   // ---------------- funcao objetivo -------------------
-  IloExpr fo(cplx.env);                                    
+  IloExpr fo(cplx.env);
 
   fo = alpha_time_ * (cplx.z_max[0] / _t);
 
-  for(int j = 0; j < _m; j++)
-    fo += alpha_budget_ * ((/* RODRIGO */data.m_cost[j] * cplx.z[j]) / data.max_cost_wkf /*data->c_max*/);        // constroi função objetivo
+  for (int j = 0; j < _m; j++) {
+    VirtualMachine* virtual_machine = GetVirtualMachinePerId(j);
+
+    fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / data.max_cost_wkf /*data->c_max*/);        // constroi função objetivo
+    get_budget_max();
+    get_maximum_security_and_privacy_exposure();
+  }
 
   cplx.model.add(IloMinimize(cplx.env,fo,"fo"));                            // adiciona função objetivo ao modelo
   // -----------------------------------------------------
