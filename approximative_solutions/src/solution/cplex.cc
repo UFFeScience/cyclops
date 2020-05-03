@@ -137,6 +137,37 @@ void Cplex::Run() {
     }
 
 
+  // variaveis de armazenamento independente de maquina
+  // Y_DJ => indica se o dado de indice D existe em algum tempo na maquina J
+  for(int i=0; i < _d; i++)
+    {
+      cplx.yb[i] =  IloBoolVarArray(cplx.env, _mb);
+      for(int j=0; j < _mb; j++)
+  	  {
+	      sprintf (var_name, "yb_%d_%d", (int)i,(int)j);                       // nome da variavel
+	      cplx.yb[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel 
+	      cplx.model.add(cplx.yb[i][j]);                                       // adiciona variavel ao modelo
+	    } 
+    }
+
+
+  // variaveis de penalidade de violacao de uma aresta soft
+  // W_D1D2 => violacao da aresta soft di,d2 \in E_s
+  for(int d1=0; d1 < _d; d1++)
+    {
+      cplx.ws[d1] =  IloBoolVarArray(cplx.env, _d);
+      for(int d2=0; d2 < _d; d2++)
+      /* RODRIGO */
+      {
+	      sprintf (var_name, "ws_%d_%d", (int)d1,(int)d2);                       // nome da variavel
+	      cplx.ws[d1][d2] = IloBoolVar(cplx.env, var_name);                      // aloca variavel 
+	      cplx.model.add(cplx.ws[d1][d2]);                                       // adiciona variavel ao modelo
+	    } 
+    }
+
+
+
+
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
   solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
 
