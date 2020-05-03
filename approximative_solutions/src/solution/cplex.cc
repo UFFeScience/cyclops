@@ -54,6 +54,7 @@ void Cplex::Run() {
   int _numb    = static_cast<int>(get_bucket_size());
   int _t       = makespan_max_;
   double _cmax = get_budget_max();
+  double _smax = get_maximum_security_and_privacy_exposure();
 
   struct CPLEX cplx(_n, _d, _m, _numr, _numb);
 
@@ -154,10 +155,10 @@ void Cplex::Run() {
 
   // variaveis de penalidade de violacao de uma aresta soft
   // W_D1D2 => violacao da aresta soft di,d2 \in E_s
-  for(int d1=0; d1 < _d; d1++)
+  for(int d1=0; d1 < _d-1; d1++)
     {
       cplx.ws[d1] =  IloBoolVarArray(cplx.env, _d);
-      for(int d2=0; d2 < _d; d2++)
+      for(int d2=d1+1; d2 < _d; d2++)
       {
         int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
@@ -258,38 +259,74 @@ void Cplex::Run() {
   // ---------------- funcao objetivo -------------------
   IloExpr fo(cplx.env);
 
-  // Time
+  // ---- Makespam
   fo = alpha_time_ * (cplx.z_max[0] / _t);
 
-  // Custo Financeiro
+  // ----- Custo Financeiro
   for (int j = 0; j < _m; j++)
   {
     VirtualMachine* virtual_machine = GetVirtualMachinePerId(j);
-    fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / _cmax);        // constroi função objetivo
+    fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / _cmax);        
+  }
 
+  for(int b = 0; b < _numb; b++) 
+  {
+    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-    // Accumulate the Bucket variable cost
-    for (size_t i = GetVirtualMachineSize(); i < GetStorageSize(); ++i) {
-      Storage* storage = GetStoragePerId(i);
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) 
+    {
+      for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      {
+        fo += alpha_budget_ * ((bucket->get_cost() * cplx.q[b][l]) / _cmax); 
+      }
+    } 
+    else 
+    {
+      exit(1);  // error
+    }
+  }
 
-      // Calculate the bucket variable cost
-      for (size_t j = 0ul; j < GetFileSize(); ++j) {
-        // If the Bucket is used; then accumulate de cost and break to the next Storage
-        if (file_allocations_[j] == storage->get_id()) {
-          File* file = algorithm_->GetFilePerId(j);
+  // Exposicao
+  for(int r=0; r < _numr; r++)
+    {
+      for(int i=0; i < _n; i++)
+      {
+        fo += alpha_security_ * (cplx.e[r][i] / _smax); 
+	    }
+    }
+    
+  // Penalidades das Soft arestas
+  for(int d1=0; d1 < _d-1; d1++)
+  {
+    for(int d2=d1+1; d2 < _d; d2++)
+    {
+      int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
-          bucket_varible_cost += storage->get_cost() * file->get_size();
-        }
+      if (conflict > 0) 
+      {  // soft constraint
+           fo += alpha_security_ * (conflict * cplx.ws[d1][d2] / _smax);        
       }
     }
   }
 
-
-
-    get_maximum_security_and_privacy_exposure();
-
   cplx.model.add(IloMinimize(cplx.env,fo,"fo"));                            // adiciona função objetivo ao modelo
   // -----------------------------------------------------
+
+  // --------------- RESTRIÇÕES ----------
+  for(int i=0; i < _n; i++)
+  {
+	  IloExpr exp(cplx.env);
+	  for(int j=0; j < _m; j++)
+	    for(int t=0; t < _t; t++)
+	      exp +=cplx.x[i][j][t];
+
+	  IloConstraint c(exp == 1);
+	  sprintf (var_name, "c4_%d", (int)i); 
+	  c.setName(var_name);
+	  cplx.model.add(c);
+	
+	  exp.end();
+  }
 
 
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
