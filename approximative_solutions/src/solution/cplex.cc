@@ -186,13 +186,14 @@ void Cplex::Run() {
 
   // variaveis de uso dos buckets
   // B_JL => se o bucket J esta sendo usada no intervalo L
+  // *OBS* ******* O INTERVALO 0 serve para indicar que o BUCKET NAO ESTA SENDO USADO ******
   for(int b = 0; b < _numb; b++) {
     Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
     if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) {
-      cplx.b[b] = IloBoolVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()));
+      cplx.b[b] = IloBoolVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals())+1);
 
-      for(int l = 0; l < static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
         sprintf (var_name, "b_%d_%d", (int)b,(int)l);                       // nome da variavel
         cplx.b[b][l] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
@@ -202,6 +203,68 @@ void Cplex::Run() {
       exit(1);  // error
     }
   }
+
+  // variaveis de uso dos buckets
+  // Q_JL => quantidade de dados usada pelo bucket J no intervalo L
+  // *OBS* ******* O INTERVALO 0 serve para indicar que o BUCKET NAO ESTA SENDO USADO ******
+  for(int b = 0; b < _numb; b++) {
+    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) {
+      cplx.q[b] = IloNumVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals())+1);
+
+      for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      {
+        sprintf (var_name, "q_%d_%d", (int)b,(int)l);                       // nome da variavel
+        cplx.q[b][l] = IloNumVar(cplx.env, 0, IloInfinity, var_name);       // aloca variavel
+        cplx.model.add(cplx.q[b][l]);                                       // adiciona variavel ao modelo
+      }
+    } else {
+      exit(1);  // error
+    }
+  }
+
+
+  // variaveis de uso de maquina por tempo
+  // V_JT => indica se a maquina J esta em uso (contratada) no periodo T
+  for(int i=0; i < _m; i++)
+    {
+      cplx.v[i] =  IloBoolVarArray(cplx.env, _t);
+      for(int j=0; j < _t; j++)
+  	  {
+	      sprintf (var_name, "v_%d_%d", (int)i,(int)j);                       // nome da variavel
+	      cplx.v[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel 
+	      cplx.model.add(cplx.v[i][j]);                                       // adiciona variavel ao modelo
+	    }
+    }
+
+  // variaveis de tempo total de uso por maquina
+  // Z_J => indica tempo total em que a maquina J foi usada (contratada)
+  for(int i=0; i < _m; i++)
+    {
+      sprintf (var_name, "z_%d", (int)i);                         // nome da variavel
+      cplx.z[i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel 
+      cplx.model.add(cplx.z[i]);                                  // adiciona variavel ao modelo
+    }
+
+
+  //variaveis de tempo total (makespam)
+  // Z_MAX => makespam do workflow
+  sprintf (var_name, "z_max");                                    // nome da variavel
+  cplx.z_max[0] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel 
+  cplx.model.add(cplx.z_max[0]);                                  // adiciona variavel ao modelo
+
+  // ---------------- funcao objetivo -------------------
+  IloExpr fo(cplx.env);                                    
+
+  fo = alpha_time_ * (cplx.z_max[0] / _t);
+
+  for(int j = 0; j < _m; j++)
+    fo += alpha_budget_ * ((/* RODRIGO */data.m_cost[j] * cplx.z[j]) / data.max_cost_wkf /*data->c_max*/);        // constroi função objetivo
+
+  cplx.model.add(IloMinimize(cplx.env,fo,"fo"));                            // adiciona função objetivo ao modelo
+  // -----------------------------------------------------
+
 
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
   solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
