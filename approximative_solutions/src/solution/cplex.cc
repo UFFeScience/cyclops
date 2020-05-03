@@ -46,13 +46,14 @@ void Cplex::Run() {
   char var_name[100];
 
   // Estrutura do Cplex (ambiente, modelo e variaveis)
-  int _n    = static_cast<int>(GetTaskSize() - 2);  // less source and target
-  int _d    = static_cast<int>(GetFileSize());
-  int _m    = static_cast<int>(GetVirtualMachineSize());
-  int _mb   = static_cast<int>(GetStorageSize());
-  int _numr = static_cast<int>(GetRequirementsSize());
-  int _numb = static_cast<int>(get_bucket_size());
-  int _t    = makespan_max_;
+  int _n       = static_cast<int>(GetTaskSize() - 2);  // less source and target
+  int _d       = static_cast<int>(GetFileSize());
+  int _m       = static_cast<int>(GetVirtualMachineSize());
+  int _mb      = static_cast<int>(GetStorageSize());
+  int _numr    = static_cast<int>(GetRequirementsSize());
+  int _numb    = static_cast<int>(get_bucket_size());
+  int _t       = makespan_max_;
+  double _cmax = get_budget_max();
 
   struct CPLEX cplx(_n, _d, _m, _numr, _numb);
 
@@ -257,15 +258,19 @@ void Cplex::Run() {
   // ---------------- funcao objetivo -------------------
   IloExpr fo(cplx.env);
 
+  // Time
   fo = alpha_time_ * (cplx.z_max[0] / _t);
 
-  for (int j = 0; j < _m; j++) {
+  // Custo Financeiro
+  for (int j = 0; j < _m; j++) 
+  {
     VirtualMachine* virtual_machine = GetVirtualMachinePerId(j);
+    fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / _cmax);        // constroi função objetivo
+   }
+   
 
-    fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / data.max_cost_wkf /*data->c_max*/);        // constroi função objetivo
-    get_budget_max();
+  
     get_maximum_security_and_privacy_exposure();
-  }
 
   cplx.model.add(IloMinimize(cplx.env,fo,"fo"));                            // adiciona função objetivo ao modelo
   // -----------------------------------------------------
