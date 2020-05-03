@@ -81,7 +81,7 @@ void Cplex::Run() {
     for (int j = 0; j < static_cast<int>(input_files.size()); j++) {
       cplx.r[i][j] = IloArray<IloArray<IloBoolVarArray>>(cplx.env, _m);
       for (int k = 0; k < _m; k++) {
-        cplx.r[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, _m);
+        cplx.r[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, _mb);
         for (int l = 0; l < _mb; l++) {
           cplx.r[i][j][k][l] = IloBoolVarArray(cplx.env, _t);
           for (int m = 0; m < _t; m++) {
@@ -105,11 +105,10 @@ void Cplex::Run() {
     for (int j = 0; j < static_cast<int>(output_files.size()); j++) {
       cplx.w[i][j] = IloArray<IloArray<IloBoolVarArray>>(cplx.env, _m);
       for (int k = 0; k < _m; k++) {
-	      cplx.w[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, _m);
+	      cplx.w[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, _mb);
 	      for (int l = 0; l < _mb; l++) {
           cplx.w[i][j][k][l] = IloBoolVarArray(cplx.env, _t);
           for (int m = 0; m < _t; m++) {
-            //cout<<"cria w_"<<i<<"_"<<j<<"_"<<k<<"_"<<l<<"_"<<m<<endl;
             sprintf (var_name, "w_%d_%d_%d_%d_%d", (int)i,(int)j, (int)k, (int)l, (int)m);            // nome da variavel
             cplx.w[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel
             cplx.model.add(cplx.w[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
