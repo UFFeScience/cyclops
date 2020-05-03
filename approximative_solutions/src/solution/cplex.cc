@@ -46,11 +46,13 @@ void Cplex::Run() {
   char var_name[100];
 
   // Estrutura do Cplex (ambiente, modelo e variaveis)
-  int n = static_cast<int>(GetTaskSize() - 2);  // less source and target
-  int d = static_cast<int>(GetFileSize());
-  int m = static_cast<int>(GetVirtualMachineSize());
+  int n    = static_cast<int>(GetTaskSize() - 2);  // less source and target
+  int d    = static_cast<int>(GetFileSize());
+  int m    = static_cast<int>(GetVirtualMachineSize());
+  int mb   = static_cast<int>(GetStorageSize());
   int numr = static_cast<int>(GetRequirementsSize());
   int numb = static_cast<int>(get_bucket_size());
+  int t    = makespan_max_;
 
   struct CPLEX cplx(n, d, m, numr, numb);
 
@@ -59,8 +61,8 @@ void Cplex::Run() {
   for (int i = 0; i < n; i++) {
     cplx.x[i] =  IloArray<IloBoolVarArray>(cplx.env, m);
     for (int j = 0; j < m; j++) {
-      cplx.x[i][j] = IloBoolVarArray(cplx.env, makespan_max_);
-      for (int k = 0; k < makespan_max_; k++) {
+      cplx.x[i][j] = IloBoolVarArray(cplx.env, t);
+      for (int k = 0; k < t; k++) {
       sprintf (var_name, "x_%d_%d_%d", (int)i,(int)j, (int)k);              // nome da variavel
       cplx.x[i][j][k] = IloBoolVar(cplx.env, var_name);                     // aloca variavel
       cplx.model.add(cplx.x[i][j][k]);                                      // adiciona variavel ao modelo
@@ -72,18 +74,17 @@ void Cplex::Run() {
   // R_IDJPT => a tarefa I que esta na maquina J, comeca a ler o seu D-esimo dado de entrada
   // (note que nao eh o dado de indice D) a partir da maquina P no periodo T
   for (int i = 0; i < n; i++) {
-    Task* task = GetTaskPerId(i + 1);
-
-    cplx.r[i] =  IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, data.d_in_tam[i]);
-    // for(int j = 0; j < data.d_in_tam[i]; j++) {
+    Task*              task        = GetTaskPerId(i + 1);
     std::vector<File*> input_files = task->get_input_files();
+    cplx.r[i]                      =  IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, input_files.size());
+
     for(int j = 0; j < input_files.size(); j++) {
-      cplx.r[i][j] = IloArray<IloArray<IloBoolVarArray>>(cplx.env, data.m);
-      for(int k=0; k < data.m; k++ {
-        cplx.r[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, data.m);
-        for(int l=0; l < data.m; l++) {
-          cplx.r[i][j][k][l] = IloBoolVarArray(cplx.env, data.t);
-          for(int m=0; m < data.t; m++) {
+      cplx.r[i][j] = IloArray<IloArray<IloBoolVarArray>>(cplx.env, m);
+      for(int k=0; k < m; k++ {
+        cplx.r[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, m);
+        for(int l=0; l < mb; l++) {
+          cplx.r[i][j][k][l] = IloBoolVarArray(cplx.env, t);
+          for(int m=0; m < t; m++) {
             sprintf (var_name, "r_%d_%d_%d_%d_%d", (int)i,(int)j, (int)k, (int)l, (int)m);            // nome da variavel
             cplx.r[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel
             cplx.model.add(cplx.r[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
@@ -92,6 +93,7 @@ void Cplex::Run() {
       }
     }
   }
+  
 
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
   solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
