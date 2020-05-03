@@ -130,7 +130,7 @@ void Cplex::Run() {
   	    for(int k=0; k < _t; k++)
   	    {
 	        sprintf (var_name, "y_%d_%d_%d", (int)i,(int)j, (int)k);                       // nome da variavel
-	        cplx.y[i][j][k] = IloBoolVar(cplx.env, var_name);                              // aloca variavel 
+	        cplx.y[i][j][k] = IloBoolVar(cplx.env, var_name);                              // aloca variavel
 	        cplx.model.add(cplx.y[i][j][k]);                                               // adiciona variavel ao modelo
 	      }
   	  }
@@ -145,9 +145,9 @@ void Cplex::Run() {
       for(int j=0; j < _mb; j++)
   	  {
 	      sprintf (var_name, "yb_%d_%d", (int)i,(int)j);                       // nome da variavel
-	      cplx.yb[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel 
+	      cplx.yb[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
 	      cplx.model.add(cplx.yb[i][j]);                                       // adiciona variavel ao modelo
-	    } 
+	    }
     }
 
 
@@ -159,10 +159,14 @@ void Cplex::Run() {
       for(int d2=0; d2 < _d; d2++)
       /* RODRIGO */
       {
-	      sprintf (var_name, "ws_%d_%d", (int)d1,(int)d2);                       // nome da variavel
-	      cplx.ws[d1][d2] = IloBoolVar(cplx.env, var_name);                      // aloca variavel 
-	      cplx.model.add(cplx.ws[d1][d2]);                                       // adiciona variavel ao modelo
-	    } 
+        int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
+
+        if (conflict > 0) {  // soft constraint
+          sprintf (var_name, "ws_%d_%d", (int)d1,(int)d2);                       // nome da variavel
+          cplx.ws[d1][d2] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
+          cplx.model.add(cplx.ws[d1][d2]);                                       // adiciona variavel ao modelo
+        }
+	    }
     }
 
 
