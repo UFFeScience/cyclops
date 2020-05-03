@@ -80,7 +80,7 @@ void Cplex::Run() {
 
     for(int j = 0; j < input_files.size(); j++) {
       cplx.r[i][j] = IloArray<IloArray<IloBoolVarArray>>(cplx.env, m);
-      for(int k=0; k < m; k++ {
+      for(int k=0; k < m; k++ ){
         cplx.r[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, m);
         for(int l=0; l < mb; l++) {
           cplx.r[i][j][k][l] = IloBoolVarArray(cplx.env, t);
