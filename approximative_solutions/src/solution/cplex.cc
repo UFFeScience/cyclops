@@ -119,6 +119,24 @@ void Cplex::Run() {
   }
 
 
+   // variaveis de armazenamento
+  // Y_DJT => indica se o dado de indice D esta armazenado na maquina J no periodo T
+  for(int i=0; i < _d; i++)
+    {
+      cplx.y[i] =  IloArray<IloBoolVarArray>(cplx.env, _mb);
+      for(int j=0; j < _mb; j++)
+  	  {
+  	    cplx.y[i][j] = IloBoolVarArray(cplx.env, _t);
+  	    for(int k=0; k < _t; k++)
+  	    {
+	        sprintf (var_name, "y_%d_%d_%d", (int)i,(int)j, (int)k);                       // nome da variavel
+	        cplx.y[i][j][k] = IloBoolVar(cplx.env, var_name);                              // aloca variavel 
+	        cplx.model.add(cplx.y[i][j][k]);                                               // adiciona variavel ao modelo
+	      }
+  	  }
+    }
+
+
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
   solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
 
