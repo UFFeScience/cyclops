@@ -46,7 +46,7 @@ void Cplex::Run() {
   char var_name[100];
 
   // Estrutura do Cplex (ambiente, modelo e variaveis)
-  int n = static_cast<int>(GetTaskSize());
+  int n = static_cast<int>(GetTaskSize() - 2);  // less source and target
   int d = static_cast<int>(GetFileSize());
   int m = static_cast<int>(GetVirtualMachineSize());
   int numr = static_cast<int>(GetRequirementsSize());
