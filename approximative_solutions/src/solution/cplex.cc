@@ -71,28 +71,27 @@ void Cplex::Run() {
   // variaveis de leitura
   // R_IDJPT => a tarefa I que esta na maquina J, comeca a ler o seu D-esimo dado de entrada
   // (note que nao eh o dado de indice D) a partir da maquina P no periodo T
-  for(int i=0; i < n; i++)
-    {
-      cplx.r[i] =  IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, data.d_in_tam[i]);
-      for(int j=0; j < data.d_in_tam[i]; j++)
-	    {
-	      cplx.r[i][j] = IloArray<IloArray<IloBoolVarArray>>(cplx.env, data.m);
-	      for(int k=0; k < data.m; k++)
-	      {
-	        cplx.r[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, data.m);
-	        for(int l=0; l < data.m; l++)
-		      {
-		        cplx.r[i][j][k][l] = IloBoolVarArray(cplx.env, data.t);
-		        for(int m=0; m < data.t; m++)
-		        {
-		          sprintf (var_name, "r_%d_%d_%d_%d_%d", (int)i,(int)j, (int)k, (int)l, (int)m);            // nome da variavel
-		          cplx.r[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel 
-		          cplx.model.add(cplx.r[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
-		        }
-		      }
-	      }
-	    }
+  for (int i = 0; i < n; i++) {
+    Task* task = GetTaskPerId(i + 1);
+
+    cplx.r[i] =  IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, data.d_in_tam[i]);
+    // for(int j = 0; j < data.d_in_tam[i]; j++) {
+    std::vector<File*> input_files = task->get_input_files();
+    for(int j = 0; j < input_files.size(); j++) {
+      cplx.r[i][j] = IloArray<IloArray<IloBoolVarArray>>(cplx.env, data.m);
+      for(int k=0; k < data.m; k++ {
+        cplx.r[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, data.m);
+        for(int l=0; l < data.m; l++) {
+          cplx.r[i][j][k][l] = IloBoolVarArray(cplx.env, data.t);
+          for(int m=0; m < data.t; m++) {
+            sprintf (var_name, "r_%d_%d_%d_%d_%d", (int)i,(int)j, (int)k, (int)l, (int)m);            // nome da variavel
+            cplx.r[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel
+            cplx.model.add(cplx.r[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
+          }
+        }
+      }
     }
+  }
 
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
   solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
