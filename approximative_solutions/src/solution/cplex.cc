@@ -157,7 +157,6 @@ void Cplex::Run() {
     {
       cplx.ws[d1] =  IloBoolVarArray(cplx.env, _d);
       for(int d2=0; d2 < _d; d2++)
-      /* RODRIGO */
       {
         int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
@@ -169,8 +168,35 @@ void Cplex::Run() {
 	    }
     }
 
+  
+  // variaveis de exposição
+  // E_RI => nivel de exposicao da tarefa I pelo requerimento R
+  for(int r=0; r < _numr; r++)
+    {
+      cplx.e[r] =  IloNumVarArray(cplx.env, _n);
+
+      for(int i=0; i < _n; i++)
+      {
+        sprintf (var_name, "xe_%d_%d", (int)r,(int)i);                       // nome da variavel
+	      cplx.e[r][i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);       // aloca variavel
+	      cplx.model.add(cplx.e[r][i]);                                       // adiciona variavel ao modelo
+	    }
+    }
 
 
+  // variaveis de uso dos buckets
+  // B_JL => se o bucket J esta sendo usada no intervalo L
+  for(int b=0; b < _numb; b++)
+    {
+      cplx.b[b] = IloBoolVarArray(cplx.env, /* numero de intervalos do bucket b */);
+
+      for(int l=0; l < /* numero de intervalos do bucket b */; l++)
+      {
+        sprintf (var_name, "b_%d_%d", (int)b,(int)l);                       // nome da variavel
+	      cplx.b[b][l] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
+	      cplx.model.add(cplx.b[b][l]);                                       // adiciona variavel ao modelo
+	    }
+    }
 
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
   solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
