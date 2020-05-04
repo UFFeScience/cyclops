@@ -34,7 +34,7 @@
 #include "src/model/data.h"
 // #include "src/model/storage.h"
 
-DECLARE_string(cplex_input_file);
+DECLARE_string(cplex_output_file);
 
 #define PRECISAO 0.00001
 
@@ -265,22 +265,22 @@ void Cplex::Run() {
   // ----- Custo Financeiro
   for (int j = 0; j < _m; j++)
   {
-    VirtualMachine* virtual_machine = GetVirtualMachinePerId(j);
-    fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / _cmax);        
+    VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+    fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / _cmax);
   }
 
-  for(int b = 0; b < _numb; b++) 
+  for(int b = 0; b < _numb; b++)
   {
     Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) 
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
     {
       for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
-        fo += alpha_budget_ * ((bucket->get_cost() * cplx.q[b][l]) / _cmax); 
+        fo += alpha_budget_ * ((bucket->get_cost() * cplx.q[b][l]) / _cmax);
       }
-    } 
-    else 
+    }
+    else
     {
       exit(1);  // error
     }
@@ -291,10 +291,10 @@ void Cplex::Run() {
     {
       for(int i=0; i < _n; i++)
       {
-        fo += alpha_security_ * (cplx.e[r][i] / _smax); 
+        fo += alpha_security_ * (cplx.e[r][i] / _smax);
 	    }
     }
-    
+
   // Penalidades das Soft arestas
   for(int d1=0; d1 < _d-1; d1++)
   {
@@ -302,9 +302,9 @@ void Cplex::Run() {
     {
       int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
-      if (conflict > 0) 
+      if (conflict > 0)
       {  // soft constraint
-           fo += alpha_security_ * (conflict * cplx.ws[d1][d2] / _smax);        
+        fo += alpha_security_ * (conflict * cplx.ws[d1][d2] / _smax);
       }
     }
   }
@@ -321,17 +321,14 @@ void Cplex::Run() {
 	      exp +=cplx.x[i][j][t];
 
 	  IloConstraint c(exp == 1);
-	  sprintf (var_name, "c4_%d", (int)i); 
+	  sprintf (var_name, "c4_%d", (int)i);
 	  c.setName(var_name);
 	  cplx.model.add(c);
-	
+
 	  exp.end();
   }
 
-
   IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
-  solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
-
-
-
+  // solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
+  solver.exportModel(FLAGS_cplex_output_file.c_str());        // escreve modelo no arquivo no formato .lp
 }

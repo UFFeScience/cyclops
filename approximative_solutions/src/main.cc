@@ -58,7 +58,7 @@ DEFINE_uint64(number_of_allocation_experiments,
               4ul,
               "Number of allocation experiments");
 
-DEFINE_string(cplex_input_file,
+DEFINE_string(cplex_output_file,
               "graph1.col",
               "Example of input-file name");
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
   DLOG(INFO) << "Alpha Restrict Candidate List threshold: " << FLAGS_alpha_restrict_candidate_list;
   DLOG(INFO) << "Number of iteration: " << FLAGS_number_of_iteration;
   DLOG(INFO) << "Number of allocation experiments: " << FLAGS_number_of_allocation_experiments;
-  DLOG(INFO) << "CPLEX input file: " << FLAGS_cplex_input_file;
+  DLOG(INFO) << "CPLEX output file: " << FLAGS_cplex_output_file;
   // google::FlushLogFiles(google::INFO);
 
   std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);

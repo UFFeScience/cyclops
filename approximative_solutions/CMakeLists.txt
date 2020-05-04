@@ -17,7 +17,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # set(WARNINGS "-Wall -Wextra -Wshadow -Wsign-conversion -Wsign-promo -Wpedantic")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON} ${WARNINGS}")
 # Default C++ flags
-set(COMMON "-fdiagnostics-color")
+set(COMMON "-fdiagnostics-color -g")
 set(WARNINGS "-Wall -Wextra -Wshadow -Wsign-conversion -Wsign-promo -Wpedantic")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON} ${WARNINGS}")
 
