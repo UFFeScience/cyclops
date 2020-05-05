@@ -328,6 +328,91 @@ void Cplex::Run() {
 	  exp.end();
   }
 
+
+// Restricao (5)
+for (int i = 0; i < _n; i++)
+  {
+    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
+    std::vector<File*> input_files = task->get_input_files();
+
+    for (int d = 0; d < static_cast<int>(input_files.size()); d++)
+      {
+        IloExpr exp(cplx.env);
+          for(int j=0; j < _m; j++)
+            for(int p=0; p < _mb; p++)
+              for(int t=0; t < _t; t++)
+                exp +=cplx.r[i][d][j][p][t];
+        
+        IloConstraint c(exp == 1);
+        sprintf (var_name, "c5_%d_%d", (int)i, (int)d); 
+        c.setName(var_name);
+        cplx.model.add(c);
+        
+        exp.end();
+      }
+  }
+
+
+// Restricao (6)
+for (int i = 0; i < _n; i++)
+  {
+    Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
+    std::vector<File*> output_files = task->get_output_files();
+    
+    for (int d = 0; d < static_cast<int>(output_files.size()); d++)
+      {
+        IloExpr exp(cplx.env);
+        for (int j = 0; j < _m; j++)
+          for (int p = 0; p < _mb; p++)
+            for (int t = 0; t < _t; t++)
+              exp +=cplx.w[i][d][j][p][t];
+              
+        IloConstraint c(exp == 1);
+        sprintf (var_name, "c6_%d_%d", (int)i, (int)d); 
+        c.setName(var_name);
+        cplx.model.add(c);
+        
+        exp.end();
+      }
+  }
+     
+
+// Restricao (7)
+for (int teto, i = 0; i < _n; i++)
+  {
+    Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
+    std::vector<File*> output_files = task->get_output_files();
+    
+    for (int d = 0; d < static_cast<int>(output_files.size()); d++)
+      {
+	      for (int j = 0; j < _m; j++)
+	        {
+	          for (int p = 0; p < _mb; p++)
+	            {
+		            for (int t = task->get_time() /* <RODRIGO> t_ij( i+1 , j )*/ ; t < _t; t++)
+		              {
+		                IloExpr exp(cplx.env);
+		                exp +=cplx.w[i][d][j][p][t];
+
+                    /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
+                    teto=max(0,/* <RODRIGO> t - t_ij( i+1 , j )*/);
+                    for(int q=0; q <= teto; q++)
+                      exp -=cplx.x[i][j][q];
+
+                    IloConstraint c(exp <= 0);
+                    sprintf (var_name, "c7_%d_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)p, (int)t); 
+                    c.setName(var_name);
+                    cplx.model.add(c);
+                
+                    exp.end();
+		              }
+	              } 
+	          }
+      }
+  }
+
+
+
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
   solver.exportModel(FLAGS_cplex_output_file.c_str());  // escreve modelo no arquivo no formato .lp
