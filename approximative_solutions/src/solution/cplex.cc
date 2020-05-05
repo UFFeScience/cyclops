@@ -71,6 +71,11 @@ int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
     time = static_cast<int>(std::ceil(file->get_size() / link));
     // time = file->get_size() / link;
   }
+  else
+  {
+    time = 1;
+  }
+  
 
   DLOG(INFO) << "tranfer_time: " << time;
   return time;
@@ -507,17 +512,14 @@ void Cplex::Run() {
           {
             Storage* storage = GetStoragePerId(static_cast<size_t>(p));
             /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
-            /* dd eh o d-esimo de i */
-            /* <RODRIGO> t - t_djp( dd, j , p )*/
-            teto = max(0, ComputeFileTransferTime(file, virtual_machine, storage));
-            if (teto < _t) {
+            
+            if ((t - ComputeFileTransferTime(file, virtual_machine, storage)) >= 0)
+            { 
+              teto = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage));
               for (int q = 0; q <= teto; q++)
-                exp -= cplx.r[i][d][j][p][q];
+                  exp -= cplx.r[i][d][j][p][q];
             }
-            else
-            {
-              std::cout << "Eita ...!" << std::endl;
-            }
+            
           }
 
           IloConstraint c(exp <= 0);
