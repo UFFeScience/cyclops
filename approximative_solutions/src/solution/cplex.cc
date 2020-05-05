@@ -390,7 +390,6 @@ void Cplex::Run() {
 
         for (int p = 0; p < _mb; p++)
         {
-          /* <RODRIGO> t_ij( i+1 , j )*/
           int tempo = std::ceil(task->get_time() * virtual_machine->get_slowdown());
           for (int t = tempo; t < _t; t++)
           {
@@ -398,7 +397,6 @@ void Cplex::Run() {
             exp +=cplx.w[i][d][j][p][t];
 
             /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
-            /* <RODRIGO> t - t_ij( i+1 , j )*/
             teto = std::max(0, tempo);
             for(int q = 0; q <= teto; q++)
               exp -=cplx.x[i][j][q];
@@ -413,6 +411,76 @@ void Cplex::Run() {
         }
       }
     }
+  }
+
+
+// Restricao (8)
+for (int i = 0; i < _n; i++)
+  {
+    Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
+    std::vector<File*> output_files = task->get_output_files();
+
+    for (int d = 0; d < static_cast<int>(output_files.size()); d++)
+    {
+      for (int j = 0; j < _m; j++)
+      {
+        VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+
+        for (int p = 0; p < _mb; p++)
+        {
+          int tempo = std::ceil(task->get_time() * virtual_machine->get_slowdown());
+          for (int t = tempo; t < _t; t++)
+          {
+            IloExpr exp(cplx.env);
+            exp +=cplx.w[i][d][j][p][t];
+
+            IloConstraint c(exp == 0);
+            sprintf (var_name, "c8_%d_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)p, (int)t); 
+            c.setName(var_name);
+            cplx.model.add(c);
+        
+            exp.end();
+		      }
+	      }
+  	  }
+    }
+  }
+
+
+  //Retricao (9)
+for (int teto, i = 0; i < _n; i++)
+  {
+    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
+    std::vector<File*> input_files = task->get_input_files();
+    
+    for (int d = 0; d < static_cast<int>(input_files.size()); d++)
+      {
+	      for (int j = 0; j < _m; j++)
+	        {
+	          /* vamos fazer para todo t pois assim quando (t-t_djp) < 0, o lado direito sera 0 e impede a execucao da tarefa naquele tempo */
+	          for (int t = 0; t < _t; t++)
+	            {
+		            IloExpr exp(cplx.env);
+		            exp =cplx.x[i][j][t];
+
+		            for(int p=0; p < _mb; p++)
+		              {
+		                /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
+		                /* dd eh o d-esimo de i */
+		                teto=max(0,/* <RODRIGO> t - t_djp( dd, j , p )*/);
+		                for(int q=0; q <= teto; q++)
+		                  exp -=cplx.r[i][d][j][p][q];
+		              }
+
+                IloConstraint c(exp <= 0);
+                sprintf (var_name, "c9_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)t); 
+                c.setName(var_name);
+                cplx.model.add(c);
+                
+                exp.end();
+	            }
+	        }
+      }
   }
 
 
