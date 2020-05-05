@@ -87,7 +87,7 @@ void Cplex::Run() {
         for (int l = 0; l < _mb; l++) {
           cplx.r[i][j][k][l] = IloBoolVarArray(cplx.env, _t);
           for (int m = 0; m < _t; m++) {
-            sprintf (var_name, "r_%d_%d_%d_%d_%d", (int)i,(int)j, (int)k, (int)l, (int)m);            // nome da variavel
+            sprintf (var_name, "r_%d_%d_%d_%d_%d", (int) i, (int) j, (int) k, (int) l, (int) m);      // nome da variavel
             cplx.r[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel
             cplx.model.add(cplx.r[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
           }
@@ -97,7 +97,7 @@ void Cplex::Run() {
   }
 
   // variaveis de escrita
-  // W_DJPT => a tarefa I que esta na maquina J, comeca a escrever o seu D-esimo dado de entrada
+  // W_IDJPT => a tarefa I que esta na maquina J, comeca a escrever o seu D-esimo dado de entrada
   // (note que nao eh o dado de indice D) a partir da maquina P no periodo T
   for (int i = 0; i < _n; i++) {
     Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
@@ -111,7 +111,7 @@ void Cplex::Run() {
 	      for (int l = 0; l < _mb; l++) {
           cplx.w[i][j][k][l] = IloBoolVarArray(cplx.env, _t);
           for (int m = 0; m < _t; m++) {
-            sprintf (var_name, "w_%d_%d_%d_%d_%d", (int)i,(int)j, (int)k, (int)l, (int)m);            // nome da variavel
+            sprintf (var_name, "w_%d_%d_%d_%d_%d", (int) i, (int) j, (int) k, (int) l, (int) m);      // nome da variavel
             cplx.w[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel
             cplx.model.add(cplx.w[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
 		      }
@@ -123,52 +123,52 @@ void Cplex::Run() {
 
    // variaveis de armazenamento
   // Y_DJT => indica se o dado de indice D esta armazenado na maquina J no periodo T
-  for(int i=0; i < _d; i++)
+  for (int i = 0; i < _d; i++)
+  {
+    cplx.y[i] =  IloArray<IloBoolVarArray>(cplx.env, _mb);
+    for(int j = 0; j < _mb; j++)
     {
-      cplx.y[i] =  IloArray<IloBoolVarArray>(cplx.env, _mb);
-      for(int j=0; j < _mb; j++)
-  	  {
-  	    cplx.y[i][j] = IloBoolVarArray(cplx.env, _t);
-  	    for(int k=0; k < _t; k++)
-  	    {
-	        sprintf (var_name, "y_%d_%d_%d", (int)i,(int)j, (int)k);                       // nome da variavel
-	        cplx.y[i][j][k] = IloBoolVar(cplx.env, var_name);                              // aloca variavel
-	        cplx.model.add(cplx.y[i][j][k]);                                               // adiciona variavel ao modelo
-	      }
-  	  }
+      cplx.y[i][j] = IloBoolVarArray(cplx.env, _t);
+      for(int k = 0; k < _t; k++)
+      {
+        sprintf(var_name, "y_%d_%d_%d", (int) i, (int) j, (int) k);                    // nome da variavel
+        cplx.y[i][j][k] = IloBoolVar(cplx.env, var_name);                              // aloca variavel
+        cplx.model.add(cplx.y[i][j][k]);                                               // adiciona variavel ao modelo
+      }
     }
+  }
 
 
   // variaveis de armazenamento independente de maquina
   // Y_DJ => indica se o dado de indice D existe em algum tempo na maquina J
-  for(int i=0; i < _d; i++)
+  for (int i = 0; i < _d; i++)
+  {
+    cplx.yb[i] =  IloBoolVarArray(cplx.env, _mb);
+    for(int j = 0; j < _mb; j++)
     {
-      cplx.yb[i] =  IloBoolVarArray(cplx.env, _mb);
-      for(int j=0; j < _mb; j++)
-  	  {
-	      sprintf (var_name, "yb_%d_%d", (int)i,(int)j);                       // nome da variavel
-	      cplx.yb[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
-	      cplx.model.add(cplx.yb[i][j]);                                       // adiciona variavel ao modelo
-	    }
+      sprintf(var_name, "yb_%d_%d", (int) i, (int) j);                     // nome da variavel
+      cplx.yb[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
+      cplx.model.add(cplx.yb[i][j]);                                       // adiciona variavel ao modelo
     }
+  }
 
 
   // variaveis de penalidade de violacao de uma aresta soft
   // W_D1D2 => violacao da aresta soft di,d2 \in E_s
-  for(int d1=0; d1 < _d-1; d1++)
+  for (int d1=0; d1 < _d-1; d1++)
+  {
+    cplx.ws[d1] =  IloBoolVarArray(cplx.env, _d);
+    for(int d2=d1+1; d2 < _d; d2++)
     {
-      cplx.ws[d1] =  IloBoolVarArray(cplx.env, _d);
-      for(int d2=d1+1; d2 < _d; d2++)
-      {
-        int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
+      int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
-        if (conflict > 0) {  // soft constraint
-          sprintf (var_name, "ws_%d_%d", (int)d1,(int)d2);                       // nome da variavel
-          cplx.ws[d1][d2] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
-          cplx.model.add(cplx.ws[d1][d2]);                                       // adiciona variavel ao modelo
-        }
-	    }
+      if (conflict > 0) {  // soft constraint
+        sprintf(var_name, "ws_%d_%d", (int) d1, (int) d2);                     // nome da variavel
+        cplx.ws[d1][d2] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
+        cplx.model.add(cplx.ws[d1][d2]);                                       // adiciona variavel ao modelo
+      }
     }
+  }
 
 
   // variaveis de exposição
@@ -217,7 +217,7 @@ void Cplex::Run() {
 
       for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
-        sprintf (var_name, "q_%d_%d", (int)b,(int)l);                       // nome da variavel
+        sprintf(var_name, "q_%d_%d", (int) b, (int) l);                     // nome da variavel
         cplx.q[b][l] = IloNumVar(cplx.env, 0, IloInfinity, var_name);       // aloca variavel
         cplx.model.add(cplx.q[b][l]);                                       // adiciona variavel ao modelo
       }
@@ -229,30 +229,30 @@ void Cplex::Run() {
 
   // variaveis de uso de maquina por tempo
   // V_JT => indica se a maquina J esta em uso (contratada) no periodo T
-  for(int i=0; i < _m; i++)
+  for(int i = 0; i < _m; i++)
+  {
+    cplx.v[i] =  IloBoolVarArray(cplx.env, _t);
+    for(int j=0; j < _t; j++)
     {
-      cplx.v[i] =  IloBoolVarArray(cplx.env, _t);
-      for(int j=0; j < _t; j++)
-  	  {
-	      sprintf (var_name, "v_%d_%d", (int)i,(int)j);                       // nome da variavel
-	      cplx.v[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
-	      cplx.model.add(cplx.v[i][j]);                                       // adiciona variavel ao modelo
-	    }
+      sprintf(var_name, "v_%d_%d", (int) i, (int) j);                     // nome da variavel
+      cplx.v[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
+      cplx.model.add(cplx.v[i][j]);                                       // adiciona variavel ao modelo
     }
+  }
 
   // variaveis de tempo total de uso por maquina
   // Z_J => indica tempo total em que a maquina J foi usada (contratada)
   for(int i=0; i < _m; i++)
-    {
-      sprintf (var_name, "z_%d", (int)i);                         // nome da variavel
-      cplx.z[i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel
-      cplx.model.add(cplx.z[i]);                                  // adiciona variavel ao modelo
-    }
+  {
+    sprintf(var_name, "z_%d", (int) i);                         // nome da variavel
+    cplx.z[i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel
+    cplx.model.add(cplx.z[i]);                                  // adiciona variavel ao modelo
+  }
 
 
   //variaveis de tempo total (makespam)
   // Z_MAX => makespam do workflow
-  sprintf (var_name, "z_max");                                    // nome da variavel
+  sprintf(var_name, "z_max");                                     // nome da variavel
   cplx.z_max[0] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel
   cplx.model.add(cplx.z_max[0]);                                  // adiciona variavel ao modelo
 
@@ -269,13 +269,13 @@ void Cplex::Run() {
     fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / _cmax);
   }
 
-  for(int b = 0; b < _numb; b++)
+  for (int b = 0; b < _numb; b++)
   {
     Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
     if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
     {
-      for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      for (int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
         fo += alpha_budget_ * ((bucket->get_cost() * cplx.q[b][l]) / _cmax);
       }
@@ -287,18 +287,18 @@ void Cplex::Run() {
   }
 
   // Exposicao
-  for(int r=0; r < _numr; r++)
+  for (int r = 0; r < _numr; r++)
+  {
+    for(int i = 0; i < _n; i++)
     {
-      for(int i=0; i < _n; i++)
-      {
-        fo += alpha_security_ * (cplx.e[r][i] / _smax);
-	    }
+      fo += alpha_security_ * (cplx.e[r][i] / _smax);
     }
+  }
 
   // Penalidades das Soft arestas
-  for(int d1=0; d1 < _d-1; d1++)
+  for (int d1=0; d1 < _d-1; d1++)
   {
-    for(int d2=d1+1; d2 < _d; d2++)
+    for (int d2=d1+1; d2 < _d; d2++)
     {
       int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
@@ -313,22 +313,22 @@ void Cplex::Run() {
   // -----------------------------------------------------
 
   // --------------- RESTRIÇÕES ----------
-  for(int i=0; i < _n; i++)
+  for (int i = 0; i < _n; i++)
   {
 	  IloExpr exp(cplx.env);
-	  for(int j=0; j < _m; j++)
-	    for(int t=0; t < _t; t++)
-	      exp +=cplx.x[i][j][t];
+	  for (int j = 0; j < _m; j++)
+	    for (int t = 0; t < _t; t++)
+	      exp += cplx.x[i][j][t];
 
 	  IloConstraint c(exp == 1);
-	  sprintf (var_name, "c4_%d", (int)i);
+	  sprintf(var_name, "c4_%d", (int) i);
 	  c.setName(var_name);
 	  cplx.model.add(c);
 
 	  exp.end();
   }
 
-  IloCplex solver(cplx.model);                        // declara variável "solver" sobre o modelo a ser solucionado
-  // solver.exportModel("model.lp");                     // escreve modelo no arquivo no formato .lp
-  solver.exportModel(FLAGS_cplex_output_file.c_str());        // escreve modelo no arquivo no formato .lp
+  IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
+  // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
+  solver.exportModel(FLAGS_cplex_output_file.c_str());  // escreve modelo no arquivo no formato .lp
 }
