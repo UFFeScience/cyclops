@@ -501,7 +501,7 @@ void Cplex::Run() {
         for (int t = 0; t < _t; t++)
         {
           IloExpr exp(cplx.env);
-          exp =cplx.x[i][j][t];
+          exp = cplx.x[i][j][t];
 
           for (int p = 0; p < _mb; p++)
           {
@@ -510,8 +510,14 @@ void Cplex::Run() {
             /* dd eh o d-esimo de i */
             /* <RODRIGO> t - t_djp( dd, j , p )*/
             teto = max(0, ComputeFileTransferTime(file, virtual_machine, storage));
-            for (int q = 0; q <= teto; q++)
-              exp -= cplx.r[i][d][j][p][q];
+            if (teto < _t) {
+              for (int q = 0; q <= teto; q++)
+                exp -= cplx.r[i][d][j][p][q];
+            }
+            else
+            {
+              std::cout << "Eita ...!" << std::endl;
+            }
           }
 
           IloConstraint c(exp <= 0);
