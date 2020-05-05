@@ -38,6 +38,44 @@ DECLARE_string(cplex_output_file);
 
 #define PRECISAO 0.00001
 
+/**
+ * If file reside in the same vm, then the transfer time is 0.0.
+ * Otherwise, calculate the transfer time between them using the smallest bandwidth.
+ *
+ *   \f[
+ *      time = \lceil{\min_{storage1.bandwidth(), storage2.bandwidth()} bandwidth}\rceil
+ *   \f]
+ *
+ * Where:
+ * \f$ time \f$ is the transfer time between the \c storage1 and \c storage2
+ * \f$ storage1.bandwidth() \f$ is the transfer rate of the \c storage1
+ * \f$ storage2.bandwidth() \f$ is the transfer rate of the \c storage2
+ * \f$ bandwidth \f$ is the minimal transfer rate between the storage1.bandwidth() and storage2.bandwidth()
+ *
+ * \param[in]  file          File to be transfered
+ * \param[in]  storage1      Storage origin/destination
+ * \param[in]  storage2      Storage origin/destination
+ * \retval     time          The time to transfer \c file from \c file_vm to \c vm with possible
+ *                           applied penalts
+ */
+int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
+  int time = 0;
+
+  DLOG(INFO) << "Compute the transfer time of File[" << file->get_id() << "] to/from VM["
+      << storage1->get_id() << "] to Storage[" << storage2->get_id() << "]";
+
+  // Calculate time
+  if (storage1->get_id() != storage2->get_id()) {
+    // get the smallest link
+    double link = std::min(storage1->get_bandwidth(), storage2->get_bandwidth());
+    time = static_cast<int>(std::ceil(file->get_size() / link));
+    // time = file->get_size() / link;
+  }
+
+  DLOG(INFO) << "tranfer_time: " << time;
+  return time;
+}  // double Solution::FileTransferTime(File file, Storage vm1, Storage vm2) {
+
 ILOSTLBEGIN
 void Cplex::Run() {
   // bool DEPU = false;
@@ -413,9 +451,8 @@ void Cplex::Run() {
     }
   }
 
-
-// Restricao (8)
-for (int i = 0; i < _n; i++)
+  // Restricao (8)
+  for (int i = 0; i < _n; i++)
   {
     Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
     std::vector<File*> output_files = task->get_output_files();
@@ -435,10 +472,10 @@ for (int i = 0; i < _n; i++)
             exp +=cplx.w[i][d][j][p][t];
 
             IloConstraint c(exp == 0);
-            sprintf (var_name, "c8_%d_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)p, (int)t); 
+            sprintf (var_name, "c8_%d_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)p, (int)t);
             c.setName(var_name);
             cplx.model.add(c);
-        
+
             exp.end();
 		      }
 	      }
@@ -446,41 +483,46 @@ for (int i = 0; i < _n; i++)
     }
   }
 
-
   //Retricao (9)
-for (int teto, i = 0; i < _n; i++)
+  for (int teto, i = 0; i < _n; i++)
   {
     Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
     std::vector<File*> input_files = task->get_input_files();
-    
+
     for (int d = 0; d < static_cast<int>(input_files.size()); d++)
+    {
+      File* file = input_files[static_cast<size_t>(d)];
+
+      for (int j = 0; j < _m; j++)
       {
-	      for (int j = 0; j < _m; j++)
-	        {
-	          /* vamos fazer para todo t pois assim quando (t-t_djp) < 0, o lado direito sera 0 e impede a execucao da tarefa naquele tempo */
-	          for (int t = 0; t < _t; t++)
-	            {
-		            IloExpr exp(cplx.env);
-		            exp =cplx.x[i][j][t];
+        VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
-		            for(int p=0; p < _mb; p++)
-		              {
-		                /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
-		                /* dd eh o d-esimo de i */
-		                teto=max(0,/* <RODRIGO> t - t_djp( dd, j , p )*/);
-		                for(int q=0; q <= teto; q++)
-		                  exp -=cplx.r[i][d][j][p][q];
-		              }
+        /* vamos fazer para todo t pois assim quando (t-t_djp) < 0, o lado direito sera 0 e impede a execucao da tarefa naquele tempo */
+        for (int t = 0; t < _t; t++)
+        {
+          IloExpr exp(cplx.env);
+          exp =cplx.x[i][j][t];
 
-                IloConstraint c(exp <= 0);
-                sprintf (var_name, "c9_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)t); 
-                c.setName(var_name);
-                cplx.model.add(c);
-                
-                exp.end();
-	            }
-	        }
+          for (int p = 0; p < _mb; p++)
+          {
+            Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+            /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
+            /* dd eh o d-esimo de i */
+            /* <RODRIGO> t - t_djp( dd, j , p )*/
+            teto = max(0, ComputeFileTransferTime(file, virtual_machine, storage));
+            for (int q = 0; q <= teto; q++)
+              exp -= cplx.r[i][d][j][p][q];
+          }
+
+          IloConstraint c(exp <= 0);
+          sprintf (var_name, "c9_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)t);
+          c.setName(var_name);
+          cplx.model.add(c);
+
+          exp.end();
+        }
       }
+    }
   }
 
 
