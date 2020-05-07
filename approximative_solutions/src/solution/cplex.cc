@@ -697,41 +697,39 @@ for(int b = 0; b < _numb; b++)
 
     if (StaticFile* static_file = dynamic_cast<StaticFile*>(file))
     {
-        int ind = static_cast<int>(static_file->GetFirstVm());
+      int ind = static_cast<int>(static_file->GetFirstVm());
 
-        for (int mb = 0; mb < static_cast<int>(storages_.size()); ++mb)
+      for (int mb = 0; mb < static_cast<int>(storages_.size()); ++mb)
+      {
+        if (ind == mb)
         {
-          if (ind == mb)
-          {
-            for (int t = 0; t < _t; t++)
-            {
-              IloExpr exp(cplx.env);
-              exp += cplx.y[d][ind][t];
-
-              IloConstraint c(exp == 1);
-              sprintf (var_name, "c14_%d_%d_%d", (int)d, (int)ind, (int)t);
-              c.setName(var_name);
-              cplx.model.add(c);
-
-              exp.end();
-            }
-          }
-          else
+          for (int t = 0; t < _t; t++)
           {
             IloExpr exp(cplx.env);
-            exp+=cplx.y[d][ind][0];
+            exp += cplx.y[d][ind][t];
 
-            IloConstraint c(exp == 0);
-            sprintf (var_name, "c13_%d_%d", (int)d, (int)ind);
+            IloConstraint c(exp == 1);
+            sprintf (var_name, "c14_%d_%d_%d", (int)d, (int)ind, (int)t);
             c.setName(var_name);
             cplx.model.add(c);
 
             exp.end();
           }
         }
+        else
+        {
+          IloExpr exp(cplx.env);
+          exp+=cplx.y[d][ind][0];
 
+          IloConstraint c(exp == 0);
+          sprintf (var_name, "c13_%d_%d", (int)d, (int)ind);
+          c.setName(var_name);
+          cplx.model.add(c);
+
+          exp.end();
+        }
+      }
     }
- 
   }
 
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
