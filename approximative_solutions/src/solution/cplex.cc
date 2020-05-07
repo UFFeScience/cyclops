@@ -32,7 +32,7 @@
 // #include <utility>
 
 #include "src/model/data.h"
-// #include "src/model/storage.h"
+#include "src/model/dynamic_file.h"
 
 DECLARE_string(cplex_output_file);
 
@@ -667,22 +667,26 @@ for(int b = 0; b < _numb; b++)
 
 
 
-//Restricao (12)
-for(/* <RODRIGO> para todo dado "d" dinamico */)
-    {
+  //Restricao (12)
+  for(int d = 0; d < static_cast<int>(files_.size()); ++d)
+  {
+    File* file = files_[static_cast<size_t>(d)];
+
+    if (dynamic_cast<DynamicFile*>(file)) {
       for(int j=0; j < _mb; j++)
       {
         IloExpr exp(cplx.env);
         exp+=cplx.y[d][j][0];
 
         IloConstraint c(exp == 0);
-        sprintf (var_name, "c12_%d_%d", (int)d, (int)j); 
+        sprintf (var_name, "c12_%d_%d", (int)d, (int)j);
         c.setName(var_name);
         cplx.model.add(c);
-        
+
         exp.end();
       }
     }
+  }
 
 
 
