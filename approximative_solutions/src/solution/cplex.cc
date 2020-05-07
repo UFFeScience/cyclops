@@ -690,6 +690,45 @@ for(int b = 0; b < _numb; b++)
 
 
 
+//Restricao (13) e (14)
+for(/* <RODRIGO> para todo dado "d" estático */)
+  {
+    // fixa as maquinas origem como tendo o dado durante todos os periodos
+    for (/* <RODRIGO> para toda maquina "ind" origem do dado estatico "d" */)
+      {
+        for(int t=0; t < _t; t++)
+          {
+            IloExpr exp(cplx.env);
+            exp+=cplx.y[d][ind]][t];
+            
+            IloConstraint c(exp == 1);
+            sprintf (var_name, "c14_%d_%d_%d", (int)d, (int)ind, (int)t); 
+            c.setName(var_name);
+            cplx.model.add(c);
+            
+            exp.end();
+          }
+      }
+    
+    // fixa as maquinas que nao sao origem como nao tendo o dado no periodo inicial
+    for (/* <RODRIGO> para toda maquina "ind" NAO origem do dado estatico "d" */)
+      {
+        IloExpr exp(cplx.env);
+        exp+=cplx.y[d][ind][0];
+        
+        IloConstraint c(exp == 0);
+        sprintf (var_name, "c13_%d_%d", (int)d, (int)ind); 
+        c.setName(var_name);
+        cplx.model.add(c);
+        
+        exp.end();
+      }
+  }
+
+
+
+
+
 
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
