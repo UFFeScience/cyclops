@@ -607,13 +607,15 @@ for(int piso,j=0; j < _m; j++)
 
 
 
-  // Restricao (11)
+// Restricao (11)
 for(int b = 0; b < _numb; b++)
   {
     Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
     for(int t=0; t < _t; t++)
       {
+        IloExpr exp(cplx.env);
+
         /* escrita */
         for(int i=0; i < _n; i++)
           {
@@ -622,48 +624,65 @@ for(int b = 0; b < _numb; b++)
 
             for (int d = 0; d < static_cast<int>(output_files.size()); d++)
               {
-          File* file = output_files[static_cast<size_t>(d)];
+                File* file = output_files[static_cast<size_t>(d)];
 
-          for(int p=0; p < _m; p++)
+                for(int p=0; p < _m; p++)
+                  {
+                    VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
+                    int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
+                    for(int rr=piso; rr <= t; rr++)
+                      exp += cplx.w[i][d][p][b][rr];
+                  }
+	              }
+	          }
+
+          /* leitura */
+          for (int i = 0; i < _n; i++)
             {
-              VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
-              int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
-              for(int rr=piso; rr <= t; rr++)
-                exp += cplx.w[i][d][p][b][rr];
+              Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
+              std::vector<File*> input_files = task->get_input_files();
+
+              for (int d = 0; d < static_cast<int>(input_files.size()); d++)
+                {
+                  File* file = input_files[static_cast<size_t>(d)];
+
+                  for(int p=0; p < _m; p++)
+                    {
+                      VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
+                      int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
+                      for(int rr=piso; rr <= t; rr++)
+                        exp += cplx.r[i][d][p][b][rr];
+                    }
+                }
             }
-	      }
-	  }
 
-	/* leitura */
-	for (int i = 0; i < _n; i++)
-	  {
-	    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-	    std::vector<File*> input_files = task->get_input_files();
+          IloConstraint c(exp <= 1);
+          sprintf (var_name, "c11_%d_%d", (int)b, (int)t);
+          c.setName(var_name);
+          cplx.model.add(c);
 
-	    for (int d = 0; d < static_cast<int>(input_files.size()); d++)
-	      {
-          File* file = input_files[static_cast<size_t>(d)];
-
-          for(int p=0; p < _m; p++)
-            {
-              VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
-              int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
-              for(int rr=piso; rr <= t; rr++)
-                exp += cplx.r[i][d][p][b][rr];
-            }
-	      }
-	  }
-
-	IloConstraint c(exp <= 1);
-	sprintf (var_name, "c11_%d_%d", (int)j, (int)t);
-	c.setName(var_name);
-	cplx.model.add(c);
-
-	exp.end();
+          exp.end();
       }
   }
 
 
+
+//Restricao (12)
+for(/* <RODRIGO> para todo dado "d" dinamico */)
+    {
+      for(int j=0; j < _mb; j++)
+      {
+        IloExpr exp(cplx.env);
+        exp+=cplx.y[d][j][0];
+
+        IloConstraint c(exp == 0);
+        sprintf (var_name, "c12_%d_%d", (int)d, (int)j); 
+        c.setName(var_name);
+        cplx.model.add(c);
+        
+        exp.end();
+      }
+    }
 
 
 
