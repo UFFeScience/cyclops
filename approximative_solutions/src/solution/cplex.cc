@@ -33,6 +33,7 @@
 
 #include "src/model/data.h"
 #include "src/model/dynamic_file.h"
+#include "src/model/static_file.h"
 
 DECLARE_string(cplex_output_file);
 
@@ -688,47 +689,57 @@ for(int b = 0; b < _numb; b++)
     }
   }
 
-
-
-//Restricao (13) e (14)
-for(/* <RODRIGO> para todo dado "d" estático */)
+  //Restricao (13) e (14)
+  for (int d = 0; d < static_cast<int>(files_.size()); ++d)
   {
-    // fixa as maquinas origem como tendo o dado durante todos os periodos
-    for (/* <RODRIGO> para toda maquina "ind" origem do dado estatico "d" */)
-      {
-        for(int t=0; t < _t; t++)
+    File* file = files_[static_cast<size_t>(d)];
+
+    if (StaticFile* static_file = dynamic_cast<StaticFile*>(file))
+    {
+      // fixa as maquinas origem como tendo o dado durante todos os periodos
+      // for (/* <RODRIGO> para toda maquina "ind" origem do dado estatico "d" */)
+      // {
+        int ind = static_cast<int>(static_file->GetFirstVm());
+
+        for (int m = 0; m < static_cast<int>(virtual_machines_.size()); ++m)
+        {
+          if (ind == m)
+          {
+            for (int t = 0; t < _t; t++)
+            {
+              IloExpr exp(cplx.env);
+              exp += cplx.y[d][ind][t];
+
+              IloConstraint c(exp == 1);
+              sprintf (var_name, "c14_%d_%d_%d", (int)d, (int)ind, (int)t);
+              c.setName(var_name);
+              cplx.model.add(c);
+
+              exp.end();
+            }
+          }
+          else
           {
             IloExpr exp(cplx.env);
-            exp+=cplx.y[d][ind]][t];
-            
-            IloConstraint c(exp == 1);
-            sprintf (var_name, "c14_%d_%d_%d", (int)d, (int)ind, (int)t); 
+            exp+=cplx.y[d][ind][0];
+
+            IloConstraint c(exp == 0);
+            sprintf (var_name, "c13_%d_%d", (int)d, (int)ind);
             c.setName(var_name);
             cplx.model.add(c);
-            
+
             exp.end();
           }
-      }
-    
+        }
+      // }
+    }
+
     // fixa as maquinas que nao sao origem como nao tendo o dado no periodo inicial
-    for (/* <RODRIGO> para toda maquina "ind" NAO origem do dado estatico "d" */)
-      {
-        IloExpr exp(cplx.env);
-        exp+=cplx.y[d][ind][0];
-        
-        IloConstraint c(exp == 0);
-        sprintf (var_name, "c13_%d_%d", (int)d, (int)ind); 
-        c.setName(var_name);
-        cplx.model.add(c);
-        
-        exp.end();
-      }
+    // for (/* <RODRIGO> para toda maquina "ind" NAO origem do dado estatico "d" */)
+    // {
+
+    // }
   }
-
-
-
-
-
 
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
