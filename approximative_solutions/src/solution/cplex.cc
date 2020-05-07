@@ -689,6 +689,7 @@ for(int b = 0; b < _numb; b++)
     }
   }
 
+
   //Restricao (13) e (14)
   for (int d = 0; d < static_cast<int>(files_.size()); ++d)
   {
@@ -696,9 +697,6 @@ for(int b = 0; b < _numb; b++)
 
     if (StaticFile* static_file = dynamic_cast<StaticFile*>(file))
     {
-      // fixa as maquinas origem como tendo o dado durante todos os periodos
-      // for (/* <RODRIGO> para toda maquina "ind" origem do dado estatico "d" */)
-      // {
         int ind = static_cast<int>(static_file->GetFirstVm());
 
         for (int mb = 0; mb < static_cast<int>(storages_.size()); ++mb)
@@ -731,14 +729,9 @@ for(int b = 0; b < _numb; b++)
             exp.end();
           }
         }
-      // }
+
     }
-
-    // fixa as maquinas que nao sao origem como nao tendo o dado no periodo inicial
-    // for (/* <RODRIGO> para toda maquina "ind" NAO origem do dado estatico "d" */)
-    // {
-
-    // }
+ 
   }
 
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
