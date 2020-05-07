@@ -732,6 +732,44 @@ for(int b = 0; b < _numb; b++)
     }
   }
 
+
+  // Restricao (15)
+for(int indw=-1, pai_i=0,tempo=0, /* <RODRIGO> para todo dado "d" dinamico */)
+    {
+      pai_i      = /* <RODRIGO> tarefa que escreveu o dado "d" */;
+      indw       = /* <RODRIGO> o dado "d" eh a d-esima escrita de "pai_i" */;
+      File* file = input_files[static_cast<size_t>(d)]; /* <RODRIGO> eh esse d mesmo neh ? */
+	
+      for(int p=0; p < _mb; p++)
+	{
+	  Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+	  
+	  for(int t=0; t < _t-1; t++)
+	  {
+	    IloExpr exp(cplx.env);
+	    exp+=cplx.y[d][p][t+1];
+	    exp-=cplx.y[d][p][t];
+	    
+	    for(int j=0; j < _m; j++)
+	      {
+		VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+		tempo                           = (t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
+		if (tempo>=0)
+		  {
+		    exp-=cplx.w[pai_i][indw][j][p][tempo];
+		  }
+	      }
+	    	    
+	    IloConstraint c(exp <= 0);
+	    sprintf (var_name, "c15_%d_%d_%d", (int)d, (int)p, (int)t); 
+	    c.setName(var_name);
+	    cplx.model.add(c);
+	    
+	    exp.end();
+	  } 
+    }
+
+
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
   solver.exportModel(FLAGS_cplex_output_file.c_str());  // escreve modelo no arquivo no formato .lp
