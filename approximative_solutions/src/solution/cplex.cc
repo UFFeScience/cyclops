@@ -701,7 +701,7 @@ for(int b = 0; b < _numb; b++)
       // {
         int ind = static_cast<int>(static_file->GetFirstVm());
 
-        for (int m = 0; m < static_cast<int>(virtual_machines_.size()); ++m)
+        for (int m = 0; m < static_cast<int>(storages_.size()); ++m)
         {
           if (ind == m)
           {
