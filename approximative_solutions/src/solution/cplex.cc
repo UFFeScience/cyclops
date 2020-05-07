@@ -75,7 +75,7 @@ int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
   {
     time = 1;
   }
-  
+
 
   DLOG(INFO) << "tranfer_time: " << time;
   return time;
@@ -512,14 +512,14 @@ void Cplex::Run() {
           {
             Storage* storage = GetStoragePerId(static_cast<size_t>(p));
             /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
-            
+
             if ((t - ComputeFileTransferTime(file, virtual_machine, storage)) >= 0)
-            { 
+            {
               teto = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage));
               for (int q = 0; q <= teto; q++)
                   exp -= cplx.r[i][d][j][p][q];
             }
-            
+
           }
 
           IloConstraint c(exp <= 0);
@@ -539,30 +539,30 @@ void Cplex::Run() {
 for(int piso,j=0; j < _m; j++)
   {
     VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
-    
+
     for(int t=0; t < _t; t++)
       {
       IloExpr exp(cplx.env);
-      
+
       /* execucao */
       for (int i = 0; i < _n; i++)
         {
           Task* task = GetTaskPerId(static_cast<size_t>(i + 1));
-          piso       = max(0, t -(std::ceil(task->get_time() * virtual_machine->get_slowdown())) + 1);
+          piso       = max(0, t - static_cast<int>((std::ceil(task->get_time() * virtual_machine->get_slowdown()) + 1.0)));
           for(int q=piso; q <= t; q++)
             exp +=cplx.x[i][j][q];
         }
-      
+
       /* escrita */
       for(int i=0; i < _n; i++)
         {
           Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
           std::vector<File*> output_files = task->get_output_files();
-          
+
           for (int d = 0; d < static_cast<int>(output_files.size()); d++)
             {
               File* file = output_files[static_cast<size_t>(d)];
-              
+
               for(int p=0; p < _mb; p++)
                 {
                   Storage* storage = GetStoragePerId(static_cast<size_t>(p));
@@ -572,17 +572,17 @@ for(int piso,j=0; j < _m; j++)
                 }
                   }
         }
-      
+
       /* leitura */
       for (int i = 0; i < _n; i++)
         {
           Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
           std::vector<File*> input_files = task->get_input_files();
-          
+
           for (int d = 0; d < static_cast<int>(input_files.size()); d++)
             {
               File* file = input_files[static_cast<size_t>(d)];
-              
+
               for(int p=0; p < _mb; p++)
                 {
                   Storage* storage = GetStoragePerId(static_cast<size_t>(p));
@@ -592,15 +592,15 @@ for(int piso,j=0; j < _m; j++)
                 }
 	      }
 	  }
-      
+
 	/* contratacao */
 	exp -= cplx.v[j][t];
-    
+
 	IloConstraint c(exp <= 0);
-	sprintf (var_name, "c10_%d_%d", (int)j, (int)t); 
+	sprintf (var_name, "c10_%d_%d", (int)j, (int)t);
 	c.setName(var_name);
 	cplx.model.add(c);
-	
+
 	exp.end();
       }
   }
