@@ -611,7 +611,7 @@ for(int piso,j=0; j < _m; j++)
 for(int b = 0; b < _numb; b++)
   {
     Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
-    
+
     for(int t=0; t < _t; t++)
       {
         /* escrita */
@@ -619,46 +619,46 @@ for(int b = 0; b < _numb; b++)
           {
             Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
             std::vector<File*> output_files = task->get_output_files();
-            
+
             for (int d = 0; d < static_cast<int>(output_files.size()); d++)
               {
           File* file = output_files[static_cast<size_t>(d)];
-          
+
           for(int p=0; p < _m; p++)
             {
               VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
-              piso                            = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
+              int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
               for(int rr=piso; rr <= t; rr++)
                 exp += cplx.w[i][d][p][b][rr];
             }
 	      }
 	  }
-	
+
 	/* leitura */
 	for (int i = 0; i < _n; i++)
 	  {
 	    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
 	    std::vector<File*> input_files = task->get_input_files();
-	    
+
 	    for (int d = 0; d < static_cast<int>(input_files.size()); d++)
 	      {
           File* file = input_files[static_cast<size_t>(d)];
-          
+
           for(int p=0; p < _m; p++)
             {
               VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
-              piso                            = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
+              int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
               for(int rr=piso; rr <= t; rr++)
                 exp += cplx.r[i][d][p][b][rr];
             }
 	      }
 	  }
-	
+
 	IloConstraint c(exp <= 1);
-	sprintf (var_name, "c11_%d_%d", (int)j, (int)t); 
+	sprintf (var_name, "c11_%d_%d", (int)j, (int)t);
 	c.setName(var_name);
 	cplx.model.add(c);
-	
+
 	exp.end();
       }
   }
