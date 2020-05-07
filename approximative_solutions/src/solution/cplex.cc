@@ -701,9 +701,9 @@ for(int b = 0; b < _numb; b++)
       // {
         int ind = static_cast<int>(static_file->GetFirstVm());
 
-        for (int m = 0; m < static_cast<int>(storages_.size()); ++m)
+        for (int mb = 0; mb < static_cast<int>(storages_.size()); ++mb)
         {
-          if (ind == m)
+          if (ind == mb)
           {
             for (int t = 0; t < _t; t++)
             {
