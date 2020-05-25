@@ -821,6 +821,30 @@ for (int dd, i = 0; i < _n; i++)
   }
 
 
+// Restricao (17)
+for(int j=0; j < _mb; j++)
+  {
+    Storage* storage = GetStoragePerId(static_cast<size_t>(j));
+    
+    for(int t=0; t < _t; t++)
+      {
+        IloExpr exp(cplx.env);
+        for(int d=0; d < _d; d++)
+          {
+            File* file = output_files[static_cast<size_t>(d)];
+            exp+= (file->get_size() * cplx.y[d][j][t]); /* <RODRIGO> o tamanho do arquivo eh isso mesmo ? */
+          }
+        
+        IloConstraint c(exp <= storage->get_storage()); /* <RODRIGO> a capacidade do device eh isso mesmo ? */
+        sprintf (var_name, "c17_%d_%d", (int)j, (int)t); 
+        c.setName(var_name);
+        cplx.model.add(c);
+        
+        exp.end();
+      }
+  }
+
+
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
   solver.exportModel(FLAGS_cplex_output_file.c_str());  // escreve modelo no arquivo no formato .lp
