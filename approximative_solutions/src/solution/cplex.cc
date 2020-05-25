@@ -901,29 +901,29 @@ for(int i=0; i < _n; i++)
   //Restricao (20)
   IloExpr exp(cplx.env);
   for (int j = 0; j < _m; j++)
-    {
-      VirtualMachine* virtual_machine = GetVirtualMachinePerId(j);
-      exp += virtual_machine->get_cost() * cplx.z[j];        
-    }
+  {
+    VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+    exp += virtual_machine->get_cost() * cplx.z[j];
+  }
 
-  for(int b = 0; b < _numb; b++) 
-    {
-      Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+  for(int b = 0; b < _numb; b++)
+  {
+    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-      if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) 
-        {
-          for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
-            {
-              exp += bucket->get_cost() * cplx.q[b][l]; // lembrando que o custo nessas instancias eh constante
-            }
-        } 
-      else 
-        {
-          exit(1);  // error
-        }
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    {
+      for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      {
+        exp += bucket->get_cost() * cplx.q[b][l]; // lembrando que o custo nessas instancias eh constante
+      }
     }
+    else
+    {
+      exit(1);  // error
+    }
+  }
   IloConstraint c(exp <=  _cmax);
-  sprintf (var_name, "c20"); 
+  sprintf (var_name, "c20");
   c.setName(var_name);
   cplx.model.add(c);
   exp.end();
