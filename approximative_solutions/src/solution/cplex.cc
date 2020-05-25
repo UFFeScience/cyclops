@@ -821,14 +821,14 @@ for (int dd, i = 0; i < _n; i++)
   }
 
   // Restricao (17)
-  for(int j=0; j < _mb; j++)
+  for (int j=0; j < _mb; j++)
   {
     Storage* storage = GetStoragePerId(static_cast<size_t>(j));
 
-    for(int t = 0; t < _t; t++)
+    for (int t = 0; t < _t; t++)
     {
       IloExpr exp(cplx.env);
-      for(int d=0; d < _d; d++)
+      for (int d = 0; d < _d; d++)
       {
         File* file = GetFilePerId(static_cast<size_t>(d));
         exp += (file->get_size() * cplx.y[d][j][t]); /* <RODRIGO> o tamanho do arquivo eh isso mesmo ? */
