@@ -929,6 +929,43 @@ for(int i=0; i < _n; i++)
   exp.end();
 
 
+//Restricao (21)
+for (int i = 0; i < _n; i++)
+  {
+    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
+    std::vector<File*> input_files = task->get_input_files();
+    
+    for (int d = 0; d < static_cast<int>(input_files.size()); d++)
+      {
+        for(int j=0; j < _m; j++)
+          {
+            for(int t=0; t < _t; t++)
+              {
+                IloExpr exp(cplx.env);
+                for(int p=0; p < _mb; p++)
+                  exp += (static_cast<int>(input_files.size())) * cplx.r[i][d][j][p][t];
+                  
+                for(int dd, g=0; g < static_cast<int>(input_files.size()); g++)
+                  {
+                    File* file = input_files[static_cast<size_t>(d)];
+                    dd         = file->get_id();
+                    
+                    for(int p=0; p < _mb; p++)
+                      exp -= cplx.y[dd][p][t];
+                  }
+                
+                IloConstraint c(exp <= 0);
+                sprintf (var_name, "c21_%d_%d_%d_%d", (int) i, (int) d, (int) j, (int) t); 
+                c.setName(var_name);
+                cplx.model.add(c);
+                
+                exp.end();
+              }
+          }
+      }
+  }
+
+
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
   solver.exportModel(FLAGS_cplex_output_file.c_str());  // escreve modelo no arquivo no formato .lp
