@@ -239,7 +239,7 @@ void Cplex::Run() {
     if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) {
       cplx.b[b] = IloBoolVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals())+1);
 
-      for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      for(int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
         sprintf (var_name, "b_%d_%d", (int)b,(int)l);                       // nome da variavel
         cplx.b[b][l] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
@@ -259,7 +259,7 @@ void Cplex::Run() {
     if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) {
       cplx.q[b] = IloNumVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals())+1);
 
-      for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      for(int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
         sprintf(var_name, "q_%d_%d", (int) b, (int) l);                     // nome da variavel
         cplx.q[b][l] = IloNumVar(cplx.env, 0, IloInfinity, var_name);       // aloca variavel
@@ -319,7 +319,7 @@ void Cplex::Run() {
 
     if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
     {
-      for (int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      for (int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
         fo += alpha_budget_ * ((bucket->get_cost() * cplx.q[b][l]) / _cmax);
       }
