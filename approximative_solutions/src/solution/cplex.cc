@@ -793,7 +793,7 @@ for (int dd, i = 0; i < _n; i++)
   {
     Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
     std::vector<File*> input_files = task->get_input_files();
-    
+
     for (int d = 0; d < static_cast<int>(input_files.size()); d++)
       {
       for(int p=0; p < _mb; p++)
@@ -804,14 +804,16 @@ for (int dd, i = 0; i < _n; i++)
               for(int j=0; j < _m; j++)
                 exp+= cplx.r[i][d][j][p][t];
 
-              dd = /* <RODRIGO> dd eh o d-esimo de i */;
+              File* file = input_files[static_cast<size_t>(d)];
+
+              dd = file->get_id();
               exp-=cplx.y[dd][p][t];
 
               IloConstraint c(exp <= 0);
-              sprintf (var_name, "c16_%d_%d_%d_%d", (int)i, (int)d, (int)p, (int)t); 
+              sprintf (var_name, "c16_%d_%d_%d_%d", (int)i, (int)d, (int)p, (int)t);
               c.setName(var_name);
               cplx.model.add(c);
-              
+
               exp.end();
             }
         }
