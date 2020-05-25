@@ -32,6 +32,20 @@ class DynamicFile : public File {
   /// Default destructor
   ~DynamicFile() = default;
 
+  /// Getter for the parent task
+  Task* get_parent_task() const { return parent_task_; }
+
+  /// Getter for the parent output file index
+  size_t get_parent_output_file_index() { return parent_output_file_index_; }
+
+  /// Setter for the parent task
+  void set_parent_task(Task* parent_task) { parent_task_ = parent_task; }
+
+  /// Setter for the parent output file index
+  void set_parent_output_file_index(const size_t parent_output_file_index) {
+    parent_output_file_index_ = parent_output_file_index;
+  }
+
   /// Concatenator operator
   friend std::ostream& operator<<(std::ostream& os, const DynamicFile& a) {
     return a.write(os);
@@ -44,6 +58,13 @@ class DynamicFile : public File {
               << ", name_: " << name_
               << ", size_: " << size_ << "]";
   }
+
+
+  /// The \c Task that generated this file
+  Task* parent_task_ = nullptr;
+
+  /// The index position of this generated file
+  size_t parent_output_file_index_ = std::numeric_limits<size_t>::max();
 };  // end of class DynamicFile
 
 #endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_DYNAMIC_FILE_H_

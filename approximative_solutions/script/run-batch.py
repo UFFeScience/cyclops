@@ -145,6 +145,8 @@ def exec_batch(versions,
             output, error = exec_command(command)
             # print(output.decode(sys.stdout.encoding))
             # print(error.decode(sys.stdout.encoding))
+            print(output.decode(sys.stdout.encoding))
+            print(error.decode(sys.stderr.encoding))
             m = re.search('^[0-9]*[.][0-9]*$', error.decode(sys.stdout.encoding), re.M)
             exec_times.append(float(m.group(0)))
             regex = "^"

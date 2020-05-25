@@ -165,7 +165,7 @@ void Cplex::Run() {
   }
 
 
-   // variaveis de armazenamento
+  // variaveis de armazenamento
   // Y_DJT => indica se o dado de indice D esta armazenado na maquina J no periodo T
   for (int i = 0; i < _d; i++)
   {
@@ -732,43 +732,59 @@ for(int b = 0; b < _numb; b++)
     }
   }
 
-
   // Restricao (15)
-for(int indw=-1, pai_i=0,tempo=0, /* <RODRIGO> para todo dado "d" dinamico */)
+  // for (int indw = -1, pai_i = 0, tempo = 0, /* <RODRIGO> para todo dado "d" dinamico */)
+  for (size_t i = 0; i < GetFileSize(); ++i)
+  {
+    if (DynamicFile* dynamic_file = dynamic_cast<DynamicFile*>(files_[i]))
     {
-      pai_i      = /* <RODRIGO> tarefa que escreveu o dado "d" */;
-      indw       = /* <RODRIGO> o dado "d" eh a d-esima escrita de "pai_i" */;
-      File* file = input_files[static_cast<size_t>(d)]; /* <RODRIGO> eh esse d mesmo neh ? */
-	
-      for(int p=0; p < _mb; p++)
-	{
-	  Storage* storage = GetStoragePerId(static_cast<size_t>(p));
-	  
-	  for(int t=0; t < _t-1; t++)
-	  {
-	    IloExpr exp(cplx.env);
-	    exp+=cplx.y[d][p][t+1];
-	    exp-=cplx.y[d][p][t];
-	    
-	    for(int j=0; j < _m; j++)
-	      {
-		VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
-		tempo                           = (t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
-		if (tempo>=0)
-		  {
-		    exp-=cplx.w[pai_i][indw][j][p][tempo];
-		  }
-	      }
-	    	    
-	    IloConstraint c(exp <= 0);
-	    sprintf (var_name, "c15_%d_%d_%d", (int)d, (int)p, (int)t); 
-	    c.setName(var_name);
-	    cplx.model.add(c);
-	    
-	    exp.end();
-	  } 
-    }
+      // pai_i      = /* <RODRIGO> tarefa que escreveu o dado "d" */;
+      // indw       = /* <RODRIGO> o dado "d" eh a d-esima escrita de "pai_i" */;
+      // File* file = input_files[static_cast<size_t>(d)]; /* <RODRIGO> eh esse d mesmo neh ? */
 
+      Task* pai = dynamic_file->get_parent_task();
+      int indw  = static_cast<int>(dynamic_file->get_parent_output_file_index());
+      int d     = static_cast<int>(dynamic_file->get_id());
+      // Shift por conta da tarefa virtual SOURCE (id: 0)
+      int pai_i = static_cast<int>(pai->get_id()) - 1;
+
+      for (int p = 0; p < _mb; p++)
+      {
+        Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+
+        for (int t = 0; t < _t - 1; t++)
+        {
+          IloExpr exp(cplx.env);
+          // exp += cplx.y[d][p][t+1];
+          // exp -= cplx.y[d][p][t];
+
+          exp += cplx.y[d][p][t + 1];
+          exp -= cplx.y[d][p][t];
+
+          for (int j = 0; j < _m; j++)
+          {
+            VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+            int tempo                       = (t - ComputeFileTransferTime(dynamic_file, storage, virtual_machine) + 1);
+            if (tempo >= 0)
+            // if (tempo >= 0 && tempo < _t)
+            // if (tempo > 0 && tempo < _t)
+            {
+              // exp-=cplx.w[pai_i][indw][j][p][tempo];
+              exp -= cplx.w[pai_i][indw][j][p][tempo];
+            }
+          }
+
+          IloConstraint c(exp <= 0);
+          // sprintf (var_name, "c15_%d_%d_%d", (int)d, (int)p, (int)t);
+          sprintf (var_name, "c15_%d_%d_%d", (int) d, (int) p, (int) t);
+          c.setName(var_name);
+          cplx.model.add(c);
+
+          exp.end();
+        }
+      }
+    }
+  }
 
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp

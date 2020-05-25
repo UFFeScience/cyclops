@@ -60,7 +60,11 @@ class Task {
   void AddInputFile(File* file) { input_files_.push_back(file); }
 
   /// Adds a output file
-  void AddOutputFile(File* file) { output_files_.push_back(file); }
+  size_t AddOutputFile(File* file) {
+    size_t index = output_files_.size();
+    output_files_.push_back(file);
+    return index;
+  }
 
   /// Adds a requiremnt value
   void AddRequirement(int requirement) { requirements_.push_back(requirement); }

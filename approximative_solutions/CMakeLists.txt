@@ -90,17 +90,17 @@ add_custom_target(docs
 )
 
 # coverage
-set(COVERAGE_INFO_FILE "docs/coverage/coverage.info")
-add_custom_target(coverage
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  DEPENDS nanoEORsimulator-test.x
-  COMMAND nanoEORsimulator-test.x &>/dev/null
-  COMMAND lcov --quiet --no-external --capture --directory . --output-file ${COVERAGE_INFO_FILE}
-  COMMAND lcov --quiet --remove ${COVERAGE_INFO_FILE} 'test/*' -o ${COVERAGE_INFO_FILE}
-  COMMAND genhtml ${COVERAGE_INFO_FILE} --quiet --show-details --legend --output-directory docs/coverage/
-  COMMAND lcov --list ${COVERAGE_INFO_FILE}
-  USES_TERMINAL
-)
+# set(COVERAGE_INFO_FILE "docs/coverage/coverage.info")
+# add_custom_target(coverage
+#   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+#   DEPENDS bin-test.x
+#   COMMAND bin-test.x &>/dev/null
+#   COMMAND lcov --quiet --no-external --capture --directory . --output-file ${COVERAGE_INFO_FILE}
+#   COMMAND lcov --quiet --remove ${COVERAGE_INFO_FILE} 'test/*' -o ${COVERAGE_INFO_FILE}
+#   COMMAND genhtml ${COVERAGE_INFO_FILE} --quiet --show-details --legend --output-directory docs/coverage/
+#   COMMAND lcov --list ${COVERAGE_INFO_FILE}
+#   USES_TERMINAL
+# )
 
 # clean-docs
 add_custom_target(clean-docs

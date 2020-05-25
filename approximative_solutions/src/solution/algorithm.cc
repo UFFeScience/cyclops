@@ -220,7 +220,15 @@ void Algorithm::ReadTasksAndFiles(std::string tasks_and_files,
       google::FlushLogFiles(google::INFO);
 
       File* my_file = file_map_per_name.find(line)->second;
-      my_task->AddOutputFile(my_file);
+      size_t index = my_task->AddOutputFile(my_file);
+
+      if (DynamicFile* dynamic_file = dynamic_cast<DynamicFile*>(my_file)) {
+        if (dynamic_file->get_parent_task() != nullptr) {
+          LOG(FATAL) << my_file->get_name() << " already have a parent task!";
+        }
+        dynamic_file->set_parent_task(my_task);
+        dynamic_file->set_parent_output_file_index(index);
+      }
     }
 
     tasks_.push_back(my_task);
