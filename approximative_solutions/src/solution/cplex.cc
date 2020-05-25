@@ -831,10 +831,10 @@ for (int dd, i = 0; i < _n; i++)
       for (int d = 0; d < _d; d++)
       {
         File* file = GetFilePerId(static_cast<size_t>(d));
-        exp += (file->get_size() * cplx.y[d][j][t]); /* <RODRIGO> o tamanho do arquivo eh isso mesmo ? */
+        exp += (file->get_size() * cplx.y[d][j][t]); 
       }
 
-      IloConstraint c(exp <= storage->get_storage()); /* <RODRIGO> a capacidade do device eh isso mesmo ? */
+      IloConstraint c(exp <= storage->get_storage()); 
       sprintf(var_name, "c17_%d_%d", (int)j, (int)t);
       c.setName(var_name);
       cplx.model.add(c);
@@ -842,6 +842,60 @@ for (int dd, i = 0; i < _n; i++)
       exp.end();
     }
   }
+
+  //Restricao (18)
+for(int i=0; i < _n; i++)
+  {
+    Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
+    std::vector<File*> output_files = task->get_output_files();
+    
+    for (int d = 0; d < static_cast<int>(output_files.size()); d++)
+      {
+        File* file = output_files[static_cast<size_t>(d)];
+        
+        for(int j=0; j < _m; j++)
+          {
+            VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+            
+            for(int p=0; p < _mb; p++)
+              {
+                Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+                
+                for(int t=0; t < _t; t++)
+                  {
+                    IloExpr exp(cplx.env);
+                    exp+= (t + ComputeFileTransferTime(file, storage, virtual_machine)) * cplx.w[i][d][j][p][t];
+                    exp-=cplx.z_max[0];
+                    
+                    IloConstraint c(exp <= 0);
+                    sprintf (var_name, "c18_%d_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)p, (int)t); 
+                    c.setName(var_name);
+                    cplx.model.add(c);
+                    
+                    exp.end();
+                  }
+              }
+          }
+      }
+  }
+
+
+//Restricao (19)
+for(int j=0; j < _m; j++)
+  for(int t=0; t < _t; t++)
+    {
+      IloExpr exp(cplx.env);
+      exp += (t+1) * cplx.v[j][t]; // t+1 porque voce paga os tempos de 0 a t, logo t+1 tempos
+      exp -= cplx.z[j];
+
+      IloConstraint c(exp <= 0);
+      sprintf (var_name, "c19_%d_%d", (int)j, (int)t); 
+      c.setName(var_name);
+      cplx.model.add(c);
+      
+      exp.end();
+    }
+
 
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
