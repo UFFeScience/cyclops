@@ -1056,9 +1056,11 @@ for(int d1=0; d1 < _d-1; d1++)
   //Restricao (25)
   for (int r = 0; r < _numr; r++)
   {
-    Requirement requirement = GetRequirementPerId(static_cast<size_t>(r));
+    // Requirement requirement = GetRequirementPerId(static_cast<size_t>(r));
     for (int i = 0; i < _n; i++)
     {
+      Task* task = GetTaskPerId(static_cast<size_t>(i));
+
       IloExpr exp(cplx.env);
       exp -= cplx.e[r][i];
 
@@ -1071,7 +1073,7 @@ for(int d1=0; d1 < _d-1; d1++)
       }
 
       // IloConstraint c(exp <= - /* <RODRIGO> l^{ri}_{task} */);
-      IloConstraint c(exp <= -requirement.get_max_value());
+      IloConstraint c(exp <= -task->GetRequirementValue(static_cast<size_t>(r)));
 
       sprintf (var_name, "c25_%d_%d", (int) i, (int) r);
       c.setName(var_name);
