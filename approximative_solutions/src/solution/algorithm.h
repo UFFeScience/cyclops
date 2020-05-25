@@ -92,8 +92,11 @@ class Algorithm {
   /// Return a pointer to the \c Storage identified by \c id
   Storage* GetStoragePerId(size_t id) { return storages_[id]; }
 
-  /// Return a pointer to the \c Storage identified by \c id
+  /// Return a pointer to the \c VirtualMachine identified by \c id
   VirtualMachine* GetVirtualMachinePerId(size_t id) { return virtual_machines_[id]; }
+
+  /// Return a pointer to the \c Requirement identified by \c id
+  Requirement GetRequirementPerId(size_t id) { return requirements_[id]; }
 
   /// Return a reference to the successors of the \c Task identified by \c task_id
   std::vector<size_t>& GetSuccessors(size_t task_id) { return successors_[task_id]; }

@@ -979,10 +979,10 @@ for (int d = 0; d < _d; d++)
             exp -= cplx.yb[d][j];
 
             IloConstraint c(exp <= 0);
-            sprintf (var_name, "c22_%d_%d_%d", (int) d, (int) j, (int) t); 
+            sprintf (var_name, "c22_%d_%d_%d", (int) d, (int) j, (int) t);
             c.setName(var_name);
             cplx.model.add(c);
-          
+
             exp.end();
           }
       }
@@ -995,27 +995,27 @@ for (int d = 0; d < _d; d++)
         for(int d2=d1+1; d2 < _d; d2++)
         {
           int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
-          
+
           // hard constraint
           if (conflict == -1)
             {
               for(int b = 0; b < _numb; b++)
                 {
                   // indice do bucket dentre as maquinas
-                  int j = static_cast<int>(GetVirtualMachineSize()) + b; 
-                  
+                  int j = static_cast<int>(GetVirtualMachineSize()) + b;
+
                   IloExpr exp(cplx.env);
                   exp += cplx.yb[d1][j];
                   exp += cplx.yb[d2][j];
 
                   IloConstraint c(exp <= 1);
-                  sprintf (var_name, "c23_%d_%d_%d", (int) d1, (int) d2, (int) j); 
+                  sprintf (var_name, "c23_%d_%d_%d", (int) d1, (int) d2, (int) j);
                   c.setName(var_name);
                   cplx.model.add(c);
-                
+
                   exp.end();
                 }
-              
+
             }
         }
       }
@@ -1027,56 +1027,59 @@ for(int d1=0; d1 < _d-1; d1++)
       for(int d2=d1+1; d2 < _d; d2++)
         {
           int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
-          
+
           // hard constraint
           if (conflict > 0)
             {
               for(int b = 0; b < _numb; b++)
                 {
                   // indice do bucket dentre as maquinas
-                  int j = static_cast<int>(GetVirtualMachineSize()) + b; 
-                  
+                  int j = static_cast<int>(GetVirtualMachineSize()) + b;
+
                   IloExpr exp(cplx.env);
                   exp += cplx.yb[d1][j];
                   exp += cplx.yb[d2][j];
                   exp -= cplx.ws[d1][d2];
-                  
+
                   IloConstraint c(exp <= 1);
-                  sprintf (var_name, "c24_%d_%d_%d", (int) d1, (int) d2, (int) j); 
+                  sprintf (var_name, "c24_%d_%d_%d", (int) d1, (int) d2, (int) j);
                   c.setName(var_name);
                   cplx.model.add(c);
-                
+
                   exp.end();
                 }
-              
+
             }
         }
     }
 
-
-
-//Restricao (25)
-for(int r=0; r < _numr; r++)
+  //Restricao (25)
+  for (int r = 0; r < _numr; r++)
   {
-      for(int i=0; i < _n; i++)
-      {
-        IloExpr exp(cplx.env);
-        exp -= cplx.xe[r][i];
+    Requirement requirement = GetRequirementPerId(static_cast<size_t>(r));
+    for (int i = 0; i < _n; i++)
+    {
+      IloExpr exp(cplx.env);
+      exp -= cplx.e[r][i];
 
-        for(int j=0; j < _m; j++)
-          for(int t=0; t < _t; t++)
-            exp += /* <RODRIGO> l^{lj}_{vm} */ * cplx.x[i][j][t];
-
-        IloConstraint c(exp <= - /* <RODRIGO> l^{ri}_{task} */);
-        sprintf (var_name, "c25_%d_%d", (int) i, (int) r); 
-        c.setName(var_name);
-        cplx.model.add(c);
-        
-        exp.end();
+      for (int j = 0; j < _m; j++) {
+        VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+        for (int t = 0; t < _t; t++) {
+          // exp += /* <RODRIGO> l^{lj}_{vm} */ * cplx.x[i][j][t];
+          exp += virtual_machine->GetRequirementValue(static_cast<size_t>(r)) * cplx.x[i][j][t];
+        }
       }
+
+      // IloConstraint c(exp <= - /* <RODRIGO> l^{ri}_{task} */);
+      IloConstraint c(exp <= -requirement.get_max_value());
+
+      sprintf (var_name, "c25_%d_%d", (int) i, (int) r);
+      c.setName(var_name);
+      cplx.model.add(c);
+
+      exp.end();
+    }
   }
-
-
 
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
