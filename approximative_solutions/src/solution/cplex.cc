@@ -1059,7 +1059,7 @@ for(int d1=0; d1 < _d-1; d1++)
     // Requirement requirement = GetRequirementPerId(static_cast<size_t>(r));
     for (int i = 0; i < _n; i++)
     {
-      Task* task = GetTaskPerId(static_cast<size_t>(i));
+      Task* task = GetTaskPerId(static_cast<size_t>(i + 1));
 
       IloExpr exp(cplx.env);
       exp -= cplx.e[r][i];
