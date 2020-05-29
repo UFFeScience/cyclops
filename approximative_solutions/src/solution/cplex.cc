@@ -86,6 +86,9 @@ ILOSTLBEGIN
 void Cplex::Run() {
   // bool DEPU = false;
 
+  // tempo
+  clock_t t_start = clock();
+
   // nome das variaveis
   char var_name[100];
 
@@ -101,6 +104,27 @@ void Cplex::Run() {
   double _smax = get_maximum_security_and_privacy_exposure();
 
   struct CPLEX cplx(_n, _d, _m, _numr, _numb);
+
+
+
+
+ // ---------- MELHOR SOLUCAO ------------------
+  // int ***    x;               // guarda a melhor solucao x
+  // int *****  r;               // guarda a melhor solucao r
+  // int *****  w;               // guarda a melhor solucao r
+  // int ***    y;               // guarda a melhor solucao y
+  // int **     yb;              // guarda a melhor solucao yb
+  // int **     ws;              // guarda a melhor solucao w
+  // double **  e;               // guarda a melhor solucao e
+  // int **     b;               // guarda a melhor solucao b
+  // double **  q;               // guarda a melhor solucao q
+  // int **     v;               // guarda a melhor solucao v
+  // double *   z;               // guarda a melhor solucao z
+  // double z_max;               // guarda a melhor solucao z_max
+
+
+
+
 
   // variaveis de execucao
   // X_IJT => a tarefa I que esta na maquina J, comeca a executar no periodo T
@@ -719,10 +743,10 @@ for(int b = 0; b < _numb; b++)
         else
         {
           IloExpr exp(cplx.env);
-          exp+=cplx.y[d][ind][0];
+          exp+=cplx.y[d][mb][0];
 
           IloConstraint c(exp == 0);
-          sprintf (var_name, "c13_%d_%d", (int)d, (int)ind);
+          sprintf (var_name, "c13_%d_%d", (int)d, (int)mb);
           c.setName(var_name);
           cplx.model.add(c);
 
@@ -999,17 +1023,14 @@ for (int d = 0; d < _d; d++)
           // hard constraint
           if (conflict == -1)
             {
-              for(int b = 0; b < _numb; b++)
+              for(int b = 0; b < _mb; b++)
                 {
-                  // indice do bucket dentre as maquinas
-                  int j = static_cast<int>(GetVirtualMachineSize()) + b;
-
                   IloExpr exp(cplx.env);
-                  exp += cplx.yb[d1][j];
-                  exp += cplx.yb[d2][j];
+                  exp += cplx.yb[d1][b];
+                  exp += cplx.yb[d2][b];
 
                   IloConstraint c(exp <= 1);
-                  sprintf (var_name, "c23_%d_%d_%d", (int) d1, (int) d2, (int) j);
+                  sprintf (var_name, "c23_%d_%d_%d", (int) d1, (int) d2, (int) b);
                   c.setName(var_name);
                   cplx.model.add(c);
 
@@ -1031,18 +1052,16 @@ for(int d1=0; d1 < _d-1; d1++)
           // hard constraint
           if (conflict > 0)
             {
-              for(int b = 0; b < _numb; b++)
+              for(int b = 0; b < _mb; b++)
                 {
-                  // indice do bucket dentre as maquinas
-                  int j = static_cast<int>(GetVirtualMachineSize()) + b;
-
+                  
                   IloExpr exp(cplx.env);
-                  exp += cplx.yb[d1][j];
-                  exp += cplx.yb[d2][j];
+                  exp += cplx.yb[d1][b];
+                  exp += cplx.yb[d2][b];
                   exp -= cplx.ws[d1][d2];
 
                   IloConstraint c(exp <= 1);
-                  sprintf (var_name, "c24_%d_%d_%d", (int) d1, (int) d2, (int) j);
+                  sprintf (var_name, "c24_%d_%d_%d", (int) d1, (int) d2, (int) b);
                   c.setName(var_name);
                   cplx.model.add(c);
 
@@ -1083,7 +1102,238 @@ for(int d1=0; d1 < _d-1; d1++)
     }
   }
 
+
+//Restricao (26)
+for(int b = 0; b < _numb; b++)
+  {
+    // bucket 
+    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+
+    // indice do bucket dentre as maquinas
+    int j = static_cast<int>(GetVirtualMachineSize()) + b; 
+		  
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) 
+      {
+        IloExpr exp(cplx.env);
+
+        for(int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+          exp += cplx.q[b][l]; 
+
+        for(int d=0; d < _d; d++)
+          {
+            File* file = files_[static_cast<size_t>(d)];
+            exp -= (file->get_size() * cplx.yb[d][j]);
+          }
+
+          IloConstraint c(exp == 0);
+          sprintf (var_name, "c26_%d", (int) j); 
+          c.setName(var_name);
+          cplx.model.add(c);
+	  
+          exp.end();
+      }
+    else 
+      {
+	      exit(1);  // error
+      }
+
+    
+  }
+
+ //Restricao (27)
+ for(int b = 0; b < _numb; b++)
+  {
+    // bucket 
+    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) 
+      {
+        IloExpr exp(cplx.env);
+
+        for(int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+          exp += cplx.b[b][l]; 
+
+        IloConstraint c(exp == 1);
+        sprintf (var_name, "c27_%d", (int) b); 
+        c.setName(var_name);
+        cplx.model.add(c);
+        
+        exp.end();
+      }
+  }
+
+    
+ //Restricao (28)
+ for(int b = 0; b < _numb; b++)
+  {
+    // bucket 
+    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+
+    // indice do bucket dentre as maquinas
+    int j = static_cast<int>(GetVirtualMachineSize()) + b; 
+		  
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) 
+      {
+        IloExpr exp(cplx.env);
+
+        for(int d=0; d < _d; d++)
+          {
+            File* file = files_[static_cast<size_t>(d)];
+            exp += (file->get_size() * cplx.yb[d][j]);
+          }
+
+        for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+          exp -= /* <RODRIGO> sm_{bl}*/ 51200  * cplx.b[b][l];  // sm_{bl} == 0
+
+        IloConstraint c(exp <= 0);
+        sprintf (var_name, "c28_%d", (int) b); 
+        c.setName(var_name);
+        cplx.model.add(c);
+        
+        exp.end();
+      }
+    else 
+      {
+	      exit(1);  // error
+      }
+    
+  }
+    
+    
+  
+   //Restricao (29)
+ for(int b = 0; b < _numb; b++)
+  {
+    // bucket 
+    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) 
+      {
+        for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+          {
+            IloExpr exp(cplx.env);
+            exp += /*  <RODRIGO> sm_{b(l-1)} * */   cplx.b[b][l];
+            exp -= cplx.q[b][l];
+
+            IloConstraint c(exp <= 0);
+            sprintf (var_name, "c29a_%d_%d", (int) b, (int) l); 
+            c.setName(var_name);
+            cplx.model.add(c);
+          
+            exp.end();
+
+            IloExpr exp2(cplx.env);
+            exp2 -= /* <RODRIGO> sm_{bl} * */   cplx.b[b][l];
+            exp2 += cplx.q[b][l];
+
+            IloConstraint c2(exp2 <= 0);
+            sprintf (var_name, "c29b_%d_%d", (int) b, (int) l); 
+            c2.setName(var_name);
+            cplx.model.add(c2);
+          
+            exp2.end();
+          }
+      }
+    else 
+      {
+	      exit(1);  // error
+      }
+  }
+
+
+   //Restricao (30)
+  for(int b = 0; b < _numb; b++)
+  {
+    // bucket 
+    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+
+    // indice do bucket dentre as maquinas
+    int j = static_cast<int>(GetVirtualMachineSize()) + b; 
+
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) 
+      {
+          for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+            {
+              IloExpr exp(cplx.env);
+              
+              exp += cplx.b[b][l];
+
+              for(int d=0; d < _d; d++)
+                exp -= cplx.yb[d][j];
+
+              IloConstraint c(exp <= 0);
+              sprintf (var_name, "c30_%d_%d", (int) b, (int) l); 
+              c.setName(var_name);
+              cplx.model.add(c);
+              
+              exp.end();
+              
+            }
+      }
+    
+  }
+
+
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
   solver.exportModel(FLAGS_cplex_output_file.c_str());  // escreve modelo no arquivo no formato .lp
+
+  // Parametros
+  solver.setParam(IloCplex::TiLim, 3600);            // tempo limite (3600=1h, 86400=1d)
+  solver.setParam(IloCplex::MIPInterval, 100);        // Log a cada N nos
+
+  // Metodo de resolução 
+  try
+   {
+     solver.solve();
+   }
+  catch(IloException& e)
+   {
+     cout << e;
+   }
+
+
+   // Saida de informação
+   // Saida
+    bool   solved;
+    double res, lb, time_s;
+    try
+      {
+        if(solver.getStatus() == IloAlgorithm::Optimal)
+          solved = true;
+        else
+          solved = false;
+        
+        res    = solver.getObjValue ();                                    // solução
+        lb     = solver.getBestObjValue();                                 // limite dual (inferior)
+        time_s = ((double)clock() - (double) t_start) / CLOCKS_PER_SEC;    // tempo de processamento
+    
+        cout<<endl;
+        cout<<"----- ACABOU ----"<<endl;
+        cout<<"SOLVED?: "<<solved<<endl;
+        cout<<"TEMPO  : "<<time_s<<endl;
+        cout<<"LB     : "<<lb<<endl;
+        cout<<"UB (X*): "<<res<<endl;
+        cout<<endl;
+        
+        // ------------------------ Solucao -------------------------
+        // if (data.DEPU)
+        // {
+        //   if (data.b_sol==1.0e+6)
+        //     {
+        //       cout<<"Nenhuma solucao armazenada"<<endl;
+        //     }
+        //   else
+        //     data.print_sol();
+        // }
+      }
+    catch(IloCplex::Exception &e)
+      {
+        cout << e;
+      }
+
+    cplx.env.end();
+
+
 }
+
