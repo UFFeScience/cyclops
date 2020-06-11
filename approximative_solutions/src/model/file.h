@@ -33,7 +33,8 @@ class File {
                 const double size)
       : id_(id),
         name_(name),
-        size_(size) { }
+        size_(size),
+        size_in_MBs_(size / 1024) { }
 
   /// Default destructor
   virtual ~File() = default;
@@ -44,8 +45,11 @@ class File {
   /// Getter for name of the file
   const std::string &get_name() const { return name_; }
 
-  /// Getter for size in MBs of the file
+  /// Getter for size in KBs of the file
   double get_size() const { return size_; }
+
+  /// Getter for size in KBs of the file
+  double get_size_in_MBs() const { return size_in_MBs_; }
 
   /// Concatenate operator
   friend std::ostream& operator<<(std::ostream& os, const File& a) {
@@ -66,8 +70,11 @@ class File {
   /// The file name
   std::string name_;
 
-  /// The file size in MBs
+  /// The file size in KBs
   double size_;
+
+  /// The file size in MBs
+  double size_in_MBs_;
 };  // end of class File
 
 #endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_

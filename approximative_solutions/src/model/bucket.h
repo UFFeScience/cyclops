@@ -39,6 +39,17 @@ class Bucket : public Storage {
   /// Default destructor
   ~Bucket() = default;
 
+  /// Getter for the upper limit of the storage of the specified interval
+  double get_storage_of_the_interval(size_t interval) const {
+    if (interval == 0) {
+      return 0.0;
+    } else if (interval == 1) {
+      return storage_;
+    } else {
+      exit(1);
+    }
+  }
+
   /// Getter for numberOfIntervals_ (not used for now)
   size_t get_number_of_GB_per_cost_intervals() const { return number_of_GB_per_cost_intervals_; }
 
