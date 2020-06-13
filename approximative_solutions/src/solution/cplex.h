@@ -55,14 +55,17 @@ struct CPLEX
 
 struct BEST
 {
-  int n_;
-  int d_;
-  int m_;
-  int numr_;
-  int numb_;
-  int mb_;
-  int t_;
-  int max_num_intervals_;
+  int     n_;
+  int     d_;
+  int     m_;
+  int     numr_;
+  int     numb_;
+  int     mb_;
+  int     t_;
+  int     max_num_intervals_;
+  clock_t start;  
+  double  PRECISAO=1.0e-6;
+  double  b_sol   =1.0e+10;
 
   // ---------- MELHOR SOLUCAO ------------------
   int ***    x;               // guarda a melhor solucao x
@@ -81,6 +84,8 @@ struct BEST
   BEST(int n, int d, int m, int numr, int numb, int mb, int t, int max_num_intervals)
       : n_(n), d_(d), m_(m), numr_(numr), numb_(numb), mb_(mb), t_(t), max_num_intervals_(max_num_intervals)
   {
+    start = clock();
+
     // x = (int***) malloc((size_t) n * (size_t) d * (size_t) m * (size_t) sizeof(int));
     x = new int**[n];
     for (int i = 0; i < n; ++i)

@@ -83,6 +83,47 @@ int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
   return time;
 }  // double Solution::FileTransferTime(File file, Storage vm1, Storage vm2) {
 
+
+// Callback da melhor solucao encontrada
+ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
+{
+  double                         val_sol = (double) getObjValue();
+  IloCplex::MIPCallbackI::NodeId no_sol  = getNodeId();
+  double                         gap     = 100.0 * ((double) getMIPRelativeGap());
+  double                         time_f  = ((double)clock() - (double)data->start) / CLOCKS_PER_SEC; 
+  bool                           DEPU    = true;
+
+  if (DEPU)
+   {
+      std::cout<<"------------------ ACHOU NOVA SOLUCAO ----------------------"<<std::endl;
+      std::cout<<"no      = "<<no_sol<<std::endl;
+      std::cout<<"sol     = "<<val_sol<<std::endl;
+      std::cout<<"gap     = "<<gap<<std::endl;
+      std::cout<<"tempo   = "<<time_f<<std::endl;
+      std::cout<<"------------------------------------------------------------"<<std::endl;
+   }
+
+    if (val_sol + data->PRECISAO < data->b_sol)
+    {
+      data->b_sol   = val_sol;
+      
+      // -------- x ----------
+      for (int i = 0; i < data->n_; ++i)
+      {
+        for (int j = 0; j < data->m_; ++j)
+        {
+          for (int t = 0; t < data->t_; ++t)
+          {
+            data->x[i][j][t] =  (float) getValue(cplx->x[i][j][t]);
+            //cout<<"************** X_"<<i<<"_"<<j<<"_"<<t<<endl;
+          }   
+        }
+      }
+    }
+      
+}
+
+
 ILOSTLBEGIN
 void Cplex::Run() {
   // bool DEPU = false;
@@ -1346,6 +1387,11 @@ void Cplex::Run() {
   solver.setParam(IloCplex::TiLim, 3600);            // tempo limite (3600=1h, 86400=1d)
   solver.setParam(IloCplex::MIPInterval, 100);       // Log a cada N nos
 
+  // -------------------- Callbacks ----------------------
+
+  //Ao encontrar uma nova solucao (incubent solution)
+  solver.use(CB_incub_sol(cplx.env, &best, &cplx));
+ 
   // Metodo de resolução
   try
   {
