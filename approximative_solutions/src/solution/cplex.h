@@ -53,6 +53,25 @@ struct CPLEX
 
 };
 
+int ***    x; 
+
+x = new int **[n];
+      for ( int i = 0; i < n; i++ )
+	{
+	  x[i] = new int *[m];
+	  for ( int j = 0; j < m; j++ )
+	    x[i][j] = new int [t];
+	}
+
+for ( int i = 0; i < n; i++)
+	{
+	  for ( int j = 0; j < m; j++)
+	    delete [] x[i][j];
+	  delete [] x[i];
+	}
+  delete [] x;
+
+
 struct BEST
 {
   // ---------- MELHOR SOLUCAO ------------------
