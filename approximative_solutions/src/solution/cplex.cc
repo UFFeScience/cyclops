@@ -108,6 +108,11 @@ void Cplex::Run() {
 
   struct CPLEX cplx(_n, _d, _m, _numr, _numb);
   struct BEST best(_n, _d, _m, _numr, _numb, _mb, _t, max_num_intervals);
+
+  // best.x[0][0][0] = 1;
+  // std::cout << "Sem fé: " << best.x[0][0][0] << std::endl;
+
+
   // best.z = (double*) malloc(sizeof(double));
   // *best.z = 10;
   // best.z_max = 1;

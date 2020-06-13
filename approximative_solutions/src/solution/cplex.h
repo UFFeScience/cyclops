@@ -53,27 +53,17 @@ struct CPLEX
 
 };
 
-int ***    x; 
-
-x = new int **[n];
-      for ( int i = 0; i < n; i++ )
-	{
-	  x[i] = new int *[m];
-	  for ( int j = 0; j < m; j++ )
-	    x[i][j] = new int [t];
-	}
-
-for ( int i = 0; i < n; i++)
-	{
-	  for ( int j = 0; j < m; j++)
-	    delete [] x[i][j];
-	  delete [] x[i];
-	}
-  delete [] x;
-
-
 struct BEST
 {
+  int n_;
+  int d_;
+  int m_;
+  int numr_;
+  int numb_;
+  int mb_;
+  int t_;
+  int max_num_intervals_;
+
   // ---------- MELHOR SOLUCAO ------------------
   int ***    x;               // guarda a melhor solucao x
   int *****  r;               // guarda a melhor solucao r
@@ -89,31 +79,220 @@ struct BEST
   double z_max;               // guarda a melhor solucao z_max
 
   BEST(int n, int d, int m, int numr, int numb, int mb, int t, int max_num_intervals)
+      : n_(n), d_(d), m_(m), numr_(numr), numb_(numb), mb_(mb), t_(t), max_num_intervals_(max_num_intervals)
   {
-    x = (int***) malloc((size_t) n * (size_t) d * (size_t) m * (size_t) sizeof(int));
-    r = (int*****) malloc((size_t) n * (size_t) d * (size_t) m *  (size_t) mb * (size_t) t * (size_t) sizeof(int));
-    w = (int*****) malloc((size_t) n * (size_t) d * (size_t) m *  (size_t) mb * (size_t) t * (size_t) sizeof(int));
-    y = (int***) malloc((size_t) d * (size_t) mb * (size_t) t * (size_t) sizeof(int));
-    yb = (int**) malloc((size_t) d * (size_t) mb * (size_t) sizeof(int));
-    ws = (int**) malloc((size_t) d * (size_t) d * (size_t) sizeof(int));
-    e = (double**) malloc((size_t) numr * (size_t) n * (size_t) sizeof(int));
-    b = (int**) malloc((size_t) numb * (size_t) max_num_intervals * (size_t) sizeof(int));
-    q = (double**) malloc((size_t) numb * (size_t) max_num_intervals * (size_t) sizeof(int));
-    v = (int**) malloc((size_t) m * (size_t) t * (size_t) sizeof(int));
-    z = (double*) malloc((size_t) m * (size_t) sizeof(int));
+    // x = (int***) malloc((size_t) n * (size_t) d * (size_t) m * (size_t) sizeof(int));
+    x = new int**[n];
+    for (int i = 0; i < n; ++i)
+    {
+      x[i] = new int*[d];
+      for (int j = 0; j < d; ++j)
+      {
+        x[i][j] = new int[m];
+      }
+    }
+
+    // r = (int*****) malloc((size_t) n * (size_t) d * (size_t) m *  (size_t) mb * (size_t) t * (size_t) sizeof(int));
+    r = new int****[n];
+    for (int i = 0; i < n; ++i)
+    {
+      r[i] = new int***[d];
+      for (int j = 0; j < d; ++j)
+      {
+        r[i][j] = new int**[m];
+        for (int k = 0; k < m; ++k)
+        {
+          r[i][j][k] = new int*[mb];
+          for (int l = 0; l < mb; ++l)
+          {
+            r[i][j][k][l] = new int[t];
+          }
+        }
+      }
+    }
+
+    // w = (int*****) malloc((size_t) n * (size_t) d * (size_t) m *  (size_t) mb * (size_t) t * (size_t) sizeof(int));
+    w = new int****[n];
+    for (int i = 0; i < n; ++i)
+    {
+      w[i] = new int***[d];
+      for (int j = 0; j < d; ++j)
+      {
+        w[i][j] = new int**[m];
+        for (int k = 0; k < m; ++k)
+        {
+          w[i][j][k] = new int*[mb];
+          for (int l = 0; l < mb; ++l)
+          {
+            w[i][j][k][l] = new int[t];
+          }
+        }
+      }
+    }
+
+    // y = (int***) malloc((size_t) d * (size_t) mb * (size_t) t * (size_t) sizeof(int));
+    y = new int**[d];
+    for (int i = 0; i < d; ++i)
+    {
+      y[i] = new int*[mb];
+      for (int j = 0; j < mb; ++j)
+      {
+        y[i][j] = new int[t];
+      }
+    }
+
+    // yb = (int**) malloc((size_t) d * (size_t) mb * (size_t) sizeof(int));
+    yb = new int*[d];
+    for (int i = 0; i < d; ++i)
+    {
+      yb[i] = new int[mb];
+    }
+
+    // ws = (int**) malloc((size_t) d * (size_t) d * (size_t) sizeof(int));
+    ws = new int*[d];
+    for (int i = 0; i < d; ++i)
+    {
+      ws[i] = new int[d];
+    }
+
+    // e = (double**) malloc((size_t) numr * (size_t) n * (size_t) sizeof(int));
+    e = new double*[numr];
+    for (int i = 0; i < numr; ++i)
+    {
+      e[i] = new double[n];
+    }
+
+    // b = (int**) malloc((size_t) numb * (size_t) max_num_intervals * (size_t) sizeof(int));
+    b = new int*[numb];
+    for (int i = 0; i < numb; ++i)
+    {
+      b[i] = new int[max_num_intervals];
+    }
+
+    // q = (double**) malloc((size_t) numb * (size_t) max_num_intervals * (size_t) sizeof(int));
+    q = new double*[numb];
+    for (int i = 0; i < numb; ++i)
+    {
+      q[i] = new double[max_num_intervals];
+    }
+
+    // v = (int**) malloc((size_t) m * (size_t) t * (size_t) sizeof(int));
+    v = new int*[m];
+    for (int i = 0; i < m; ++i)
+    {
+      v[i] = new int[t];
+    }
+
+    // z = (double*) malloc((size_t) m * (size_t) sizeof(int));
+    z = new double[m];
   }
 
   ~BEST()
   {
-    free(x);
-    free(r);
-    free(w);
-    free(y);
-    free(yb);
-    free(ws);
-    free(e);
-    free(b);
-    free(z);
+    // free(x);
+    for (int i = 0; i < n_; ++i)
+    {
+      for (int j = 0; j < d_; ++j)
+      {
+        delete [] x[i][j];
+      }
+      delete [] x[i];
+    }
+    delete [] x;
+
+    // free(r);
+    for (int i = 0; i < n_; ++i)
+    {
+      for (int j = 0; j < d_; ++j)
+      {
+        for (int k = 0; k < m_; ++k)
+        {
+          for (int l = 0; l < mb_; ++l)
+          {
+            delete [] r[i][j][k][l];
+          }
+          delete [] r[i][j][k];
+        }
+        delete [] r[i][j];
+      }
+      delete [] r[i];
+    }
+    delete [] r;
+
+    // free(w);
+    for (int i = 0; i < n_; ++i)
+    {
+      for (int j = 0; j < d_; ++j)
+      {
+        for (int k = 0; k < m_; ++k)
+        {
+          for (int l = 0; l < mb_; ++l)
+          {
+            delete [] w[i][j][k][l];
+          }
+          delete [] w[i][j][k];
+        }
+        delete [] w[i][j];
+      }
+      delete [] w[i];
+    }
+    delete [] w;
+
+    // free(y);
+    for (int i = 0; i < d_; ++i)
+    {
+      for (int j = 0; j < mb_; ++j)
+      {
+        delete [] x[i][j];
+      }
+      delete [] x[i];
+    }
+    delete [] x;
+
+    // free(yb);
+    for (int i = 0; i < d_; ++i)
+    {
+      delete [] yb[i];
+    }
+    delete [] yb;
+
+    // free(ws);
+    for (int i = 0; i < d_; ++i)
+    {
+      delete [] ws[i];
+    }
+    delete [] ws;
+
+    // free(e);
+    for (int i = 0; i < numr_; ++i)
+    {
+      delete [] e[i];
+    }
+    delete [] e;
+
+    // free(b);
+    for (int i = 0; i < numb_; ++i)
+    {
+      delete [] b[i];
+    }
+    delete [] b;
+
+    // free(q);
+    for (int i = 0; i < numb_; ++i)
+    {
+      delete [] q[i];
+    }
+    delete [] q;
+
+    // free(v);
+    for (int i = 0; i < numb_; ++i)
+    {
+      delete [] v[i];
+    }
+    delete [] v;
+
+    // free(z);
+    delete [] z;
   }
 };
 
