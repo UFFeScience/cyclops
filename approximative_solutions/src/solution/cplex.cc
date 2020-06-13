@@ -37,7 +37,7 @@
 
 DECLARE_string(cplex_output_file);
 
-#define PRECISAO 0.00001
+// #define PRECISAO 0.00001
 
 /**
  * If file reside in the same vm, then the transfer time is 0.0.
@@ -90,7 +90,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
   double                         val_sol = (double) getObjValue();
   IloCplex::MIPCallbackI::NodeId no_sol  = getNodeId();
   double                         gap     = 100.0 * ((double) getMIPRelativeGap());
-  double                         time_f  = ((double)clock() - (double)data->start) / CLOCKS_PER_SEC; 
+  double                         time_f  = ((double)clock() - (double)data->start) / CLOCKS_PER_SEC;
   bool                           DEPU    = true;
 
   if (DEPU)
@@ -106,7 +106,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
     if (val_sol + data->PRECISAO < data->b_sol)
     {
       data->b_sol   = val_sol;
-      
+
       // -------- x ----------
       for (int i = 0; i < data->n_; ++i)
       {
@@ -116,11 +116,11 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
           {
             data->x[i][j][t] =  (float) getValue(cplx->x[i][j][t]);
             //cout<<"************** X_"<<i<<"_"<<j<<"_"<<t<<endl;
-          }   
+          }
         }
       }
     }
-      
+
 }
 
 
@@ -1391,7 +1391,7 @@ void Cplex::Run() {
 
   //Ao encontrar uma nova solucao (incubent solution)
   solver.use(CB_incub_sol(cplx.env, &best, &cplx));
- 
+
   // Metodo de resolução
   try
   {

@@ -63,9 +63,10 @@ struct BEST
   int     mb_;
   int     t_;
   int     max_num_intervals_;
-  clock_t start;  
-  double  PRECISAO=1.0e-6;
-  double  b_sol   =1.0e+10;
+  clock_t start;
+  double  PRECISAO = 1.0e-6;
+  // double  b_sol    = 1.0e+10;
+  double  b_sol    = std::numeric_limits<double>::max();
 
   // ---------- MELHOR SOLUCAO ------------------
   int ***    x;               // guarda a melhor solucao x
@@ -86,14 +87,14 @@ struct BEST
   {
     start = clock();
 
-    // x = (int***) malloc((size_t) n * (size_t) d * (size_t) m * (size_t) sizeof(int));
+    // x = (int***) malloc((size_t) n * (size_t) m * (size_t) t * (size_t) sizeof(int));
     x = new int**[n];
     for (int i = 0; i < n; ++i)
     {
-      x[i] = new int*[d];
-      for (int j = 0; j < d; ++j)
+      x[i] = new int*[m];
+      for (int j = 0; j < m; ++j)
       {
-        x[i][j] = new int[m];
+        x[i][j] = new int[t];
       }
     }
 
@@ -197,7 +198,7 @@ struct BEST
     // free(x);
     for (int i = 0; i < n_; ++i)
     {
-      for (int j = 0; j < d_; ++j)
+      for (int j = 0; j < m_; ++j)
       {
         delete [] x[i][j];
       }
