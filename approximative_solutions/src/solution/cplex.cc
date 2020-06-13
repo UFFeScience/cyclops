@@ -69,8 +69,8 @@ int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
   if (storage1->get_id() != storage2->get_id()) {
     // get the smallest link
     double link = std::min(storage1->get_bandwidth(), storage2->get_bandwidth());
-    // time = static_cast<int>(std::ceil(file->get_size_in_MBs() / link));
-    time = static_cast<int>(std::ceil(file->get_size() / link));
+    time = static_cast<int>(std::ceil(file->get_size_in_MBs() / link));
+    // time = static_cast<int>(std::ceil(file->get_size() / link));
     // time = file->get_size() / link;
   }
   else
@@ -104,12 +104,19 @@ void Cplex::Run() {
   double _cmax = get_budget_max();
   double _smax = get_maximum_security_and_privacy_exposure();
 
+  int max_num_intervals = 2;
+
   struct CPLEX cplx(_n, _d, _m, _numr, _numb);
+  struct BEST best(_n, _d, _m, _numr, _numb, _mb, _t, max_num_intervals);
+  // best.z = (double*) malloc(sizeof(double));
+  // *best.z = 10;
+  // best.z_max = 1;
+  // std::cout << *best.z << " " << best.z_max << std::endl;
 
 
 
 
- // ---------- MELHOR SOLUCAO ------------------
+  // ---------- MELHOR SOLUCAO ------------------
   // int ***    x;               // guarda a melhor solucao x
   // int *****  r;               // guarda a melhor solucao r
   // int *****  w;               // guarda a melhor solucao r
@@ -191,7 +198,7 @@ void Cplex::Run() {
 
 
   // variaveis de armazenamento
-  // Y_DJT => indica se o dado de indice D esta armazenado na maquina J no periodo T
+  // Y_DJT => indica se o dado de indice D esta armazenado no device J no periodo T
   for (int i = 0; i < _d; i++)
   {
     cplx.y[i] =  IloArray<IloBoolVarArray>(cplx.env, _mb);
@@ -223,11 +230,11 @@ void Cplex::Run() {
 
 
   // variaveis de penalidade de violacao de uma aresta soft
-  // W_D1D2 => violacao da aresta soft di,d2 \in E_s
-  for (int d1=0; d1 < _d-1; d1++)
+  // W_D1D2 => violacao da aresta soft di, d2 \in E_s
+  for (int d1 = 0; d1 < _d - 1; d1++)
   {
     cplx.ws[d1] =  IloBoolVarArray(cplx.env, _d);
-    for(int d2=d1+1; d2 < _d; d2++)
+    for (int d2 = d1 + 1; d2 < _d; d2++)
     {
       int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
@@ -242,29 +249,29 @@ void Cplex::Run() {
 
   // variaveis de exposição
   // E_RI => nivel de exposicao da tarefa I pelo requerimento R
-  for(int r=0; r < _numr; r++)
-    {
-      cplx.e[r] =  IloNumVarArray(cplx.env, _n);
+  for (int r = 0; r < _numr; r++)
+  {
+    cplx.e[r] =  IloNumVarArray(cplx.env, _n);
 
-      for(int i=0; i < _n; i++)
-      {
-        sprintf (var_name, "xe_%d_%d", (int)r,(int)i);                       // nome da variavel
-	      cplx.e[r][i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);       // aloca variavel
-	      cplx.model.add(cplx.e[r][i]);                                       // adiciona variavel ao modelo
-	    }
+    for (int i = 0; i < _n; i++)
+    {
+      sprintf (var_name, "xe_%d_%d", (int)r,(int)i);                      // nome da variavel
+      cplx.e[r][i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);       // aloca variavel
+      cplx.model.add(cplx.e[r][i]);                                       // adiciona variavel ao modelo
     }
+  }
 
 
   // variaveis de uso dos buckets
   // B_JL => se o bucket J esta sendo usada no intervalo L
   // *OBS* ******* O INTERVALO 0 serve para indicar que o BUCKET NAO ESTA SENDO USADO ******
-  for(int b = 0; b < _numb; b++) {
+  for (int b = 0; b < _numb; b++) {
     Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
     if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) {
       cplx.b[b] = IloBoolVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals())+1);
 
-      for(int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      for (int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
         sprintf (var_name, "b_%d_%d", (int)b,(int)l);                       // nome da variavel
         cplx.b[b][l] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
@@ -278,13 +285,13 @@ void Cplex::Run() {
   // variaveis de uso dos buckets
   // Q_JL => quantidade de dados usada pelo bucket J no intervalo L
   // *OBS* ******* O INTERVALO 0 serve para indicar que o BUCKET NAO ESTA SENDO USADO ******
-  for(int b = 0; b < _numb; b++) {
+  for (int b = 0; b < _numb; b++) {
     Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
     if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) {
       cplx.q[b] = IloNumVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals())+1);
 
-      for(int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      for (int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
         sprintf(var_name, "q_%d_%d", (int) b, (int) l);                     // nome da variavel
         cplx.q[b][l] = IloNumVar(cplx.env, 0, IloInfinity, var_name);       // aloca variavel
@@ -298,10 +305,10 @@ void Cplex::Run() {
 
   // variaveis de uso de maquina por tempo
   // V_JT => indica se a maquina J esta em uso (contratada) no periodo T
-  for(int i = 0; i < _m; i++)
+  for (int i = 0; i < _m; i++)
   {
     cplx.v[i] =  IloBoolVarArray(cplx.env, _t);
-    for(int j=0; j < _t; j++)
+    for (int j=0; j < _t; j++)
     {
       sprintf(var_name, "v_%d_%d", (int) i, (int) j);                     // nome da variavel
       cplx.v[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
@@ -311,7 +318,7 @@ void Cplex::Run() {
 
   // variaveis de tempo total de uso por maquina
   // Z_J => indica tempo total em que a maquina J foi usada (contratada)
-  for(int i=0; i < _m; i++)
+  for (int i = 0; i < _m; i++)
   {
     sprintf(var_name, "z_%d", (int) i);                         // nome da variavel
     cplx.z[i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel
@@ -489,7 +496,7 @@ void Cplex::Run() {
             exp += cplx.w[i][d][j][p][t];
 
             /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
-            teto = std::max(0, tempo);
+            teto = std::max(0, t - tempo);
             // Pq temos esse max?
             // Pq é até q <= teto e não q < teto
             for (int q = 0; q <= teto; q++) {
@@ -524,7 +531,9 @@ void Cplex::Run() {
         for (int p = 0; p < _mb; p++)
         {
           int tempo = std::ceil(task->get_time() * virtual_machine->get_slowdown());
-          for (int t = tempo; t < _t; t++)
+          // for (int t = tempo; t < _t; t++)
+          int limite = min(_t, tempo);
+          for (int t = 0; t < limite; t++)
           {
             IloExpr exp(cplx.env);
             exp +=cplx.w[i][d][j][p][t];
@@ -586,84 +595,92 @@ void Cplex::Run() {
     }
   }
 
-
-
-// Restricao (10)
-for(int piso,j=0; j < _m; j++)
+  // Restricao (10)
+  for (int piso, j = 0; j < _m; j++)
   {
     VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
-    for(int t=0; t < _t; t++)
-      {
+    for (int t=0; t < _t; t++)
+    {
       IloExpr exp(cplx.env);
 
       /* execucao */
       for (int i = 0; i < _n; i++)
+      {
+        Task* task = GetTaskPerId(static_cast<size_t>(i + 1));
+
+        int tempo_execucao = static_cast<int>(std::ceil(task->get_time() * virtual_machine->get_slowdown()));
+
+        piso       = max(0, t - tempo_execucao + 1);
+
+        for (int q = piso; q <= t; q++)
         {
-          Task* task = GetTaskPerId(static_cast<size_t>(i + 1));
-          piso       = max(0, t - static_cast<int>((std::ceil(task->get_time() * virtual_machine->get_slowdown()) + 1.0)));
-          for(int q=piso; q <= t; q++)
-            exp +=cplx.x[i][j][q];
+          exp += cplx.x[i][j][q];
         }
+      }
 
       /* escrita */
-      for(int i=0; i < _n; i++)
+      for (int i = 0; i < _n; i++)
+      {
+        Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
+        std::vector<File*> output_files = task->get_output_files();
+
+        for (int d = 0; d < static_cast<int>(output_files.size()); d++)
         {
-          Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
-          std::vector<File*> output_files = task->get_output_files();
+          File* file = output_files[static_cast<size_t>(d)];
 
-          for (int d = 0; d < static_cast<int>(output_files.size()); d++)
+          for (int p = 0; p < _mb; p++)
+          {
+            Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+            piso             = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage) + 1);
+            for (int rr = piso; rr <= t; rr++)
             {
-              File* file = output_files[static_cast<size_t>(d)];
-
-              for(int p=0; p < _mb; p++)
-                {
-                  Storage* storage = GetStoragePerId(static_cast<size_t>(p));
-                  piso             = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage) + 1);
-                  for(int rr=piso; rr <= t; rr++)
-                    exp += cplx.w[i][d][j][p][rr];
-                }
-                  }
+              exp += cplx.w[i][d][j][p][rr];
+            }
+          }
         }
+      }
 
       /* leitura */
       for (int i = 0; i < _n; i++)
+      {
+        Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
+        std::vector<File*> input_files = task->get_input_files();
+
+        for (int d = 0; d < static_cast<int>(input_files.size()); d++)
         {
-          Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-          std::vector<File*> input_files = task->get_input_files();
+          File* file = input_files[static_cast<size_t>(d)];
 
-          for (int d = 0; d < static_cast<int>(input_files.size()); d++)
+          for(int p=0; p < _mb; p++)
+          {
+            Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+            piso             = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage) + 1);
+            for (int rr = piso; rr <= t; rr++)
             {
-              File* file = input_files[static_cast<size_t>(d)];
+              exp += cplx.r[i][d][j][p][rr];
+            }
+          }
+        }
+	    }
 
-              for(int p=0; p < _mb; p++)
-                {
-                  Storage* storage = GetStoragePerId(static_cast<size_t>(p));
-                  piso             = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage) + 1);
-                  for(int rr=piso; rr <= t; rr++)
-                    exp += cplx.r[i][d][j][p][rr];
-                }
-	      }
-	  }
+      /* contratacao */
+      exp -= cplx.v[j][t];
 
-	/* contratacao */
-	exp -= cplx.v[j][t];
+      IloConstraint c(exp <= 0);
+      sprintf (var_name, "c10_%d_%d", (int)j, (int)t);
+      c.setName(var_name);
+      cplx.model.add(c);
 
-	IloConstraint c(exp <= 0);
-	sprintf (var_name, "c10_%d_%d", (int)j, (int)t);
-	c.setName(var_name);
-	cplx.model.add(c);
-
-	exp.end();
-      }
+	    exp.end();
+    }
   }
 
-
-
   // Restricao (11)
-  for (int b = 0; b < _numb; b++)
+  for (int b = static_cast<int>(GetVirtualMachineSize());
+      b < static_cast<int>(GetVirtualMachineSize()) + _numb;
+      b++)
   {
-    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+    Storage* storage = GetStoragePerId(static_cast<size_t>(b));
 
     for (int t = 0; t < _t; t++)
     {
@@ -722,20 +739,21 @@ for(int piso,j=0; j < _m; j++)
     }
   }
 
-
-
   //Restricao (12)
   for(int d = 0; d < static_cast<int>(files_.size()); ++d)
   {
     File* file = files_[static_cast<size_t>(d)];
 
-    if (dynamic_cast<DynamicFile*>(file)) {
+    if (dynamic_cast<DynamicFile*>(file))
+    {
       for(int j=0; j < _mb; j++)
       {
         IloExpr exp(cplx.env);
-        exp+=cplx.y[d][j][0];
+
+        exp += cplx.y[d][j][0];
 
         IloConstraint c(exp == 0);
+
         sprintf (var_name, "c12_%d_%d", (int)d, (int)j);
         c.setName(var_name);
         cplx.model.add(c);
@@ -744,7 +762,6 @@ for(int piso,j=0; j < _m; j++)
       }
     }
   }
-
 
   //Restricao (13) e (14)
   for (int d = 0; d < static_cast<int>(files_.size()); ++d)
@@ -842,38 +859,39 @@ for(int piso,j=0; j < _m; j++)
     }
   }
 
-
-
-// Restricao (16)
-for (int dd, i = 0; i < _n; i++)
+  // Restricao (16)
+  for (int dd, i = 0; i < _n; i++)
   {
     Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
     std::vector<File*> input_files = task->get_input_files();
 
     for (int d = 0; d < static_cast<int>(input_files.size()); d++)
+    {
+      for(int p = 0; p < _mb; p++)
       {
-      for(int p=0; p < _mb; p++)
+        for(int t=0; t < _t; t++)
         {
-          for(int t=0; t < _t; t++)
+            IloExpr exp(cplx.env);
+
+            for (int j = 0; j < _m; j++)
             {
-              IloExpr exp(cplx.env);
-              for(int j=0; j < _m; j++)
-                exp+= cplx.r[i][d][j][p][t];
-
-              File* file = input_files[static_cast<size_t>(d)];
-
-              dd = file->get_id();
-              exp-=cplx.y[dd][p][t];
-
-              IloConstraint c(exp <= 0);
-              sprintf (var_name, "c16_%d_%d_%d_%d", (int)i, (int)d, (int)p, (int)t);
-              c.setName(var_name);
-              cplx.model.add(c);
-
-              exp.end();
+              exp += cplx.r[i][d][j][p][t];
             }
+
+            File* file = input_files[static_cast<size_t>(d)];
+
+            dd = file->get_id();
+            exp -= cplx.y[dd][p][t];
+
+            IloConstraint c(exp <= 0);
+            sprintf (var_name, "c16_%d_%d_%d_%d", (int)i, (int)d, (int)p, (int)t);
+            c.setName(var_name);
+            cplx.model.add(c);
+
+            exp.end();
         }
       }
+    }
   }
 
   // Restricao (17)
@@ -884,6 +902,7 @@ for (int dd, i = 0; i < _n; i++)
     for (int t = 0; t < _t; t++)
     {
       IloExpr exp(cplx.env);
+
       for (int d = 0; d < _d; d++)
       {
         File* file = GetFilePerId(static_cast<size_t>(d));
@@ -891,6 +910,7 @@ for (int dd, i = 0; i < _n; i++)
       }
 
       IloConstraint c(exp <= storage->get_storage());
+
       sprintf(var_name, "c17_%d_%d", (int)j, (int)t);
       c.setName(var_name);
       cplx.model.add(c);
@@ -899,8 +919,8 @@ for (int dd, i = 0; i < _n; i++)
     }
   }
 
-  //Restricao (18)
-  for(int i=0; i < _n; i++)
+  // Restricao (18)
+  for (int i = 0; i < _n; i++)
   {
     Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
     std::vector<File*> output_files = task->get_output_files();
@@ -909,22 +929,24 @@ for (int dd, i = 0; i < _n; i++)
     {
       File* file = output_files[static_cast<size_t>(d)];
 
-      for(int j=0; j < _m; j++)
+      for (int j = 0; j < _m; j++)
       {
         VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
-        for(int p=0; p < _mb; p++)
+        for (int p = 0; p < _mb; p++)
         {
           Storage* storage = GetStoragePerId(static_cast<size_t>(p));
 
-          for(int t=0; t < _t; t++)
+          for (int t = 0; t < _t; t++)
           {
             IloExpr exp(cplx.env);
-            exp+= (t + ComputeFileTransferTime(file, storage, virtual_machine)) * cplx.w[i][d][j][p][t];
-            exp-=cplx.z_max[0];
+
+            exp += (t + ComputeFileTransferTime(file, storage, virtual_machine)) * cplx.w[i][d][j][p][t];
+            exp -= cplx.z_max[0];
 
             IloConstraint c(exp <= 0);
-            sprintf (var_name, "c18_%d_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)p, (int)t);
+
+            sprintf(var_name, "c18_%d_%d_%d_%d_%d", (int)i, (int)d, (int)j, (int)p, (int)t);
             c.setName(var_name);
             cplx.model.add(c);
 
@@ -938,13 +960,15 @@ for (int dd, i = 0; i < _n; i++)
   //Restricao (19)
   for (int j = 0; j < _m; j++)
   {
-    for(int t = 0; t < _t; t++)
+    for (int t = 0; t < _t; t++)
     {
       IloExpr exp(cplx.env);
-      exp += (t+1) * cplx.v[j][t];  // t+1 porque voce paga os tempos de 0 a t, logo t+1 tempos
+
+      exp += (t + 1) * cplx.v[j][t];  // t+1 porque voce paga os tempos de 0 a t, logo t+1 tempos
       exp -= cplx.z[j];
 
       IloConstraint c(exp <= 0);
+
       sprintf(var_name, "c19_%d_%d", (int)j, (int)t);
       c.setName(var_name);
       cplx.model.add(c);
@@ -994,25 +1018,30 @@ for (int dd, i = 0; i < _n; i++)
 
     for (int d = 0; d < static_cast<int>(input_files.size()); d++)
     {
-      for(int j=0; j < _m; j++)
+      for (int j = 0; j < _m; j++)
       {
-        for(int t=0; t < _t; t++)
+        for (int t = 0; t < _t; t++)
         {
           IloExpr exp(cplx.env);
-          for(int p=0; p < _mb; p++)
+
+          for (int p = 0; p < _mb; p++) {
             exp += (static_cast<int>(input_files.size())) * cplx.r[i][d][j][p][t];
+          }
 
-          for(int dd, g=0; g < static_cast<int>(input_files.size()); g++)
-            {
-              File* file = input_files[static_cast<size_t>(d)];
-              dd         = file->get_id();
+          for (int dd, g = 0; g < static_cast<int>(input_files.size()); g++)
+          {
+            File* file = input_files[static_cast<size_t>(d)];
 
-              for(int p=0; p < _mb; p++)
-                exp -= cplx.y[dd][p][t];
+            dd         = file->get_id();
+
+            for (int p = 0; p < _mb; p++) {
+              exp -= cplx.y[dd][p][t];
             }
+          }
 
           IloConstraint c(exp <= 0);
-          sprintf (var_name, "c21_%d_%d_%d_%d", (int) i, (int) d, (int) j, (int) t);
+
+          sprintf(var_name, "c21_%d_%d_%d_%d", (int) i, (int) d, (int) j, (int) t);
           c.setName(var_name);
           cplx.model.add(c);
 
@@ -1022,9 +1051,8 @@ for (int dd, i = 0; i < _n; i++)
     }
   }
 
-
-//Restricao (22)
-for (int d = 0; d < _d; d++)
+  // Restricao (22)
+  for (int d = 0; d < _d; d++)
   {
     for(int j=0; j < _mb; j++)
       {
@@ -1044,67 +1072,66 @@ for (int d = 0; d < _d; d++)
       }
   }
 
+  // Restricao (23)
+  for (int d1 = 0; d1 < _d - 1; d1++)
+  {
+    for (int d2 = d1 + 1; d2 < _d; d2++)
+    {
+      int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
-  //Restricao (23)
-  for(int d1=0; d1 < _d-1; d1++)
+      // hard constraint
+      if (conflict == -1)
       {
-        for(int d2=d1+1; d2 < _d; d2++)
+        for (int b = 0; b < _mb; b++)
         {
-          int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
+          IloExpr exp(cplx.env);
 
-          // hard constraint
-          if (conflict == -1)
-            {
-              for(int b = 0; b < _mb; b++)
-                {
-                  IloExpr exp(cplx.env);
-                  exp += cplx.yb[d1][b];
-                  exp += cplx.yb[d2][b];
+          exp += cplx.yb[d1][b];
+          exp += cplx.yb[d2][b];
 
-                  IloConstraint c(exp <= 1);
-                  sprintf (var_name, "c23_%d_%d_%d", (int) d1, (int) d2, (int) b);
-                  c.setName(var_name);
-                  cplx.model.add(c);
+          IloConstraint c(exp <= 1);
 
-                  exp.end();
-                }
+          sprintf(var_name, "c23_%d_%d_%d", (int) d1, (int) d2, (int) b);
+          c.setName(var_name);
+          cplx.model.add(c);
 
-            }
+          exp.end();
         }
       }
-
-
-//Restricao (24)
-for(int d1=0; d1 < _d-1; d1++)
-    {
-      for(int d2=d1+1; d2 < _d; d2++)
-        {
-          int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
-
-          // hard constraint
-          if (conflict > 0)
-            {
-              for(int b = 0; b < _mb; b++)
-                {
-
-                  IloExpr exp(cplx.env);
-                  exp += cplx.yb[d1][b];
-                  exp += cplx.yb[d2][b];
-                  exp -= cplx.ws[d1][d2];
-
-                  IloConstraint c(exp <= 1);
-                  sprintf (var_name, "c24_%d_%d_%d", (int) d1, (int) d2, (int) b);
-                  c.setName(var_name);
-                  cplx.model.add(c);
-
-                  exp.end();
-                }
-
-            }
-        }
     }
+  }
 
-  //Restricao (25)
+  // Restricao (24)
+  for (int d1 = 0; d1 < _d - 1; d1++)
+  {
+    for (int d2 = d1 + 1; d2 < _d; d2++)
+    {
+      int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
+
+      // hard constraint
+      if (conflict > 0)
+      {
+        for (int b = 0; b < _mb; b++)
+        {
+          IloExpr exp(cplx.env);
+
+          exp += cplx.yb[d1][b];
+          exp += cplx.yb[d2][b];
+          exp -= cplx.ws[d1][d2];
+
+          IloConstraint c(exp <= 1);
+
+          sprintf(var_name, "c24_%d_%d_%d", (int) d1, (int) d2, (int) b);
+          c.setName(var_name);
+          cplx.model.add(c);
+
+          exp.end();
+        }
+      }
+    }
+  }
+
+  // Restricao (25)
   for (int r = 0; r < _numr; r++)
   {
     // Requirement requirement = GetRequirementPerId(static_cast<size_t>(r));
@@ -1119,7 +1146,7 @@ for(int d1=0; d1 < _d-1; d1++)
         VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
         for (int t = 0; t < _t; t++) {
           // exp += /* <RODRIGO> l^{lj}_{vm} */ * cplx.x[i][j][t];
-          exp += virtual_machine->GetRequirementValue(static_cast<size_t>(r)) * cplx.x[i][j][t];
+          exp -= virtual_machine->GetRequirementValue(static_cast<size_t>(r)) * cplx.x[i][j][t];
         }
       }
 
@@ -1148,16 +1175,20 @@ for(int d1=0; d1 < _d-1; d1++)
       IloExpr exp(cplx.env);
 
       for (int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+      {
         exp += cplx.q[b][l];
+      }
 
-      for (int d=0; d < _d; d++)
+      for (int d = 0; d < _d; d++)
       {
         File* file = files_[static_cast<size_t>(d)];
         exp -= (file->get_size_in_MBs() * cplx.yb[d][j]);
+        // exp -= (file->get_size() * cplx.yb[d][j]);
       }
 
       IloConstraint c(exp == 0);
-      sprintf (var_name, "c26_%d", (int) j);
+
+      sprintf(var_name, "c26_%d", (int) j);
       c.setName(var_name);
       cplx.model.add(c);
 
@@ -1209,6 +1240,7 @@ for(int d1=0; d1 < _d-1; d1++)
       {
         File* file = files_[static_cast<size_t>(d)];
         exp += (file->get_size_in_MBs() * cplx.yb[d][j]);
+        // exp += (file->get_size() * cplx.yb[d][j]);
       }
 
       for (int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
@@ -1270,7 +1302,6 @@ for(int d1=0; d1 < _d-1; d1++)
       exit(1);  // error
     }
   }
-
 
   // Restricao (30)
   for (int b = 0; b < _numb; b++)
