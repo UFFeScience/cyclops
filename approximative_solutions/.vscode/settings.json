@@ -55,6 +55,8 @@
     "set": "cpp",
     "iostream": "cpp",
     "typeindex": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "strstream": "cpp",
+    "iomanip": "cpp"
   }
 }

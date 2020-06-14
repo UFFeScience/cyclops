@@ -1,0 +1,14 @@
+<#obligatory tasks> <#non-obligatory tasks> <#data> <#devices> <#periods> <Max. Financial Cost>
+
+<task_id> <is_obligatory?> <cpu_time> <n_input> [<id_input> .. ] < n_output  > [<id_output> .. ] 
+...
+
+<data_id> <size> <is_static?> <n_source_devices> [<device_id> ... ]          (0-dinamic 1-static)
+...
+
+<vm1_cpu_slowdown> <vm2_cpu_slowdown> ... <vm*_cpu_slowdown>                 (0 for cache machines)
+<vm1_storage> <vm2 _storage  > ... <vm* _storage  > 
+<vm1_cost> <vm2_cost  > ... <vm*_cost  >
+<vm1_type> <vm2_type> ... <vm*_type>                                         (type = 0-Storage 1-VM)
+
+BANDWIDTH MATRIX
