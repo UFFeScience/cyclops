@@ -83,6 +83,167 @@ int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
   return time;
 }  // double Solution::FileTransferTime(File file, Storage vm1, Storage vm2) {
 
+
+
+// ---- VARIAVEIS PARA IMPRESSAO DA SOLUCAO ---
+int * tempo;            
+int ** maq_dado;
+
+tempo    = new int [m];
+maq_dado = new int * [m];
+for(int i=0; i < m; i++) {maq_dado[i] = new int [d];}
+
+delete [] tempo;
+for(int i=0; i < m; i++) {delete [] maq_dado[i];}
+  delete [] maq_dado;
+
+void print_sol()
+{
+  // inicializacao
+  for(int i=0; i < m; i++) {tempo[i]=0;}                                    // Vetor para TESTE que guarda o tempo em que a maquina passa realizando a sua acao (exec.,leit.escrit.) corrente  
+  for(int i=0; i < m; i++) for(int j=0; j < d; j++) {maq_dado[i][j] = -1;}  // Guarda os arquivos por maquina
+  
+  cout<<"---------------- Linha do Tempo --------------"<<endl;
+  cout<<"t)\t"; for(int j=0; j < m; j++) {cout<<"(M"<<j<<")\t"<<"(Y)\t"<<"(V)\t";} cout<<endl; cout<<endl;
+  // TEMPO
+  for(int checa, t1=0; t1 < t and checa <= 1; t1++)
+    {
+      cout<<"t"<<t1<<")\t";
+
+      // MAQUINA
+      for(int j=0; j < m and checa <= 1; j++)
+	{
+	  // checa se inicial mais de uma acao no mesmo tempo na mesma maquina
+	  checa=0;
+	  
+	  // durante uma acao (exec,leitura, escrita)
+	  tempo[j] = tempo[j]-1;
+	  if (tempo[j] > 0)
+	    {
+	      checa   += 1;
+	      cout<<"("<<tempo[j]<<")"<<"\t";
+	    }
+	  
+	  // execucao
+	  for(int passou=0, i=0; i < n and checa <= 1; i++)
+	    {
+	      float x_ijt = x[i][j][t1];             // retorna o valor da variavel
+	      if(x_ijt >= (1-PRECISAO))
+		{
+		  checa   += 1;
+		  cout<<"x"<<i<<"\t";
+		  if (tempo[j] > 0) {cout<<"*** EXECUTOU EM CIMA DE ALGO ***"; checa   += 1; break;}
+		  
+		  tempo[j] = t_ij(i,j);
+		  
+		  // checa se as leituras foram feitas pela maquina antes da execucao
+		  for(int d1=0; d1 < d_in_tam[i] and checa <= 1; d1++)
+		    {
+		      passou=0;
+		      for(int k=0; k < m and checa <= 1; k++)
+			for(int q=0; q < t and checa <= 1; q++)
+			  {
+			    float r_idjpt = r[i][d1][j][k][q];             // retorna o valor da variavel
+			    if(r_idjpt >= (1-PRECISAO))
+			      passou=1;
+			  }
+		      if (passou==0)
+			{ cout<<"*** EXECUTOU A TAREFA SEM TER LIDO TODAS AS ENTRADAS *** faltou dado="<<d_in[i][d1]; checa   += 1; break;  }
+		    }
+		  // ----------------------------------------------------------------
+		}
+	      if (checa>1) {cout<<"*** CONFLITO COM EXECUCAO ***"; break;}
+	    }
+	  
+	  //leitura
+	  for(int i=0; i < n and checa <= 1; i++)
+	    for(int d1=0; d1 < d_in_tam[i] and checa <= 1; d1++)
+	      for(int k=0; k < m and checa <= 1; k++)
+		{
+		  float r_idjpt = r[i][d1][j][k][t1];             // retorna o valor da variavel
+		  if(r_idjpt >= (1-PRECISAO))
+		    {
+		      checa +=1;
+		      cout<<"r"<<i<<"("<<d_in[i][d1]<<")<"<<k<<"\t";
+		      if (tempo[j] > 0) {cout<<"*** LEU EM CIMA DE ALGO ***"; checa   += 1; break;}
+		      
+		      tempo[j] = t_djp(d_in[i][d1],j,k);
+		      
+		      // checa existencia de arquivo
+		      float y_djt = y[d_in[i][d1]][k][t1];             // retorna o valor da variavel
+		      if(y_djt < (1-PRECISAO))
+			{ cout<<"*** LEU ARQUIVO INEXISTENTE NA MAQUINA ***"; checa   += 1; break;  }
+		      // ---------------------------
+		      
+		    }
+		  if (checa>1) {cout<<"*** CONFLITO COM LEITURA ***"; break;}
+		}
+	  
+	  //escrita
+	  for(int passou=0, i=0; i < n and checa <= 1; i++)
+	    for(int d1=0; d1 < d_out_tam[i] and checa <= 1; d1++)
+	      for(int k=0; k < m and checa <= 1; k++)
+		{
+		  float w_idjpt = w[i][d1][j][k][t1];             // retorna o valor da variavel
+		  if(w_idjpt >= (1-PRECISAO))
+		    {
+		      checa +=1;
+		      cout<<"w"<<i<<"("<<d_out[i][d1]<<")>"<<k<<"\t";
+		      if (tempo[j] > 0) {cout<<"*** ESCREVEU EM CIMA DE ALGO ***"; checa   += 1; break;}
+		      
+		      tempo[j] = t_djp(d_out[i][d1],j,k);
+		    
+		      // checa se a tarefa foi executada na maquina antes
+		      passou=0;
+		      for(int q=0; q < t and checa <= 1; q++)
+			{
+			  float x_ijt = x[i][j][q];    
+			if(x_ijt >= (1-PRECISAO))
+			  passou = 1;
+		      }
+		    if (passou==0)
+		      { cout<<"*** ESCREVEU DADO SEM TER EXECUTADO A TAREFA NA MAQUINA ***"; checa   += 1; break;  }
+		    // -----------------------------------------------
+		    
+		  }
+		if (checa>1) {cout<<"*** CONFLITO COM ESCRITA ***"; break;}
+	      }
+	  
+	  // maquina ociosa neste tempo
+	  if (checa==0) cout<<"-\t";
+	  
+	  //dados
+	  for(int d1=0; d1 < d and checa <= 1; d1++)
+	    {
+	      float y_djt = y[d1][j][t1];             // retorna o valor da variavel
+	      if(y_djt >= (1-PRECISAO))
+		maq_dado[j][d1] = 1;
+	      
+	      if (maq_dado[j][d1] == 1)
+		cout<<d1<<",";
+	    }
+	  cout<<"\t";
+	  
+	  //contratacao
+	  float v_jt = v[j][t1];             // retorna o valor da variavel
+	  if(v_jt >= (1-PRECISAO))
+	    cout<<"*\t";
+	  else
+	    cout<<"\t";
+	  
+	}//for(int j=0; j < m and checa <= 1; j++)
+      
+      cout<<endl;
+    }//for(int checa=0, t=0; t < t and checa <= 1; t++)
+  cout<<"---------------------------------------------"<<endl;
+}
+
+
+
+
+
+
+
 void ImprimeBest(struct BEST* data)
 {
   Algorithm* algorithm = data->algorithm_;
