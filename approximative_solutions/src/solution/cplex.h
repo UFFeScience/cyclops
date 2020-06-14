@@ -55,18 +55,21 @@ struct CPLEX
 
 struct BEST
 {
-  int     n_;
-  int     d_;
-  int     m_;
-  int     numr_;
-  int     numb_;
-  int     mb_;
-  int     t_;
-  int     max_num_intervals_;
-  clock_t start;
-  double  PRECISAO = 1.0e-6;
+  int        n_;
+  int        d_;
+  int        m_;
+  int        numr_;
+  int        numb_;
+  int        mb_;
+  int        t_;
+  int        max_num_intervals_;
+
+  Algorithm* algorithm_;
+
+  clock_t    start;
+  double     PRECISAO = 1.0e-6;
   // double  b_sol    = 1.0e+10;
-  double  b_sol    = std::numeric_limits<double>::max();
+  double     b_sol    = std::numeric_limits<double>::max();
 
   // ---------- MELHOR SOLUCAO ------------------
   int ***    x;               // guarda a melhor solucao x
@@ -82,8 +85,9 @@ struct BEST
   double *   z;               // guarda a melhor solucao z
   double z_max;               // guarda a melhor solucao z_max
 
-  BEST(int n, int d, int m, int numr, int numb, int mb, int t, int max_num_intervals)
-      : n_(n), d_(d), m_(m), numr_(numr), numb_(numb), mb_(mb), t_(t), max_num_intervals_(max_num_intervals)
+  BEST(int n, int d, int m, int numr, int numb, int mb, int t, int max_num_intervals, Algorithm* algorithm)
+      : n_(n), d_(d), m_(m), numr_(numr), numb_(numb), mb_(mb), t_(t),
+        max_num_intervals_(max_num_intervals), algorithm_(algorithm)
   {
     start = clock();
 
@@ -249,11 +253,11 @@ struct BEST
     {
       for (int j = 0; j < mb_; ++j)
       {
-        delete [] x[i][j];
+        delete [] y[i][j];
       }
-      delete [] x[i];
+      delete [] y[i];
     }
-    delete [] x;
+    delete [] y;
 
     // free(yb);
     for (int i = 0; i < d_; ++i)
@@ -291,7 +295,7 @@ struct BEST
     delete [] q;
 
     // free(v);
-    for (int i = 0; i < numb_; ++i)
+    for (int i = 0; i < m_; ++i)
     {
       delete [] v[i];
     }
@@ -301,7 +305,6 @@ struct BEST
     delete [] z;
   }
 };
-
 
 class Cplex : public Algorithm {
  public:

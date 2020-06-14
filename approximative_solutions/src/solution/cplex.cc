@@ -68,8 +68,8 @@ int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
   // Calculate time
   if (storage1->get_id() != storage2->get_id()) {
     // get the smallest link
-    double link = std::min(storage1->get_bandwidth(), storage2->get_bandwidth());
-    time = static_cast<int>(std::ceil(file->get_size_in_MBs() / link));
+    double link = std::min(storage1->get_bandwidth(), storage2->get_bandwidth_GBps());
+    time = static_cast<int>(std::ceil(file->get_size_in_GB() / link));
     // time = static_cast<int>(std::ceil(file->get_size() / link));
     // time = file->get_size() / link;
   }
@@ -83,6 +83,212 @@ int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
   return time;
 }  // double Solution::FileTransferTime(File file, Storage vm1, Storage vm2) {
 
+void ImprimeBest(struct BEST* data)
+{
+  Algorithm* algorithm = data->algorithm_;
+
+  // -------- x ----------
+  for (int i = 0; i < data->n_; ++i)
+  {
+    for (int j = 0; j < data->m_; ++j)
+    {
+      for (int t = 0; t < data->t_; ++t)
+      {
+        if (data->x[i][j][t] > data->PRECISAO)
+        {
+          std::cout << "x[" << i << "][" << j << "][" << t << "] = " << data->x[i][j][t] << std::endl;
+        }
+      }
+    }
+  }
+
+  // -------- r ----------
+  for (int i = 0; i < data->n_; ++i)
+  {
+    Task* task = algorithm->GetTaskPerId(static_cast<size_t>(i + 1));
+    std::vector<File*> input_files = task->get_input_files();
+
+    // for (int j = 0; j < data->d_; ++j)
+    for (int j = 0; j < static_cast<int>(input_files.size()); ++j)
+    {
+      for (int k = 0; k < data->m_; ++k)
+      {
+        for (int l = 0; l < data->mb_; ++l)
+        {
+          for (int m = 0; m < data->t_; ++m)
+          {
+            if (data->r[i][j][k][l][m] > data->PRECISAO)
+            {
+              std::cout << "r[" << i << "]["
+                                << j << "]["
+                                << k << "]["
+                                << l << "]["
+                                << m << "] = " << data->r[i][j][k][l][m] << std::endl;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // -------- w ----------
+  for (int i = 0; i < data->n_; ++i)
+  {
+    Task* task = algorithm->GetTaskPerId(static_cast<size_t>(i + 1));
+    std::vector<File*> output_files = task->get_output_files();
+
+    // for (int j = 0; j < data->d_; ++j)
+    for (int j = 0; j < static_cast<int>(output_files.size()); ++j)
+    {
+      for (int k = 0; k < data->m_; ++k)
+      {
+        for (int l = 0; l < data->mb_; ++l)
+        {
+          for (int m = 0; m < data->t_; ++m)
+          {
+            if (data->w[i][j][k][l][m] > data->PRECISAO)
+            {
+              std::cout << "w[" << i << "]["
+                                << j << "]["
+                                << k << "]["
+                                << l << "]["
+                                << m << "] = " << data->w[i][j][k][l][m] << std::endl;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // -------- y ----------
+  for (int i = 0; i < data->d_; ++i)
+  {
+    for (int j = 0; j < data->mb_; ++j)
+    {
+      for (int k = 0; k < data->t_; ++k)
+      {
+        if (data->y[i][j][k] > data->PRECISAO)
+        {
+          std::cout << "y[" << i << "]["
+                            << j << "]["
+                            << k << "] = " << data->y[i][j][k] << std::endl;
+        }
+      }
+    }
+  }
+
+  // -------- yb ----------
+  for (int i = 0; i < data->d_; ++i)
+  {
+    for (int j = 0; j < data->mb_; ++j)
+    {
+      if (data->yb[i][j] > data->PRECISAO)
+      {
+        std::cout << "yb[" << i << "]["
+                           << j << "] = " << data->yb[i][j] << std::endl;
+      }
+    }
+  }
+
+  // -------- ws ----------
+  for (int i = 0; i < data->d_ - 1; ++i)
+  {
+    for (int j = i + 1; j < data->d_; ++j)
+    {
+      int conflict = algorithm->get_conflict_graph().ReturnConflict(static_cast<size_t>(i), static_cast<size_t>(j));
+
+      if (conflict > 0)
+      {  // soft constraint
+        if (data->ws[i][j] > data->PRECISAO)
+        {
+          std::cout << "ws[" << i << "]["
+                             << j << "] = " << data->ws[i][j] << std::endl;
+        }
+      }
+    }
+  }
+
+  // -------- e ----------
+  for (int i = 0; i < data->numr_; ++i)
+  {
+    for (int j = 0; j < data->n_; ++j)
+    {
+      if (data->e[i][j] > data->PRECISAO)
+      {
+        std::cout << "e[" << i << "]["
+                          << j << "] = " << data->e[i][j] << std::endl;
+      }
+    }
+  }
+
+  // -------- b ----------
+  for (int i = 0; i < data->numb_; ++i)
+  {
+    Storage* storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
+
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    {
+      for (int j = 0; j <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); ++j)
+      {
+        if (data->b[i][j] > data->PRECISAO)
+        {
+          std::cout << "b[" << i << "]["
+                            << j << "] = " << data->b[i][j] << std::endl;
+        }
+      }
+    } else {
+      exit(1);  // error
+    }
+  }
+
+  // -------- q ----------
+  for (int i = 0; i < data->numb_; ++i)
+  {
+    Storage* storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
+
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    {
+      for (int j = 0; j <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); ++j)
+      {
+        if (data->q[i][j] > data->PRECISAO)
+        {
+          std::cout << "q[" << i << "]["
+                            << j << "] = " << data->q[i][j] << std::endl;
+        }
+      }
+    } else {
+      exit(1);  // error
+    }
+  }
+
+  // -------- v ----------
+  for (int i = 0; i < data->m_; ++i)
+  {
+    for (int j = 0; j < data->t_; ++j)
+    {
+      if (data->v[i][j] > data->PRECISAO)
+      {
+        std::cout << "v[" << i << "]["
+                          << j << "] = " << data->v[i][j] << std::endl;
+      }
+    }
+  }
+
+  // -------- z ----------
+  for (int i = 0; i < data->m_; ++i)
+  {
+    if (data->z[i] > data->PRECISAO)
+    {
+      std::cout << "z[" << i << "] = " << data->z[i] << std::endl;
+    }
+  }
+
+  // -------- z_max ----------
+  if (data->z_max > data->PRECISAO)
+  {
+    std::cout << "z_max" << " = " << data->z_max << std::endl;
+  }
+}
 
 // Callback da melhor solucao encontrada
 ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
@@ -90,37 +296,175 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
   double                         val_sol = (double) getObjValue();
   IloCplex::MIPCallbackI::NodeId no_sol  = getNodeId();
   double                         gap     = 100.0 * ((double) getMIPRelativeGap());
-  double                         time_f  = ((double)clock() - (double)data->start) / CLOCKS_PER_SEC;
+  double                         time_f  = ((double) clock() - (double)data->start) / CLOCKS_PER_SEC;
   bool                           DEPU    = true;
 
+  Algorithm* algorithm = data->algorithm_;
+
   if (DEPU)
-   {
-      std::cout<<"------------------ ACHOU NOVA SOLUCAO ----------------------"<<std::endl;
-      std::cout<<"no      = "<<no_sol<<std::endl;
-      std::cout<<"sol     = "<<val_sol<<std::endl;
-      std::cout<<"gap     = "<<gap<<std::endl;
-      std::cout<<"tempo   = "<<time_f<<std::endl;
-      std::cout<<"------------------------------------------------------------"<<std::endl;
-   }
+  {
+    std::cout << "------------------ ACHOU NOVA SOLUCAO ----------------------" << std::endl;
+    std::cout << "no      = " << no_sol << std::endl;
+    std::cout << "sol     = " << val_sol << std::endl;
+    std::cout << "gap     = " << gap << std::endl;
+    std::cout << "tempo   = " << time_f << std::endl;
+    std::cout << "------------------------------------------------------------" << std::endl;
+  }
 
-    if (val_sol + data->PRECISAO < data->b_sol)
+  if (val_sol + data->PRECISAO < data->b_sol)
+  {
+    data->b_sol = val_sol;
+
+    // -------- x ----------
+    for (int i = 0; i < data->n_; ++i)
     {
-      data->b_sol   = val_sol;
-
-      // -------- x ----------
-      for (int i = 0; i < data->n_; ++i)
+      for (int j = 0; j < data->m_; ++j)
       {
-        for (int j = 0; j < data->m_; ++j)
+        for (int t = 0; t < data->t_; ++t)
         {
-          for (int t = 0; t < data->t_; ++t)
+          data->x[i][j][t] = (float) getValue(cplx->x[i][j][t]);
+          //cout<<"************** X_"<<i<<"_"<<j<<"_"<<t<<endl;
+        }
+      }
+    }
+
+    // -------- r ----------
+    for (int i = 0; i < data->n_; ++i)
+    {
+      Task* task = algorithm->GetTaskPerId(static_cast<size_t>(i + 1));
+      std::vector<File*> input_files = task->get_input_files();
+
+      // for (int j = 0; j < data->d_; ++j)
+      for (int j = 0; j < static_cast<int>(input_files.size()); ++j)
+      {
+        for (int k = 0; k < data->m_; ++k)
+        {
+          for (int l = 0; l < data->mb_; ++l)
           {
-            data->x[i][j][t] =  (float) getValue(cplx->x[i][j][t]);
-            //cout<<"************** X_"<<i<<"_"<<j<<"_"<<t<<endl;
+            for (int m = 0; m < data->t_; ++m)
+            {
+              data->r[i][j][k][l][m] = (float) getValue(cplx->r[i][j][k][l][m]);
+            }
           }
         }
       }
     }
 
+    // -------- w ----------
+    for (int i = 0; i < data->n_; ++i)
+    {
+      Task* task = algorithm->GetTaskPerId(static_cast<size_t>(i + 1));
+      std::vector<File*> output_files = task->get_output_files();
+
+      // for (int j = 0; j < data->d_; ++j)
+      for (int j = 0; j < static_cast<int>(output_files.size()); ++j)
+      {
+        for (int k = 0; k < data->m_; ++k)
+        {
+          for (int l = 0; l < data->mb_; ++l)
+          {
+            for (int m = 0; m < data->t_; ++m)
+            {
+              data->w[i][j][k][l][m] = (float) getValue(cplx->w[i][j][k][l][m]);
+            }
+          }
+        }
+      }
+    }
+
+    // -------- y ----------
+    for (int i = 0; i < data->d_; ++i)
+    {
+      for (int j = 0; j < data->mb_; ++j)
+      {
+        for (int k = 0; k < data->t_; ++k)
+        {
+          data->y[i][j][k] = (float) getValue(cplx->y[i][j][k]);
+        }
+      }
+    }
+
+    // -------- yb ----------
+    for (int i = 0; i < data->d_; ++i)
+    {
+      for (int j = 0; j < data->mb_; ++j)
+      {
+        data->yb[i][j] = (float) getValue(cplx->yb[i][j]);
+      }
+    }
+
+    // -------- ws ----------
+    for (int i = 0; i < data->d_ - 1; ++i)
+    {
+      for (int j = i + 1; j < data->d_; ++j)
+      {
+        int conflict = algorithm->get_conflict_graph().ReturnConflict(static_cast<size_t>(i), static_cast<size_t>(j));
+
+        if (conflict > 0) {  // soft constraint
+          data->ws[i][j] = (float) getValue(cplx->ws[i][j]);
+        }
+      }
+    }
+
+    // -------- e ----------
+    for (int i = 0; i < data->numr_; ++i)
+    {
+      for (int j = 0; j < data->n_; ++j)
+      {
+        data->e[i][j] = (float) getValue(cplx->e[i][j]);
+      }
+    }
+
+    // -------- b ----------
+    for (int i = 0; i < data->numb_; ++i)
+    {
+      Storage* storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
+
+      if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+      {
+        for (int j = 0; j <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); ++j)
+        {
+          data->b[i][j] = (float) getValue(cplx->b[i][j]);
+        }
+      } else {
+        exit(1);  // error
+      }
+    }
+
+    // -------- q ----------
+    for (int i = 0; i < data->numb_; ++i)
+    {
+      Storage* storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
+
+      if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+      {
+        for (int j = 0; j <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); ++j)
+        {
+          data->q[i][j] = (float) getValue(cplx->q[i][j]);
+        }
+      } else {
+        exit(1);  // error
+      }
+    }
+
+    // -------- v ----------
+    for (int i = 0; i < data->m_; ++i)
+    {
+      for (int j = 0; j < data->t_; ++j)
+      {
+        data->v[i][j] = (float) getValue(cplx->v[i][j]);
+      }
+    }
+
+    // -------- z ----------
+    for (int i = 0; i < data->m_; ++i)
+    {
+      data->z[i] = (float) getValue(cplx->z[i]);
+    }
+
+    // -------- z_max ----------
+    data->z_max = (float) getValue(cplx->z_max[0]);
+  }
 }
 
 
@@ -148,48 +492,21 @@ void Cplex::Run() {
   int max_num_intervals = 2;
 
   struct CPLEX cplx(_n, _d, _m, _numr, _numb);
-  struct BEST best(_n, _d, _m, _numr, _numb, _mb, _t, max_num_intervals);
-
-  // best.x[0][0][0] = 1;
-  // std::cout << "Sem fé: " << best.x[0][0][0] << std::endl;
-
-
-  // best.z = (double*) malloc(sizeof(double));
-  // *best.z = 10;
-  // best.z_max = 1;
-  // std::cout << *best.z << " " << best.z_max << std::endl;
-
-
-
-
-  // ---------- MELHOR SOLUCAO ------------------
-  // int ***    x;               // guarda a melhor solucao x
-  // int *****  r;               // guarda a melhor solucao r
-  // int *****  w;               // guarda a melhor solucao r
-  // int ***    y;               // guarda a melhor solucao y
-  // int **     yb;              // guarda a melhor solucao yb
-  // int **     ws;              // guarda a melhor solucao w
-  // double **  e;               // guarda a melhor solucao e
-  // int **     b;               // guarda a melhor solucao b
-  // double **  q;               // guarda a melhor solucao q
-  // int **     v;               // guarda a melhor solucao v
-  // double *   z;               // guarda a melhor solucao z
-  // double z_max;               // guarda a melhor solucao z_max
-
-
-
-
+  struct BEST best(_n, _d, _m, _numr, _numb, _mb, _t, max_num_intervals, this);
 
   // variaveis de execucao
   // X_IJT => a tarefa I que esta na maquina J, comeca a executar no periodo T
-  for (int i = 0; i < _n; i++) {
+  for (int i = 0; i < _n; i++)
+  {
     cplx.x[i] =  IloArray<IloBoolVarArray>(cplx.env, _m);
-    for (int j = 0; j < _m; j++) {
+    for (int j = 0; j < _m; j++)
+    {
       cplx.x[i][j] = IloBoolVarArray(cplx.env, _t);
-      for (int k = 0; k < _t; k++) {
-      sprintf (var_name, "x_%d_%d_%d", (int)i,(int)j, (int)k);              // nome da variavel
-      cplx.x[i][j][k] = IloBoolVar(cplx.env, var_name);                     // aloca variavel
-      cplx.model.add(cplx.x[i][j][k]);                                      // adiciona variavel ao modelo
+      for (int k = 0; k < _t; k++)
+      {
+        sprintf(var_name, "x_%d_%d_%d", (int)i,(int)j, (int)k);              // nome da variavel
+        cplx.x[i][j][k] = IloBoolVar(cplx.env, var_name);                     // aloca variavel
+        cplx.model.add(cplx.x[i][j][k]);                                      // adiciona variavel ao modelo
       }
     }
   }
@@ -197,18 +514,23 @@ void Cplex::Run() {
   // variaveis de leitura
   // R_IDJPT => a tarefa I que esta na maquina J, comeca a ler o seu D-esimo dado de entrada
   // (note que nao eh o dado de indice D) a partir da maquina P no periodo T
-  for (int i = 0; i < _n; i++) {
+  for (int i = 0; i < _n; i++)
+  {
     Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
     std::vector<File*> input_files = task->get_input_files();
     cplx.r[i]                      =  IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, static_cast<int>(input_files.size()));
 
-    for (int j = 0; j < static_cast<int>(input_files.size()); j++) {
+    for (int j = 0; j < static_cast<int>(input_files.size()); j++)
+    {
       cplx.r[i][j] = IloArray<IloArray<IloBoolVarArray>>(cplx.env, _m);
-      for (int k = 0; k < _m; k++) {
+      for (int k = 0; k < _m; k++)
+      {
         cplx.r[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, _mb);
-        for (int l = 0; l < _mb; l++) {
+        for (int l = 0; l < _mb; l++)
+        {
           cplx.r[i][j][k][l] = IloBoolVarArray(cplx.env, _t);
-          for (int m = 0; m < _t; m++) {
+          for (int m = 0; m < _t; m++)
+          {
             sprintf (var_name, "r_%d_%d_%d_%d_%d", (int) i, (int) j, (int) k, (int) l, (int) m);      // nome da variavel
             cplx.r[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel
             cplx.model.add(cplx.r[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
@@ -221,18 +543,23 @@ void Cplex::Run() {
   // variaveis de escrita
   // W_IDJPT => a tarefa I que esta na maquina J, comeca a escrever o seu D-esimo dado de entrada
   // (note que nao eh o dado de indice D) a partir da maquina P no periodo T
-  for (int i = 0; i < _n; i++) {
+  for (int i = 0; i < _n; i++)
+  {
     Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
     std::vector<File*> output_files = task->get_output_files();
     cplx.w[i]                       =  IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, static_cast<int>(output_files.size()));
 
-    for (int j = 0; j < static_cast<int>(output_files.size()); j++) {
+    for (int j = 0; j < static_cast<int>(output_files.size()); j++)
+    {
       cplx.w[i][j] = IloArray<IloArray<IloBoolVarArray>>(cplx.env, _m);
-      for (int k = 0; k < _m; k++) {
+      for (int k = 0; k < _m; k++)
+      {
 	      cplx.w[i][j][k] = IloArray<IloBoolVarArray>(cplx.env, _mb);
-	      for (int l = 0; l < _mb; l++) {
+	      for (int l = 0; l < _mb; l++)
+        {
           cplx.w[i][j][k][l] = IloBoolVarArray(cplx.env, _t);
-          for (int m = 0; m < _t; m++) {
+          for (int m = 0; m < _t; m++)
+          {
             sprintf (var_name, "w_%d_%d_%d_%d_%d", (int) i, (int) j, (int) k, (int) l, (int) m);      // nome da variavel
             cplx.w[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel
             cplx.model.add(cplx.w[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
@@ -241,7 +568,6 @@ void Cplex::Run() {
 	    }
 	  }
   }
-
 
   // variaveis de armazenamento
   // Y_DJT => indica se o dado de indice D esta armazenado no device J no periodo T
@@ -280,6 +606,7 @@ void Cplex::Run() {
   for (int d1 = 0; d1 < _d - 1; d1++)
   {
     cplx.ws[d1] =  IloBoolVarArray(cplx.env, _d);
+
     for (int d2 = d1 + 1; d2 < _d; d2++)
     {
       int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
@@ -291,7 +618,6 @@ void Cplex::Run() {
       }
     }
   }
-
 
   // variaveis de exposição
   // E_RI => nivel de exposicao da tarefa I pelo requerimento R
@@ -314,7 +640,8 @@ void Cplex::Run() {
   for (int b = 0; b < _numb; b++) {
     Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) {
+    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    {
       cplx.b[b] = IloBoolVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals())+1);
 
       for (int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
@@ -348,13 +675,12 @@ void Cplex::Run() {
     }
   }
 
-
   // variaveis de uso de maquina por tempo
   // V_JT => indica se a maquina J esta em uso (contratada) no periodo T
   for (int i = 0; i < _m; i++)
   {
     cplx.v[i] =  IloBoolVarArray(cplx.env, _t);
-    for (int j=0; j < _t; j++)
+    for (int j = 0; j < _t; j++)
     {
       sprintf(var_name, "v_%d_%d", (int) i, (int) j);                     // nome da variavel
       cplx.v[i][j] = IloBoolVar(cplx.env, var_name);                      // aloca variavel
@@ -370,7 +696,6 @@ void Cplex::Run() {
     cplx.z[i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);  // aloca variavel
     cplx.model.add(cplx.z[i]);                                  // adiciona variavel ao modelo
   }
-
 
   //variaveis de tempo total (makespam)
   // Z_MAX => makespam do workflow
@@ -440,7 +765,7 @@ void Cplex::Run() {
   for (int i = 0; i < _n; i++)
   {
     IloExpr exp(cplx.env);
-    std::cout << "_m: " << _m << "\n";
+    // std::cout << "_m: " << _m << "\n";
     for (int j = 0; j < _m; j++) {
       for (int t = 0; t < _t; t++) {
         exp += cplx.x[i][j][t];
@@ -952,7 +1277,7 @@ void Cplex::Run() {
       for (int d = 0; d < _d; d++)
       {
         File* file = GetFilePerId(static_cast<size_t>(d));
-        exp += (file->get_size_in_MBs() * cplx.y[d][j][t]);
+        exp += (file->get_size_in_GB() * cplx.y[d][j][t]);
       }
 
       IloConstraint c(exp <= storage->get_storage());
@@ -1228,7 +1553,7 @@ void Cplex::Run() {
       for (int d = 0; d < _d; d++)
       {
         File* file = files_[static_cast<size_t>(d)];
-        exp -= (file->get_size_in_MBs() * cplx.yb[d][j]);
+        exp -= (file->get_size_in_GB() * cplx.yb[d][j]);
         // exp -= (file->get_size() * cplx.yb[d][j]);
       }
 
@@ -1285,7 +1610,7 @@ void Cplex::Run() {
       for (int d=0; d < _d; d++)
       {
         File* file = files_[static_cast<size_t>(d)];
-        exp += (file->get_size_in_MBs() * cplx.yb[d][j]);
+        exp += (file->get_size_in_GB() * cplx.yb[d][j]);
         // exp += (file->get_size() * cplx.yb[d][j]);
       }
 
@@ -1444,4 +1769,6 @@ void Cplex::Run() {
   }
 
   cplx.env.end();
+
+  ImprimeBest(&best);
 }  // end of the method run()

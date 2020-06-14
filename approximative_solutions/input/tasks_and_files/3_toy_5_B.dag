@@ -3,9 +3,9 @@
 0 1
 1 1
 
-file0 20 1 0
-file1 60
-file2 60
+file0 20000000 1 0
+file1 60000000
+file2 60000000
 
 t0 task0 30 1 1 1 1
 file0

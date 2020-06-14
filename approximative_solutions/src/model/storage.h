@@ -29,6 +29,7 @@ class Storage {
         storage_(storage),
         cost_(cost),
         bandwidth_(bandwidth),
+        bandwidth_GBps_(bandwidth / 8.0),
         type_id_(type_id) { }
 
   virtual ~Storage() = default;
@@ -47,6 +48,9 @@ class Storage {
 
   /// Getter for bandwidth_
   double get_bandwidth() const { return bandwidth_; }
+
+  /// Getter for bandwidth_
+  double get_bandwidth_GBps() const { return bandwidth_GBps_; }
 
   /// Getter for bandwidth_
   double get_type_id() const { return type_id_; }
@@ -70,7 +74,11 @@ class Storage {
 
   double cost_;
 
+  /// Bandwidth in Gbps
   double bandwidth_;
+
+  /// Bandwidth in GBps
+  double bandwidth_GBps_;
 
   int type_id_;
 
