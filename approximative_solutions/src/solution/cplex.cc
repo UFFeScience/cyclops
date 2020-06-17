@@ -1289,11 +1289,11 @@ void Cplex::Run() {
             Storage* storage = GetStoragePerId(static_cast<size_t>(p));
             /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
 
-            // if ((t + 1 - ComputeFileTransferTime(file, virtual_machine, storage)) >= 0)
-            if ((t - ComputeFileTransferTime(file, virtual_machine, storage)) >= 0)
+            if ((t + 1 - ComputeFileTransferTime(file, virtual_machine, storage)) >= 0)
+            // if ((t - ComputeFileTransferTime(file, virtual_machine, storage)) >= 0)
             {
-              // teto = max(0, t + 1 - ComputeFileTransferTime(file, virtual_machine, storage));
-              teto = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage));
+              teto = max(0, t + 1 - ComputeFileTransferTime(file, virtual_machine, storage));
+              // teto = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage));
 
               for (int q = 0; q < teto; q++)
               {
