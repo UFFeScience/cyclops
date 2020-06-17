@@ -53,7 +53,7 @@ class File {
   double get_size_in_MB() const { return size_in_MB_; }
 
   /// Getter for size in KBs of the file
-  double get_size_in_GB() const { return size_in_MB_; }
+  double get_size_in_GB() const { return size_in_GB_; }
 
   /// Concatenate operator
   friend std::ostream& operator<<(std::ostream& os, const File& a) {
