@@ -8,6 +8,12 @@
 13 Standard 51200 25.0 0.023 1 1
 14 Standard 51200 25.0 0.023 1 1
 
+
+
+
+
+
+
 <number of provider> <n# requerimentos>
 
 <id-provider> <provider name> <period - hr> <max vms> <number of vms> <number of buckets>

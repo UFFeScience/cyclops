@@ -1,11 +1,16 @@
 1 2
 
-55 Amazon-EC2 1 30 3 3
+55 Amazon-EC2 1 30 4 2
 0 m3.medium 1.53 80 4.0 0.02 1 1
 1 m3.large 0.77 120 9.0 0.09 1 1
 2 m3.xlarge 0.38 160 10.0 0.16 1 1
+3 m3.2xlarge 0.19 200 10.0 0.33 1 1
 13 Standard 51200 25.0 0.023 1 1
 14 Standard 51200 25.0 0.023 1 1
+
+
+
+
 15 Standard 51200 25.0 0.023 1 1
 
 <number of provider> <n# requerimentos>
