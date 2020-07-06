@@ -128,7 +128,11 @@ public class MainTasksAndFiles {
 						                           myOutputFiles));
 				
 				line = inputFile.readLine();
-				outputFile.write(line + " 1 1\n");
+				
+				if (line.isBlank())
+					outputFile.write("\n");
+				else
+					outputFile.write(line + " 1 1\n");
 			}
 			
 			graph = new DigraphAsMatrix(numberOfTasks);
