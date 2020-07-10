@@ -172,7 +172,7 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
         task_list.pop_front();
       }
 
-      // Schedule the ready tasks
+      // Schedule the ready tasks (same height)
       ScheduleAvailTasks(avail_tasks, solution);
     }
 
@@ -196,12 +196,22 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
   // std::cerr << best_solution;
 
   // best_solution.ObjectiveFunction(false, false);
-  // std::cout << best_solution;
+  std::cout << best_solution;
 
-  std::cout << best_solution.get_makespan()
+  // std::cout << best_solution.get_makespan()
+  //     << " " << best_solution.get_cost()
+  //     << " " << best_solution.get_security_exposure()
+  //     << " " << best_solution.get_objective_value() << std::endl;
+
+  double time_s;
+
+  time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // tempo de processamento
+
+  std::cerr << best_solution.get_makespan()
       << " " << best_solution.get_cost()
-      << " " << best_solution.get_security_exposure()
-      << " " << best_solution.get_objective_value() << std::endl;
+      << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
+      << " " << best_solution.get_objective_value() << std::endl
+      << time_s << std::endl;
 
   DLOG(INFO) << "... ending Greedy Randomized Constructive Heuristic";
 }  // end of GreedyRandomizedConstructiveHeuristic::run() method

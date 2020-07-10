@@ -136,7 +136,8 @@ class Solution {
   double CalculateMakespanAndAllocateOutputFiles(Task* task, VirtualMachine* vm);
 
   /// Compute the file contribution to the cost
-  double ComputeFileCostContribution(File* file, Storage* storage);
+  double ComputeFileCostContribution(File* file, Storage* storage, VirtualMachine* virtual_machine,
+      double time);
 
   /// Compute the file contribution to the security exposure
   double ComputeFileSecurityExposureContribution(Storage* storage, File* file);
@@ -157,7 +158,10 @@ class Solution {
   std::vector<double> time_vector_;
 
   // Final time of each Virtual Machine
-  std::vector<double> queue_;
+  std::vector<double> execution_vm_queue_;
+
+  // Final time of each Virtual Machine
+  std::vector<double> allocation_vm_queue_;
 
   /// Makespan of the solution
   double makespan_;

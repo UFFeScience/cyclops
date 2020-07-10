@@ -147,7 +147,7 @@ struct BEST
       y[i] = new int*[mb];
       for (int j = 0; j < mb; ++j)
       {
-        y[i][j] = new int[t];
+        y[i][j] = new int[t + 1];
       }
     }
 

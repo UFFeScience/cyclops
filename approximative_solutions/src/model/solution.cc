@@ -27,6 +27,10 @@ DECLARE_uint64(number_of_allocation_experiments);
 
 std::random_device random_device;
 std::mt19937 random_generator(random_device());
+
+double aux_start_time = 0.0;
+double aux_read_time = 0.0;
+double aux_runtime = 0.0;
 // std::mt19937 random_generator(static_cast<size_t>(time(0)));
 // std::mt19937 random_generator(0ul);
 
@@ -36,7 +40,8 @@ Solution::Solution(Algorithm* algorithm)
       task_allocations_(algorithm->GetTaskSize(), std::numeric_limits<size_t>::max()),
       file_allocations_(algorithm->GetFileSize(), std::numeric_limits<size_t>::max()),
       time_vector_(algorithm->GetTaskSize(), 0.0),
-      queue_(algorithm->GetVirtualMachineSize(), 0.0),
+      execution_vm_queue_(algorithm->GetVirtualMachineSize(), 0.0),
+      allocation_vm_queue_(algorithm->GetVirtualMachineSize(), 0.0),
       makespan_(0.0),
       cost_(0.0),
       security_exposure_(0.0) {
@@ -75,7 +80,7 @@ double Solution::ObjectiveFunction(bool check_storage, bool check_sequence) {
   }
 
   fill(time_vector_.begin(), time_vector_.end(), 0.0);
-  fill(queue_.begin(), queue_.end(), 0.0);
+  fill(execution_vm_queue_.begin(), execution_vm_queue_.end(), 0.0);
   // fill(start_time_vector_.begin(), start_time_vector_.end(), -1);
 
   // for (size_t i = 0ul; i < scheduler_.size(); ++i) {
@@ -205,11 +210,11 @@ double Solution::ComputeFileTransferTime(File* file,
   // Calculate time
   if (storage1->get_id() != storage2->get_id()) {
     // get the smallest link
-    double link = std::min(storage1->get_bandwidth(), storage2->get_bandwidth());
-    // time = std::ceil(file->get_size() / link);
-    time = file->get_size() / link;
+    double link = std::min(storage1->get_bandwidth_GBps(), storage2->get_bandwidth_GBps());
+    time = std::ceil(file->get_size_in_GB() / link);
+    // time = file->get_size() / link;
   } else {
-    time = 0.0;
+    time = 1.0;
   }
 
   DLOG(INFO) << "tranfer_time: " << time;
@@ -280,7 +285,7 @@ double Solution::ComputeMakespan(bool check_sequence) {
       // Update structures
       time_vector_[id_task] = finish_time;
       // start_time_vector_[id_task] = start_time;
-      queue_[vm->get_id()] = finish_time;
+      execution_vm_queue_[vm->get_id()] = finish_time;
     } else {  // Source and Target tasks
       if (id_task == algorithm_->get_id_source()) {  // Source task
         time_vector_[id_task] = 0;
@@ -335,7 +340,7 @@ bool Solution::checkFiles() {
       id_storage = file_allocations_[dynamic_file->get_id()];
       auto f = map_file.insert(std::make_pair(id_storage, std::vector<int>()));
       f.first->second.push_back(dynamic_file->get_id());
-      aux_storage[id_storage] -= dynamic_file->get_size();
+      aux_storage[id_storage] -= dynamic_file->get_size_in_GB();
     }
   }
 
@@ -361,8 +366,8 @@ bool Solution::checkFiles() {
         std::cout << i << std::endl;
         File* file = algorithm_->GetFilePerId(i);
         std::cout << file->get_name() << std::endl;
-        if (file->get_size() < min) {
-          min = file->get_size();
+        if (file->get_size_in_GB() < min) {
+          min = file->get_size_in_GB();
           min_file = file->get_id();
         }
       });
@@ -398,6 +403,16 @@ std::ostream& Solution::write(std::ostream& os) const {
   os << "Maximum security and privacy exposure: "
       << algorithm_->get_maximum_security_and_privacy_exposure()
       << std::endl;
+
+  for (size_t i = 0ul; i < allocation_vm_queue_.size(); ++i) {
+    os << "a[" << i << "]: \t" << allocation_vm_queue_[i] << "\t";
+  }
+  os << std::endl;
+
+  for (size_t i = 0ul; i < execution_vm_queue_.size(); ++i) {
+    os << "x[" << i << "]: \t" << execution_vm_queue_[i] << "\t";
+  }
+  os << std::endl;
 
   os << std::endl;
   os << "Tasks: " << std::endl;
@@ -488,7 +503,7 @@ double Solution::AllocateOneOutputFileGreedily(File* file, VirtualMachine* virtu
 
     // 2. Calculates the File Contribution to the Cost
     // double cost = ComputeFileCostContribution(file, virtual_machine, storage_pair.second, time);
-    double cost = ComputeFileCostContribution(file, storage);
+    double cost = ComputeFileCostContribution(file, storage, virtual_machine, aux_start_time + aux_read_time + aux_runtime + time);
     // double cost = 0.0;
 
     // 3. Calculates the File Security Exposure Contribution
@@ -553,6 +568,11 @@ double Solution::AllocateOneOutputFileGreedily(File* file, VirtualMachine* virtu
   security_exposure_ += allocation_security_exposure;
   // security_exposure_ = allocation_security_exposure;
 
+  if (allocated_storage < algorithm_->GetVirtualMachineSize()) {
+    allocation_vm_queue_[allocated_storage] = std::max(aux_start_time + aux_read_time
+        + aux_runtime + allocation_time, allocation_vm_queue_[allocated_storage]);
+  }
+
   // return min_objective_value;
   return allocation_time;
 }  // double Solution::AllocateOutputFiles(...) {
@@ -587,7 +607,7 @@ double Solution::ComputeTaskStartTime(size_t task_id, size_t vm_id) {
 
   DLOG(INFO) << "start_time: " << start_time;
 
-  return std::max(start_time, queue_[vm_id]);
+  return std::max(start_time, execution_vm_queue_[vm_id]);
 }  // double MinMinAlgorithm::ComputeStartTime(...)
 
 double Solution::AllocateOutputFiles(Task* task, VirtualMachine* vm) {
@@ -607,6 +627,7 @@ double Solution::AllocateOutputFiles(Task* task, VirtualMachine* vm) {
       write_time += AllocateOneOutputFileGreedily(file, vm);
     } else {
       Storage* storage = algorithm_->GetStoragePerId(file_allocations_[file->get_id()]);
+
       write_time += ComputeFileTransferTime(file, vm, storage);
     }
   }
@@ -634,13 +655,27 @@ double Solution::ComputeTaskReadTime(Task* task, VirtualMachine* vm) {
     // Ceil of File Transfer Time + File Size * lambda
     double one_file_read_time = ComputeFileTransferTime(file, file_vm, vm);
 
-    // if (one_file_read_time == std::numeric_limits<double>::max()) {
-      // DLOG(INFO) << "read_time: " << one_file_read_time;
-      // return one_file_read_time;
-    // } else {
+    if (one_file_read_time == std::numeric_limits<double>::max()) {
+      DLOG(INFO) << "read_time: " << one_file_read_time;
+      return one_file_read_time;
+    } else {
       // read_time += std::ceil(one_file_read_time);
       read_time += one_file_read_time;
-    // }
+      if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm->get_id()) {
+        double diff = (aux_start_time + read_time) - allocation_vm_queue_[storage_id];
+
+        if (diff > 0.0) {
+          VirtualMachine* virtual_machine = algorithm_->GetVirtualMachinePerId(storage_id);
+
+          cost_ += diff * virtual_machine->get_cost();
+          allocation_vm_queue_[storage_id] = aux_start_time + read_time;
+          // std::cout << "diff: " << diff << " virtual_machine->get_cost(): " << virtual_machine->get_cost()
+          //           << " storage_id: " << storage_id << " vm: " << vm->get_id() << std::endl;
+        }
+      }
+      // allocation_vm_queue_[storage_id] = std::max(aux_start_time
+      //     + one_file_read_time, allocation_vm_queue_[storage_id]);
+    }
   }  // for (File* file : task.get_input_files()) {
 
   DLOG(INFO) << "read_time: " << read_time;
@@ -668,19 +703,22 @@ double Solution::CalculateMakespanAndAllocateOutputFiles(Task* task,
       << virtual_machine->get_id() << "]";
   // google::FlushLogFiles(google::INFO);
 
+  run_time = ceil(task->get_time() * virtual_machine->get_slowdown());
+  aux_runtime = run_time;
+
   if (task->get_id() != algorithm_->get_id_source()
       && task->get_id() != algorithm_->get_id_target()) {
     start_time = ComputeTaskStartTime(task->get_id(), virtual_machine->get_id());
+    aux_start_time = start_time;
     read_time = ComputeTaskReadTime(task, virtual_machine);
+    aux_read_time = read_time;
     write_time = AllocateOutputFiles(task, virtual_machine);
   } else if (task->get_id() == algorithm_->get_id_target()) {
     for (auto task_id : algorithm_->GetPredecessors(task->get_id())) {
       start_time = std::max(start_time, time_vector_[task_id]);
     }
   }
-
-  // run_time = ceil(task->get_time() * virtual_machine->get_slowdown());
-  run_time = task->get_time() * virtual_machine->get_slowdown();
+// run_time = task->get_time() * virtual_machine->get_slowdown();
 
   if (start_time != std::numeric_limits<double>::max()
       && read_time != std::numeric_limits<double>::max()
@@ -715,7 +753,7 @@ double Solution::ComputeCost() {
   for (size_t i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
     VirtualMachine* virtual_machine = algorithm_->GetVirtualMachinePerId(i);
 
-    virtual_machine_cost += queue_[virtual_machine->get_id()] * virtual_machine->get_cost();
+    virtual_machine_cost += execution_vm_queue_[virtual_machine->get_id()] * virtual_machine->get_cost();
   }
 
   // // Accumulate the Bucket fixed cost
@@ -750,7 +788,7 @@ double Solution::ComputeCost() {
         if (file_allocations_[j] == storage->get_id()) {
           File* file = algorithm_->GetFilePerId(j);
 
-          bucket_varible_cost += storage->get_cost() * file->get_size();
+          bucket_varible_cost += storage->get_cost() * file->get_size_in_GB();
         }
       }
     }
@@ -769,22 +807,36 @@ double Solution::ComputeCost() {
 }  // double Solution::CalculateCost() {
 
 double Solution::ComputeFileCostContribution(File* file,
-                                             Storage* storage) {
+                                             Storage* storage,
+                                             VirtualMachine* virtual_machine,
+                                             double time) {
   double cost = 0.0;
-  double virtual_machine_cost = 0.0;
+  // double virtual_machine_cost = 0.0;
   // double bucket_fixed_cost = 0.0;
-  double bucket_varible_cost = 0.0;
+  // double bucket_varible_cost = 0.0;
 
   DLOG(INFO) << "Calculate File Cost";
 
-  // Bucket cost
-  if (storage->get_id() >= algorithm_->GetVirtualMachineSize()) {
-    // bucket_varible_cost += storage->get_cost() * file->get_size();
-    cost += storage->get_cost() * file->get_size();
-  }
+  if (VirtualMachine* vm = dynamic_cast<VirtualMachine*>(storage)) {
+    if (vm->get_id() != virtual_machine->get_id()) {
+      double diff = time - allocation_vm_queue_[vm->get_id()];
 
-  DLOG(INFO) << "virtual_machine_cost: " << virtual_machine_cost;
-  DLOG(INFO) << "bucket_varible_cost: " << bucket_varible_cost;
+      if (diff > 0.0) {
+        cost += diff * vm->get_cost();
+      }
+
+      // DLOG(INFO) << "virtual_machine_cost: " << virtual_machine_cost;
+    }
+  } else {
+    // Bucket cost
+    if (storage->get_id() >= algorithm_->GetVirtualMachineSize()) {
+      // bucket_varible_cost += storage->get_cost() * file->get_size();
+      cost += storage->get_cost() * file->get_size_in_GB();
+      // std::cout << file->get_size_in_GB() << " " << storage->get_cost() << " " << cost << std::endl;
+    }
+
+    // DLOG(INFO) << "bucket_varible_cost: " << bucket_varible_cost;
+  }
 
   // cost = virtual_machine_cost + bucket_varible_cost;
 
@@ -909,14 +961,29 @@ double Solution::ScheduleTask(Task* task, VirtualMachine* vm) {
   ordering_.push_back(task->get_id());
 
   // 1. Calculates the makespan
+  double makespan = CalculateMakespanAndAllocateOutputFiles(task, vm);
 
-  makespan_ = CalculateMakespanAndAllocateOutputFiles(task, vm);
+  makespan_ = std::max(makespan_, makespan);
 
   // Update auxiliary structures (queue_ and time_vector_)
   // This update is important for the cost calculation
   time_vector_[task->get_id()] = makespan_;
-  double queue_diff = makespan_ - queue_[vm->get_id()];
-  queue_[vm->get_id()] = makespan_;
+  double queue_diff = makespan_ - execution_vm_queue_[vm->get_id()];
+
+  // for (size_t i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
+  //   double time = allocation_vm_queue_[i];
+
+  //   if (time > makespan_) {
+  //     VirtualMachine* virtual_machine = algorithm_->GetVirtualMachinePerId(i);
+  //     double diff = time - makespan_;
+
+  //     cost_ += diff * virtual_machine->get_cost();
+  //     std::cout << "Buga buga buga buga!!!!!!" << std::endl;
+  //   }
+  // }
+
+  execution_vm_queue_[vm->get_id()] = makespan_;
+  allocation_vm_queue_[vm->get_id()] = std::max(makespan_, allocation_vm_queue_[vm->get_id()]);
 
   // 2. Calculates the cost contribution of the task execution at the virtual machine
 

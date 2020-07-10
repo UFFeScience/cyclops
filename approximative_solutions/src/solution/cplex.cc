@@ -70,6 +70,11 @@ int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
     // get the smallest link
     double link = std::min(storage1->get_bandwidth_GBps(), storage2->get_bandwidth_GBps());
     time = static_cast<int>(std::ceil(file->get_size_in_GB() / link));
+    // std::cout << "storage1->get_bandwidth_GBps(): " << storage1->get_bandwidth_GBps() << "\n"
+    //           << "storage2->get_bandwidth_GBps(): " << storage2->get_bandwidth_GBps() << "\n"
+    //           << "std::ceil(file->get_size_in_GB(): " << std::ceil(file->get_size_in_GB()) << "\n"
+    //           << "link: " << link << "\n"
+    //           << "time: " << time << std::endl;
     // time = static_cast<int>(std::ceil(file->get_size() / link));
     // time = file->get_size() / link;
   }
@@ -110,9 +115,9 @@ void print_sol(struct BEST* data)
   // int * tempo;
   // int ** maq_dado;
   int* tempo = new int[data->m_];
-  int** maq_dado = new int*[data->m_];
+  int** maq_dado = new int*[data->mb_];
 
-  for (int i = 0; i < data->m_; i++)
+  for (int i = 0; i < data->mb_; i++)
   {
     maq_dado[i] = new int [data->d_];
   }
@@ -133,7 +138,8 @@ void print_sol(struct BEST* data)
 
   std::cout << "---------------- Linha do Tempo --------------" << std::endl;
   std::cout << "t)\t";
-  for (int j = 0; j < data->m_; j++)
+  // for (int j = 0; j < data->m_; j++)
+  for (int j = 0; j < data->mb_; j++)
   {
     std::cout << "(M" << j << ")\t" << "(Y)\t" << "(V)\t";
   }
@@ -147,250 +153,294 @@ void print_sol(struct BEST* data)
   {
     std::cout << "t" << t1 << ")\t";
 
-    // MAQUINA
-    for (int j = 0; j < data->m_ and checa <= 1; j++)
+    // // MAQUINA
+    // DEVICES
+    for (int j = 0; j < data->mb_ and checa <= 1; j++)
 	  {
-      VirtualMachine* virtual_machine = algorithm->GetVirtualMachinePerId(static_cast<size_t>(j));
+      Storage* device = algorithm->GetStoragePerId(static_cast<size_t>(j));
+      // if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+      //{
+      //dynamic_cast<Bucket*>(
+      if (VirtualMachine* virtual_machine = dynamic_cast<VirtualMachine*>(device))
+      {
+        // checa se inicia mais de uma acao no mesmo tempo na mesma maquina
+        checa = 0;
 
-      // checa se inicia mais de uma acao no mesmo tempo na mesma maquina
-      checa = 0;
+        // durante uma acao (exec, leitura, escrita)
+        tempo[j] = tempo[j] - 1;
 
-      // durante uma acao (exec, leitura, escrita)
-      tempo[j] = tempo[j] - 1;
+        if (tempo[j] > 0)
+        {
+          checa += 1;
+          std::cout << "(" << tempo[j] << ")" << "\t";
+        }
 
-      if (tempo[j] > 0)
-	    {
-	      checa += 1;
-	      std::cout << "(" << tempo[j] << ")" << "\t";
-	    }
+        // execucao
+        for (int passou = 0, i = 0; i < data->n_ and checa <= 1; i++)
+        {
+          Task* task = algorithm->GetTaskPerId(static_cast<size_t>(1 + i));
+          std::vector<File*> input_files = task->get_input_files();
 
-      // execucao
-      for (int passou = 0, i = 0; i < data->n_ and checa <= 1; i++)
-	    {
-        Task* task = algorithm->GetTaskPerId(static_cast<size_t>(1 + i));
-        std::vector<File*> input_files = task->get_input_files();
+          float x_ijt = data->x[i][j][t1];             // retorna o valor da variavel
 
-	      float x_ijt = data->x[i][j][t1];             // retorna o valor da variavel
-
-	      if (x_ijt >= (1 - data->PRECISAO))
-		    {
-		      checa += 1;
-		      std::cout << "x" << i << "\t";
-
-          if (tempo[j] > 0)
+          if (x_ijt >= (1 - data->PRECISAO))
           {
-            std::cout << "*** EXECUTOU EM CIMA DE ALGO ***";
             checa += 1;
-            break;
-          }
+            std::cout << "x" << i << "\t";
 
-		      // tempo[j] = t_ij(i, j);  // tempo de execucao?
-          tempo[j] = std::ceil(task->get_time() * virtual_machine->get_slowdown());
-
-          // checa se as leituras foram feitas pela maquina antes da execucao
-          // for (int d1 = 0; d1 < d_in_tam[i] and checa <= 1; d1++)
-          for (int d1 = 0; d1 < static_cast<int>(input_files.size()) and checa <= 1; d1++)
-		      {
-		        passou = 0;
-
-            // for (int k = 0; k < data->m_ and checa <= 1; k++)
-            for (int k = 0; k < data->mb_ and checa <= 1; k++)
+            if (tempo[j] > 0)
             {
-			        for (int q = 0; q < data->t_ and checa <= 1; q++)
-			        {
-                float r_idjpt = data->r[i][d1][j][k][q];             // retorna o valor da variavel
-
-                if (r_idjpt >= (1 - data->PRECISAO))
-                {
-			            passou = 1;
-                }
-			        }
-            }
-
-            if (passou == 0)
-            {
-              std::cout << "*** EXECUTOU A TAREFA SEM TER LIDO TODAS AS ENTRADAS *** faltou dado="
-                        // << d_in[i][d1];
-                        << input_files[static_cast<size_t>(d1)]->get_id()
-                        << "\n" << input_files[static_cast<size_t>(d1)];
+              std::cout << "*** EXECUTOU EM CIMA DE ALGO ***";
               checa += 1;
               break;
             }
-          }
-		      // ----------------------------------------------------------------
-		    }
 
-        if (checa > 1)
-        {
-          std::cout << "*** CONFLITO COM EXECUCAO ***";
-          break;
-        }
-	    }  // for (int passou = 0, i = 0; i < data->n_ and checa <= 1; i++)
+            // tempo[j] = t_ij(i, j);  // tempo de execucao?
+            tempo[j] = std::ceil(task->get_time() * virtual_machine->get_slowdown());
 
-	    // leitura
-	    for (int i = 0; i < data->n_ and checa <= 1; i++)
-      {
-        Task* task = algorithm->GetTaskPerId(static_cast<size_t>(1 + i));
-        std::vector<File*> input_files = task->get_input_files();
-
-	      // for (int d1 = 0; d1 < d__in_tam[i] and checa <= 1; d1++)
-        for (int d1 = 0; d1 < static_cast<int>(input_files.size()) and checa <= 1; d1++)
-        {
-          File* file = input_files[static_cast<size_t>(d1)];
-
-	        for (int k = 0; k < data->mb_ and checa <= 1; k++)
-		      {
-            Storage* storage = algorithm->GetStoragePerId(static_cast<size_t>(k));
-
-            float r_idjpt = data->r[i][d1][j][k][t1];             // retorna o valor da variavel
-
-            if (r_idjpt >= (1 - data->PRECISAO))
-		        {
-              int tempo_leitura = ComputeFileTransferTime(file, virtual_machine, storage);
-
-		          checa += 1;
-              // std::cout << "r" << i << "(" << d_in[i][d1] << ")<" << k << "\t";
-              std::cout << "r" << i << "(" << input_files[static_cast<size_t>(d1)]->get_id() << ")<" << k << "\t";
-
-		          if (tempo[j] > 0)
-              {
-                std::cout << "*** LEU EM CIMA DE ALGO ***";
-                checa += 1;
-                break;
-              }
-
-		          // tempo[j] = t_djp(d_in[i][d1],j,k);
-              tempo[j] = tempo_leitura;
-
-		          // checa existencia de arquivo
-		          // float y_djt = data->y[d_in[i][d1]][k][t1];             // retorna o valor da variavel
-              float y_djt = data->y[static_cast<int>(file->get_id())][k][t1];             // retorna o valor da variavel
-
-		          if (y_djt < (1 - data->PRECISAO))
-			        {
-                std::cout << "*** LEU ARQUIVO INEXISTENTE NA MAQUINA ***";
-                checa += 1;
-                break;
-              }
-		          // ---------------------------
-
-		        }
-
-            if (checa > 1)
+            // checa se as leituras foram feitas pela maquina antes da execucao
+            // for (int d1 = 0; d1 < d_in_tam[i] and checa <= 1; d1++)
+            for (int d1 = 0; d1 < static_cast<int>(input_files.size()) and checa <= 1; d1++)
             {
-              std::cout << "*** CONFLITO COM LEITURA ***";
-              break;
-            }
-		      }
-        }
-      }
+              passou = 0;
 
-      // escrita
-	    for (int passou = 0, i = 0; i < data->n_ and checa <= 1; i++)
-      {
-        Task* task = algorithm->GetTaskPerId(static_cast<size_t>(1 + i));
-        std::vector<File*> output_files = task->get_output_files();
-
-	      // for (int d1 = 0; d1 < d_out_tam[i] and checa <= 1; d1++)
-        for (int d1 = 0; d1 < static_cast<int>(output_files.size()) and checa <= 1; d1++)
-        {
-          File* file = output_files[static_cast<size_t>(d1)];
-
-	        for (int k = 0; k < data->m_ and checa <= 1; k++)
-		      {
-            Storage* storage = algorithm->GetStoragePerId(static_cast<size_t>(k));
-
-		        float w_idjpt = data->w[i][d1][j][k][t1];             // retorna o valor da variavel
-
-            if (w_idjpt >= (1 - data->PRECISAO))
-		        {
-              int tempo_escrita = ComputeFileTransferTime(file, virtual_machine, storage);
-
-		          checa += 1;
-		          // std::cout << "w" << i << "(" << d_out[i][d1] << ")>" << k << "\t";
-              std::cout << "w" << i << "(" << output_files[static_cast<size_t>(d1)]->get_id() << ")<" << k << "\t";
-
-              if (tempo[j] > 0)
+              // for (int k = 0; k < data->m_ and checa <= 1; k++)
+              for (int k = 0; k < data->mb_ and checa <= 1; k++)
               {
-                std::cout << "*** ESCREVEU EM CIMA DE ALGO ***";
-                checa += 1;
-                break;
-              }
-
-		          // tempo[j] = t_djp(d_out[i][d1],j,k);
-              tempo[j] = tempo_escrita;
-
-		          // checa se a tarefa foi executada na maquina antes
-		          passou = 0;
-		          for (int q = 0; q < data->t_ and checa <= 1; q++)
-			        {
-			          float x_ijt = data->x[i][j][q];
-
-			          if (x_ijt >= (1 - data->PRECISAO))
+                for (int q = 0; q < data->t_ and checa <= 1; q++)
                 {
-			            passou = 1;
-                }
-		          }
+                  float r_idjpt = data->r[i][d1][j][k][q];             // retorna o valor da variavel
 
-		          if (passou == 0)
-		          {
-                std::cout << "*** ESCREVEU DADO SEM TER EXECUTADO A TAREFA NA MAQUINA ***";
+                  if (r_idjpt >= (1 - data->PRECISAO))
+                  {
+                    passou = 1;
+                  }
+                }
+              }
+
+              if (passou == 0)
+              {
+                std::cout << "*** EXECUTOU A TAREFA SEM TER LIDO TODAS AS ENTRADAS *** faltou dado="
+                          // << d_in[i][d1];
+                          << input_files[static_cast<size_t>(d1)]->get_id()
+                          << "\n" << input_files[static_cast<size_t>(d1)];
                 checa += 1;
                 break;
               }
+            }
+            // ----------------------------------------------------------------
+          }
 
-              // -----------------------------------------------
+          if (checa > 1)
+          {
+            std::cout << "*** CONFLITO COM EXECUCAO ***";
+            break;
+          }
+        }  // for (int passou = 0, i = 0; i < data->n_ and checa <= 1; i++)
+                // leitura
+        for (int i = 0; i < data->n_ and checa <= 1; i++)
+        {
+          Task* task = algorithm->GetTaskPerId(static_cast<size_t>(1 + i));
+          std::vector<File*> input_files = task->get_input_files();
 
-		        }
+          // for (int d1 = 0; d1 < d__in_tam[i] and checa <= 1; d1++)
+          for (int d1 = 0; d1 < static_cast<int>(input_files.size()) and checa <= 1; d1++)
+          {
+            File* file = input_files[static_cast<size_t>(d1)];
 
-            if (checa > 1)
+            for (int k = 0; k < data->mb_ and checa <= 1; k++)
             {
-              std::cout << "*** CONFLITO COM ESCRITA ***";
-              break;
+              Storage* storage = algorithm->GetStoragePerId(static_cast<size_t>(k));
+
+              float r_idjpt = data->r[i][d1][j][k][t1];             // retorna o valor da variavel
+
+              if (r_idjpt >= (1 - data->PRECISAO))
+              {
+                int tempo_leitura = ComputeFileTransferTime(file, virtual_machine, storage);
+
+                checa += 1;
+                // std::cout << "r" << i << "(" << d_in[i][d1] << ")<" << k << "\t";
+                std::cout << "r" << i << "(" << input_files[static_cast<size_t>(d1)]->get_id() << ")<" << k << "\t";
+
+                if (tempo[j] > 0)
+                {
+                  std::cout << "*** LEU EM CIMA DE ALGO ***";
+                  checa += 1;
+                  break;
+                }
+
+                // tempo[j] = t_djp(d_in[i][d1],j,k);
+                tempo[j] = tempo_leitura;
+
+                // checa existencia de arquivo
+                // float y_djt = data->y[d_in[i][d1]][k][t1];             // retorna o valor da variavel
+                float y_djt = data->y[static_cast<int>(file->get_id())][k][t1];             // retorna o valor da variavel
+
+                if (y_djt < (1 - data->PRECISAO))
+                {
+                  std::cout << "*** LEU ARQUIVO INEXISTENTE NA MAQUINA ***";
+                  checa += 1;
+                  break;
+                }
+                // ---------------------------
+
+              }
+
+              if (checa > 1)
+              {
+                std::cout << "*** CONFLITO COM LEITURA ***";
+                break;
+              }
             }
           }
         }
-      }
 
-      // maquina ociosa neste tempo
-      if (checa == 0)
-      {
-        std::cout << "-\t";
-      }
-
-      // dados
-      for (int d1 = 0; d1 < data->d_ and checa <= 1; d1++)
-      {
-        float y_djt = data->y[d1][j][t1];             // retorna o valor da variavel
-
-        if (y_djt >= (1 - data->PRECISAO))
+        // escrita
+        for (int passou = 0, i = 0; i < data->n_ and checa <= 1; i++)
         {
-          maq_dado[j][d1] = 1;
+          Task* task = algorithm->GetTaskPerId(static_cast<size_t>(1 + i));
+          std::vector<File*> output_files = task->get_output_files();
+
+          // for (int d1 = 0; d1 < d_out_tam[i] and checa <= 1; d1++)
+          for (int d1 = 0; d1 < static_cast<int>(output_files.size()) and checa <= 1; d1++)
+          {
+            File* file = output_files[static_cast<size_t>(d1)];
+
+            for (int k = 0; k < data->mb_ and checa <= 1; k++)
+            {
+              Storage* storage = algorithm->GetStoragePerId(static_cast<size_t>(k));
+
+              float w_idjpt = data->w[i][d1][j][k][t1];             // retorna o valor da variavel
+
+              if (w_idjpt >= (1 - data->PRECISAO))
+              {
+                int tempo_escrita = ComputeFileTransferTime(file, virtual_machine, storage);
+
+                checa += 1;
+                // std::cout << "w" << i << "(" << d_out[i][d1] << ")>" << k << "\t";
+                std::cout << "w" << i << "(" << output_files[static_cast<size_t>(d1)]->get_id() << ")<" << k << "\t";
+
+                if (tempo[j] > 0)
+                {
+                  std::cout << "*** ESCREVEU EM CIMA DE ALGO ***";
+                  checa += 1;
+                  break;
+                }
+
+                // tempo[j] = t_djp(d_out[i][d1],j,k);
+                tempo[j] = tempo_escrita;
+
+                // checa se a tarefa foi executada na maquina antes
+                passou = 0;
+                for (int q = 0; q < data->t_ and checa <= 1; q++)
+                {
+                  float x_ijt = data->x[i][j][q];
+
+                  if (x_ijt >= (1 - data->PRECISAO))
+                  {
+                    passou = 1;
+                  }
+                }
+
+                if (passou == 0)
+                {
+                  std::cout << "*** ESCREVEU DADO SEM TER EXECUTADO A TAREFA NA MAQUINA ***";
+                  checa += 1;
+                  break;
+                }
+
+                // -----------------------------------------------
+
+              }
+
+              if (checa > 1)
+              {
+                std::cout << "*** CONFLITO COM ESCRITA ***";
+                break;
+              }
+            }
+          }
         }
 
-        if (maq_dado[j][d1] == 1)
+        // maquina ociosa neste tempo
+        if (checa == 0)
         {
-          std::cout << d1 << ",";
+          std::cout << "-\t";
         }
-      }
 
-      std::cout << "\t";
+        // dados
+        for (int d1 = 0; d1 < data->d_ and checa <= 1; d1++)
+        {
+          float y_djt = data->y[d1][j][t1];             // retorna o valor da variavel
 
-      // contratacao
-      float v_jt = data->v[j][t1];             // retorna o valor da variavel
+          if (y_djt >= (1 - data->PRECISAO))
+          {
+            maq_dado[j][d1] = 1;
+          }
 
-      if (v_jt >= (1 - data->PRECISAO))
-      {
-        std::cout << "*\t";
+          if (maq_dado[j][d1] == 1)
+          {
+            std::cout << d1 << ",";
+          }
+        }
+
+        std::cout << "\t";
+
+        // contratacao
+        float v_jt = data->v[j][t1];             // retorna o valor da variavel
+
+        if (v_jt >= (1 - data->PRECISAO))
+        {
+          std::cout << "*\t";
+        }
+        else
+        {
+          std::cout << "\t";
+        }
       }
       else
       {
+        // maquina ociosa neste tempo
+        // if (checa == 0)
+        // {
+          std::cout << "N\\A\t";
+        // }
+
+        // // dados
+        for (int d1 = 0; d1 < data->d_ and checa <= 1; d1++)
+        {
+          float y_djt = data->y[d1][j][t1];             // retorna o valor da variavel
+
+          if (y_djt >= (1 - data->PRECISAO))
+          {
+            maq_dado[j][d1] = 1;
+          }
+
+          if (maq_dado[j][d1] == 1)
+          {
+            std::cout << d1 << ",";
+          }
+        }
+
         std::cout << "\t";
+
+        // // contratacao
+        // float v_jt = data->v[j][t1];             // retorna o valor da variavel
+
+        // if (v_jt >= (1 - data->PRECISAO))
+        // {
+          std::cout << "N\\A\t";
+        // }
+        // else
+        // {
+          // std::cout << "\t";
+        // }
       }
-    }  //for(int j=0; j < m and checa <= 1; j++)
+
+    }  // for(int j = 0; j < m and checa <= 1; j++)
 
     std::cout << std::endl;
-  }  //for(int checa=0, t=0; t < t and checa <= 1; t++)
+  }  // for(int checa = 0, t = 0; t < t and checa <= 1; t++)
 
   std::cout << "---------------------------------------------" << std::endl;
 
@@ -414,20 +464,20 @@ void ImprimeBest(struct BEST* data)
 {
   Algorithm* algorithm = data->algorithm_;
 
-  std::cout << "y[" << 1 << "]["
-                            << 2 << "]["
-                            << 18 << "] = " << data->y[1][2][18] << std::endl;
+  // std::cout << "y[" << 1 << "]["
+  //                           << 2 << "]["
+  //                           << 18 << "] = " << data->y[1][2][18] << std::endl;
 
-  std::cout << "y[" << 1 << "]["
-                            << 2 << "]["
-                            << 19 << "] = " << data->y[1][2][19] << std::endl;
+  // std::cout << "y[" << 1 << "]["
+  //                           << 2 << "]["
+  //                           << 19 << "] = " << data->y[1][2][19] << std::endl;
 
-  // w_0_0_2_2_18
-  std::cout << "w[" << 0 << "]["
-                            << 0 << "]["
-                            << 2 << "]["
-                            << 2 << "]["
-                            << 18 << "] = " << data->w[0][0][2][2][18] << std::endl;
+  // // w_0_0_2_2_18
+  // std::cout << "w[" << 0 << "]["
+  //                           << 0 << "]["
+  //                           << 2 << "]["
+  //                           << 2 << "]["
+  //                           << 18 << "] = " << data->w[0][0][2][2][18] << std::endl;
   // -------- x ----------
   for (int i = 0; i < data->n_; ++i)
   {
@@ -718,7 +768,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
     {
       for (int j = 0; j < data->mb_; ++j)
       {
-        for (int k = 0; k < data->t_; ++k)
+        for (int k = 0; k <= data->t_; ++k)
         {
           data->y[i][j][k] = (float) getValue(cplx->y[i][j][k]);
         }
@@ -814,7 +864,7 @@ void Cplex::Run() {
   // bool DEPU = false;
 
   // tempo
-  clock_t t_start = clock();
+  // clock_t t_start = clock();
 
   // nome das variaveis
   char var_name[100];
@@ -915,10 +965,12 @@ void Cplex::Run() {
   for (int i = 0; i < _d; i++)
   {
     cplx.y[i] =  IloArray<IloBoolVarArray>(cplx.env, _mb);
-    for(int j = 0; j < _mb; j++)
+
+    for (int j = 0; j < _mb; j++)
     {
-      cplx.y[i][j] = IloBoolVarArray(cplx.env, _t);
-      for(int k = 0; k < _t; k++)
+      cplx.y[i][j] = IloBoolVarArray(cplx.env, _t + 1);
+
+      for (int k = 0; k <= _t; k++)
       {
         sprintf(var_name, "y_%d_%d_%d", (int) i, (int) j, (int) k);                    // nome da variavel
         cplx.y[i][j][k] = IloBoolVar(cplx.env, var_name);                              // aloca variavel
@@ -1084,9 +1136,9 @@ void Cplex::Run() {
   }
 
   // Penalidades das Soft arestas
-  for (int d1=0; d1 < _d-1; d1++)
+  for (int d1 = 0; d1 < _d-1; d1++)
   {
-    for (int d2=d1+1; d2 < _d; d2++)
+    for (int d2 = d1 + 1; d2 < _d; d2++)
     {
       int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
@@ -1097,12 +1149,12 @@ void Cplex::Run() {
     }
   }
 
-  cplx.model.add(IloMinimize(cplx.env,fo,"fo"));                            // adiciona função objetivo ao modelo
+  cplx.model.add(IloMinimize(cplx.env,fo, "fo"));                            // adiciona função objetivo ao modelo
   // -----------------------------------------------------
 
   // --------------- RESTRIÇÕES ----------
 
-  // Restrição c4
+  // Restrição (4)
   for (int i = 0; i < _n; i++)
   {
     IloExpr exp(cplx.env);
@@ -1386,6 +1438,8 @@ void Cplex::Run() {
       exp -= cplx.v[j][t];
 
       IloConstraint c(exp <= 0);
+      // IloConstraint c(exp == 0);
+
       sprintf (var_name, "c10_%d_%d", (int) j, (int) t);
       c.setName(var_name);
       cplx.model.add(c);
@@ -1460,7 +1514,7 @@ void Cplex::Run() {
 
       IloConstraint c(exp <= 0);
 
-      sprintf (var_name, "c11_%d_%d", (int) j, (int) t);
+      sprintf (var_name, "c11buga_%d_%d", (int) j, (int) t);
       c.setName(var_name);
       cplx.model.add(c);
 
@@ -1511,7 +1565,7 @@ void Cplex::Run() {
         {
           File* file = input_files[static_cast<size_t>(d)];
 
-          for (int p=0; p < _m; p++)
+          for (int p = 0; p < _m; p++)
           {
             VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
             int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
@@ -1524,7 +1578,8 @@ void Cplex::Run() {
       }
 
       IloConstraint c(exp <= 1);
-      sprintf (var_name, "c12buga_%d_%d", (int)b, (int)t);
+
+      sprintf (var_name, "c11_%d_%d", (int)b, (int)t);
       c.setName(var_name);
       cplx.model.add(c);
 
@@ -1532,7 +1587,7 @@ void Cplex::Run() {
     }
   }
 
-  //Restricao (12)
+  // Restricao (12)
   for(int d = 0; d < static_cast<int>(files_.size()); ++d)
   {
     File* file = files_[static_cast<size_t>(d)];
@@ -1569,7 +1624,7 @@ void Cplex::Run() {
       {
         if (ind == mb)
         {
-          for (int t = 0; t < _t; t++)
+          for (int t = 0; t <= _t; t++)
           {
             IloExpr exp(cplx.env);
 
@@ -1622,7 +1677,8 @@ void Cplex::Run() {
       {
         Storage* storage = GetStoragePerId(static_cast<size_t>(p));
 
-        for (int t = 0; t < _t - 1; t++)
+        // for (int t = 0; t < _t - 1; t++)
+        for (int t = 0; t < _t; t++)
         {
           IloExpr exp(cplx.env);
           // exp += cplx.y[d][p][t+1];
@@ -1637,19 +1693,19 @@ void Cplex::Run() {
 
             int tempo = (t - ComputeFileTransferTime(dynamic_file, storage, virtual_machine) + 1);
 
-            if (pai_i == 0 and indw == 0 and p == 2 and t == 18)
-            {
-              std::cout << "tempo: " << tempo << std::endl;
-              std::cout << "j: " << j << std::endl;
-              std::cout << "m_: " << _m << std::endl;
-              std::cout << "t: " << t << std::endl;
-              std::cout << "storage->get_bandwidth_GBps(): " << storage->get_bandwidth_GBps() << std::endl;
-              std::cout << "virtual_machine->get_bandwidth_GBps(): " << virtual_machine->get_bandwidth_GBps() << std::endl;
-              std::cout << "dynamic_file->get_size_in_GB(): " << dynamic_file->get_size_in_GB() << std::endl;
+            // if (pai_i == 0 and indw == 0 and p == 2 and t == 18)
+            // {
+            //   std::cout << "tempo: " << tempo << std::endl;
+            //   std::cout << "j: " << j << std::endl;
+            //   std::cout << "m_: " << _m << std::endl;
+            //   std::cout << "t: " << t << std::endl;
+            //   std::cout << "storage->get_bandwidth_GBps(): " << storage->get_bandwidth_GBps() << std::endl;
+            //   std::cout << "virtual_machine->get_bandwidth_GBps(): " << virtual_machine->get_bandwidth_GBps() << std::endl;
+            //   std::cout << "dynamic_file->get_size_in_GB(): " << dynamic_file->get_size_in_GB() << std::endl;
 
-              // double link = std::min(storage1->get_bandwidth(), storage2->get_bandwidth_GBps());
-              // time = static_cast<int>(std::ceil(file->get_size_in_GB() / link));
-            }
+            //   // double link = std::min(storage1->get_bandwidth(), storage2->get_bandwidth_GBps());
+            //   // time = static_cast<int>(std::ceil(file->get_size_in_GB() / link));
+            // }
 
             if (tempo >= 0)
             // if (tempo >= 0 && tempo < _t)
@@ -1748,7 +1804,7 @@ void Cplex::Run() {
   {
     Storage* storage = GetStoragePerId(static_cast<size_t>(j));
 
-    for (int t = 0; t < _t; t++)
+    for (int t = 0; t <= _t; t++)
     {
       IloExpr exp(cplx.env);
 
@@ -1804,6 +1860,24 @@ void Cplex::Run() {
         }
       }
     }
+  }
+
+  // Restricao (18extra)
+  // Restricao para inviabilizar que alguma tarefa comece antes do 't' final e termine em 't' ou
+  // após
+  {
+    IloExpr exp(cplx.env);
+
+    // exp += (t + ComputeFileTransferTime(file, storage, virtual_machine)) * cplx.w[i][d][j][p][t];
+    exp += cplx.z_max[0];
+
+    IloConstraint c(exp <= _t);
+
+    sprintf(var_name, "c18extra");
+    c.setName(var_name);
+    cplx.model.add(c);
+
+    exp.end();
   }
 
   //Restricao (19)
@@ -1903,22 +1977,24 @@ void Cplex::Run() {
   // Restricao (22)
   for (int d = 0; d < _d; d++)
   {
-    for(int j=0; j < _mb; j++)
+    for (int j = 0; j < _mb; j++)
+    {
+      for (int t = 0; t <= _t; t++)
       {
-        for(int t=0; t < _t; t++)
-          {
-            IloExpr exp(cplx.env);
-            exp += cplx.y[d][j][t];
-            exp -= cplx.yb[d][j];
+        IloExpr exp(cplx.env);
 
-            IloConstraint c(exp <= 0);
-            sprintf (var_name, "c22_%d_%d_%d", (int) d, (int) j, (int) t);
-            c.setName(var_name);
-            cplx.model.add(c);
+        exp += cplx.y[d][j][t];
+        exp -= cplx.yb[d][j];
 
-            exp.end();
-          }
+        IloConstraint c(exp <= 0);
+
+        sprintf (var_name, "c22_%d_%d_%d", (int) d, (int) j, (int) t);
+        c.setName(var_name);
+        cplx.model.add(c);
+
+        exp.end();
       }
+    }
   }
 
   // Restricao (23)
@@ -2213,22 +2289,84 @@ void Cplex::Run() {
 
   try
   {
-    if (solver.getStatus() == IloAlgorithm::Optimal)
-      solved = true;
-    else
-      solved = false;
+    // if (solver.getStatus() == IloAlgorithm::Optimal)
+    //   solved = true;
+    // else
+    //   solved = false;
+
+    solved = solver.getStatus() == IloAlgorithm::Optimal;
 
     res    = solver.getObjValue ();                                    // solução
     lb     = solver.getBestObjValue();                                 // limite dual (inferior)
-    time_s = ((double)clock() - (double) t_start) / CLOCKS_PER_SEC;    // tempo de processamento
+    time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // tempo de processamento
 
-    cout<<endl;
-    cout<<"----- ACABOU ----"<<endl;
-    cout<<"SOLVED?: "<<solved<<endl;
-    cout<<"TEMPO  : "<<time_s<<endl;
-    cout<<"LB     : "<<lb<<endl;
-    cout<<"UB (X*): "<<res<<endl;
-    cout<<endl;
+    double custo = 0.0;
+    double seguranca = 0.0;
+
+    // ----- Custo Financeiro
+    for (int j = 0; j < _m; j++)
+    {
+      VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+
+      custo += virtual_machine->get_cost() * best.z[j];
+    }
+
+    for (int b = 0; b < _numb; b++)
+    {
+      Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+
+      if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+      {
+        for (int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+        {
+          custo += bucket->get_cost() * best.q[b][l];
+        }
+      }
+      else
+      {
+        exit(1);  // error
+      }
+    }
+
+    // Exposicao
+    for (int r = 0; r < _numr; r++)
+    {
+      for(int i = 0; i < _n; i++)
+      {
+        seguranca += best.e[r][i] / _smax;
+      }
+    }
+
+    // Penalidades das Soft arestas
+    for (int d1 = 0; d1 < _d - 1; d1++)
+    {
+      for (int d2 = d1 + 1; d2 < _d; d2++)
+      {
+        int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
+
+        if (conflict > 0)
+        {  // soft constraint
+          seguranca += conflict * best.ws[d1][d2] / _smax;
+        }
+      }
+    }
+
+    cout << endl;
+    cout << "----- ACABOU ----" << endl;
+    cout << "SOLVED?  : " << solved << endl;
+    cout << "MAKESPAN : " << best.z_max << endl;
+    cout << "CUSTO    : " << custo << endl;
+    cout << "SEGURANCA: " << seguranca << endl;
+    cout << "TEMPO    : " << time_s << endl;
+    cout << "LB       : " << lb << endl;
+    cout << "UB (X*)  : " << res << endl;
+    cout << endl;
+
+    cerr << best.z_max << " "
+         << custo << " "
+         << seguranca << " "
+         << res << endl
+         << time_s << endl;
 
     // ------------------------ Solucao -------------------------
     // if (data.DEPU)

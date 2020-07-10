@@ -213,6 +213,8 @@ class Algorithm {
   double alpha_restrict_candidate_list_;
 
   double maximum_security_and_privacy_exposure_;
+
+  clock_t t_start = clock();
   // double lambda_ =  0.0;  // read and write constant
 };  // end of class Algorithm
 
