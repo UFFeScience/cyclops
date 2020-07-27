@@ -1,4 +1,4 @@
-964 85 58
+964 136 58
 
 NC_753_IGR_partners.txt 0.179842948914 1 0
 NC_792_IGR_partners.txt 0.32165813446 1 0
@@ -966,89 +966,140 @@ NC_453_IGR_partners.txt 0.183577537537 1 0
 NC_476_IGR_partners.txt 0.289293289185 1 0
 NC_0025AG05_PatserOutID00007.txt 0.0924873352051
 NC_0025AG05_synteny.txt 1.02196979523
+NC_0025AG05_synteny-1.txt 1.02196979523
 OutORF 0.319976806641
+OutORF-1 0.319976806641
 NC_0025AG05_PatserOutID00002.txt 0.126873016357
 transterm.out 0.444005966187
+transterm-1.out 0.444005966187
 blast.err 0.000522613525391
+blast-1.err 0.000522613525391
 vienna_input_tmp 4.15285301208
+vienna_input_tmp-1 4.15285301208
 NC_0025AG05_parsed.ffn 0.735314369202
+NC_0025AG05_parsed-1.ffn 0.735314369202
 synteny_temp.txt 0.0143957138062
+synteny_temp-1.txt 0.0143957138062
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q 0.149959564209
+NC_0025AG05_QRNAblast-1.txt.E0.01.D1.q 0.149959564209
 srna.out 0.352500915527
+srna-1.out 0.352500915527
 NC_0025AG05_PatserOutID00013.txt 0.0775184631348
 NC_0025AG05_PatserOut.txt 1.64785194397
+NC_0025AG05_PatserOut-1.txt 1.64785194397
 NC_0025AG05_PatserOutID00037.txt 0.0604991912842
 findterm.out 0.000127792358398
+findterm-1.out 0.000127792358398
 Seq_NC_0025AG05 0.0841989517212
+Seq_NC_0025AG05-1 0.0841989517212
 synteny_temp2.txt 0.00364208221436
+synteny_temp2-1.txt 0.00364208221436
 NC_0025AG05_PatserOutID00046.txt 0.0863656997681
 blast_candidate.err 0.000518798828125
+blast_candidate-1.err 0.000518798828125
 rnamotif.out 1.03413581848
+rnamotif-1.out 1.03413581848
 NC_0025AG05_PatserOutID00039.txt 0.0523977279663
 NC_0025AG05_PatserOutID00045.txt 0.0897026062012
 NC_0025AG05_term_candidates_non_redund 0.436097145081
+NC_0025AG05_term_candidates_non_redund-1 0.436097145081
 QRNA_out 0.00607872009277
+QRNA_out-1 0.00607872009277
 NC_0025AG05_PatserOutID00034.txt 0.0538206100464
 qrna.err 0.000581741333008
+qrna-1.err 0.000581741333008
 NC_0025AG05_PatserOutID00041.txt 0.1178150177
 NC_0025AG05_paralogues_temp.txt 0.115809440613
+NC_0025AG05_paralogues_temp-1.txt 0.115809440613
 OutTerm_temp 0.127109527588
+OutTerm_temp-1 0.127109527588
 NC_0025AG05_PatserOutID00035.txt 0.0488977432251
 NC_0025AG05_PatserOutID00008.txt 0.0800142288208
 srna_annotate.err 0.00102043151855
+srna_annotate-1.err 0.00102043151855
 NC_0025AG05_PatserOutID00016.txt 0.0889596939087
 NC_0025AG05_QRNA.txt 0.734791755676
+NC_0025AG05_QRNA-1.txt 0.734791755676
 blast.out 0.000487327575684
+blast-1.out 0.000487327575684
 NC_0025AG05_PatserOutID00003.txt 0.0861120223999
 NC_0025AG05_PatserOutID00038.txt 0.0599298477173
 qrna.out 0.00289058685303
+qrna-1.out 0.00289058685303
 NC_0025AG05_PatserOutID00001.txt 0.127861976624
 NC_0025AG05_PatserOutID00044.txt 0.096884727478
 NC_0025AG05_PatserOutID00011.txt 0.0547285079956
 NC_0025AG05_paralogues.txt 0.590368270874
+NC_0025AG05_paralogues-1.txt 0.590368270874
 OutCandidates2 0.312845230103
+OutCandidates2-1 0.312845230103
 OutCandidates3 0.196333885193
+OutCandidates3-1 0.196333885193
 NC_0025AG05_QRNAblast.txt 3.19874000549
+NC_0025AG05_QRNAblast-1.txt 3.19874000549
 NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff 0.182880401611
+NC_0025AG05_QRNA-1.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff 0.182880401611
 NC_0025AG05_PatserOutID00014.txt 0.0940618515015
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff 0.0493278503418
+NC_0025AG05_QRNAblast-1.txt.E0.01.D1.q.gff 0.0493278503418
 OutIG 0.587560653687
+OutIG-1 0.587560653687
 NC_0025AG05_PatserOutID00032.txt 0.0498580932617
 NC_0025AG05_PatserOutID00009.txt 0.0900640487671
 NC_0025AG05_PatserOutID00005.txt 0.124082565308
 vienna_index_tmp 4.89942836761
+vienna_index_tmp-1 4.89942836761
 rnamotif.err 0.000295639038086
+rnamotif-1.err 0.000295639038086
 OutTerms 0.0566377639771
+OutTerms-1 0.0566377639771
 NC_0025AG05_PatserOutID00031.txt 0.107508659363
 NC_0025AG05_PatserOutID00033.txt 0.130477905273
 blast_candidate.out 0.00289344787598
+blast_candidate-1.out 0.00289344787598
 vienna_output 7.03911972046
+vienna_output-1 7.03911972046
 NC_0025AG05_PatserOutID00006.txt 0.065486907959
 srna.err 0.00177478790283
+srna-1.err 0.00177478790283
 NC_0025AG05_PatserOutID00030.txt 0.128995895386
 OutTermsIG 0.01780128479
+OutTermsIG-1 0.01780128479
 Blast_Out 1.45383167267
+Blast_Out-1 1.45383167267
 NC_0025AG05_PatserOutID00040.txt 0.119290351868
 OutBlastParsed 0.855856895447
+OutBlastParsed-1 0.855856895447
 findterm.err 0.0
+findterm-1.err 0.0
 NC_0025AG05_PatserOutID00015.txt 0.119422912598
 NC_0025AG05_PatserOutID00004.txt 0.0827217102051
 OutCandidates 0.260298728943
+OutCandidates-1 0.260298728943
 NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep 0.0389442443848
+NC_0025AG05_QRNAblast-1.txt.E0.01.D1.q.rep 0.0389442443848
 NC_0025AG05_PatserOutID00029.txt 0.130407333374
 NC_0025AG05_term.txt 18.4056892395
+NC_0025AG05_term-1.txt 18.4056892395
 transterm.err 9.1552734375e-05
+transterm-1.err 9.1552734375e-05
 NC_0025AG05_PatserOutID00043.txt 0.115957260132
 NC_0025AG05_PatserOutID00042.txt 0.069507598877
 NC_0025AG05_PatserOutID00010.txt 0.0806846618652
 BLAST_NC_0025AG05 0.0113677978516
+BLAST_NC_0025AG05-1 0.0113677978516
 srna_annotate.out 0.621788024902
+srna_annotate-1.out 0.621788024902
 BLAST_sorted.out 4.22693538666
+BLAST_sorted-1.out 4.22693538666
 rna.ps 0.00270080566406
+rna-1.ps 0.00270080566406
 Block0_Parsed_temp_NC_0025AG05_PatserOut.txt 0.711821556091
+Block0_Parsed_temp_NC_0025AG05_PatserOut-1.txt 0.711821556091
 NC_0025AG05_PatserOutID00036.txt 0.129535675049
 NC_0025AG05_PatserOutID00012.txt 0.0897302627563
 OutConsIG 0.204983711243
+OutConsIG-1 0.204983711243
 
 ID00040 Patser 1.6234 4 1
 patser.in
@@ -1087,7 +1138,7 @@ NC_0025AG05_PatserOutID00043.txt
 NC_0025AG05_PatserOutID00044.txt
 NC_0025AG05_PatserOutID00045.txt
 NC_0025AG05_PatserOutID00046.txt
-NC_0025AG05_PatserOut.txt
+NC_0025AG05_PatserOut-1.txt
 ID00031 Patser 1.248 4 1
 patser.in
 NC_0025AG05.fna
@@ -1185,14 +1236,14 @@ NC_0025AG05_PatserOutID00038.txt
 ID00047 Findterm 1809.2612 2 8
 NC_0025AG05.fna
 RNAfold
-findterm.out
-findterm.err
-NC_0025AG05_term.txt
-NC_0025AG05_term_candidates_non_redund
-rna.ps
-vienna_input_tmp
-vienna_output
-vienna_index_tmp
+findterm-1.out
+findterm-1.err
+NC_0025AG05_term-1.txt
+NC_0025AG05_term_candidates_non_redund-1
+rna-1.ps
+vienna_input_tmp-1
+vienna_output-1
+vienna_index_tmp-1
 ID00041 Patser 1.3086 4 1
 patser.in
 NC_0025AG05.fna
@@ -2054,31 +2105,31 @@ NC_846_IGR_partners.txt
 NC_847_IGR_partners.txt
 NC_848_IGR_partners.txt
 NC_849_IGR_partners.txt
-blast.err
-blast.out
-BLAST_sorted.out
+blast-1.err
+blast-1.out
+BLAST_sorted-1.out
 ID00053 Blast_candidate 5.1551 5 3
 Seq_known_sRNAs_IGRs.txt
 blasta
 xdformat
 time
-Seq_NC_0025AG05
-BLAST_NC_0025AG05
-blast_candidate.out
-blast_candidate.err
+Seq_NC_0025AG05-1
+BLAST_NC_0025AG05-1
+blast_candidate-1.out
+blast_candidate-1.err
 ID00052 FFN_Parse 1.1505 3 1
 NC_0025AG05.ffn
 NC_0025AG05.ptt
-Seq_NC_0025AG05
-NC_0025AG05_parsed.ffn
+Seq_NC_0025AG05-1
+NC_0025AG05_parsed-1.ffn
 ID00055 Blast_synteny 33.0 6 1
 Flanking_ORFs_known.txt
 xdformat
 blasta
 time
-Seq_NC_0025AG05
-NC_0025AG05_parsed.ffn
-NC_0025AG05_synteny.txt
+Seq_NC_0025AG05-1
+NC_0025AG05_parsed-1.ffn
+NC_0025AG05_synteny-1.txt
 ID00054 Blast_QRNA 1408.9124 916 8
 xdformat
 blasta
@@ -2995,51 +3046,51 @@ NC_901_IGR_partners.txt
 NC_902_IGR_partners.txt
 NC_903_IGR_partners.txt
 NC_904_IGR_partners.txt
-Seq_NC_0025AG05
-qrna.err
-qrna.out
-NC_0025AG05_QRNA.txt
-NC_0025AG05_QRNAblast.txt
-NC_0025AG05_QRNAblast.txt.E0.01.D1.q
-NC_0025AG05_QRNAblast.txt.E0.01.D1.q.gff
-NC_0025AG05_QRNAblast.txt.E0.01.D1.q.rep
-NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
+Seq_NC_0025AG05-1
+qrna-1.err
+qrna-1.out
+NC_0025AG05_QRNA-1.txt
+NC_0025AG05_QRNAblast-1.txt
+NC_0025AG05_QRNAblast-1.txt.E0.01.D1.q
+NC_0025AG05_QRNAblast-1.txt.E0.01.D1.q.gff
+NC_0025AG05_QRNAblast-1.txt.E0.01.D1.q.rep
+NC_0025AG05_QRNA-1.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
 ID00057 SRNA_annotate 1.9839 11 7
 access_matrix.txt
 sRNAPredict.in
-BLAST_NC_0025AG05
-Seq_NC_0025AG05
-srna.out
-NC_0025AG05_PatserOut.txt
-blast_candidate.out
-blast_candidate.err
-NC_0025AG05_QRNA.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
-NC_0025AG05_synteny.txt
-NC_0025AG05_paralogues.txt
-NC_0025AG05_paralogues_temp.txt
-synteny_temp.txt
-synteny_temp2.txt
-Block0_Parsed_temp_NC_0025AG05_PatserOut.txt
-QRNA_out
-srna_annotate.err
-srna_annotate.out
+BLAST_NC_0025AG05-1
+Seq_NC_0025AG05-1
+srna-1.out
+NC_0025AG05_PatserOut-1.txt
+blast_candidate-1.out
+blast_candidate-1.err
+NC_0025AG05_QRNA-1.txt.all.CUTOFF0.ID[100:0].GC[100:0].gff
+NC_0025AG05_synteny-1.txt
+NC_0025AG05_paralogues-1.txt
+NC_0025AG05_paralogues_temp-1.txt
+synteny_temp-1.txt
+synteny_temp2-1.txt
+Block0_Parsed_temp_NC_0025AG05_PatserOut-1.txt
+QRNA_out-1
+srna_annotate-1.err
+srna_annotate-1.out
 ID00056 Blast_paralogues 6.1832 4 1
 xdformat
 blasta
 time
-Seq_NC_0025AG05
-NC_0025AG05_paralogues.txt
+Seq_NC_0025AG05-1
+NC_0025AG05_paralogues-1.txt
 ID00048 RNAMotif 24.3132 2 2
 NC_0025AG05.fna
 RNAMofficial_descriptor.txt
-rnamotif.out
-rnamotif.err
+rnamotif-1.out
+rnamotif-1.err
 ID00049 Transterm 32.6174 3 2
 NC_0025AG05.fna
 expterm.dat
 NC_0025AG05.ptt
-transterm.out
-transterm.err
+transterm-1.out
+transterm-1.err
 ID00044 Patser 1.055 4 1
 patser.in
 NC_0025AG05.fna
@@ -5029,34 +5080,34 @@ NC_0025AG05.gbk
 NC_0025AG05.fna
 NC_0025AG05.ptt
 All_known_sRNAs.txt
-findterm.out
-findterm.err
-NC_0025AG05_term.txt
-NC_0025AG05_term_candidates_non_redund
-rna.ps
-vienna_input_tmp
-vienna_output
-vienna_index_tmp
-rnamotif.out
-rnamotif.err
-transterm.out
-transterm.err
-blast.out
-BLAST_sorted.out
-srna.err
-Blast_Out
-OutBlastParsed
-OutCandidates
-OutCandidates2
-OutCandidates3
-OutConsIG
-OutIG
-OutORF
-OutTerm_temp
-OutTerms
-OutTermsIG
-Seq_NC_0025AG05
-srna.out
+findterm-1.out
+findterm-1.err
+NC_0025AG05_term-1.txt
+NC_0025AG05_term_candidates_non_redund-1
+rna-1.ps
+vienna_input_tmp-1
+vienna_output-1
+vienna_index_tmp-1
+rnamotif-1.out
+rnamotif-1.err
+transterm-1.out
+transterm-1.err
+blast-1.out
+BLAST_sorted-1.out
+srna-1.err
+Blast_Out-1
+OutBlastParsed-1
+OutCandidates-1
+OutCandidates2-1
+OutCandidates3-1
+OutConsIG-1
+OutIG-1
+OutORF-1
+OutTerm_temp-1
+OutTerms-1
+OutTermsIG-1
+Seq_NC_0025AG05-1
+srna-1.out
 ID00023 Blast_candidate 4.9978 5 3
 Seq_known_sRNAs_IGRs.txt
 blasta
