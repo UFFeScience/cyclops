@@ -7,3 +7,6 @@ log/
 .vscode/
 docs/
 output/
+.idea/
+.vagrant/
+.vscode/
