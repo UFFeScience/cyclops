@@ -46,7 +46,7 @@ cd ..
 
 PROG=./bin/wf_security_greedy.x
 
-export GLOG_log_dir=`pwd`/log
+#export GLOG_log_dir=`pwd`/log
 
 $PROG  --tasks_and_files `pwd`/input/tasks_and_files/$TASK_AND_FILES \
   --cluster `pwd`/input/clouds/$CLUSTER \
@@ -55,7 +55,8 @@ $PROG  --tasks_and_files `pwd`/input/tasks_and_files/$TASK_AND_FILES \
   --alpha_time $ALPHA_TIME \
   --alpha_budget $ALPHA_COST \
   --alpha_security $ALPHA_SECURITY \
-  --cplex_output_file `pwd`/output/$OUTPUT_FILE.lp
+  --cplex_output_file `pwd`/output/$OUTPUT_FILE.lp \
+  --log_dir=`pwd`/log
 cd shell
 
 # cd ..
