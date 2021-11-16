@@ -10,3 +10,5 @@ output/
 .idea/
 .vagrant/
 .vscode/
+cmake*
+cplex*
