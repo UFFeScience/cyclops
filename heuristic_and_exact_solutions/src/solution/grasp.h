@@ -11,18 +11,18 @@
  * several \c Solution objects by selecting tasks randomly inside a restrict candidate list.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GREEDY_ALGORITHM_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GREEDY_ALGORITHM_H_
+#ifndef APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
+#define APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
 
 #include "src/solution/algorithm.h"
 
-class GreedyRandomizedConstructiveHeuristic : public Algorithm {
+class Grasp : public Algorithm {
  public:
   ///
-  GreedyRandomizedConstructiveHeuristic() = default;
+  Grasp() = default;
 
   /// Default destructor
-  ~GreedyRandomizedConstructiveHeuristic() = default;
+  ~Grasp() = default;
 
   /// Schedule the avail task, one-by-one
   void ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution);
@@ -31,6 +31,6 @@ class GreedyRandomizedConstructiveHeuristic : public Algorithm {
   void Run(void);
 
  private:
-};  // end of class GreedyAlgorithm
+};  // end of class Grasp
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GREEDY_ALGORITHM_H_
+#endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRASP_H_

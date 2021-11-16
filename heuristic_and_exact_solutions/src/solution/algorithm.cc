@@ -13,29 +13,12 @@
 
 #include "src/solution/algorithm.h"
 
-#include <gflags/gflags.h>
-#include <glog/logging.h>
-
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <new>
-#include <unordered_map>
-#include <utility>
-#include <vector>
-
 #include <boost/algorithm/string.hpp>
-#include <boost/bimap.hpp>
-#include <boost/iterator/counting_iterator.hpp>
-#include "src/model/file.h"
 #include "src/model/static_file.h"
 #include "src/model/dynamic_file.h"
-#include "src/model/requirement.h"
-#include "src/model/task.h"
-#include "src/model/bucket.h"
-#include "src/model/virtual_machine.h"
 #include "src/solution/greedy_randomized_constructive_heuristic.h"
 #include "src/solution/min_min_algorithm.h"
+#include "src/solution/grasp.h"
 #include "src/solution/cplex.h"
 
 void Algorithm::ReadTasksAndFiles(std::string tasks_and_files,
@@ -546,6 +529,8 @@ std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string algorith
     return std::make_shared<MinMinAlgorithm>();
   } else if (algorithm == "cplex") {
     return std::make_shared<Cplex>();
+  } else if (algorithm == "grasp") {
+      return std::make_shared<Grasp>();
   } else {
     std::fprintf(stderr, "Please select a valid algorithm.\n");
     std::exit(-1);
@@ -609,7 +594,7 @@ Algorithm::~Algorithm() {
     delete t;
   }
 
-  DLOG(INFO) << "deleting done";
+  DLOG(INFO) << "~Algorithm done";
   google::FlushLogFiles(google::INFO);
 }
 

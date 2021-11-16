@@ -1,17 +1,17 @@
 /**
- * \file src/solution/greedy_ramdomized_constructive_heuristic.cc
+ * \file src/solution/grasp.cc
  * \brief Contains the \c Algorithm class methods.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2021
  *
- * This source file contains the methods from the \c GreedyRandomizedConstructiveHeuristic class
+ * This source file contains the methods from the \c Grasp class
  * that run the mode the approximate solution.
  */
 
-#include "src/solution/greedy_randomized_constructive_heuristic.h"
+#include "src/solution/grasp.h"
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
@@ -41,41 +41,40 @@ DECLARE_uint64(number_of_iteration);
  * \param[in]  avail_tasks     Avail tasks to be processed
  * \param[in]  solution        The solution to be built
  */
-void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task*> avail_tasks,
-                                                               Solution& solution) {
+void Grasp::ScheduleAvailTasks(std::list<Task *> avail_tasks, Solution &solution) {
   while (!avail_tasks.empty()) {
     double total_minimal_objective_value = std::numeric_limits<double>::max();
     double total_maximum_objective_value = 0.0;
 
-    std::list<std::pair<Task*, Solution>> avail_solutions;
+    std::list <std::pair<Task *, Solution>> avail_solutions;
 
     // 1. Compute time phase
-    for (auto task : avail_tasks) {
+    for (auto task: avail_tasks) {
       Solution best_solution = solution;
 
       // Compute the finish time off all tasks in each Vm
       double task_minimal_objective_value = std::numeric_limits<double>::max();
       size_t min_vm_id = 0;
 
-      for (VirtualMachine* vm : virtual_machines_) {
+      for (VirtualMachine *vm: virtual_machines_) {
         Solution new_solution = solution;
 
         double objective_value = new_solution.ScheduleTask(task, vm);
 
-        VirtualMachine* min_vm = virtual_machines_[min_vm_id];
+        VirtualMachine *min_vm = virtual_machines_[min_vm_id];
 
         if (objective_value < task_minimal_objective_value) {
           task_minimal_objective_value = objective_value;
           min_vm_id = vm->get_id();
           best_solution = new_solution;
         } else if (objective_value == task_minimal_objective_value
-            && vm->get_cost() < min_vm->get_cost()) {
+                   && vm->get_cost() < min_vm->get_cost()) {
           task_minimal_objective_value = objective_value;
           min_vm_id = vm->get_id();
           best_solution = new_solution;
         } else if (objective_value == task_minimal_objective_value
-            && vm->get_cost() == min_vm->get_cost()
-            && vm->get_slowdown() < min_vm->get_slowdown()) {
+                   && vm->get_cost() == min_vm->get_cost()
+                   && vm->get_slowdown() < min_vm->get_slowdown()) {
           task_minimal_objective_value = objective_value;
           min_vm_id = vm->get_id();
           best_solution = new_solution;
@@ -93,9 +92,9 @@ void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task*> 
       avail_solutions.push_back(std::make_pair(task, best_solution));
     }  // for (auto task : avail_tasks) {
 
-    std::list<std::pair<Task*, Solution>> retricted_candidate_list;
+    std::list <std::pair<Task *, Solution>> retricted_candidate_list;
 
-    for (std::pair<Task*, Solution> candidate_pair : avail_solutions) {
+    for (std::pair < Task * , Solution > candidate_pair: avail_solutions) {
       if (candidate_pair.second.get_objective_value()
           <= total_minimal_objective_value + (alpha_restrict_candidate_list_
                                               * (total_maximum_objective_value
@@ -104,14 +103,15 @@ void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task*> 
       }
     }
 
-    retricted_candidate_list.sort([&](const std::pair<Task*, Solution>& a,
-                                      const std::pair<Task*, Solution>& b) {
+    retricted_candidate_list.sort([&](const std::pair<Task *, Solution> &a,
+                                      const std::pair<Task *, Solution> &b) {
       return a.second.get_objective_value() < b.second.get_objective_value();
     });
 
     size_t position = static_cast<size_t>(rand()) % retricted_candidate_list.size();
 
-    std::list<std::pair<Task*, Solution>>::iterator selected_candidate =
+    std::list < std::pair < Task * , Solution >> ::iterator
+    selected_candidate =
         std::next(retricted_candidate_list.begin(), static_cast<unsigned int>(position));
 
     solution = selected_candidate->second;
@@ -121,25 +121,58 @@ void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task*> 
 
     avail_tasks.remove(selected_candidate->first);  // Remove task scheduled
   }  // while (!avail_tasks.empty()) {
-}  // void GreedyRandomizedConstructiveHeuristic::schedule(...)
+}  // void Grasp::schedule(...)
 
-void GreedyRandomizedConstructiveHeuristic::Run() {
-  DLOG(INFO) << "Executing Greedy Randomized Constructive Heuristic ...";
+void localSearch(Solution &solution) {
+  DLOG(INFO) << "Executing localSearch ...";
+  bool proceed = true;
+//    int how_many = setting->alpha * setting->num_chromosomes;
+
+//    for (int j = 0; j < how_many; j++) {
+  while (proceed) {
+    proceed = false;
+//        auto ch_pos = tournamentSelection(Population);
+//        Population[ch_pos] = localSearchN1(data, Population[ch_pos]);
+//        Population[ch_pos] = localSearchN2(data, Population[ch_pos]);
+//        Population[ch_pos] = localSearchN3(data, Population[ch_pos]);
+    proceed = solution.localSearchN1();
+//        proceed = solution.localSearchN2() || proceed;
+//        proceed = solution.localSearchN3() || proceed;
+  }
+  DLOG(INFO) << "... ending localSearch";
+}
+
+// https://stackoverflow.com/questions/2342162/stdstring-formatting-like-sprintf
+//template<typename ... Args>
+//std::string string_format( const std::string& format, Args ... args )
+//{
+//  size_t size = snprintf( nullptr, 0, format.c_str(), args ... ) + 1; // Extra space for '\0'
+//  if( size <= 0 ){ throw std::runtime_error( "Error during formatting." ); }
+//  std::unique_ptr<char[]> buf( new char[ size ] );
+//  snprintf( buf.get(), size, format.c_str(), args ... );
+//  return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
+//}
+
+void Grasp::Run() {
+  DLOG(INFO) << "Executing GRASP Heuristic ...";
   // google::FlushLogFiles(google::INFO);
 
   // std::srand(unsigned(std::time(0)));
 
   Solution best_solution(this);
 
-  for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
-    std::list<Task*> task_list;
-    std::list<Task*> avail_tasks;
+  for (size_t o = 0; o < FLAGS_number_of_iteration; ++o) {
+    // S ← GreedyRandomizedAlgorithm(Seed);
+
+    // Construction phase
+    std::list < Task * > task_list;
+    std::list < Task * > avail_tasks;
 
     Solution solution(this);
 
     // Initialize the allocation with the static files place information (VM or Bucket)
-    for (File* file : files_) {
-      if (StaticFile* static_file = dynamic_cast<StaticFile*>(file)) {
+    for (File *file: files_) {
+      if (StaticFile * static_file = dynamic_cast<StaticFile *>(file)) {
         solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
       }
     }
@@ -147,13 +180,13 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
     // Start task list
     DLOG(INFO) << "Initialize task list";
     // for (auto task : task_map_per_id_) {
-    for (Task* task : tasks_) {
+    for (Task *task: tasks_) {
       task_list.push_back(task);
     }
 
     // Order by height
     DLOG(INFO) << "Order by height";
-    task_list.sort([&](const Task* a, const Task* b) {
+    task_list.sort([&](const Task *a, const Task *b) {
       return height_[a->get_id()] < height_[b->get_id()];
     });
 
@@ -165,7 +198,7 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
 
       avail_tasks.clear();
       while (!task_list.empty()
-          && height_[task->get_id()] == height_[task_list.front()->get_id()]) {
+             && height_[task->get_id()] == height_[task_list.front()->get_id()]) {
         // build list of ready tasks, that is the tasks which the predecessor was finish
         DLOG(INFO) << "Putting " << task_list.front()->get_id() << " in avail_tasks";
         avail_tasks.push_back(task_list.front());
@@ -180,13 +213,28 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
     // google::FlushLogFiles(google::INFO);
 
     // solution.ObjectiveFunction(false, false);
-
+//
     if (best_solution.get_objective_value() > solution.get_objective_value()) {
       best_solution = solution;
     }
 
-    LOG(INFO) << solution;
-  }  // for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
+//          LOG(INFO) << solution;
+//      }  // for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
+
+    // S ← LocalSearch(S);
+    localSearch(best_solution);
+
+//      if (best_solution.get_objective_value() > solution.get_objective_value()) {
+//          best_solution = solution;
+//      }
+
+    LOG(INFO) << best_solution;
+
+    // if f(S) < f ∗ then
+    // S ∗ ← S;
+    // f ∗ ← f(S);
+
+  }  // for (size_t o = 0; o < 100; ++o) {
 
   // std::cout << best_solution << std::endl;
 
@@ -208,10 +256,10 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
   time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // tempo de processamento
 
   std::cerr << best_solution.get_makespan()
-      << " " << best_solution.get_cost()
-      << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
-      << " " << best_solution.get_objective_value() << std::endl
-      << time_s << std::endl;
+            << " " << best_solution.get_cost()
+            << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
+            << " " << best_solution.get_objective_value() << std::endl
+            << time_s << std::endl;
 
-  DLOG(INFO) << "... ending Greedy Randomized Constructive Heuristic";
-}  // end of GreedyRandomizedConstructiveHeuristic::run() method
+  DLOG(INFO) << "... ending Grasp";
+}  // end of Grasp::run() method
