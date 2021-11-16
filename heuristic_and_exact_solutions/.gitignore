@@ -11,3 +11,4 @@ output
 .vagrant
 cmake*
 cplex*
+**/*.lp
