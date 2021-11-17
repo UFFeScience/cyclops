@@ -48,7 +48,7 @@ PROG=./bin/wf_security_greedy.x
 
 #export GLOG_log_dir=`pwd`/log
 
-$PROG  --tasks_and_files `pwd`/input/tasks_and_files/$TASK_AND_FILES \
+$PROG --tasks_and_files `pwd`/input/tasks_and_files/$TASK_AND_FILES \
   --cluster `pwd`/input/clouds/$CLUSTER \
   --conflict_graph `pwd`/input/conflict_graph/$CONFLICT_GRAPH \
   --algorithm cplex \

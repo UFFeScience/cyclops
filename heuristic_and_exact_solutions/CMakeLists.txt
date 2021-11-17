@@ -22,7 +22,8 @@ set(WARNINGS "-Wall -Wextra -Wshadow -Wsign-conversion -Wsign-promo -Wpedantic")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON} ${WARNINGS}")
 
 # output directory.
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY /home/vagrant/Wf-Security/bin)
 
 # additional cmake options
 include(CMakeToolsHelpers OPTIONAL)
@@ -51,9 +52,28 @@ include_directories(./)
 
 find_package(Glog REQUIRED)
 find_package(gflags REQUIRED)
-find_package(Cplex REQUIRED)
+#find_package(Cplex REQUIRED)
+
+add_definitions(-DNDEBUG)
+add_definitions(-DIL_STD)
+set(CPLEX_PREFIX_DIR      /opt/ibm/ILOG/CPLEX_Studio201)
+set(CPLEX_INCLUDE_DIR     ${CPLEX_PREFIX_DIR}/cplex/include)
+set(CPLEX_LIBRARIES_DIR   ${CPLEX_PREFIX_DIR}/cplex/lib/x86-64_linux/static_pic)
+set(CONCERT_INCLUDE_DIR   ${CPLEX_PREFIX_DIR}/concert/include)
+set(CONCERT_LIBRARIES_DIR ${CPLEX_PREFIX_DIR}/concert/lib/x86-64_linux/static_pic)
+include_directories(${CPLEX_INCLUDE_DIR} ${CONCERT_INCLUDE_DIR})
+link_directories(${CPLEX_LIBRARIES_DIR} ${CONCERT_LIBRARIES_DIR})
+set(CPLEX_LIBRARIES
+        m
+        ilocplex
+        cplex
+        concert
+        pthread
+        dl
+        )
 
 set(gflags_DIR /usr/lib64/cmake/gflags)
+
 
 ##### sources
 
@@ -64,7 +84,7 @@ file(GLOB_RECURSE SOURCES "src/*/*.cc")
 ##### executables
 # include_directories(SYSTEM ${Gflags_INCLUDE_DIR})
 add_executable(wf_security_greedy.x ${MAIN} ${HEADERS} ${SOURCES})
-target_link_libraries(wf_security_greedy.x ilocplex ${GLOG_LIBRARIES} gflags dl)
+target_link_libraries(wf_security_greedy.x ${CPLEX_LIBRARIES} ${GLOG_LIBRARIES} gflags dl)
 
 ##### auxiliary make directives
 # cpplint
