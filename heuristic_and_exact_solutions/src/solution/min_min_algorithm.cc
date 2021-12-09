@@ -5,7 +5,7 @@
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2021
  *
  * This source file contains the methods from the \c Algorithm class that run the mode the
  * approximate solution.
@@ -13,17 +13,7 @@
 
 #include "src/solution/min_min_algorithm.h"
 
-#include <glog/logging.h>
-
-#include <list>
-#include <vector>
-#include <limits>
-#include <cmath>
-#include <memory>
-#include <utility>
-
 #include "src/model/static_file.h"
-#include "src/model/storage.h"
 
 /**
  * Do the scheduling
@@ -34,7 +24,7 @@
  * \param[in]  avail_tasks     Avail tasks to be processed
  * \param[in]  solution        The solution to be built
  */
-void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution) {
+void MinMinAlgorithm::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> avail_tasks, Solution& solution) {
   while (!avail_tasks.empty()) {
     double iteration_minimal_objective_value = std::numeric_limits<double>::max();
     size_t iteration_minimal_vm_id;
@@ -42,30 +32,26 @@ void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution&
     Solution best_solution = solution;
 
     // 1. Compute time phase
-    for (auto task : avail_tasks) {
+    for (const auto& task : avail_tasks) {
       // Compute the finish time off all tasks in each Vm
       double min_objective_function = std::numeric_limits<double>::max();
       size_t min_vm_id = 0;
 
-      for (VirtualMachine* vm : virtual_machines_) {
+      for (const auto& vm : virtual_machines_) {
         Solution new_solution = solution;
 
         double objective_value = new_solution.ScheduleTask(task, vm);
 
-        VirtualMachine* min_vm = virtual_machines_[min_vm_id];
+        std::shared_ptr<VirtualMachine> min_vm = virtual_machines_[min_vm_id];
 
         // It is necessary to determine another information, when it is draw
         // when it is equal, select the cheapest one.
-        if (objective_value < min_objective_function) {  // Get minimum OF and minimum VM
-          min_objective_function = objective_value;
-          min_vm_id = vm->get_id();
-        } else if (objective_value == min_objective_function
-            && vm->get_cost() < min_vm->get_cost()) {
-          min_objective_function = objective_value;
-          min_vm_id = vm->get_id();
-        } else if (objective_value == min_objective_function
-            && vm->get_cost() == min_vm->get_cost()
-            && vm->get_slowdown() < min_vm->get_slowdown()) {
+        if ((objective_value < min_objective_function)
+            || (objective_value == min_objective_function
+                && vm->get_cost() < min_vm->get_cost())
+            || (objective_value == min_objective_function
+                && vm->get_cost() == min_vm->get_cost()
+                && vm->get_slowdown() < min_vm->get_slowdown())) {  // Get minimum OF and minimum VM
           min_objective_function = objective_value;
           min_vm_id = vm->get_id();
         }
@@ -79,13 +65,13 @@ void MinMinAlgorithm::ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution&
       }  // for (std::pair<size_t, VirtualMachine> pair : vm_map_) {
     }  // for (auto task : avail_tasks) {
 
-    DLOG(INFO) << "Best Solution: Task[" << iteration_minimal_task_id
+    DLOG(INFO) << "Best Solution: Activation[" << iteration_minimal_task_id
         << "] and VM[" << iteration_minimal_vm_id << "]";
 
     solution = best_solution;
 
-    DLOG(INFO) << "Removing Task[" << iteration_minimal_task_id << "]";
-    Task* my_task = tasks_[iteration_minimal_task_id];
+    DLOG(INFO) << "Removing Activation[" << iteration_minimal_task_id << "]";
+    std::shared_ptr<Activation> my_task = tasks_[iteration_minimal_task_id];
     avail_tasks.remove(my_task);  // Remove task scheduled
   }  // while (!avail_tasks.empty()) {
 }  // void MinMinAlgorithm::schedule(...)
@@ -97,27 +83,27 @@ void MinMinAlgorithm::Run() {
   DLOG(INFO) << "Executing MinMin algorithm...";
   // google::FlushLogFiles(google::INFO);
 
-  std::list<Task*> task_list;
-  std::list<Task*> avail_tasks;
+  std::list<std::shared_ptr<Activation>> task_list;
+  std::list<std::shared_ptr<Activation>> avail_tasks;
 
   Solution solution(this);
 
   // Initialize the allocation with the static files place information (VM or Bucket)
-  for (File* file : files_) {
-    if (StaticFile* static_file = dynamic_cast<StaticFile*>(file)) {
+  for (const std::shared_ptr<File>& file : files_) {
+    if (std::shared_ptr<StaticFile> static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
       solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
     }
   }
 
   // Start task list
   DLOG(INFO) << "Initialize task list";
-  for (auto task : tasks_) {
+  for (const auto& task : tasks_) {
     task_list.push_back(task);
   }
 
   // Order by height
   DLOG(INFO) << "Order by height";
-  task_list.sort([&](const Task* a, const Task* b) {
+  task_list.sort([&](const std::shared_ptr<Activation>& a, const std::shared_ptr<Activation>& b) {
     return height_[a->get_id()] < height_[b->get_id()];
   });
 

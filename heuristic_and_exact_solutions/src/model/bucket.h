@@ -16,6 +16,7 @@
 #include <glog/logging.h>
 
 #include <string>
+#include <utility>
 
 #include "src/model/storage.h"
 
@@ -33,14 +34,14 @@ class Bucket : public Storage {
          double bandwidth,
          int type_id,
          size_t numberOfIntervals)
-      : Storage(id, name, storage, cost, bandwidth, type_id),
+      : Storage(id, std::move(name), storage, cost, bandwidth, type_id),
         number_of_GB_per_cost_intervals_(numberOfIntervals) { }
 
   /// Default destructor
-  ~Bucket() = default;
+  ~Bucket() override = default;
 
   /// Getter for the upper limit of the storage of the specified interval
-  double get_storage_of_the_interval(size_t interval) const {
+  [[nodiscard]] double get_storage_of_the_interval(size_t interval) const {
     if (interval == 0) {
       return 0.0;
     } else if (interval == 1) {
@@ -51,7 +52,7 @@ class Bucket : public Storage {
   }
 
   /// Getter for numberOfIntervals_ (not used for now)
-  size_t get_number_of_GB_per_cost_intervals() const { return number_of_GB_per_cost_intervals_; }
+  [[nodiscard]] size_t get_number_of_GB_per_cost_intervals() const { return number_of_GB_per_cost_intervals_; }
 
   /// Concatenate operator
   friend std::ostream& operator<<(std::ostream& os, const Bucket& a) {

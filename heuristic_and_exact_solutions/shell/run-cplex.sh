@@ -56,7 +56,8 @@ $PROG --tasks_and_files `pwd`/input/tasks_and_files/$TASK_AND_FILES \
   --alpha_budget $ALPHA_COST \
   --alpha_security $ALPHA_SECURITY \
   --cplex_output_file `pwd`/output/$OUTPUT_FILE.lp \
-  --log_dir=`pwd`/log
+  --minloglevel=3
+#  --log_dir=`pwd`/log
 cd shell
 
 # cd ..

@@ -14,23 +14,6 @@
 
 #include "src/solution/cplex.h"
 
-#include <gflags/gflags.h>
-#include <glog/logging.h>
-#include <ilcplex/ilocplex.h>
-#include <stdio.h>
-#include <time.h>
-#include <iostream>
-#include <string>
-// #include "data.h"
-
-// #include <list>
-// #include <vector>
-// #include <limits>
-// #include <cmath>
-// #include <memory>
-// #include <ctime>
-// #include <utility>
-
 #include "src/model/data.h"
 #include "src/model/dynamic_file.h"
 #include "src/model/static_file.h"
@@ -38,6 +21,9 @@
 DECLARE_string(cplex_output_file);
 
 // #define PRECISAO 0.00001
+
+template<typename T= VirtualMachine>
+T dynamic_pointer_cast(Storage);
 
 /**
  * If file reside in the same vm, then the transfer time is 0.0.
@@ -59,7 +45,9 @@ DECLARE_string(cplex_output_file);
  * \retval     time          The time to transfer \c file from \c file_vm to \c vm with possible
  *                           applied penalts
  */
-int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
+int ComputeFileTransferTime(const std::shared_ptr<File>& file,
+                            const std::shared_ptr<Storage>& storage1,
+                            const std::shared_ptr<Storage>& storage2) {
   int time = 0;
 
   DLOG(INFO) << "Compute the transfer time of File[" << file->get_id() << "] to/from VM["
@@ -88,8 +76,6 @@ int ComputeFileTransferTime(File* file, Storage* storage1, Storage* storage2) {
   return time;
 }  // double Solution::FileTransferTime(File file, Storage vm1, Storage vm2) {
 
-
-
 // ---- VARIAVEIS PARA IMPRESSAO DA SOLUCAO ---
 // int * tempo;
 // int ** maq_dado;
@@ -114,12 +100,12 @@ void print_sol(struct BEST* data)
   // ---- VARIAVEIS PARA IMPRESSAO DA SOLUCAO ---
   // int * tempo;
   // int ** maq_dado;
-  int* tempo = new int[data->m_];
-  int** maq_dado = new int*[data->mb_];
+  int* tempo = new int[static_cast<size_t>(data->m_)];
+  int** maq_dado = new int*[static_cast<size_t>(data->mb_)];
 
   for (int i = 0; i < data->mb_; i++)
   {
-    maq_dado[i] = new int [data->d_];
+    maq_dado[i] = new int [static_cast<size_t>(data->d_)];
   }
 
   // inicializacao
@@ -149,19 +135,19 @@ void print_sol(struct BEST* data)
   // std::cout << data->t_ << std::endl;
 
   // TEMPO
-  for (int checa = 0, t1 = 0; t1 < data->t_ and checa <= 1; t1++)
+  for (size_t checa = 0, t1 = 0; t1 < static_cast<size_t>(data->t_) and checa <= 1UL; t1++)
   {
     std::cout << "t" << t1 << ")\t";
 
     // // MAQUINA
     // DEVICES
     for (int j = 0; j < data->mb_ and checa <= 1; j++)
-	  {
-      Storage* device = algorithm->GetStoragePerId(static_cast<size_t>(j));
+    {
+      std::shared_ptr<Storage> device = algorithm->GetStoragePerId(static_cast<size_t>(j));
       // if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
       //{
       //dynamic_cast<Bucket*>(
-      if (VirtualMachine* virtual_machine = dynamic_cast<VirtualMachine*>(device))
+      if (auto virtual_machine = dynamic_pointer_cast<VirtualMachine>(device))
       {
         // checa se inicia mais de uma acao no mesmo tempo na mesma maquina
         checa = 0;
@@ -176,12 +162,12 @@ void print_sol(struct BEST* data)
         }
 
         // execucao
-        for (int passou = 0, i = 0; i < data->n_ and checa <= 1; i++)
+        for (size_t passou = 0, i = 0; i < static_cast<size_t>(data->n_) and checa <= 1UL; i++)
         {
-          Task* task = algorithm->GetTaskPerId(static_cast<size_t>(1 + i));
-          std::vector<File*> input_files = task->get_input_files();
+          std::shared_ptr<Activation> task = algorithm->GetActivationPerId(static_cast<size_t>(1UL + i));
+          std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
-          float x_ijt = data->x[i][j][t1];             // retorna o valor da variavel
+          auto x_ijt = static_cast<float>(data->x[i][j][t1]);             // retorna o valor da variavel
 
           if (x_ijt >= (1 - data->PRECISAO))
           {
@@ -209,7 +195,7 @@ void print_sol(struct BEST* data)
               {
                 for (int q = 0; q < data->t_ and checa <= 1; q++)
                 {
-                  float r_idjpt = data->r[i][d1][j][k][q];             // retorna o valor da variavel
+                  auto r_idjpt = static_cast<float>(data->r[i][d1][j][k][q]);  // retorna o valor da variavel
 
                   if (r_idjpt >= (1 - data->PRECISAO))
                   {
@@ -238,21 +224,21 @@ void print_sol(struct BEST* data)
           }
         }  // for (int passou = 0, i = 0; i < data->n_ and checa <= 1; i++)
                 // leitura
-        for (int i = 0; i < data->n_ and checa <= 1; i++)
+        for (size_t i = 0; i < static_cast<size_t>(data->n_) and checa <= 1; i++)
         {
-          Task* task = algorithm->GetTaskPerId(static_cast<size_t>(1 + i));
-          std::vector<File*> input_files = task->get_input_files();
+          std::shared_ptr<Activation> task = algorithm->GetActivationPerId(static_cast<size_t>(1UL + i));
+          std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
           // for (int d1 = 0; d1 < d__in_tam[i] and checa <= 1; d1++)
           for (int d1 = 0; d1 < static_cast<int>(input_files.size()) and checa <= 1; d1++)
           {
-            File* file = input_files[static_cast<size_t>(d1)];
+            std::shared_ptr<File> file = input_files[static_cast<size_t>(d1)];
 
-            for (int k = 0; k < data->mb_ and checa <= 1; k++)
+            for (size_t k = 0UL; k < static_cast<size_t>(data->mb_) and checa <= 1UL; k++)
             {
-              Storage* storage = algorithm->GetStoragePerId(static_cast<size_t>(k));
+              std::shared_ptr<Storage> storage = algorithm->GetStoragePerId(static_cast<size_t>(k));
 
-              float r_idjpt = data->r[i][d1][j][k][t1];             // retorna o valor da variavel
+              auto r_idjpt = static_cast<float>(data->r[i][d1][j][k][t1]);  // retorna o valor da variavel
 
               if (r_idjpt >= (1 - data->PRECISAO))
               {
@@ -274,7 +260,7 @@ void print_sol(struct BEST* data)
 
                 // checa existencia de arquivo
                 // float y_djt = data->y[d_in[i][d1]][k][t1];             // retorna o valor da variavel
-                float y_djt = data->y[static_cast<int>(file->get_id())][k][t1];             // retorna o valor da variavel
+                auto y_djt = static_cast<float>(data->y[static_cast<int>(file->get_id())][k][t1]);  // retorna o valor da variavel
 
                 if (y_djt < (1 - data->PRECISAO))
                 {
@@ -296,21 +282,21 @@ void print_sol(struct BEST* data)
         }
 
         // escrita
-        for (int passou = 0, i = 0; i < data->n_ and checa <= 1; i++)
+        for (size_t passou = 0UL, i = 0UL; i < static_cast<size_t>(data->n_) and checa <= 1; i++)
         {
-          Task* task = algorithm->GetTaskPerId(static_cast<size_t>(1 + i));
-          std::vector<File*> output_files = task->get_output_files();
+          std::shared_ptr<Activation> task = algorithm->GetActivationPerId(static_cast<size_t>(1UL + i));
+          std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
 
           // for (int d1 = 0; d1 < d_out_tam[i] and checa <= 1; d1++)
           for (int d1 = 0; d1 < static_cast<int>(output_files.size()) and checa <= 1; d1++)
           {
-            File* file = output_files[static_cast<size_t>(d1)];
+            std::shared_ptr<File> file = output_files[static_cast<size_t>(d1)];
 
             for (int k = 0; k < data->mb_ and checa <= 1; k++)
             {
-              Storage* storage = algorithm->GetStoragePerId(static_cast<size_t>(k));
+              std::shared_ptr<Storage> storage = algorithm->GetStoragePerId(static_cast<size_t>(k));
 
-              float w_idjpt = data->w[i][d1][j][k][t1];             // retorna o valor da variavel
+              auto w_idjpt = static_cast<float>(data->w[i][d1][j][k][t1]);  // retorna o valor da variavel
 
               if (w_idjpt >= (1 - data->PRECISAO))
               {
@@ -334,7 +320,7 @@ void print_sol(struct BEST* data)
                 passou = 0;
                 for (int q = 0; q < data->t_ and checa <= 1; q++)
                 {
-                  float x_ijt = data->x[i][j][q];
+                  auto x_ijt = static_cast<float>(data->x[i][j][q]);
 
                   if (x_ijt >= (1 - data->PRECISAO))
                   {
@@ -371,7 +357,7 @@ void print_sol(struct BEST* data)
         // dados
         for (int d1 = 0; d1 < data->d_ and checa <= 1; d1++)
         {
-          float y_djt = data->y[d1][j][t1];             // retorna o valor da variavel
+          auto y_djt = static_cast<float>(data->y[d1][j][t1]);  // retorna o valor da variavel
 
           if (y_djt >= (1 - data->PRECISAO))
           {
@@ -387,7 +373,7 @@ void print_sol(struct BEST* data)
         std::cout << "\t";
 
         // contratacao
-        float v_jt = data->v[j][t1];             // retorna o valor da variavel
+        auto v_jt = static_cast<float>(data->v[j][t1]);             // retorna o valor da variavel
 
         if (v_jt >= (1 - data->PRECISAO))
         {
@@ -409,7 +395,7 @@ void print_sol(struct BEST* data)
         // // dados
         for (int d1 = 0; d1 < data->d_ and checa <= 1; d1++)
         {
-          float y_djt = data->y[d1][j][t1];             // retorna o valor da variavel
+          auto y_djt = static_cast<float>(data->y[d1][j][t1]);  // retorna o valor da variavel
 
           if (y_djt >= (1 - data->PRECISAO))
           {
@@ -494,10 +480,10 @@ void ImprimeBest(struct BEST* data)
   }
 
   // -------- r ----------
-  for (int i = 0; i < data->n_; ++i)
+  for (size_t i = 0UL; i < static_cast<size_t>(data->n_); ++i)
   {
-    Task* task = algorithm->GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> input_files = task->get_input_files();
+    std::shared_ptr<Activation> task = algorithm->GetActivationPerId(static_cast<size_t>(i + 1));
+    std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
     // for (int j = 0; j < data->d_; ++j)
     for (int j = 0; j < static_cast<int>(input_files.size()); ++j)
@@ -523,10 +509,10 @@ void ImprimeBest(struct BEST* data)
   }
 
   // -------- w ----------
-  for (int i = 0; i < data->n_; ++i)
+  for (size_t i = 0UL; i < static_cast<size_t>(data->n_); ++i)
   {
-    Task* task = algorithm->GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> output_files = task->get_output_files();
+    std::shared_ptr<Activation> task = algorithm->GetActivationPerId(static_cast<size_t>(i + 1));
+    std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
 
     // for (int j = 0; j < data->d_; ++j)
     for (int j = 0; j < static_cast<int>(output_files.size()); ++j)
@@ -615,9 +601,9 @@ void ImprimeBest(struct BEST* data)
   // -------- b ----------
   for (int i = 0; i < data->numb_; ++i)
   {
-    Storage* storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
+    std::shared_ptr<Storage> storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
     {
       for (int j = 0; j <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); ++j)
       {
@@ -635,9 +621,9 @@ void ImprimeBest(struct BEST* data)
   // -------- q ----------
   for (int i = 0; i < data->numb_; ++i)
   {
-    Storage* storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
+    std::shared_ptr<Storage> storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
     {
       for (int j = 0; j <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); ++j)
       {
@@ -684,7 +670,7 @@ void ImprimeBest(struct BEST* data)
 // Callback da melhor solucao encontrada
 ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
 {
-  double                         val_sol = (double) getObjValue();
+  auto                           val_sol = (double) getObjValue();
   IloCplex::MIPCallbackI::NodeId no_sol  = getNodeId();
   double                         gap     = 100.0 * ((double) getMIPRelativeGap());
   double                         time_f  = ((double) clock() - (double)data->start) / CLOCKS_PER_SEC;
@@ -713,7 +699,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
       {
         for (int t = 0; t < data->t_; ++t)
         {
-          data->x[i][j][t] = (float) getValue(cplx->x[i][j][t]);
+          data->x[i][j][t] = static_cast<int>((float) getValue(cplx->x[i][j][t]));
           //cout<<"************** X_"<<i<<"_"<<j<<"_"<<t<<endl;
         }
       }
@@ -722,8 +708,9 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
     // -------- r ----------
     for (int i = 0; i < data->n_; ++i)
     {
-      Task* task = algorithm->GetTaskPerId(static_cast<size_t>(i + 1));
-      std::vector<File*> input_files = task->get_input_files();
+      std::shared_ptr<Activation> task =
+          algorithm->GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+      std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
       // for (int j = 0; j < data->d_; ++j)
       for (int j = 0; j < static_cast<int>(input_files.size()); ++j)
@@ -734,7 +721,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
           {
             for (int m = 0; m < data->t_; ++m)
             {
-              data->r[i][j][k][l][m] = (float) getValue(cplx->r[i][j][k][l][m]);
+              data->r[i][j][k][l][m] = static_cast<int>((float) getValue(cplx->r[i][j][k][l][m]));
             }
           }
         }
@@ -744,8 +731,9 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
     // -------- w ----------
     for (int i = 0; i < data->n_; ++i)
     {
-      Task* task = algorithm->GetTaskPerId(static_cast<size_t>(i + 1));
-      std::vector<File*> output_files = task->get_output_files();
+      std::shared_ptr<Activation>
+          task = algorithm->GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+      std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
 
       // for (int j = 0; j < data->d_; ++j)
       for (int j = 0; j < static_cast<int>(output_files.size()); ++j)
@@ -756,7 +744,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
           {
             for (int m = 0; m < data->t_; ++m)
             {
-              data->w[i][j][k][l][m] = (float) getValue(cplx->w[i][j][k][l][m]);
+              data->w[i][j][k][l][m] = static_cast<int>((float) getValue(cplx->w[i][j][k][l][m]));
             }
           }
         }
@@ -770,7 +758,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
       {
         for (int k = 0; k <= data->t_; ++k)
         {
-          data->y[i][j][k] = (float) getValue(cplx->y[i][j][k]);
+          data->y[i][j][k] = static_cast<int>((float) getValue(cplx->y[i][j][k]));
         }
       }
     }
@@ -780,7 +768,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
     {
       for (int j = 0; j < data->mb_; ++j)
       {
-        data->yb[i][j] = (float) getValue(cplx->yb[i][j]);
+        data->yb[i][j] = static_cast<int>((float) getValue(cplx->yb[i][j]));
       }
     }
 
@@ -792,7 +780,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
         int conflict = algorithm->get_conflict_graph().ReturnConflict(static_cast<size_t>(i), static_cast<size_t>(j));
 
         if (conflict > 0) {  // soft constraint
-          data->ws[i][j] = (float) getValue(cplx->ws[i][j]);
+          data->ws[i][j] = static_cast<int>((float) getValue(cplx->ws[i][j]));
         }
       }
     }
@@ -809,13 +797,14 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
     // -------- b ----------
     for (int i = 0; i < data->numb_; ++i)
     {
-      Storage* storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
+      std::shared_ptr<Storage>
+          storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
 
-      if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+      if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
       {
         for (int j = 0; j <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); ++j)
         {
-          data->b[i][j] = (float) getValue(cplx->b[i][j]);
+          data->b[i][j] = static_cast<int>((float) getValue(cplx->b[i][j]));
         }
       } else {
         exit(1);  // error
@@ -825,9 +814,10 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
     // -------- q ----------
     for (int i = 0; i < data->numb_; ++i)
     {
-      Storage* storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
+      std::shared_ptr<Storage>
+          storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + static_cast<size_t>(i));
 
-      if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+      if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
       {
         for (int j = 0; j <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); ++j)
         {
@@ -843,7 +833,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx)
     {
       for (int j = 0; j < data->t_; ++j)
       {
-        data->v[i][j] = (float) getValue(cplx->v[i][j]);
+        data->v[i][j] = static_cast<int>((float) getValue(cplx->v[i][j]));
       }
     }
 
@@ -876,7 +866,7 @@ void Cplex::Run() {
   int _mb      = static_cast<int>(GetStorageSize());
   int _numr    = static_cast<int>(GetRequirementsSize());
   int _numb    = static_cast<int>(get_bucket_size());
-  int _t       = makespan_max_;
+  int _t       = static_cast<int>(makespan_max_);
   double _cmax = get_budget_max();
   double _smax = get_maximum_security_and_privacy_exposure();
 
@@ -895,7 +885,7 @@ void Cplex::Run() {
       cplx.x[i][j] = IloBoolVarArray(cplx.env, _t);
       for (int k = 0; k < _t; k++)
       {
-        sprintf(var_name, "x_%d_%d_%d", (int)i,(int)j, (int)k);              // nome da variavel
+        sprintf(var_name, "x_%d_%d_%d", (int) i,(int) j, (int) k);     // nome da variavel
         cplx.x[i][j][k] = IloBoolVar(cplx.env, var_name);                     // aloca variavel
         cplx.model.add(cplx.x[i][j][k]);                                      // adiciona variavel ao modelo
       }
@@ -907,9 +897,9 @@ void Cplex::Run() {
   // (note que nao eh o dado de indice D) a partir da maquina P no periodo T
   for (int i = 0; i < _n; i++)
   {
-    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> input_files = task->get_input_files();
-    cplx.r[i]                      =  IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, static_cast<int>(input_files.size()));
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
+    cplx.r[i] = IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, static_cast<int>(input_files.size()));
 
     for (int j = 0; j < static_cast<int>(input_files.size()); j++)
     {
@@ -922,9 +912,9 @@ void Cplex::Run() {
           cplx.r[i][j][k][l] = IloBoolVarArray(cplx.env, _t);
           for (int m = 0; m < _t; m++)
           {
-            sprintf (var_name, "r_%d_%d_%d_%d_%d", (int) i, (int) j, (int) k, (int) l, (int) m);      // nome da variavel
-            cplx.r[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel
-            cplx.model.add(cplx.r[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
+            sprintf (var_name, "r_%d_%d_%d_%d_%d", (int) i, (int) j, (int) k, (int) l, (int) m);  // nome da variavel
+            cplx.r[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);  // aloca variavel
+            cplx.model.add(cplx.r[i][j][k][l][m]);  // adiciona variavel ao modelo
           }
         }
       }
@@ -936,9 +926,9 @@ void Cplex::Run() {
   // (note que nao eh o dado de indice D) a partir da maquina P no periodo T
   for (int i = 0; i < _n; i++)
   {
-    Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> output_files = task->get_output_files();
-    cplx.w[i]                       =  IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, static_cast<int>(output_files.size()));
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
+    cplx.w[i] = IloArray<IloArray<IloArray<IloBoolVarArray>>>(cplx.env, static_cast<int>(output_files.size()));
 
     for (int j = 0; j < static_cast<int>(output_files.size()); j++)
     {
@@ -954,10 +944,10 @@ void Cplex::Run() {
             sprintf (var_name, "w_%d_%d_%d_%d_%d", (int) i, (int) j, (int) k, (int) l, (int) m);      // nome da variavel
             cplx.w[i][j][k][l][m] = IloBoolVar(cplx.env, var_name);                                   // aloca variavel
             cplx.model.add(cplx.w[i][j][k][l][m]);                                                    // adiciona variavel ao modelo
-		      }
-		    }
-	    }
-	  }
+          }
+        }
+      }
+    }
   }
 
   // variaveis de armazenamento
@@ -1020,9 +1010,9 @@ void Cplex::Run() {
 
     for (int i = 0; i < _n; i++)
     {
-      sprintf (var_name, "xe_%d_%d", (int)r,(int)i);                      // nome da variavel
-      cplx.e[r][i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);       // aloca variavel
-      cplx.model.add(cplx.e[r][i]);                                       // adiciona variavel ao modelo
+      sprintf (var_name, "xe_%d_%d", (int) r,(int) i);                    // nome da variavel
+      cplx.e[r][i] = IloNumVar(cplx.env, 0, IloInfinity, var_name);   // aloca variavel
+      cplx.model.add(cplx.e[r][i]);                                             // adiciona variavel ao modelo
     }
   }
 
@@ -1031,9 +1021,9 @@ void Cplex::Run() {
   // B_JL => se o bucket J esta sendo usada no intervalo L
   // *OBS* ******* O INTERVALO 0 serve para indicar que o BUCKET NAO ESTA SENDO USADO ******
   for (int b = 0; b < _numb; b++) {
-    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+    std::shared_ptr<Storage> storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
     {
       cplx.b[b] = IloBoolVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals())+1);
 
@@ -1052,9 +1042,9 @@ void Cplex::Run() {
   // Q_JL => quantidade de dados usada pelo bucket J no intervalo L
   // *OBS* ******* O INTERVALO 0 serve para indicar que o BUCKET NAO ESTA SENDO USADO ******
   for (int b = 0; b < _numb; b++) {
-    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+    std::shared_ptr<Storage> storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage)) {
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
       cplx.q[b] = IloNumVarArray(cplx.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals())+1);
 
       for (int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
@@ -1105,15 +1095,15 @@ void Cplex::Run() {
   // ----- Custo Financeiro
   for (int j = 0; j < _m; j++)
   {
-    VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+    std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
     fo += alpha_budget_ * ((virtual_machine->get_cost() * cplx.z[j]) / _cmax);
   }
 
   for (int b = 0; b < _numb; b++)
   {
-    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+    std::shared_ptr<Storage> storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
     {
       for (int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
@@ -1149,7 +1139,7 @@ void Cplex::Run() {
     }
   }
 
-  cplx.model.add(IloMinimize(cplx.env,fo, "fo"));                            // adiciona função objetivo ao modelo
+  cplx.model.add(IloMinimize(cplx.env,fo, "fo"));  // adiciona função objetivo ao modelo
   // -----------------------------------------------------
 
   // --------------- RESTRIÇÕES ----------
@@ -1177,8 +1167,8 @@ void Cplex::Run() {
   // Restricao (5)
   for (int i = 0; i < _n; i++)
   {
-    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> input_files = task->get_input_files();
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
     for (int d = 0; d < static_cast<int>(input_files.size()); d++)
     {
@@ -1209,8 +1199,8 @@ void Cplex::Run() {
   // Restricao (6)
   for (int i = 0; i < _n; i++)
   {
-    Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> output_files = task->get_output_files();
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
 
     for (int d = 0; d < static_cast<int>(output_files.size()); d++)
     {
@@ -1240,14 +1230,14 @@ void Cplex::Run() {
   // Restricao (7)
   for (int teto, i = 0; i < _n; i++)
   {
-    Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> output_files = task->get_output_files();
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
 
     for (int d = 0; d < static_cast<int>(output_files.size()); d++)
     {
       for (int j = 0; j < _m; j++)
       {
-        VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+        std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
         for (int p = 0; p < _mb; p++)
         {
@@ -1283,14 +1273,14 @@ void Cplex::Run() {
   // Restricao (8)
   for (int i = 0; i < _n; i++)
   {
-    Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> output_files = task->get_output_files();
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
 
     for (int d = 0; d < static_cast<int>(output_files.size()); d++)
     {
       for (int j = 0; j < _m; j++)
       {
-        VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+        std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
         for (int p = 0; p < _mb; p++)
         {
@@ -1317,16 +1307,16 @@ void Cplex::Run() {
   // Retrição (9)
   for (int teto, i = 0; i < _n; i++)
   {
-    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> input_files = task->get_input_files();
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
     for (int d = 0; d < static_cast<int>(input_files.size()); d++)
     {
-      File* file = input_files[static_cast<size_t>(d)];
+      std::shared_ptr<File> file = input_files[static_cast<size_t>(d)];
 
       for (int j = 0; j < _m; j++)
       {
-        VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+        std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
         /* vamos fazer para todo t pois assim quando (t-t_djp) < 0, o lado direito sera 0 e impede a
         execucao da tarefa naquele tempo */
@@ -1338,7 +1328,7 @@ void Cplex::Run() {
 
           for (int p = 0; p < _mb; p++)
           {
-            Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+            std::shared_ptr<Storage> storage = GetStoragePerId(static_cast<size_t>(p));
             /* (q <= teto) pois o tamanho do intervalo é o mesmo não importa se o tempo comeca de 0 ou 1 */
 
             if ((t + 1 - ComputeFileTransferTime(file, virtual_machine, storage)) >= 0)
@@ -1369,7 +1359,7 @@ void Cplex::Run() {
   // Restricao (10)
   for (int piso, j = 0; j < _m; j++)
   {
-    VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+    std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
     for (int t = 0; t < _t; t++)
     {
@@ -1378,7 +1368,7 @@ void Cplex::Run() {
       /* execucao */
       for (int i = 0; i < _n; i++)
       {
-        Task* task = GetTaskPerId(static_cast<size_t>(i + 1));
+        std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
 
         int tempo_execucao = static_cast<int>(std::ceil(task->get_time() * virtual_machine->get_slowdown()));
 
@@ -1393,17 +1383,17 @@ void Cplex::Run() {
       /* escrita */
       for (int i = 0; i < _n; i++)
       {
-        Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
-        std::vector<File*> output_files = task->get_output_files();
+        std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+        std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
 
         for (int d = 0; d < static_cast<int>(output_files.size()); d++)
         {
-          File* file = output_files[static_cast<size_t>(d)];
+          std::shared_ptr<File> file = output_files[static_cast<size_t>(d)];
 
           for (int p = 0; p < _mb; p++)
           {
-            Storage* storage = GetStoragePerId(static_cast<size_t>(p));
-            piso             = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage) + 1);
+            std::shared_ptr<Storage> storage = GetStoragePerId(static_cast<size_t>(p));
+            piso = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage) + 1);
             for (int rr = piso; rr <= t; rr++)
             {
               exp += cplx.w[i][d][j][p][rr];
@@ -1415,17 +1405,17 @@ void Cplex::Run() {
       /* leitura */
       for (int i = 0; i < _n; i++)
       {
-        Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-        std::vector<File*> input_files = task->get_input_files();
+        std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+        std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
         for (int d = 0; d < static_cast<int>(input_files.size()); d++)
         {
-          File* file = input_files[static_cast<size_t>(d)];
+          std::shared_ptr<File> file = input_files[static_cast<size_t>(d)];
 
           for(int p=0; p < _mb; p++)
           {
-            Storage* storage = GetStoragePerId(static_cast<size_t>(p));
-            piso             = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage) + 1);
+            std::shared_ptr<Storage> storage = GetStoragePerId(static_cast<size_t>(p));
+            piso = max(0, t - ComputeFileTransferTime(file, virtual_machine, storage) + 1);
             for (int rr = piso; rr <= t; rr++)
             {
               exp += cplx.r[i][d][j][p][rr];
@@ -1451,7 +1441,7 @@ void Cplex::Run() {
   // Restricao (11)
   for (int j = 0; j < _m; j++)
   {
-    Storage* storage = GetStoragePerId(static_cast<size_t>(j));
+    std::shared_ptr<Storage> storage = GetStoragePerId(static_cast<size_t>(j));
 
     for (int t = 0; t < _t; t++)
     {
@@ -1460,19 +1450,19 @@ void Cplex::Run() {
       /* escrita */
       for (int i = 0; i < _n; i++)
       {
-        Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
-        std::vector<File*> output_files = task->get_output_files();
+        std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+        std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
 
         for (int d = 0; d < static_cast<int>(output_files.size()); d++)
         {
-          File* file = output_files[static_cast<size_t>(d)];
+          std::shared_ptr<File> file = output_files[static_cast<size_t>(d)];
 
           for (int p = 0; p < _m; p++)
           {
             if (j != p)
             {
-              VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
-              int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
+              std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
+              int piso = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
 
               for (int rr = piso; rr <= t; rr++)
               {
@@ -1486,19 +1476,19 @@ void Cplex::Run() {
       /* leitura */
       for (int i = 0; i < _n; i++)
       {
-        Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-        std::vector<File*> input_files = task->get_input_files();
+        std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+        std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
         for (int d = 0; d < static_cast<int>(input_files.size()); d++)
         {
-          File* file = input_files[static_cast<size_t>(d)];
+          std::shared_ptr<File> file = input_files[static_cast<size_t>(d)];
 
           for (int p = 0; p < _m; p++)
           {
             if (j != p)
             {
-              VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
-              int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
+              std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
+              int piso = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
 
               for (int rr = piso; rr <= t; rr++)
               {
@@ -1527,7 +1517,7 @@ void Cplex::Run() {
       b < static_cast<int>(GetVirtualMachineSize()) + _numb;
       b++)
   {
-    Storage* storage = GetStoragePerId(static_cast<size_t>(b));
+    std::shared_ptr<Storage> storage = GetStoragePerId(static_cast<size_t>(b));
 
     for (int t = 0; t < _t; t++)
     {
@@ -1536,17 +1526,17 @@ void Cplex::Run() {
       /* escrita */
       for (int i = 0; i < _n; i++)
       {
-        Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
-        std::vector<File*> output_files = task->get_output_files();
+        std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+        std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
 
         for (int d = 0; d < static_cast<int>(output_files.size()); d++)
         {
-          File* file = output_files[static_cast<size_t>(d)];
+          std::shared_ptr<File> file = output_files[static_cast<size_t>(d)];
 
           for (int p = 0; p < _m; p++)
           {
-            VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
-            int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
+            std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
+            int piso = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
 
             for (int rr = piso; rr <= t; rr++) {
               exp += cplx.w[i][d][p][b][rr];
@@ -1558,17 +1548,17 @@ void Cplex::Run() {
       /* leitura */
       for (int i = 0; i < _n; i++)
       {
-        Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-        std::vector<File*> input_files = task->get_input_files();
+        std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+        std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
         for (int d = 0; d < static_cast<int>(input_files.size()); d++)
         {
-          File* file = input_files[static_cast<size_t>(d)];
+          std::shared_ptr<File> file = input_files[static_cast<size_t>(d)];
 
           for (int p = 0; p < _m; p++)
           {
-            VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
-            int piso                        = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
+            std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(p));
+            int piso = max(0, t - ComputeFileTransferTime(file, storage, virtual_machine) + 1);
 
             for (int rr = piso; rr <= t; rr++) {
               exp += cplx.r[i][d][p][b][rr];
@@ -1590,11 +1580,11 @@ void Cplex::Run() {
   // Restricao (12)
   for(int d = 0; d < static_cast<int>(files_.size()); ++d)
   {
-    File* file = files_[static_cast<size_t>(d)];
+    std::shared_ptr<File> file = files_[static_cast<size_t>(d)];
 
-    if (dynamic_cast<DynamicFile*>(file))
+    if (dynamic_pointer_cast<DynamicFile>(file))
     {
-      for(int j=0; j < _mb; j++)
+      for (int j = 0; j < _mb; j++)
       {
         IloExpr exp(cplx.env);
 
@@ -1614,9 +1604,9 @@ void Cplex::Run() {
   //Restricao (13) e (14)
   for (int d = 0; d < static_cast<int>(files_.size()); ++d)
   {
-    File* file = files_[static_cast<size_t>(d)];
+    std::shared_ptr<File> file = files_[static_cast<size_t>(d)];
 
-    if (StaticFile* static_file = dynamic_cast<StaticFile*>(file))
+    if (auto static_file = dynamic_pointer_cast<StaticFile>(file))
     {
       int ind = static_cast<int>(static_file->GetFirstVm());
 
@@ -1661,13 +1651,13 @@ void Cplex::Run() {
   // for (int indw = -1, pai_i = 0, tempo = 0, /* <RODRIGO> para todo dado "d" dinamico */)
   for (size_t i = 0; i < GetFileSize(); ++i)
   {
-    if (DynamicFile* dynamic_file = dynamic_cast<DynamicFile*>(files_[i]))
+    if (auto dynamic_file = dynamic_pointer_cast<DynamicFile>(files_[i]))
     {
       // pai_i      = /* <RODRIGO> tarefa que escreveu o dado "d" */;
       // indw       = /* <RODRIGO> o dado "d" eh a d-esima escrita de "pai_i" */;
-      // File* file = input_files[static_cast<size_t>(d)]; /* <RODRIGO> eh esse d mesmo neh ? */
+      // std::shared_ptr<File>file = input_files[static_cast<size_t>(d)]; /* <RODRIGO> eh esse d mesmo neh ? */
 
-      Task* pai = dynamic_file->get_parent_task();
+      std::shared_ptr<Activation> pai = dynamic_file->get_parent_task();
       int indw  = static_cast<int>(dynamic_file->get_parent_output_file_index());
       int d     = static_cast<int>(dynamic_file->get_id());
       // Shift por conta da tarefa virtual SOURCE (id: 0)
@@ -1675,7 +1665,7 @@ void Cplex::Run() {
 
       for (int p = 0; p < _mb; p++)
       {
-        Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+        std::shared_ptr<Storage> storage = GetStoragePerId(static_cast<size_t>(p));
 
         // for (int t = 0; t < _t - 1; t++)
         for (int t = 0; t < _t; t++)
@@ -1689,7 +1679,7 @@ void Cplex::Run() {
 
           for (int j = 0; j < _m; j++)
           {
-            VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+            std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
             int tempo = (t - ComputeFileTransferTime(dynamic_file, storage, virtual_machine) + 1);
 
@@ -1729,8 +1719,8 @@ void Cplex::Run() {
     }
     else  // arquivos estáticos
     {
-      // Task* pai = dynamic_file->get_parent_task();
-      File* file = GetFilePerId(i);
+      // std::shared_ptr<Activation> pai = dynamic_file->get_parent_task();
+      std::shared_ptr<File>file = GetFilePerId(i);
       // int indw  = static_cast<int>(dynamic_file->get_parent_output_file_index());
       int d     = static_cast<int>(file->get_id());
       // Shift por conta da tarefa virtual SOURCE (id: 0)
@@ -1738,7 +1728,7 @@ void Cplex::Run() {
 
       for (int p = 0; p < _mb; p++)
       {
-        // Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+        // std::shared_ptr<Storage>storage = GetStoragePerId(static_cast<size_t>(p));
 
         for (int t = 0; t < _t - 1; t++)
         {
@@ -1766,8 +1756,8 @@ void Cplex::Run() {
   // Restricao (16)
   for (int dd, i = 0; i < _n; i++)
   {
-    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> input_files = task->get_input_files();
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
     for (int d = 0; d < static_cast<int>(input_files.size()); d++)
     {
@@ -1775,25 +1765,25 @@ void Cplex::Run() {
       {
         for(int t = 0; t < _t; t++)
         {
-            IloExpr exp(cplx.env);
+          IloExpr exp(cplx.env);
 
-            for (int j = 0; j < _m; j++)
-            {
-              exp += cplx.r[i][d][j][p][t];
-            }
+          for (int j = 0; j < _m; j++)
+          {
+            exp += cplx.r[i][d][j][p][t];
+          }
 
-            File* file = input_files[static_cast<size_t>(d)];
+          std::shared_ptr<File> file = input_files[static_cast<size_t>(d)];
 
-            dd = file->get_id();
-            exp -= cplx.y[dd][p][t];
+          dd = static_cast<int>(file->get_id());
+          exp -= cplx.y[dd][p][t];
 
-            IloConstraint c(exp <= 0);
+          IloConstraint c(exp <= 0);
 
-            sprintf (var_name, "c16_%d_%d_%d_%d", (int) i, (int) d, (int) p, (int) t);
-            c.setName(var_name);
-            cplx.model.add(c);
+          sprintf (var_name, "c16_%d_%d_%d_%d", (int) i, (int) d, (int) p, (int) t);
+          c.setName(var_name);
+          cplx.model.add(c);
 
-            exp.end();
+          exp.end();
         }
       }
     }
@@ -1802,7 +1792,7 @@ void Cplex::Run() {
   // Restricao (17)
   for (int j = 0; j < _mb; j++)
   {
-    Storage* storage = GetStoragePerId(static_cast<size_t>(j));
+    std::shared_ptr<Storage>storage = GetStoragePerId(static_cast<size_t>(j));
 
     for (int t = 0; t <= _t; t++)
     {
@@ -1810,7 +1800,7 @@ void Cplex::Run() {
 
       for (int d = 0; d < _d; d++)
       {
-        File* file = GetFilePerId(static_cast<size_t>(d));
+        std::shared_ptr<File> file = GetFilePerId(static_cast<size_t>(d));
         exp += (file->get_size_in_GB() * cplx.y[d][j][t]);
       }
 
@@ -1827,20 +1817,20 @@ void Cplex::Run() {
   // Restricao (18)
   for (int i = 0; i < _n; i++)
   {
-    Task*              task         = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> output_files = task->get_output_files();
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>>output_files = task->get_output_files();
 
     for (int d = 0; d < static_cast<int>(output_files.size()); d++)
     {
-      File* file = output_files[static_cast<size_t>(d)];
+      std::shared_ptr<File>file = output_files[static_cast<size_t>(d)];
 
       for (int j = 0; j < _m; j++)
       {
-        VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+        std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
         for (int p = 0; p < _mb; p++)
         {
-          Storage* storage = GetStoragePerId(static_cast<size_t>(p));
+          std::shared_ptr<Storage>storage = GetStoragePerId(static_cast<size_t>(p));
 
           for (int t = 0; t < _t; t++)
           {
@@ -1906,15 +1896,15 @@ void Cplex::Run() {
     IloExpr exp(cplx.env);
     for (int j = 0; j < _m; j++)
     {
-      VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+      std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
       exp += virtual_machine->get_cost() * cplx.z[j];
     }
 
     for(int b = 0; b < _numb; b++)
     {
-      Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+      std::shared_ptr<Storage>storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-      if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+      if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
       {
         for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
         {
@@ -1936,8 +1926,8 @@ void Cplex::Run() {
   //Restricao (21)
   for (int i = 0; i < _n; i++)
   {
-    Task*              task        = GetTaskPerId(static_cast<size_t>(i + 1));
-    std::vector<File*> input_files = task->get_input_files();
+    std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
+    std::vector<std::shared_ptr<File>>input_files = task->get_input_files();
 
     for (int d = 0; d < static_cast<int>(input_files.size()); d++)
     {
@@ -1953,9 +1943,9 @@ void Cplex::Run() {
 
           for (int dd, g = 0; g < static_cast<int>(input_files.size()); g++)
           {
-            File* file = input_files[static_cast<size_t>(d)];
+            std::shared_ptr<File>file = input_files[static_cast<size_t>(d)];
 
-            dd         = file->get_id();
+            dd = static_cast<int>(file->get_id());
 
             for (int p = 0; p < _mb; p++) {
               exp -= cplx.y[dd][p][t];
@@ -2062,13 +2052,13 @@ void Cplex::Run() {
     // Requirement requirement = GetRequirementPerId(static_cast<size_t>(r));
     for (int i = 0; i < _n; i++)
     {
-      Task* task = GetTaskPerId(static_cast<size_t>(i + 1));
+      std::shared_ptr<Activation> task = GetActivationPerId(static_cast<size_t>(static_cast<unsigned long>(i) + 1UL));
 
       IloExpr exp(cplx.env);
       exp -= cplx.e[r][i];
 
       for (int j = 0; j < _m; j++) {
-        VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+        std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
         for (int t = 0; t < _t; t++) {
           // exp += /* <RODRIGO> l^{lj}_{vm} */ * cplx.x[i][j][t];
           exp -= virtual_machine->GetRequirementValue(static_cast<size_t>(r)) * cplx.x[i][j][t];
@@ -2090,12 +2080,12 @@ void Cplex::Run() {
   for (int b = 0; b < _numb; b++)
   {
     // bucket
-    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+    std::shared_ptr<Storage>storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
     // indice do bucket dentre as maquinas
     int j = static_cast<int>(GetVirtualMachineSize()) + b;
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
     {
       IloExpr exp(cplx.env);
 
@@ -2106,7 +2096,7 @@ void Cplex::Run() {
 
       for (int d = 0; d < _d; d++)
       {
-        File* file = files_[static_cast<size_t>(d)];
+        std::shared_ptr<File>file = files_[static_cast<size_t>(d)];
         exp -= (file->get_size_in_GB() * cplx.yb[d][j]);
         // exp -= (file->get_size() * cplx.yb[d][j]);
       }
@@ -2129,9 +2119,9 @@ void Cplex::Run() {
   for(int b = 0; b < _numb; b++)
   {
     // bucket
-    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+    std::shared_ptr<Storage>storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
     {
       IloExpr exp(cplx.env);
 
@@ -2152,18 +2142,18 @@ void Cplex::Run() {
  for (int b = 0; b < _numb; b++)
   {
     // bucket
-    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+    std::shared_ptr<Storage>storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
     // indice do bucket dentre as maquinas
     int j = static_cast<int>(GetVirtualMachineSize()) + b;
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
     {
       IloExpr exp(cplx.env);
 
       for (int d=0; d < _d; d++)
       {
-        File* file = files_[static_cast<size_t>(d)];
+        std::shared_ptr<File>file = files_[static_cast<size_t>(d)];
         exp += (file->get_size_in_GB() * cplx.yb[d][j]);
         // exp += (file->get_size() * cplx.yb[d][j]);
       }
@@ -2189,9 +2179,9 @@ void Cplex::Run() {
   for(int b = 0; b < _numb; b++)
   {
     // bucket
-    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+    std::shared_ptr<Storage>storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
     {
       for (int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
@@ -2232,12 +2222,12 @@ void Cplex::Run() {
   for (int b = 0; b < _numb; b++)
   {
     // bucket
-    Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+    std::shared_ptr<Storage>storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
     // indice do bucket dentre as maquinas
     int j = static_cast<int>(GetVirtualMachineSize()) + b;
 
-    if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+    if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
     {
       for(int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
       {
@@ -2261,10 +2251,15 @@ void Cplex::Run() {
   IloCplex solver(cplx.model);                          // declara variável "solver" sobre o modelo a ser solucionado
   // solver.exportModel("model.lp");                       // escreve modelo no arquivo no formato .lp
   solver.exportModel(FLAGS_cplex_output_file.c_str());  // escreve modelo no arquivo no formato .lp
+  // open CPLEX model
+  int error;
+  CPXENVptr env = CPXopenCPLEX(&error);
 
   // Parametros
-  solver.setParam(IloCplex::TiLim, 3600);            // tempo limite (3600=1h, 86400=1d)
-  solver.setParam(IloCplex::MIPInterval, 100);       // Log a cada N nos
+//  solver.setParam(IloCplex::TiLim, 3600);       // tempo limite (3600=1h, 86400=1d)
+//  CPXsetdblparam(env, CPX_PARAM_TILIM, 3600.0);
+//  CPXsetdblparam(env, CPX_PARAM_MIPINTERVAL, 100.0);
+//  solver.setParam(IloCplex::MIPInterval, 100);  // Log a cada N nos
 
   // -------------------- Callbacks ----------------------
 
@@ -2306,18 +2301,18 @@ void Cplex::Run() {
     // ----- Custo Financeiro
     for (int j = 0; j < _m; j++)
     {
-      VirtualMachine* virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
+      std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(static_cast<size_t>(j));
 
       custo += virtual_machine->get_cost() * best.z[j];
     }
 
     for (int b = 0; b < _numb; b++)
     {
-      Storage* storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+      std::shared_ptr<Storage>storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
 
-      if (Bucket* bucket = dynamic_cast<Bucket*>(storage))
+      if (auto bucket = dynamic_pointer_cast<Bucket>(storage))
       {
-        for (int l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
+        for (int l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++)
         {
           custo += bucket->get_cost() * best.q[b][l];
         }

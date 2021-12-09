@@ -11,54 +11,50 @@
  * command-line and calls the appropriate methods.
  */
 
-#include "src/main.h"
-
 #include <glog/logging.h>
-#include <gflags/gflags.h>
-#include <exception>
 #include "src/solution/algorithm.h"
 
-DEFINE_string(tasks_and_files,
+DEFINE_string(tasks_and_files, // NOLINT(cert-err58-cpp)
               "CyberShake_30.xml.dag",
-              "Task and Files configuration file");
+              "Activation and Files configuration file");
 
-DEFINE_string(cluster,
+DEFINE_string(cluster, // NOLINT(cert-err58-cpp)
               "cluster.vcl",
               "Clusters configuration file");
 
-DEFINE_string(conflict_graph,
+DEFINE_string(conflict_graph, // NOLINT(cert-err58-cpp)
               "CyberShake_30.xml.scg",
               "Conflict Graph configuration file");
 
-DEFINE_string(algorithm,
+DEFINE_string(algorithm, // NOLINT(cert-err58-cpp)
               "greedy",
               "Selected algorithm to solve the problem");
 
-DEFINE_double(alpha_time,
+DEFINE_double(alpha_time, // NOLINT(cert-err58-cpp)
               0.4,
               "The weight of the time objective");
 
-DEFINE_double(alpha_budget,
+DEFINE_double(alpha_budget, // NOLINT(cert-err58-cpp)
               0.4,
               "The weight of the budget objective");
 
-DEFINE_double(alpha_security,
+DEFINE_double(alpha_security, // NOLINT(cert-err58-cpp)
               0.2,
               "The weight of the security objective");
 
-DEFINE_double(alpha_restrict_candidate_list,
+DEFINE_double(alpha_restrict_candidate_list, // NOLINT(cert-err58-cpp)
               0.5,
               "The threshold parameter to truncate the candidate list");
 
-DEFINE_uint64(number_of_iteration,
+DEFINE_uint64(number_of_iteration, // NOLINT(cert-err58-cpp)
               100ul,
               "Number of attempts to build the solution");
 
-DEFINE_uint64(number_of_allocation_experiments,
+DEFINE_uint64(number_of_allocation_experiments, // NOLINT(cert-err58-cpp)
               4ul,
               "Number of allocation experiments");
 
-DEFINE_string(cplex_output_file,
+DEFINE_string(cplex_output_file, // NOLINT(cert-err58-cpp)
               "graph1.col",
               "Example of input-file name");
 

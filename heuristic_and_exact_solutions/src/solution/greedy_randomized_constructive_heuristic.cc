@@ -1,5 +1,5 @@
 /**
- * \file src/solution/greedy_ramdomized_constructive_heuristic.cc
+ * \file src/solution/greedy_randomized_constructive_heuristic.cc
  * \brief Contains the \c Algorithm class methods.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
@@ -11,26 +11,12 @@
  * that run the mode the approximate solution.
  */
 
+#include <src/common/my_random.h>
 #include "src/solution/greedy_randomized_constructive_heuristic.h"
 
-#include <gflags/gflags.h>
-#include <glog/logging.h>
-
-#include <list>
-#include <vector>
-#include <limits>
-#include <cmath>
-#include <memory>
-#include <ctime>
-#include <utility>
-
 #include "src/model/static_file.h"
-#include "src/model/storage.h"
 
 DECLARE_uint64(number_of_iteration);
-
-// std::random_device rd_chr;
-// std::mt19937 engine_chr(rd_chr());
 
 /**
  * Do the scheduling
@@ -41,41 +27,36 @@ DECLARE_uint64(number_of_iteration);
  * \param[in]  avail_tasks     Avail tasks to be processed
  * \param[in]  solution        The solution to be built
  */
-void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task*> avail_tasks,
+void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> avail_tasks,
                                                                Solution& solution) {
+  DLOG(INFO) << "Scheduling the availed activations to the solution ...";
   while (!avail_tasks.empty()) {
     double total_minimal_objective_value = std::numeric_limits<double>::max();
     double total_maximum_objective_value = 0.0;
 
-    std::list<std::pair<Task*, Solution>> avail_solutions;
+    std::list<std::pair<std::shared_ptr<Activation>, Solution>> avail_solutions;
 
     // 1. Compute time phase
-    for (auto task : avail_tasks) {
+    for (const auto& task : avail_tasks) {
       Solution best_solution = solution;
 
       // Compute the finish time off all tasks in each Vm
       double task_minimal_objective_value = std::numeric_limits<double>::max();
       size_t min_vm_id = 0;
 
-      for (VirtualMachine* vm : virtual_machines_) {
+      for (const auto& vm : virtual_machines_) {
         Solution new_solution = solution;
 
         double objective_value = new_solution.ScheduleTask(task, vm);
 
-        VirtualMachine* min_vm = virtual_machines_[min_vm_id];
+        std::shared_ptr<VirtualMachine> min_vm = virtual_machines_[min_vm_id];
 
-        if (objective_value < task_minimal_objective_value) {
-          task_minimal_objective_value = objective_value;
-          min_vm_id = vm->get_id();
-          best_solution = new_solution;
-        } else if (objective_value == task_minimal_objective_value
-            && vm->get_cost() < min_vm->get_cost()) {
-          task_minimal_objective_value = objective_value;
-          min_vm_id = vm->get_id();
-          best_solution = new_solution;
-        } else if (objective_value == task_minimal_objective_value
-            && vm->get_cost() == min_vm->get_cost()
-            && vm->get_slowdown() < min_vm->get_slowdown()) {
+        if ((objective_value < task_minimal_objective_value)
+            || (objective_value == task_minimal_objective_value
+                && vm->get_cost() < min_vm->get_cost())
+            || (objective_value == task_minimal_objective_value
+                && vm->get_cost() == min_vm->get_cost()
+                && vm->get_slowdown() < min_vm->get_slowdown())){
           task_minimal_objective_value = objective_value;
           min_vm_id = vm->get_id();
           best_solution = new_solution;
@@ -90,38 +71,42 @@ void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(std::list<Task*> 
         total_minimal_objective_value = task_minimal_objective_value;
       }
 
-      avail_solutions.push_back(std::make_pair(task, best_solution));
+      avail_solutions.emplace_back(task, best_solution);
     }  // for (auto task : avail_tasks) {
 
-    std::list<std::pair<Task*, Solution>> retricted_candidate_list;
+    std::list<std::pair<std::shared_ptr<Activation>, Solution>> restricted_candidate_list;
 
-    for (std::pair<Task*, Solution> candidate_pair : avail_solutions) {
+    for (const auto& candidate_pair : avail_solutions) {
       if (candidate_pair.second.get_objective_value()
           <= total_minimal_objective_value + (alpha_restrict_candidate_list_
                                               * (total_maximum_objective_value
                                                  - total_minimal_objective_value))) {
-        retricted_candidate_list.push_back(candidate_pair);
+        restricted_candidate_list.push_back(candidate_pair);
       }
     }
 
-    retricted_candidate_list.sort([&](const std::pair<Task*, Solution>& a,
-                                      const std::pair<Task*, Solution>& b) {
+    restricted_candidate_list.sort([&](const std::pair<std::shared_ptr<Activation>, Solution>& a,
+                                       const std::pair<std::shared_ptr<Activation>, Solution>& b) {
       return a.second.get_objective_value() < b.second.get_objective_value();
     });
 
-    size_t position = static_cast<size_t>(rand()) % retricted_candidate_list.size();
+//    size_t position = static_cast<size_t>(rand()) % restricted_candidate_list.size();
+    size_t position = 0UL;
+    if (!restricted_candidate_list.empty()) {
+      position = static_cast<size_t>(my_rand(0UL, restricted_candidate_list.size() - 1UL));
+    }
 
-    std::list<std::pair<Task*, Solution>>::iterator selected_candidate =
-        std::next(retricted_candidate_list.begin(), static_cast<unsigned int>(position));
+    auto selected_candidate = std::next(restricted_candidate_list.begin(), static_cast<unsigned int>(position));
 
     solution = selected_candidate->second;
 
-    DLOG(INFO) << "Selected Task from Restrict Candidate List[" << selected_candidate->first << "]";
-    DLOG(INFO) << "Removing Task[" << selected_candidate->first << "]";
+    DLOG(INFO) << "Selected Activation from Restrict Candidate List[" << selected_candidate->first->get_id() << "]";
+    DLOG(INFO) << "Removing Activation[" << selected_candidate->first->get_id() << "]";
 
     avail_tasks.remove(selected_candidate->first);  // Remove task scheduled
   }  // while (!avail_tasks.empty()) {
-}  // void GreedyRandomizedConstructiveHeuristic::schedule(...)
+  DLOG(INFO) << "... availed activations scheduled";
+}  // void GreedyRandomizedConstructiveHeuristic::ScheduleAvailTasks(...)
 
 void GreedyRandomizedConstructiveHeuristic::Run() {
   DLOG(INFO) << "Executing Greedy Randomized Constructive Heuristic ...";
@@ -132,14 +117,14 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
   Solution best_solution(this);
 
   for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
-    std::list<Task*> task_list;
-    std::list<Task*> avail_tasks;
+    std::list<std::shared_ptr<Activation>> task_list;
+    std::list<std::shared_ptr<Activation>> avail_tasks;
 
     Solution solution(this);
 
     // Initialize the allocation with the static files place information (VM or Bucket)
-    for (File* file : files_) {
-      if (StaticFile* static_file = dynamic_cast<StaticFile*>(file)) {
+    for (const auto& file : files_) {
+      if (std::shared_ptr<StaticFile> static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
         solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
       }
     }
@@ -147,13 +132,13 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
     // Start task list
     DLOG(INFO) << "Initialize task list";
     // for (auto task : task_map_per_id_) {
-    for (Task* task : tasks_) {
+    for (const auto& task : tasks_) {
       task_list.push_back(task);
     }
 
     // Order by height
     DLOG(INFO) << "Order by height";
-    task_list.sort([&](const Task* a, const Task* b) {
+    task_list.sort([&](const std::shared_ptr<Activation>& a, const std::shared_ptr<Activation>& b) {
       return height_[a->get_id()] < height_[b->get_id()];
     });
 
@@ -205,7 +190,7 @@ void GreedyRandomizedConstructiveHeuristic::Run() {
 
   double time_s;
 
-  time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // tempo de processamento
+  time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 
   std::cerr << best_solution.get_makespan()
       << " " << best_solution.get_cost()

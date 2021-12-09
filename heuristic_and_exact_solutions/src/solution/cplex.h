@@ -10,8 +10,8 @@
  * This header file contains the \c Cplex class.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_CPLEX_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_CPLEX_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_CPLEX_H_
+#define APPROXIMATE_SOLUTIONS_SRC_CPLEX_H_
 
 #include <ilcplex/ilocplex.h>
 #include "src/solution/algorithm.h"
@@ -62,7 +62,7 @@ struct BEST
   int        numb_;
   int        mb_;
   int        t_;
-  int        max_num_intervals_;
+//  int        max_num_intervals_;
 
   Algorithm* algorithm_;
 
@@ -83,118 +83,119 @@ struct BEST
   double **  q;               // guarda a melhor solucao q
   int **     v;               // guarda a melhor solucao v
   double *   z;               // guarda a melhor solucao z
-  double z_max;               // guarda a melhor solucao z_max
+  double z_max{};               // guarda a melhor solucao z_max
 
   BEST(int n, int d, int m, int numr, int numb, int mb, int t, int max_num_intervals, Algorithm* algorithm)
       : n_(n), d_(d), m_(m), numr_(numr), numb_(numb), mb_(mb), t_(t),
-        max_num_intervals_(max_num_intervals), algorithm_(algorithm)
+//        max_num_intervals_(max_num_intervals), algorithm_(algorithm)
+          algorithm_(algorithm)
   {
     start = clock();
 
     // x = (int***) malloc((size_t) n * (size_t) m * (size_t) t * (size_t) sizeof(int));
-    x = new int**[n];
+    x = new int**[static_cast<unsigned long>(n)];
     for (int i = 0; i < n; ++i)
     {
-      x[i] = new int*[m];
+      x[i] = new int*[static_cast<unsigned long>(m)];
       for (int j = 0; j < m; ++j)
       {
-        x[i][j] = new int[t];
+        x[i][j] = new int[static_cast<unsigned long>(t)];
       }
     }
 
     // r = (int*****) malloc((size_t) n * (size_t) d * (size_t) m *  (size_t) mb * (size_t) t * (size_t) sizeof(int));
-    r = new int****[n];
+    r = new int****[static_cast<unsigned long>(n)];
     for (int i = 0; i < n; ++i)
     {
-      r[i] = new int***[d];
+      r[i] = new int***[static_cast<unsigned long>(d)];
       for (int j = 0; j < d; ++j)
       {
-        r[i][j] = new int**[m];
+        r[i][j] = new int**[static_cast<unsigned long>(m)];
         for (int k = 0; k < m; ++k)
         {
-          r[i][j][k] = new int*[mb];
+          r[i][j][k] = new int*[static_cast<unsigned long>(mb)];
           for (int l = 0; l < mb; ++l)
           {
-            r[i][j][k][l] = new int[t];
+            r[i][j][k][l] = new int[static_cast<unsigned long>(t)];
           }
         }
       }
     }
 
     // w = (int*****) malloc((size_t) n * (size_t) d * (size_t) m *  (size_t) mb * (size_t) t * (size_t) sizeof(int));
-    w = new int****[n];
+    w = new int****[static_cast<unsigned long>(n)];
     for (int i = 0; i < n; ++i)
     {
-      w[i] = new int***[d];
+      w[i] = new int***[static_cast<unsigned long>(d)];
       for (int j = 0; j < d; ++j)
       {
-        w[i][j] = new int**[m];
+        w[i][j] = new int**[static_cast<unsigned long>(m)];
         for (int k = 0; k < m; ++k)
         {
-          w[i][j][k] = new int*[mb];
+          w[i][j][k] = new int*[static_cast<unsigned long>(mb)];
           for (int l = 0; l < mb; ++l)
           {
-            w[i][j][k][l] = new int[t];
+            w[i][j][k][l] = new int[static_cast<unsigned long>(t)];
           }
         }
       }
     }
 
     // y = (int***) malloc((size_t) d * (size_t) mb * (size_t) t * (size_t) sizeof(int));
-    y = new int**[d];
+    y = new int**[static_cast<unsigned long>(d)];
     for (int i = 0; i < d; ++i)
     {
-      y[i] = new int*[mb];
+      y[i] = new int*[static_cast<unsigned long>(mb)];
       for (int j = 0; j < mb; ++j)
       {
-        y[i][j] = new int[t + 1];
+        y[i][j] = new int[static_cast<unsigned long>(t + 1)];
       }
     }
 
     // yb = (int**) malloc((size_t) d * (size_t) mb * (size_t) sizeof(int));
-    yb = new int*[d];
+    yb = new int*[static_cast<unsigned long>(d)];
     for (int i = 0; i < d; ++i)
     {
-      yb[i] = new int[mb];
+      yb[i] = new int[static_cast<unsigned long>(mb)];
     }
 
     // ws = (int**) malloc((size_t) d * (size_t) d * (size_t) sizeof(int));
-    ws = new int*[d];
+    ws = new int*[static_cast<unsigned long>(d)];
     for (int i = 0; i < d; ++i)
     {
-      ws[i] = new int[d];
+      ws[i] = new int[static_cast<unsigned long>(d)];
     }
 
     // e = (double**) malloc((size_t) numr * (size_t) n * (size_t) sizeof(int));
-    e = new double*[numr];
+    e = new double*[static_cast<unsigned long>(numr)];
     for (int i = 0; i < numr; ++i)
     {
-      e[i] = new double[n];
+      e[i] = new double[static_cast<unsigned long>(n)];
     }
 
     // b = (int**) malloc((size_t) numb * (size_t) max_num_intervals * (size_t) sizeof(int));
-    b = new int*[numb];
+    b = new int*[static_cast<unsigned long>(numb)];
     for (int i = 0; i < numb; ++i)
     {
-      b[i] = new int[max_num_intervals];
+      b[i] = new int[static_cast<unsigned long>(max_num_intervals)];
     }
 
     // q = (double**) malloc((size_t) numb * (size_t) max_num_intervals * (size_t) sizeof(int));
-    q = new double*[numb];
+    q = new double*[static_cast<unsigned long>(numb)];
     for (int i = 0; i < numb; ++i)
     {
-      q[i] = new double[max_num_intervals];
+      q[i] = new double[static_cast<unsigned long>(max_num_intervals)];
     }
 
     // v = (int**) malloc((size_t) m * (size_t) t * (size_t) sizeof(int));
-    v = new int*[m];
+    v = new int*[static_cast<unsigned long>(m)];
     for (int i = 0; i < m; ++i)
     {
-      v[i] = new int[t];
+      v[i] = new int[static_cast<unsigned long>(t)];
     }
 
     // z = (double*) malloc((size_t) m * (size_t) sizeof(int));
-    z = new double[m];
+    z = new double[static_cast<unsigned long>(m)];
   }
 
   ~BEST()
@@ -312,16 +313,21 @@ class Cplex : public Algorithm {
   Cplex() = default;
 
   /// Default destructor
-  ~Cplex() = default;
+  ~Cplex() override = default;
 
-  /// Schedule the avail task, one-by-one
-  void ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution);
+//  /// Schedule the avail task, one-by-one
+//  void ScheduleAvailTasks(std::list<Activation*> avail_tasks, Solution& solution);
 
   ///
-  void Run(void);
+  [[nodiscard]] std::string GetName() const override { return name_; }
+
+  ///
+  void Run() override;
 
  private:
+
+  std::string name_ = "grch";
 };  // end of class GreedyAlgorithm
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_CPLEX_H_
+#endif  // APPROXIMATE_SOLUTIONS_SRC_CPLEX_H_
 

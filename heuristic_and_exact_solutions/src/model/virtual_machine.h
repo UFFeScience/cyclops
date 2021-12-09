@@ -10,14 +10,20 @@
  * This header file contains the \c VirtualMachine class.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_VIRTUAL_MACHINE_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_VIRTUAL_MACHINE_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_VIRTUAL_MACHINE_H_
+#define APPROXIMATE_SOLUTIONS_SRC_MODEL_VIRTUAL_MACHINE_H_
 
 #include <glog/logging.h>
 
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "src/model/storage.h"
+#include "activation.h"
+
+/// Forward declaration of the class Algorithm, needed because of the circular reference
+class Activation;
 
 class VirtualMachine : public Storage {
  public:
@@ -28,21 +34,53 @@ class VirtualMachine : public Storage {
                  double cost,
                  double bandwidth,
                  int type_id) :
-    Storage(id, name, storage, cost, bandwidth, type_id),
-    slowdown_(slowdown) {}
+      Storage(id, std::move(name), storage, cost, bandwidth, type_id),
+      slowdown_(slowdown) {}
 
-  ~VirtualMachine() {
-    // DLOG(INFO) << "Deleting Virtual Machine " << id_;
-  }
+  ~VirtualMachine() override = default;
 
   /// Getter for slowdown_
-  double get_slowdown() const { return slowdown_; }
+  [[nodiscard]] double get_slowdown() const { return slowdown_; }
+
+  [[nodiscard]] std::weak_ptr<Activation> GetLastActivation() const {
+    DLOG(INFO) << "Getting the last activation ...";
+    std::weak_ptr<Activation> rv;
+    if (!activation_list_.empty()) {
+      rv = activation_list_.back();
+      auto p = rv.lock();
+      if (p) {
+        DLOG(INFO) << "... last activation fetched";
+        return p;
+      }
+//      return activation_list_.back();
+    }
+    DLOG(INFO) << "... last activation fetched";
+    return rv;
+  }
+
+  [[nodiscard]] std::weak_ptr<Activation> GetFirstActivation() const {
+    DLOG(INFO) << "Getting the first activation ...";
+    std::weak_ptr<Activation> rv;
+    if (!activation_list_.empty()) {
+      rv = activation_list_.front();
+      auto p = rv.lock();
+      if (p) {
+        DLOG(INFO) << "... first activation fetched";
+        return p;
+      }
+//      return activation_list_.front();
+    }
+    DLOG(INFO) << "... first activation fetched";
+    return rv;
+  }
+
+  void AddActivation(std::shared_ptr<Activation> activation);
 
   friend std::ostream& operator<<(std::ostream& os, const VirtualMachine& a) {
     return a.write(os);
   }
 
- private:
+ protected:
   std::ostream& write(std::ostream& os) const {
     std::ostringstream oss;
 
@@ -67,6 +105,9 @@ class VirtualMachine : public Storage {
   }
 
   double slowdown_;
+
+  ///
+  std::vector<std::shared_ptr<Activation>> activation_list_;
 };
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_VIRTUAL_MACHINE_H_
+#endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_VIRTUAL_MACHINE_H_

@@ -37,7 +37,7 @@ else
 fi
 
 if [ -z "$7" ] ; then
-  ITERATION_NUMBER=3
+  ITERATION_NUMBER=100
 else
   ITERATION_NUMBER=$7
 fi
@@ -63,7 +63,8 @@ $PROG --tasks_and_files `pwd`/input/tasks_and_files/$TASK_AND_FILES \
   --alpha_security $ALPHA_SECURITY \
   --number_of_iteration $ITERATION_NUMBER \
   --number_of_allocation_experiments $ALLOCATION_EXPERIMENTS \
-  --log_dir=`pwd`/log
+  --minloglevel=3
+#  --log_dir=`pwd`/log
 cd shell
 
 # cd ..

@@ -14,12 +14,14 @@
 #define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <sstream>
 #include <iterator>
 
 #include <limits>
+#include "storage.h"
 
 /**
  * \class File file.h "src/model/file.h"
@@ -29,10 +31,10 @@ class File {
  public:
   /// Parametrized constructor
   explicit File(const size_t id,
-                const std::string name,
+                std::string name,
                 const double size)
       : id_(id),
-        name_(name),
+        name_(std::move(name)),
         size_(size),
         size_in_MB_(size / 1000.0),
         size_in_GB_(size / 1000000.0) { }
@@ -41,19 +43,35 @@ class File {
   virtual ~File() = default;
 
   /// Getter for the ID of the file
-  size_t get_id() const { return id_; }
+  [[nodiscard]] size_t get_id() const { return id_; }
 
   /// Getter for name of the file
-  const std::string &get_name() const { return name_; }
+  [[nodiscard]] const std::string &get_name() const { return name_; }
 
   /// Getter for size in KBs of the file
-  double get_size() const { return size_; }
+  [[nodiscard]] double get_size() const { return size_; }
 
   /// Getter for size in KBs of the file
-  double get_size_in_MB() const { return size_in_MB_; }
+  [[nodiscard]] double get_size_in_MB() const { return size_in_MB_; }
 
   /// Getter for size in KBs of the file
-  double get_size_in_GB() const { return size_in_GB_; }
+  [[nodiscard]] double get_size_in_GB() const { return size_in_GB_; }
+
+  [[nodiscard]] size_t GetStorageId() const {
+    auto s = storage_.lock();
+    if (s) {
+      return s->get_id();
+    }
+    return std::numeric_limits<size_t>::max();
+  }
+
+  [[nodiscard]] std::shared_ptr<Storage> GetStorage() const {
+    auto s = storage_.lock();
+    if (s) {
+      return s;
+    }
+    return nullptr;
+  }
 
   /// Concatenate operator
   friend std::ostream& operator<<(std::ostream& os, const File& a) {
@@ -61,7 +79,7 @@ class File {
   }
 
  protected:
-  /// Print the File object to the output stream
+  virtual /// Print the File object to the output stream
   std::ostream& write(std::ostream& os) const {
     return os << "File[_id: " << id_ << ", "
               << "name_: " << name_ << ", "
@@ -83,6 +101,7 @@ class File {
   /// The file size in GB
   double size_in_GB_;
 
+  std::weak_ptr<Storage> storage_;
 };  // end of class File
 
 #endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_

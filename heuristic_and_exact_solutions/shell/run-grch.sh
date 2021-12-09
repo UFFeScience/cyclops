@@ -1,22 +1,19 @@
 #!/bin/bash
 
 if [ -z "$1" ] ; then
-#  TASK_AND_FILES=Sipht_100.xml.dag
-  TASK_AND_FILES=3_toy_10_B.dag
+  TASK_AND_FILES=Sipht_30.xml.dag
 else
   TASK_AND_FILES=$1
 fi
 
 if [ -z "$2" ] ; then
-#  CLUSTER=cluster2.vcl
-  CLUSTER=cluster_3_toy_10_B.vcl
+  CLUSTER=cluster2.vcl
 else
   CLUSTER=$2
 fi
 
 if [ -z "$3" ] ; then
-#  CONFLICT_GRAPH=Sipht_100.xml.scg
-  CONFLICT_GRAPH=3_toy_10_B.scg
+  CONFLICT_GRAPH=Sipht_30.xml.scg
 else
   CONFLICT_GRAPH=$3
 fi
@@ -40,8 +37,7 @@ else
 fi
 
 if [ -z "$7" ] ; then
-#  ITERATION_NUMBER=100
-  ITERATION_NUMBER=1
+  ITERATION_NUMBER=100
 else
   ITERATION_NUMBER=$7
 fi
@@ -61,13 +57,14 @@ PROG=./bin/wf_security_greedy.x
 $PROG --tasks_and_files `pwd`/input/tasks_and_files/$TASK_AND_FILES \
   --cluster `pwd`/input/clouds/$CLUSTER \
   --conflict_graph `pwd`/input/conflict_graph/$CONFLICT_GRAPH \
-  --algorithm greedy_randomized_constructive_heuristic \
+  --algorithm grch \
   --alpha_time $ALPHA_TIME \
   --alpha_budget $ALPHA_COST \
   --alpha_security $ALPHA_SECURITY \
   --number_of_iteration $ITERATION_NUMBER \
-  --number_of_allocation_experiments $ALLOCATION_EXPERIMENTS
-#  --minloglevel=3
+  --number_of_allocation_experiments $ALLOCATION_EXPERIMENTS \
+  --minloglevel=3
+#  --log_dir=`pwd`/log
 cd shell
 
 # cd ..

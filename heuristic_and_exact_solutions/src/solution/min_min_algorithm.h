@@ -5,13 +5,13 @@
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2021
  *
  * This header file contains the \c MinMin class that handles different execution modes.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_
+#define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_
 
 #include <list>
 #include "src/solution/algorithm.h"
@@ -26,15 +26,19 @@ class MinMinAlgorithm : public Algorithm {
   MinMinAlgorithm() = default;
 
   /// Default destructor
-  ~MinMinAlgorithm() = default;
+  ~MinMinAlgorithm() override = default;
 
   /// Schedule the avail task, one-by-one
-  void ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution);
+  void ScheduleAvailTasks(std::list<std::shared_ptr<Activation>>, Solution&);
+
+  ///
+  [[nodiscard]] std::string GetName() const override { return name_; }
 
   /// Create variables; initialize variable; schedule tasks in parts; print solution
-  void Run(void);
+  void Run() override;
 
  private:
+  std::string name_ = "GreedyRandomizedConstructiveHeuristic";
 };  // end of class MinMinAlgorithm
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_
+#endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_
