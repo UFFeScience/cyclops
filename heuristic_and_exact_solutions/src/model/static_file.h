@@ -30,14 +30,11 @@ class StaticFile : public File {
 
   ~StaticFile() override = default;
 
-  /// Adds a Storage
-  void AddStorage(std::shared_ptr<Storage> storage) { storage_ = storage; }
-
   /// Adds a vm
-//  void AddVm(size_t vmId) { vms_.push_back(vmId); }
+  void AddVm(size_t vmId) { vms_.push_back(vmId); }
 
   /// Getter the first virtual machine from the list vms_
-//  [[nodiscard]] size_t GetFirstVm() const { return vms_[0]; }
+  [[nodiscard]] size_t GetFirstVm() const { return vms_[0]; }
 
   friend std::ostream& operator<<(std::ostream& os, const StaticFile& a) {
     return a.write(os);
@@ -65,7 +62,7 @@ class StaticFile : public File {
 //              << ", storage_: " << oss.str() << "]";
   }
 
-//  std::vector<size_t> vms_;
+  std::vector<size_t> vms_;
 //  std::weak_ptr<Storage> storage_;
 };  // end of class StaticFile
 

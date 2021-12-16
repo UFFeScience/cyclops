@@ -123,7 +123,8 @@ void Grch::Run() {
     // Initialize the allocation with the static files place information (VM or Bucket)
     for (const auto& file : files_) {
       if (std::shared_ptr<StaticFile> static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
-        solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
+//        solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
+        solution.SetFileAllocation(file->get_id(), static_file->GetStorageId());
       }
     }
 

@@ -90,9 +90,11 @@ void MinMinAlgorithm::Run() {
 
   // Initialize the allocation with the static files place information (VM or Bucket)
   for (const std::shared_ptr<File>& file : files_) {
-    if (std::shared_ptr<StaticFile> static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
-      solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
-    }
+//    if (std::shared_ptr<StaticFile> static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
+////      solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
+//      solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
+//    }
+    solution.SetFileAllocation(file->get_id(), file->GetStorageId());
   }
 
   // Start task list

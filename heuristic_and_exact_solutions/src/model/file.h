@@ -73,6 +73,9 @@ class File {
     return nullptr;
   }
 
+  /// Adds a Storage
+  void AddStorage(std::shared_ptr<Storage> storage) { storage_ = storage; }
+
   /// Concatenate operator
   friend std::ostream& operator<<(std::ostream& os, const File& a) {
     return a.write(os);

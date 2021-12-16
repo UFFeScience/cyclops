@@ -92,6 +92,7 @@ class Solution {
   /// Adds a Storage to a File
   void SetFileAllocation(size_t position, size_t storage_id) {
     file_allocations_[position] = storage_id;
+    files_[position]->AddStorage(storages_[storage_id]);
   }
 
   /// Calculate de Objective Function of the solution
@@ -132,15 +133,15 @@ class Solution {
 //    ordering_.push_back(task_id);
 //  }
 
-  /// Computes the time of reading input files for the execution of the \c task
-  double ComputeTaskReadTime(const std::shared_ptr<Activation>& task, const std::shared_ptr<VirtualMachine>& vm);
+  /// Computes the time of reading input files for the execution of the \c activation
+  double ComputeTaskReadTime(const std::shared_ptr<Activation>& activation, const std::shared_ptr<VirtualMachine>& vm);
 
   /// Computes the time of reading input files for the execution of the \c task
   double ComputeTaskReadTimeOther(const std::shared_ptr<Activation>&, const std::shared_ptr<VirtualMachine>&);
 
   /// Compute the starting time of the \c task
-  double ComputeTaskStartTime(size_t task, size_t vm);
-//  size_t ComputeTaskStartTime(size_t task, size_t vm);
+  double ComputeActivationStartTime(size_t activation_id, size_t vm_id);
+//  size_t ComputeActivationStartTime(size_t task, size_t vm);
 
   // Compute the makespan of the solution
   double ComputeMakespan(bool check_sequence);
@@ -177,9 +178,9 @@ class Solution {
   double AllocateOutputFiles(const std::shared_ptr<Activation>& task, const std::shared_ptr<VirtualMachine>& vm);
 
   /// Calculate the actual makespan and allocate the output files
-//  double CalculateMakespanAndAllocateOutputFiles(std::shared_ptr<Activation> *task, VirtualMachine *vm);
-//  size_t CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation>& task, const std::shared_ptr<VirtualMachine>& vm);
-  double CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation>& task,
+//  double CalculateMakespanAndAllocateOutputFiles(std::shared_ptr<Activation> *activation, VirtualMachine *vm);
+//  size_t CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation>& activation, const std::shared_ptr<VirtualMachine>& vm);
+  double CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation>& activation,
                                                  const std::shared_ptr<VirtualMachine>& vm);
 
   /// Compute the file contribution to the cost
@@ -232,8 +233,15 @@ class Solution {
   /// The virtual machines associated with the solution
   std::vector<std::shared_ptr<VirtualMachine>> virtual_machines_;
 
-  ///
+  /// The activations of the solution
   std::vector<std::shared_ptr<Activation>> activations_;
+
+  /// The files of the solution
+  std::vector<std::shared_ptr<File>> files_;
+
+  /// The storages of the solution
+//  std::vector<Storage*> storages_;
+  std::vector<std::shared_ptr<Storage>> storages_;
 
 };
 

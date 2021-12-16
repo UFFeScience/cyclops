@@ -1608,7 +1608,8 @@ void Cplex::Run() {
 
     if (auto static_file = dynamic_pointer_cast<StaticFile>(file))
     {
-      int ind = static_cast<int>(static_file->GetFirstVm());
+//      int ind = static_cast<int>(static_file->GetFirstVm());
+      int ind = static_cast<int>(static_file->GetStorageId());
 
       for (int mb = 0; mb < static_cast<int>(storages_.size()); ++mb)
       {

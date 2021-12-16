@@ -87,25 +87,28 @@ double Activation::ComputeReadTime(std::shared_ptr<VirtualMachine> vm) {
     } else {
       // read_time += std::ceil(one_file_read_time);
       read_time += one_file_read_time;
-      size_t storage_id = file_vm->get_id();
-      if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm->get_id()) {
-        double diff = (aux_start_time + read_time) - allocation_vm_queue_[storage_id];
+//      size_t storage_id = file_vm->get_id();
 
-        if (diff > 0.0) {
-          std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(storage_id);
-
-          cost_ += diff * virtual_machine->get_cost();
-          allocation_vm_queue_[storage_id] = aux_start_time + read_time;
-          // std::cout << "diff: " << diff << " virtual_machine->get_cost(): " << virtual_machine->get_cost()
-          //           << " storage_id: " << storage_id << " vm: " << vm->get_id() << std::endl;
-        }
-      }
+      // Update costs
+//      if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm->get_id()) {
+////        double diff = (aux_start_time + read_time) - allocation_vm_queue_[storage_id];
+//        double diff = (start_time_ + read_time) - allocation_vm_queue_[storage_id];
+//
+//        if (diff > 0.0) {
+//          std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(storage_id);
+//
+//          cost_ += diff * virtual_machine->get_cost();
+//          allocation_vm_queue_[storage_id] = aux_start_time + read_time;
+//          // std::cout << "diff: " << diff << " virtual_machine->get_cost(): " << virtual_machine->get_cost()
+//          //           << " storage_id: " << storage_id << " vm: " << vm->get_id() << std::endl;
+//        }
+//      }
       // allocation_vm_queue_[storage_id] = std::max(aux_start_time
       //     + one_file_read_time, allocation_vm_queue_[storage_id]);
     }
   }  // for (std::shared_ptr<File> file : task.get_input_files()) {
 
-//  DLOG(INFO) << "read_time: " << read_time;
+  DLOG(INFO) << "read_time: " << read_time;
 
   return read_time;
 }
@@ -170,7 +173,7 @@ void Activation::SetVm(std::shared_ptr<VirtualMachine> vm) {
   DLOG(INFO) << "start_time_ " << start_time_;
 
   // Calculate read input files time
-  read_time_ = ComputeReadTime();
+  read_time_ = ComputeReadTime(vm);
   DLOG(INFO) << "start_time_ " << start_time_;
 
   // Calculate execution activation time
