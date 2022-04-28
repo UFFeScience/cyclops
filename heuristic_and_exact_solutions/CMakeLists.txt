@@ -52,6 +52,7 @@ include_directories(./)
 
 find_package(Glog REQUIRED)
 find_package(gflags REQUIRED)
+find_package(Boost REQUIRED)
 #find_package(Cplex REQUIRED)
 
 #add_definitions(-DNDEBUG)
@@ -83,7 +84,7 @@ file(GLOB_RECURSE SOURCES "src/*/*.cc")
 
 ##### executables
 # include_directories(SYSTEM ${Gflags_INCLUDE_DIR})
-add_executable(wf_security_greedy.x ${MAIN} ${HEADERS} ${SOURCES})
+add_executable(wf_security_greedy.x ${MAIN} ${HEADERS} ${SOURCES} src/statistic/write_to_ttt_file.h)
 target_link_libraries(wf_security_greedy.x ${CPLEX_LIBRARIES} ${GLOG_LIBRARIES} gflags dl)
 
 ##### auxiliary make directives
