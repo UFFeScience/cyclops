@@ -50,7 +50,7 @@ fi
 
 cd ..
 
-PROG=./bin/wf_security_greedy.x
+PROG=./bin/wf_security_greedy2.x
 
 #export GLOG_log_dir=`pwd`/log
 
