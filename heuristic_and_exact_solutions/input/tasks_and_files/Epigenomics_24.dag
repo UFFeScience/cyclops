@@ -1,4 +1,4 @@
-3 35 24 2 5000.00 1500.00
+3 36 25 2 5000.00 1500.00
 
 0 1
 1 1
@@ -6,6 +6,7 @@
 chr210.sfq 426.158289909 1 0
 chr21.BS.bfa 1191.30527687 1 0
 chr21.BSnull.bfa 1191.30527687 1 0
+chr210_anonymized.sfq 426.158289909
 chr21.0.4.sfq 79.9628925323
 chr21.0.1.nocontam.fq 42.6807117462
 chr21.0.4.nocontam.fq 35.5816144943
@@ -103,8 +104,11 @@ ID00003 filterContams_chr21 8.15 1 2 1 1
 chr21.0.2.sfq
 chr21.0.2.nocontam.sfq
 chr21.0.2.contam.sfq
-ID00000 fastqSplit_chr21 103.52 1 5 1 1
+ANONIMIZACAO_01 anonymization_procedure 103.52 1 1 1 1
 chr210.sfq
+chr210_anonymized.sfq
+ID00000 fastqSplit_chr21 103.52 1 5 1 1
+chr210_anonymized.sfq
 chr21.0.0.sfq
 chr21.0.1.sfq
 chr21.0.2.sfq
@@ -136,6 +140,8 @@ chr21.BSnull.bfa
 chr21.nocontam.chr.map
 chr21.nocontam.chr.pileup
 
+ANONIMIZACAO_01 1
+ID00000
 ID00000 5
 ID00002
 ID00003

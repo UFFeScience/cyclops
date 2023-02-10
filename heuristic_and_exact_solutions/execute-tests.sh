@@ -451,24 +451,32 @@ alphas[$((3 * 4 + 0))]=0.3
 alphas[$((3 * 4 + 1))]=0.3
 alphas[$((3 * 4 + 2))]=0.4
 
-# for each time/cost/security experiment
+# For each time/cost/security experiment
 for ((i = 0; i < 4; i++)); do
     alpha_time=${alphas[$((i * 4 + 0))]}
     alpha_cost=${alphas[$((i * 4 + 1))]}
     alpha_security=${alphas[$((i * 4 + 2))]}
-    # For each cluster
-
+    
+	# For each cluster
     regex="([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl"
     for f in $(pwd)/temp/clouds/*; do
         echo "$f"
-        mkdir -p "output"
+#        mkdir -p "output"
         out_dir=$(basename "${f}")
-        out_dir=${out_dir%.*}
+#        out_dir=${out_dir%.*}
         out_dir="$(pwd)/output/${now}"
         #        out_dir="/tmp/output/${now}"
         mkdir -p "${out_dir}"
         #        echo `ls ${out_dir}`
         #        rm -r "${out_dir}/*"
+#        mkdir -p "log"
+        log_dir="$(pwd)/log/${now}"
+        echo ${log_dir}
+        mkdir -p "${log_dir}"
+
+        temp_dir="$(pwd)/temp/${now}"
+        echo ${temp_dir}
+        mkdir -p "${temp_dir}"
 
         if [[ $f =~ $regex ]]; then
             test_scenary="${BASH_REMATCH[1]}"
@@ -490,7 +498,7 @@ for ((i = 0; i < 4; i++)); do
         fi
 
 #        pipenv run python script/run-batch.py --greedy-randomized-constructive-heuristic \
-#            --instances-file="instances_desenv.txt" \
+#            --instances-file="instances.txt" \
 #            --clouds-file="$f" \
 #            --alpha-time=${alpha_time} \
 #            --alpha-cost=${alpha_cost} \
@@ -506,15 +514,16 @@ for ((i = 0; i < 4; i++)); do
 #            --number-vm-req-cryptography="${number_vm_req_cryptography}" \
 #            --number-vm-req-confidentiality="${number_vm_req_confidentiality}" \
 #            --cloud-type="${cloud_type}"
-        pipenv run python script/run-batch.py --heft \
+        pipenv run python script/run-batch.py \
             --instances-file="instances_desenv.txt" \
+            --algorithms-file="algorithms_desenv.txt" \
             --clouds-file="$f" \
             --alpha-time=${alpha_time} \
             --alpha-cost=${alpha_cost} \
             --alpha-security=${alpha_security} \
             --number-of-iterations=100 \
             --allocation_experiments=4 \
-            --repeat 10 \
+            --repeat 1 \
             --output-path="${out_dir}" \
             --test-scenery="${test_scenary}" \
             --number-cloud-sites="${number_cloud}" \
@@ -522,6 +531,8 @@ for ((i = 0; i < 4; i++)); do
             --number-buckets="${number_buckets}" \
             --number-vm-req-cryptography="${number_vm_req_cryptography}" \
             --number-vm-req-confidentiality="${number_vm_req_confidentiality}" \
-            --cloud-type="${cloud_type}"
+            --cloud-type="${cloud_type}" \
+            --log-dir=${log_dir} \
+            --temp-dir=${temp_dir}
     done
 done

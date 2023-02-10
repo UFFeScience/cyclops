@@ -1,0 +1,9 @@
+file7 file8 -1
+file7 file9 -1
+file8 file9 -1
+file3 file6 1
+file4 file6 1
+file5 file6 1
+file6 file7 1
+file6 file8 1
+file6 file9 1
