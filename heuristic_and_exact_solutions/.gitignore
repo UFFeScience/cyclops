@@ -12,3 +12,4 @@ output*
 cmake*
 cplex*
 **/*.lp
+statistic*
