@@ -34,8 +34,8 @@ set(CMAKE_COLOR_MAKEFILE ON)
 
 # set(CMAKE_MODULE_PATH               "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # set(CMAKE_CXX_FLAGS                 "${CMAKE_CXX_FLAGS} -std=c++14 -DIL_STD -m64 -Wall -Werror")
- set(CMAKE_CXX_FLAGS_DEBUG           "${CMAKE_CXX_FLAGS_DEBUG} -Og -ggdb")
- set(CMAKE_CXX_FLAGS_RELEASE         "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -O3 -flto")
+ set(CMAKE_CXX_FLAGS_DEBUG           "${CMAKE_CXX_FLAGS_DEBUG} -Og -ggdb -Wno-unknown-pragmas")
+ set(CMAKE_CXX_FLAGS_RELEASE         "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -O3 -flto -Wno-unknown-pragmas")
 # set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX   "-isystem ")
 # set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/build")
 # set(LINKER_OPTIONS                  -flto -Wl,--no-as-needed)
@@ -83,19 +83,16 @@ file(GLOB_RECURSE HEADERS "src/*/*.h")
 file(GLOB_RECURSE SOURCES "src/*/*.cc")
 
 ##### executables
-# include_directories(SYSTEM ${Gflags_INCLUDE_DIR})
 add_executable(wf_security_greedy.x ${MAIN} ${HEADERS} ${SOURCES} src/statistic/write_to_ttt_file.h)
 target_link_libraries(wf_security_greedy.x ${CPLEX_LIBRARIES} ${GLOG_LIBRARIES} gflags dl)
 
 ##### auxiliary make directives
-# cpplint
 add_custom_target(cpplint
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMAND cpplint --recursive --quiet --linelength=100 --extensions=h,cc --filter=-runtime/references,-whitespace/empty_loop_body src/ test/
   USES_TERMINAL
 )
 
-# flake8
 add_custom_target(flake8
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMAND flake8 --max-line-length=100 util/ api/
