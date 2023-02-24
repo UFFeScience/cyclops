@@ -436,7 +436,7 @@ EOF
 now=$(date +"%Y%m%d%H%M%S")
 echo "${now}"
 
-create_cloud_files
+#create_cloud_files
 
 alphas[$((0 * 4 + 0))]=0.9
 alphas[$((0 * 4 + 1))]=0.05
@@ -471,51 +471,27 @@ for ((i = 0; i < 4; i++)); do
         #        rm -r "${out_dir}/*"
 #        mkdir -p "log"
         log_dir="$(pwd)/log/${now}"
-        echo ${log_dir}
+#        echo ${log_dir}
         mkdir -p "${log_dir}"
 
         temp_dir="$(pwd)/temp/${now}"
-        echo ${temp_dir}
+#        echo ${temp_dir}
         mkdir -p "${temp_dir}"
 
         if [[ $f =~ $regex ]]; then
-            test_scenary="${BASH_REMATCH[1]}"
+            scenario="${BASH_REMATCH[1]}"
             number_cloud="${BASH_REMATCH[2]}"
             number_vm="${BASH_REMATCH[3]}"
             number_buckets="${BASH_REMATCH[4]}"
             number_vm_req_cryptography="${BASH_REMATCH[5]}"
             number_vm_req_confidentiality="${BASH_REMATCH[6]}"
             cloud_type="${BASH_REMATCH[7]}"
-            #            echo "${test_scenary}"
-            #            echo "${number_cloud}"
-            #            echo "${number_vm}"
-            #            echo "${number_buckets}"
-            #            echo "${number_vm_req_cryptography}"
-            #            echo "${number_vm_req_confidentiality}"
-            #            echo "${cloud_type}"
         else
             echo "$f doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
         fi
 
-#        pipenv run python script/run-batch.py --greedy-randomized-constructive-heuristic \
-#            --instances-file="instances.txt" \
-#            --clouds-file="$f" \
-#            --alpha-time=${alpha_time} \
-#            --alpha-cost=${alpha_cost} \
-#            --alpha-security=${alpha_security} \
-#            --number-of-iterations=100 \
-#            --allocation_experiments=4 \
-#            --repeat 10 \
-#            --output-path="${out_dir}" \
-#            --test-scenery="${test_scenary}" \
-#            --number-cloud-sites="${number_cloud}" \
-#            --number-vm="${number_vm}" \
-#            --number-buckets="${number_buckets}" \
-#            --number-vm-req-cryptography="${number_vm_req_cryptography}" \
-#            --number-vm-req-confidentiality="${number_vm_req_confidentiality}" \
-#            --cloud-type="${cloud_type}"
         pipenv run python script/run-batch.py \
-            --instances-file="instances_desenv.txt" \
+            --instances-file="instances.txt" \
             --algorithms-file="algorithms_desenv.txt" \
             --clouds-file="$f" \
             --alpha-time=${alpha_time} \
@@ -523,9 +499,9 @@ for ((i = 0; i < 4; i++)); do
             --alpha-security=${alpha_security} \
             --number-of-iterations=100 \
             --allocation_experiments=4 \
-            --repeat 1 \
+            --repeat 10 \
             --output-path="${out_dir}" \
-            --test-scenery="${test_scenary}" \
+            --test-scenery="${scenario}" \
             --number-cloud-sites="${number_cloud}" \
             --number-vm="${number_vm}" \
             --number-buckets="${number_buckets}" \
