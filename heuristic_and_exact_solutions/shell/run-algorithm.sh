@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ -z "$1" ] ; then
   TASK_AND_FILES=3_toy_5_A.dag
@@ -61,3 +61,9 @@ $PROG --tasks_and_files `pwd`/input/tasks_and_files/$TASK_AND_FILES \
 cd shell
 
 # TODO: Make more flexible, receive the algorithm name, and create the name of the log file and directory
+# TODO: Make this file work
+# See ../execute-Synthetic_5_A-cplex.sh for inspiration.
+# TODO: Add option for valgrind execution
+# Maybe forming the command string and execution with -c option of bash
+# --show-lead-kinds=all
+# valgrind --leak-check=full $COMMAND
