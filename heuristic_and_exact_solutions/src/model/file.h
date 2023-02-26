@@ -57,25 +57,6 @@ class File {
   /// Getter for size in KBs of the file
   [[nodiscard]] double get_size_in_GB() const { return size_in_GB_; }
 
-  [[nodiscard]] size_t GetStorageId() const {
-    auto s = storage_.lock();
-    if (s) {
-      return s->get_id();
-    }
-    return std::numeric_limits<size_t>::max();
-  }
-
-  [[nodiscard]] std::shared_ptr<Storage> GetStorage() const {
-    auto s = storage_.lock();
-    if (s) {
-      return s;
-    }
-    return nullptr;
-  }
-
-  /// Adds a Storage
-  void AddStorage(std::shared_ptr<Storage> storage) { storage_ = storage; }
-
   /// Concatenate operator
   friend std::ostream& operator<<(std::ostream& os, const File& a) {
     return a.write(os);
@@ -103,8 +84,6 @@ class File {
 
   /// The file size in GB
   double size_in_GB_;
-
-  std::weak_ptr<Storage> storage_;
 };  // end of class File
 
 #endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_
