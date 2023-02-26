@@ -55,50 +55,61 @@ DEFINE_uint64(number_of_allocation_experiments, // NOLINT(cert-err58-cpp)
               "Number of allocation experiments");
 
 DEFINE_string(cplex_output_file, // NOLINT(cert-err58-cpp)
-              "graph1.col",
-              "Example of input-file name");
+              "./temp/manual/cplex/not_applicable.lp",
+              "Example of output model file name of the CPLEX");
 
 /**
  * The \c main() function reads the loads the desired input files, applies the required algorithms
  * and writes output data files.
  */
 int main(int argc, char **argv) {
-  // Initialise Google's logging library
-  ::google::InitGoogleLogging(argv[0]);
+    // Initialise Google's logging library
+    ::google::InitGoogleLogging(argv[0]);
 
-  gflags::SetUsageMessage("some usage message");
-  gflags::SetVersionString("0.0.1");
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
+    gflags::SetUsageMessage("some usage message");
+    gflags::SetVersionString("0.0.1");
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-  DLOG(INFO) << "Starting ...";
+    DLOG(INFO) << "Starting ...";
 
-  DLOG(INFO) << "Input File of the Tasks and Files: " << FLAGS_tasks_and_files;
-  DLOG(INFO) << "Input File of the Cluster: " << FLAGS_cluster;
-  DLOG(INFO) << "Input File of the Conflict Graph: " << FLAGS_conflict_graph;
-  DLOG(INFO) << "Selected algorithm: " << FLAGS_algorithm;
-  DLOG(INFO) << "Alpha Time weight: " << FLAGS_alpha_time;
-  DLOG(INFO) << "Alpha Budget weight: " << FLAGS_alpha_budget;
-  DLOG(INFO) << "Alpha Security weight: " << FLAGS_alpha_security;
-  DLOG(INFO) << "Alpha Restrict Candidate List threshold: " << FLAGS_alpha_restrict_candidate_list;
-  DLOG(INFO) << "Number of iteration: " << FLAGS_number_of_iteration;
-  DLOG(INFO) << "Number of allocation experiments: " << FLAGS_number_of_allocation_experiments;
-  DLOG(INFO) << "CPLEX output file: " << FLAGS_cplex_output_file;
-  // google::FlushLogFiles(google::INFO);
+    DLOG(INFO) << "Input File of the Tasks and Files: " << FLAGS_tasks_and_files;
+    DLOG(INFO) << "Input File of the Cluster: " << FLAGS_cluster;
+    DLOG(INFO) << "Input File of the Conflict Graph: " << FLAGS_conflict_graph;
+    DLOG(INFO) << "Selected algorithm: " << FLAGS_algorithm;
+    DLOG(INFO) << "Alpha Time weight: " << FLAGS_alpha_time;
+    DLOG(INFO) << "Alpha Budget weight: " << FLAGS_alpha_budget;
+    DLOG(INFO) << "Alpha Security weight: " << FLAGS_alpha_security;
+    DLOG(INFO) << "Alpha Restrict Candidate List threshold: " << FLAGS_alpha_restrict_candidate_list;
+    DLOG(INFO) << "Number of iteration: " << FLAGS_number_of_iteration;
+    DLOG(INFO) << "Number of allocation experiments: " << FLAGS_number_of_allocation_experiments;
+    DLOG(INFO) << "CPLEX output file: " << FLAGS_cplex_output_file;
 
-  std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
+    std::cout << "Input File of the Tasks and Files: " << FLAGS_tasks_and_files << std::endl;
+    std::cout << "Input File of the Cluster: " << FLAGS_cluster << std::endl;
+    std::cout << "Input File of the Conflict Graph: " << FLAGS_conflict_graph << std::endl;
+    std::cout << "Selected algorithm: " << FLAGS_algorithm << std::endl;
+    std::cout << "Alpha Time weight: " << FLAGS_alpha_time << std::endl;
+    std::cout << "Alpha Budget weight: " << FLAGS_alpha_budget << std::endl;
+    std::cout << "Alpha Security weight: " << FLAGS_alpha_security << std::endl;
+    std::cout << "Alpha Restrict Candidate List threshold: " << FLAGS_alpha_restrict_candidate_list << std::endl;
+    std::cout << "Number of iteration: " << FLAGS_number_of_iteration << std::endl;
+    std::cout << "Number of allocation experiments: " << FLAGS_number_of_allocation_experiments << std::endl;
+    std::cout << "CPLEX output file: " << FLAGS_cplex_output_file << std::endl;
 
-  DLOG(INFO) << "... algorithm picked-up ...";
+    std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
 
-  algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
-  algorithm->SetAlphas(FLAGS_alpha_time,
-                       FLAGS_alpha_budget,
-                       FLAGS_alpha_security,
-                       FLAGS_alpha_restrict_candidate_list);
-  algorithm->CalculateMaximumSecurityAndPrivacyExposure();
-  algorithm->Run();
+    DLOG(INFO) << "... algorithm picked-up ...";
 
-  DLOG(INFO) << "... ending.";
-  gflags::ShutDownCommandLineFlags();
+    algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
+    algorithm->SetAlphas(FLAGS_alpha_time,
+                         FLAGS_alpha_budget,
+                         FLAGS_alpha_security,
+                         FLAGS_alpha_restrict_candidate_list);
+    algorithm->CalculateMaximumSecurityAndPrivacyExposure();
+    algorithm->Run();
 
-  return 0;
+    DLOG(INFO) << "... ending.";
+    gflags::ShutDownCommandLineFlags();
+
+    return 0;
 }
