@@ -18,7 +18,7 @@
 #include "src/model/static_file.h"
 #include "src/model/dynamic_file.h"
 #include "src/solution/grch.h"
-#include "src/solution/min_min_algorithm.h"
+#include "src/solution/min_min.h"
 #include "src/solution/grasp.h"
 #include "src/solution/cplex.h"
 #include "src/solution/grch.h"
@@ -551,7 +551,7 @@ std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string &algorit
     if (algorithm == "grch") {
         return std::make_shared<Grch>();
     } else if (algorithm == "min_min") {
-        return std::make_shared<MinMinAlgorithm>();
+        return std::make_shared<MinMin>();
     } else if (algorithm == "cplex") {
         return std::make_shared<Cplex>();
     } else if (algorithm == "grasp") {

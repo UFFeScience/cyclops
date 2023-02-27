@@ -14,21 +14,22 @@
 #ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
 #define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
 
+#include <src/statistic/write_to_local_search_file.h>
+#include <src/statistic/write_to_ttt_file.h>
+#include <src/statistic/write_to_iteration.h>
 #include "src/solution/algorithm.h"
+#include "grch.h"
 
-class Grasp : public Algorithm {
+class Grasp : public Grch {
  public:
   ///
   Grasp() = default;
 
-  /// Default destructor
-  ~Grasp() override = default;
-
-  /// Schedule the avail task, one-by-one
-  void ScheduleAvailTasks(std::list<std::shared_ptr<Activation>>, Solution&);
-
   ///
   [[nodiscard]] std::string GetName() const override { return name_; }
+
+  ///
+  void localSearch(Solution&);
 
   ///
   void Run() override;
@@ -36,6 +37,14 @@ class Grasp : public Algorithm {
  private:
 
   std::string name_ = "grasp";
-};  // end of class Grasp
+
+  WriteToTttFile tttFile{"grasp"};
+
+  WriteToIteration iterationFile{"grasp"};
+
+  WriteToLocalSearchFile lsFile1{"grasp", 1};
+  WriteToLocalSearchFile lsFile2{"grasp", 2};
+  WriteToLocalSearchFile lsFile3{"grasp", 3};
+};
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_

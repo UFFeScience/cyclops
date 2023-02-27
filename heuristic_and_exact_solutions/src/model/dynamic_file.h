@@ -22,7 +22,7 @@
 
 /**
  * \class DynamicFile dynamic_file.h "src/model/dynamic_file.h"
- * \brief Represents the Dynamic File; a file produced by the executaion of a \c Activation
+ * \brief Represents the Dynamic File; a file produced by the execution of a \c Activation
  */
 class DynamicFile : public File {
 public:

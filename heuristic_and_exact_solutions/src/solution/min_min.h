@@ -17,16 +17,13 @@
 #include "src/solution/algorithm.h"
 
 /**
- * \class MinMinAlgorithm min_min_algorithm.h "src/solution/min_min_algorithm.h"
+ * \class MinMin min_min_algorithm.h "src/solution/min_min_algorithm.h"
  * \brief Implements the business logic for the execution of the heuristic
  */
-class MinMinAlgorithm : public Algorithm {
+class MinMin : public Algorithm {
  public:
   /// Default constructor
-  MinMinAlgorithm() = default;
-
-  /// Default destructor
-  ~MinMinAlgorithm() override = default;
+  MinMin() = default;
 
   /// Schedule the avail task, one-by-one
   void ScheduleAvailTasks(std::list<std::shared_ptr<Activation>>, Solution&);
@@ -38,7 +35,7 @@ class MinMinAlgorithm : public Algorithm {
   void Run() override;
 
  private:
-  std::string name_ = "GreedyRandomizedConstructiveHeuristic";
-};  // end of class MinMinAlgorithm
+  std::string name_ = "Heft";
+};
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_MIN_MIN_ALGORITHM_H_

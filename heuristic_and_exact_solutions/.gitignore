@@ -13,3 +13,4 @@ cmake*
 cplex*
 **/*.lp
 statistic*
+temp
