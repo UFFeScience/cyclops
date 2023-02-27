@@ -38,211 +38,179 @@ class VirtualMachine;
  * \brief Represents the solution for the execution of a Scientific Workflow
  */
 class Solution {
- public:
-  /// Constructor declaration
-  explicit Solution(Algorithm* algorithm);
+public:
+    // Store the best solutions
+    int *** x = nullptr;  // Run the activation
+    int ***** r = nullptr;  // Read files for the activation
+    int ***** w = nullptr;  // Write files for the activation
+    int *** y = nullptr;  // Files associated with storages
+    int ** v = nullptr;  // Virtual machine allocation
 
-  /// Copy constructor
-  Solution(const Solution& other);
-  Solution(Algorithm* algorithm,
-           const std::vector<size_t>& activation_allocations,
-           const std::vector<size_t>& file_allocations,
-           const std::vector<size_t>& ordering,
-           const std::vector<int>& task_height,
-           const std::vector<double>& time_vector,
-           const std::vector<double>& execution_vm_queue,
-           const std::vector<double>& allocation_vm_queue,
-           double makespan,
-           double cost,
-           double security_exposure,
-           double objective_value,
-           const std::vector<std::shared_ptr<VirtualMachine>>& virtual_machines,
-           const std::vector<std::shared_ptr<Activation>>& activations);
+    /// Constructor declaration
+    explicit Solution(Algorithm *algorithm);
 
-  /// Destructor
-  ~Solution() { algorithm_ = nullptr; }
+    /// Copy constructor
+    Solution(const Solution &other);
 
-  /// Getter for \c makespan_
-  double get_makespan() const { return makespan_; }
+    /// Destructor
+    ~Solution();
 
-  /// Getter for \c cost_
-  double get_cost() const { return cost_; }
+    void MemoryAllocation();
 
-  /// Getter for \c security_exposure_
-  double get_security_exposure() const { return security_exposure_; }
+    void FreeingMemoryAllocated();
 
-  /// Getter for \c objective_value_
-  double get_objective_value() const { return objective_value_; }
+    void PersistFile(size_t file_id, size_t storage_id, size_t initial_time, size_t final_time) const;
 
-  /// Return the id of the Virtual Machine allocated to the \c std::shared_ptr<Activation> identified by \c task_id
-//  size_t GetTaskAllocation(size_t task_id) const {
-//    return activation_allocations_[task_id];
-//  }
+    void ReadFileForActivation(size_t activation_id, size_t file_id, size_t vm_id, size_t storage_id,
+                               size_t initial_time, size_t final_time) const;
 
-  /// Return the id of the Virtual Machine allocated to the \c std::shared_ptr<Activation> identified by \c task_id
-//  size_t GetFileAllocation(size_t file_id) const {
-//    return file_allocations_[file_id];
-//  }
+    void RunActivation(size_t activation_id, size_t vm_id, size_t initial_time, size_t final_time) const;
 
-  /// Adds a Virtual Machine to a std::shared_ptr<Activation>
-//  void SetTaskAllocation(size_t position, size_t vm_id) {
-//    activation_allocations_[position] = vm_id;
-//  }
+    void WriteFileForActivation(size_t activation_id, size_t file_id, size_t vm_id, size_t storage_id,
+                                size_t initial_time, size_t final_time) const;
 
-  /// Adds a Storage to a File
-  void SetFileAllocation(size_t position, size_t storage_id) {
-    file_allocations_[position] = storage_id;
-    files_[position]->AddStorage(storages_[storage_id]);
-  }
+    void AllocateVm(size_t vm_id, size_t initial_time, size_t final_time) const;
 
-  /// Calculate de Objective Function of the solution
-  double ObjectiveFunction(bool check_storage = true, bool check_sequence = false);
+    double ComputeObjectiveFunction();
 
-  /// Schedule the \c activation to be executed at \c virtual_machine
-  double ScheduleTask(const std::shared_ptr<Activation>& activation, const std::shared_ptr<VirtualMachine>& virtual_machine);
+    /// Getter for \c makespan_
+    double get_makespan() const { return makespan_; }
 
-  /// Verify that que sequence of the task; terminate if the sequence is broken
-  inline bool CheckTaskSequence(size_t);
+    /// Getter for \c cost_
+    double get_cost() const { return cost_; }
 
-  /// Chek the files
-  inline bool checkFiles();
+    /// Getter for \c security_exposure_
+    double get_security_exposure() const { return security_exposure_; }
 
-  ///
-  int ComputeTasksHeights(size_t);
+    /// Getter for \c objective_value_
+    double get_objective_value() const { return objective_value_; }
 
-  bool localSearchN1();
+    /// Adds a Storage to a File
+    void SetFileAllocation(size_t position, size_t storage_id) {
+        file_allocations_[position] = storage_id;
+    }
 
-  bool localSearchN2();
+    /// Calculate de Objective Function of the solution
+    double ObjectiveFunction(bool check_storage = true, bool check_sequence = false);
 
-  bool localSearchN3();
+    /// Schedule the \c activation to be executed at \c virtual_machine
+    double ScheduleActivation(const std::shared_ptr<Activation> &activation, const std::shared_ptr<VirtualMachine> &vm);
 
-  /// Copy operator
-  Solution& operator=(const Solution&) = default;
+    // / Verify that que sequence of the task; terminate if the sequence is broken
+//  inline bool CheckTaskSequence(size_t);
 
-  /// Concatenation operator
-  friend std::ostream& operator<<(std::ostream& os, const Solution& a) {
-    return a.write(os);
-  }
+    /// Schedule the \c activation to be executed at \c virtual_machine
+    void AllocateTask(const std::shared_ptr<Activation> &, const std::shared_ptr<VirtualMachine> &);
 
- protected:
-  /// Write this object to the output stream
-  std::ostream& write(std::ostream& os) const;
+    /// Schedule the \c activation to be executed at \c virtual_machine
+    void ClearOrdering();
 
-  /// Add a task id to the end of the ordering vector
-//  void AddOrdering(size_t task_id) {
-//    ordering_.push_back(task_id);
-//  }
+    /// Schedule the \c activation to be executed at \c virtual_machine
+    void AddOrdering(const size_t);
 
-  /// Computes the time of reading input files for the execution of the \c activation
-  double ComputeTaskReadTime(const std::shared_ptr<Activation>& activation, const std::shared_ptr<VirtualMachine>& vm);
+    /// Check the files
+    inline bool checkFiles();
 
-  /// Computes the time of reading input files for the execution of the \c task
-  double ComputeTaskReadTimeOther(const std::shared_ptr<Activation>&, const std::shared_ptr<VirtualMachine>&);
+    ///
+    int ComputeTasksHeights(size_t node);
 
-  /// Compute the starting time of the \c task
-  double ComputeActivationStartTime(size_t activation_id, size_t vm_id);
-//  size_t ComputeActivationStartTime(size_t task, size_t vm);
+    bool localSearchN1();
 
-  // Compute the makespan of the solution
-  double ComputeMakespan(bool check_sequence);
-//  size_t ComputeMakespan(bool check_sequence);
+    bool localSearchN2();
 
-  /// Compute the cost of the solution
-  double ComputeCost();
+    bool localSearchN3();
 
-  /// Caculate the security exposure of the solution
-  double ComputeSecurityExposure();
+    /// Copy operator
+    Solution &operator=(const Solution &) = default;
 
-  // Compute the makespan of the solution
-//  double GetMakespan() { return makespan_; }
+    /// Concatenation operator
+    friend std::ostream &operator<<(std::ostream &os, const Solution &a) {
+        return a.Write(os);
+    }
 
-  /// Compute the cost of the solution
-//  double GetCost() { return cost_; }
+protected:
+    /// Write this object to the output stream
+    std::ostream &Write(std::ostream &os) const;
 
-  /// Caculate the security exposure of the solution
-//  double GetSecurityExposure() { return security_exposure_; }
+    /// Computes the time of reading input files for the execution of the \c activation
+    size_t ComputeActivationReadTime(const std::shared_ptr<Activation> &,
+                                     const std::shared_ptr<VirtualMachine> &,
+                                     const size_t);
 
-  /// Compute the time for write all output files of the \c task executed at \c virtual_machine
-  inline double ComputeTaskWriteTime(const std::shared_ptr<Activation>& task, const std::shared_ptr<VirtualMachine>& virtual_machine);
+    /// Compute the starting time of the \c task
+//  double ComputeActivationStartTime(size_t activation_id, size_t vm_id);
+    size_t ComputeActivationStartTime(size_t task, size_t vm);
 
-  /// Compute the file transfer time
-  inline double ComputeFileTransferTime(const std::shared_ptr<File>& file,
-                                        const std::shared_ptr<Storage>& vm1,
-                                        const std::shared_ptr<Storage>& vm2,
-                                        bool check_constraints = false);
+    /// Compute the file transfer time
+    size_t ComputeFileTransferTime(const File *file,
+                                   const std::shared_ptr<Storage> &storage1,
+                                   const std::shared_ptr<Storage> &storage2,
+                                   bool check_constraints = false) const;
 
-  /// Allocate just one output file selecting storage with minimal time transfer
-  double AllocateOneOutputFileGreedily(const std::shared_ptr<File>& file, const std::shared_ptr<VirtualMachine>& vm);
+    /// Allocate just one output file selecting storage with minimal time transfer
+    size_t AllocateOneOutputFileGreedily(const File *,
+                                         const std::shared_ptr<VirtualMachine> &,
+                                         size_t,
+                                         size_t,
+                                         size_t,
+                                         size_t);
 
-  /// Define where the output files of the execution of the \c task will be stored
-  double AllocateOutputFiles(const std::shared_ptr<Activation>& task, const std::shared_ptr<VirtualMachine>& vm);
+    /// Define where the output files of the execution of the \c task will be stored
+    size_t AllocateOutputFiles(const std::shared_ptr<Activation> &,
+                               const std::shared_ptr<VirtualMachine> &,
+                               const size_t,
+                               const size_t,
+                               const size_t);
 
-  /// Calculate the actual makespan and allocate the output files
-//  double CalculateMakespanAndAllocateOutputFiles(std::shared_ptr<Activation> *activation, VirtualMachine *vm);
-//  size_t CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation>& activation, const std::shared_ptr<VirtualMachine>& vm);
-  double CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation>& activation,
-                                                 const std::shared_ptr<VirtualMachine>& vm);
+    /// Calculate the actual makespan and Allocate the output files
+    size_t CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation> &,
+                                                   const std::shared_ptr<VirtualMachine> &);
 
-  /// Compute the file contribution to the cost
-  double ComputeFileCostContribution(const std::shared_ptr<File>& file, const std::shared_ptr<Storage>& storage, const std::shared_ptr<VirtualMachine>& virtual_machine,
-                                     double time);
+    /// Compute the file contribution to the security exposure
+    double ComputeFileSecurityExposureContribution(const std::shared_ptr<Storage> &storage,
+                                                   const File *file);
 
-  /// Compute the file contribution to the security exposure
-  double ComputeFileSecurityExposureContribution(const std::shared_ptr<Storage>& storage, const std::shared_ptr<File>& file);
+    /// A pointer to the Algorithm object that contain the all necessary data
+    Algorithm *algorithm_{};
 
-  /// A pointer to the Algorithm object that contain the all necessary data
-  Algorithm* algorithm_{};
+    /// Allocation of task in theirs VM
+    std::vector<size_t> activation_allocations_;
 
-  /// Allocation of task in theirs VM
-  std::vector<size_t> activation_allocations_;
+    /// Allocation of files in theirs storages
+    std::vector<size_t> file_allocations_;
 
-  /// Allocation of files in theirs storages
-  std::vector<size_t> file_allocations_;
+    /// Order of the allocated tasks
+    std::vector<size_t> ordering_;
 
-  /// Order of the allocated tasks
-  std::vector<size_t> ordering_;
+    /// The height of each task in terms of dependencies
+    std::vector<int> task_height_;
 
-  /// The height of each task in terms of dependencies
-  std::vector<int> task_height_;
+    /// Makespan for each task
+    std::vector<size_t> time_vector_;
 
-  /// Makespan for each task
-  std::vector<double> time_vector_;
-//  std::vector<size_t> time_vector_;
-
-  /// Final time of each Virtual Machine
-  std::vector<double> execution_vm_queue_;
+    /// Final time of each Virtual Machine
+    std::vector<size_t> execution_vm_queue_;
 //  std::vector<size_t> execution_vm_queue_;
 
-  /// Final time of each Virtual Machine
-  std::vector<double> allocation_vm_queue_;
+    /// Final time of each Virtual Machine
+    std::vector<size_t> allocation_vm_queue_;
 //  std::vector<size_t> allocation_vm_queue_;
 
-  /// Makespan of the solution, the total execution time
-  double makespan_{};
+    /// Makespan of the solution, the total execution time
+    size_t makespan_{};
 //  size_t makespan_;
 
-  /// Total cost of the solution
-  double cost_{};
+    /// Total cost of the solution
+    double cost_{};
 
-  /// Total security exposure of the solution
-  double security_exposure_{};
+    /// Total security exposure of the solution
+    double security_exposure_{};
 
-  /// Objective value based on \c makespan_, \c cost_ and \c security_exposure_
-  double objective_value_ = std::numeric_limits<double>::max();
+    /// Objective value based on \c makespan_, \c cost_ and \c security_exposure_
+    double objective_value_ = std::numeric_limits<double>::max();
 
-  /// The virtual machines associated with the solution
-  std::vector<std::shared_ptr<VirtualMachine>> virtual_machines_;
-
-  /// The activations of the solution
-  std::vector<std::shared_ptr<Activation>> activations_;
-
-  /// The files of the solution
-  std::vector<std::shared_ptr<File>> files_;
-
-  /// The storages of the solution
-//  std::vector<Storage*> storages_;
-  std::vector<std::shared_ptr<Storage>> storages_;
-
+    // For printing the solution timeline
+    size_t n_, d_, m_, mb_, t_;
 };
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_SOLUTION_H_

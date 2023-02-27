@@ -10,8 +10,8 @@
  * This header file contains the \c File class.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_FILE_H_
+#define APPROXIMATE_SOLUTIONS_SRC_MODEL_FILE_H_
 
 #include <string>
 #include <utility>
@@ -59,15 +59,13 @@ class File {
 
   /// Concatenate operator
   friend std::ostream& operator<<(std::ostream& os, const File& a) {
-    return a.write(os);
+    return a.Write(os);
   }
 
  protected:
   virtual /// Print the File object to the output stream
-  std::ostream& write(std::ostream& os) const {
-    return os << "File[_id: " << id_ << ", "
-              << "name_: " << name_ << ", "
-              << "size_: " << size_ << "]";
+  std::ostream& Write(std::ostream& os) const {
+    return os << "File[_id " << id_ << ", name " << name_ << ", size " << size_ << "]";
   }
 
   /// The ID of the file
@@ -86,4 +84,4 @@ class File {
   double size_in_GB_;
 };  // end of class File
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_FILE_H_
+#endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_FILE_H_
