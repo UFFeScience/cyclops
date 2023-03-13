@@ -436,20 +436,20 @@ EOF
 now=$(date +"%Y%m%d%H%M%S")
 echo "${now}"
 
-#create_cloud_files
+create_cloud_files
 
-alphas[$((0 * 4 + 0))]=0.9
+alphas[$((0 * 4 + 0))]=0.90
 alphas[$((0 * 4 + 1))]=0.05
 alphas[$((0 * 4 + 2))]=0.05
 alphas[$((1 * 4 + 0))]=0.05
-alphas[$((1 * 4 + 1))]=0.9
+alphas[$((1 * 4 + 1))]=0.90
 alphas[$((1 * 4 + 2))]=0.05
 alphas[$((2 * 4 + 0))]=0.05
 alphas[$((2 * 4 + 1))]=0.05
-alphas[$((2 * 4 + 2))]=0.9
-alphas[$((3 * 4 + 0))]=0.3
-alphas[$((3 * 4 + 1))]=0.3
-alphas[$((3 * 4 + 2))]=0.4
+alphas[$((2 * 4 + 2))]=0.90
+alphas[$((3 * 4 + 0))]=0.30
+alphas[$((3 * 4 + 1))]=0.30
+alphas[$((3 * 4 + 2))]=0.40
 
 # For each time/cost/security experiment
 for ((i = 0; i < 4; i++)); do
@@ -461,21 +461,14 @@ for ((i = 0; i < 4; i++)); do
     regex="([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl"
     for f in $(pwd)/temp/clouds/*; do
         echo "$f"
-#        mkdir -p "output"
-        out_dir=$(basename "${f}")
-#        out_dir=${out_dir%.*}
-        out_dir="$(pwd)/output/${now}"
-        #        out_dir="/tmp/output/${now}"
-        mkdir -p "${out_dir}"
-        #        echo `ls ${out_dir}`
-        #        rm -r "${out_dir}/*"
-#        mkdir -p "log"
-        log_dir="$(pwd)/log/${now}"
-#        echo ${log_dir}
-        mkdir -p "${log_dir}"
 
+#        out_dir=$(basename "${f}")
+        out_dir="$(pwd)/output/${now}"
+        log_dir="$(pwd)/log/${now}"
         temp_dir="$(pwd)/temp/${now}"
-#        echo ${temp_dir}
+
+        mkdir -p "${out_dir}"
+        mkdir -p "${log_dir}"
         mkdir -p "${temp_dir}"
 
         if [[ $f =~ $regex ]]; then
@@ -491,8 +484,8 @@ for ((i = 0; i < 4; i++)); do
         fi
 
         pipenv run python script/run-batch.py \
-            --instances-file="instances.txt" \
-            --algorithms-file="algorithms_desenv.txt" \
+            --instances-file="_instances.txt" \
+            --algorithms-file="_algorithms_test.txt" \
             --clouds-file="$f" \
             --alpha-time=${alpha_time} \
             --alpha-cost=${alpha_cost} \
