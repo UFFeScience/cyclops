@@ -14,3 +14,5 @@ cplex*
 **/*.lp
 statistic*
 temp
+_algorithms_*
+_instances_*
