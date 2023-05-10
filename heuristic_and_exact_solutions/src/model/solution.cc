@@ -467,8 +467,9 @@ double Solution::ComputeObjectiveFunction() {
             if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm->get_id()) {
                 if (activation_start_time != std::numeric_limits<size_t>::max()
                         && activation_read_time != std::numeric_limits<size_t>::max()) {
+                    auto st = activation_start_time + activation_read_time;
                     my_allocation_vm_queue[storage_id] = std::max(my_allocation_vm_queue[storage_id],
-                                                                  activation_read_time);
+                                                                  st);
                 }
             }
         }
@@ -576,8 +577,8 @@ double Solution::ComputeObjectiveFunction() {
     if (x) {
         for (auto vm_id = 0ul; vm_id < m_; ++vm_id) {
             auto virtual_machine = algorithm_->GetVirtualMachinePerId(vm_id);
-            auto ft = my_allocation_vm_queue[vm_id];
             auto st = 0ul;
+            auto ft = my_allocation_vm_queue[vm_id];
 
             AllocateVm(vm_id, st, ft);
         }
@@ -658,9 +659,9 @@ double Solution::ComputeObjectiveFunction() {
                     DLOG(INFO) << "File[" << i << "] has conflict with File[" << j << "]";
                     privacy_exposure += conflict_value;  // Adds the penalties
                 }
-            }  // else; allocated file resides in different storage or was not allocated yet
-        }  // for (size_t j ...) {
-    }  // for (size_t i...) {
+            }
+        }
+    }
 
     of_security_exposure = task_exposure + privacy_exposure;
     security_exposure_ = task_exposure + privacy_exposure;
@@ -671,6 +672,14 @@ double Solution::ComputeObjectiveFunction() {
                                                / algorithm_->get_maximum_security_and_privacy_exposure());
 
     objective_value_ = of;
+
+    // Updating variables
+    // Finish time for each activation
+    time_vector_ = my_time_vector;
+    // Finish time for each VM
+    execution_vm_queue_ = my_execution_vm_queue;
+    // Allocation time needed for each VM
+    allocation_vm_queue_ = my_allocation_vm_queue;
 
     return of;
 }
@@ -1414,7 +1423,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
                     }
 
                     // Data
-                    for (size_t d1 = 0; d1 < d_ and check <= 1; d1++) {
+                    for (auto d1 = 0ul; d1 < d_ and check <= 1; d1++) {
                         auto y_djt = y[d1][j][t1];
                         // Returns the value of the variable
 
@@ -1474,7 +1483,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
     }
 
     return os;
-}  // std::ostream& Solution::Write(std::ostream& os) const {
+}
 
 /**
  *

@@ -438,24 +438,27 @@ echo "${now}"
 
 create_cloud_files
 
-alphas[$((0 * 4 + 0))]=0.90
-alphas[$((0 * 4 + 1))]=0.05
-alphas[$((0 * 4 + 2))]=0.05
-alphas[$((1 * 4 + 0))]=0.05
-alphas[$((1 * 4 + 1))]=0.90
-alphas[$((1 * 4 + 2))]=0.05
-alphas[$((2 * 4 + 0))]=0.05
-alphas[$((2 * 4 + 1))]=0.05
-alphas[$((2 * 4 + 2))]=0.90
-alphas[$((3 * 4 + 0))]=0.30
-alphas[$((3 * 4 + 1))]=0.30
-alphas[$((3 * 4 + 2))]=0.40
+alphas[$((0 * 3 + 0))]=0.90
+alphas[$((0 * 3 + 1))]=0.05
+alphas[$((1 * 3 + 0))]=0.05
+alphas[$((0 * 3 + 2))]=0.05
+alphas[$((1 * 3 + 1))]=0.90
+alphas[$((1 * 3 + 2))]=0.05
+alphas[$((2 * 3 + 0))]=0.05
+alphas[$((2 * 3 + 1))]=0.05
+alphas[$((2 * 3 + 2))]=0.90
+alphas[$((3 * 3 + 0))]=0.30
+alphas[$((3 * 3 + 1))]=0.30
+alphas[$((3 * 3 + 2))]=0.40
+alphas[$((4 * 3 + 0))]=1.00
+alphas[$((4 * 3 + 1))]=0.00
+alphas[$((4 * 3 + 2))]=0.00
 
 # For each time/cost/security experiment
-for ((i = 0; i < 4; i++)); do
-    alpha_time=${alphas[$((i * 4 + 0))]}
-    alpha_cost=${alphas[$((i * 4 + 1))]}
-    alpha_security=${alphas[$((i * 4 + 2))]}
+for ((i = 4; i < 5; i++)); do
+    alpha_time=${alphas[$((i * 3 + 0))]}
+    alpha_cost=${alphas[$((i * 3 + 1))]}
+    alpha_security=${alphas[$((i * 3 + 2))]}
     
 	# For each cluster
     regex="([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl"
@@ -484,7 +487,7 @@ for ((i = 0; i < 4; i++)); do
         fi
 
         pipenv run python script/run-batch.py \
-            --instances-file="_instances.txt" \
+            --instances-file="_instances_toys.txt" \
             --algorithms-file="_algorithms_test.txt" \
             --clouds-file="$f" \
             --alpha-time=${alpha_time} \
@@ -492,7 +495,7 @@ for ((i = 0; i < 4; i++)); do
             --alpha-security=${alpha_security} \
             --number-of-iterations=100 \
             --allocation_experiments=4 \
-            --repeat 10 \
+            --repeat 1 \
             --output-path="${out_dir}" \
             --test-scenery="${scenario}" \
             --number-cloud-sites="${number_cloud}" \

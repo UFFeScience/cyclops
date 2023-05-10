@@ -102,9 +102,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--instance-parameters', nargs='+')
     parser.add_argument('--instances-file',
-                        default='instances_desenv.txt')
+                        default='_instances_desenv.txt')
     parser.add_argument('--algorithms-file',
-                        default='algorithms.txt')
+                        default='_algorithms_test.txt')
     parser.add_argument('--clouds-file')
     parser.add_argument('--alpha-time',
                         type=float,

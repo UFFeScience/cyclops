@@ -30,7 +30,7 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
     DLOG(INFO) << "Reading Activations and Files from input file [" + tasks_and_files + "]" ;
 
     if (!std::filesystem::exists(tasks_and_files)) {
-        DLOG(FATAL) << "Activations and Tasks input file could not be found!";
+        DLOG(FATAL) << "Activations and Tasks input file could not be found in \"" << tasks_and_files << "\"!";
     }
 
 //  double total_file = 0.0;
@@ -337,7 +337,7 @@ void Algorithm::ReadCluster(const std::string &cluster) {
     DLOG(INFO) << "Reading Clusters from input file [" + cluster + "]" ;
 
     if (!std::filesystem::exists(cluster)) {
-        DLOG(FATAL) << "Cluster file could not be found!";
+        DLOG(FATAL) << "Cluster file could not be found \"" << cluster << "\"!";
     }
 
 //  double total_storage = 0.0;
