@@ -28,19 +28,20 @@ class DynamicFile : public File {
 public:
     /// Parametrized constructor
     explicit DynamicFile(const size_t id, const std::string &name, const double size) :
-            File(id, name, size) {}
+            File(id, name, size) { }
 
     /// Default destructor
     ~DynamicFile() override = default;
 
     /// Getter for the parent task
-    [[nodiscard]] std::shared_ptr<Activation> get_parent_task() const { return parent_task_; }
+    [[nodiscard]] std::weak_ptr<Activation> get_parent_task() const { return parent_task_; }
 
     /// Getter for the parent output file index
     [[nodiscard]] size_t get_parent_output_file_index() const { return parent_output_file_index_; }
 
     /// Setter for the parent task
-    void set_parent_task(std::shared_ptr<Activation> parent_task) { parent_task_ = std::move(parent_task); }
+    // TODO fix pointing to activation
+    void set_parent_task(std::shared_ptr<Activation> parent_task) { parent_task_ = parent_task; }
 
     /// Setter for the parent output file index
     void set_parent_output_file_index(const size_t parent_output_file_index) {
@@ -59,7 +60,7 @@ private:
     }
 
     /// The \c Activation that generated this file
-    std::shared_ptr<Activation> parent_task_;
+    std::weak_ptr<Activation> parent_task_;
 
     /// The index position of this generated file
     size_t parent_output_file_index_ = std::numeric_limits<size_t>::max();
