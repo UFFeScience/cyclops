@@ -33,7 +33,7 @@ class Algorithm;
  * \class Activation task.h "src/model/task.h"
  * \brief Represents the task of the model
  */
-class Activation : public std::enable_shared_from_this<Activation> {
+class Activation {
 public:
     /// Parametrised constructor
     explicit Activation(const size_t id, std::string tag, std::string name, const double time) :
@@ -54,19 +54,21 @@ public:
     [[nodiscard]] double get_time() const { return execution_time_; }
 
     /// Getter for input_files_
-    std::vector<File *> get_input_files() const { return input_files_; }
+    std::vector<std::shared_ptr<File>> get_input_files() const { return input_files_; }
 
     /// Getter for output_files_
-    std::vector<File *> get_output_files() const { return output_files_; }
+    std::vector<std::shared_ptr<File>> get_output_files() const { return output_files_; }
 
     /// Getter for requirements_
     [[nodiscard]] std::vector<int> get_requirements() const { return requirements_; }
 
     /// Adds a input file
-    void AddInputFile(File *file) { input_files_.push_back(file); }
+    void AddInputFile(std::shared_ptr<File> file) {
+        input_files_.push_back(file);
+    }
 
     /// Adds a output file
-    size_t AddOutputFile(File *file) {
+    size_t AddOutputFile(std::shared_ptr<File> file) {
         size_t index = output_files_.size();
         output_files_.push_back(file);
         return index;
@@ -137,13 +139,13 @@ private:
     double execution_time_;
 
     /// The input files necessary to execute this task
-    std::vector<File *> input_files_;
+    std::vector<std::shared_ptr<File>> input_files_;
 
     /// The output files produced by this task when executed
-    std::vector<File *> output_files_;
+    std::vector<std::shared_ptr<File>> output_files_;
 
     /// A vector containing the requirement values
     std::vector<int> requirements_;
-};  // end of class Activation
+};
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_ACTIVATION_H_
