@@ -418,7 +418,7 @@ double Solution::ComputeObjectiveFunction() {
             size_t storage_id;
             auto file_id = file->get_id();
 
-            if (auto static_file = dynamic_cast<StaticFile *>(file)) {
+            if (auto static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
                 // If the file is static, get the ID of the storage where the file is stored from its definition
                 storage_id = static_file->GetFirstVm();
                 // Just for auditing - begin
@@ -787,7 +787,7 @@ double Solution::ObjectiveFunction(bool check_storage, bool check_sequence) {
  * \retval     time + penalties   The time to transfer \c file from \c file_vm to \c vm with possible
  *                                applied penalties
  */
-size_t Solution::ComputeFileTransferTime(const File *file,
+size_t Solution::ComputeFileTransferTime(std::shared_ptr<File> file,
                                          const std::shared_ptr<Storage> &storage1,
                                          const std::shared_ptr<Storage> &storage2,
                                          bool check_constraints) const {
@@ -1152,8 +1152,8 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
         // -------- r ----------
         for (size_t i = 0UL; i < n_; ++i) {
-            std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(i + 1ul);
-            std::vector<File *> input_files = task->get_input_files();
+            auto activation = algorithm_->GetActivationPerId(i + 1ul);
+            auto input_files = activation->get_input_files();
 
             for (auto j = 0UL; j < d_; ++j) {
                 for (auto k = 0UL; k < m_; ++k) {
@@ -1171,8 +1171,8 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
         // -------- w ----------
         for (auto i = 0UL; i < n_; ++i) {
-            std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(i + 1ul);
-            std::vector<File *> output_files = task->get_output_files();
+            auto activation = algorithm_->GetActivationPerId(i + 1ul);
+            auto output_files = activation->get_output_files();
 
             for (auto j = 0UL; j < d_; ++j) {
                 for (auto k = 0UL; k < m_; ++k) {
@@ -1265,7 +1265,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
                     // Execution
                     for (auto i = 0ul; i < algorithm_->GetActivationSize() - 2ul and check <= 1ul; i++) {
                         std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(1ul + i);
-                        std::vector<File *> input_files = task->get_input_files();
+                        std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
 
                         auto x_ijt = x[i][j][t1];  // Returns the value of the variable
 
@@ -1283,9 +1283,10 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
                             // Checks if the readings were taken by the machine before execution
                             for (auto l = 0ul; l < input_files.size() and check <= 1; l++) {
-                                File *file = input_files[l];
+                                auto file = input_files[l];
                                 auto d1 = file->get_id();
                                 bool has_read_file = false;
+
                                 for (auto k = 0ul; k < algorithm_->GetStorageSize() and check <= 1ul; k++) {
                                     auto q_max = static_cast<size_t>(algorithm_->get_makespan_max());
                                     for (auto q = 0ul; q < q_max and check <= 1; q++) {
@@ -1299,8 +1300,8 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
                                 if (!has_read_file) {
                                     os << "*** PERFORMED THE TASK WITHOUT READING ALL THE ENTRIES *** missing data ="
-                                       << input_files[d1]->get_id()
-                                       << "\n" << input_files[d1];
+                                       << d1
+                                       << "\n" << file;
                                     check += 1;
                                     break;
                                 }
@@ -1316,12 +1317,13 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
                     // Read
                     for (auto i = 0ul; i < algorithm_->GetActivationSize() - 2ul and check <= 1ul; i++) {
-                        std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(i + 1ul);
-                        std::vector<File *> input_files = task->get_input_files();
+                        auto activation = algorithm_->GetActivationPerId(i + 1ul);
+                        auto input_files = activation->get_input_files();
 
                         for (auto l = 0ul; l < input_files.size() and check <= 1; l++) {
-                            File *file = input_files[l];
+                            auto file = input_files[l];
                             auto d1 = file->get_id();
+
                             for (auto k = 0ul; k < mb_ and check <= 1ul; k++) {
                                 std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(static_cast<size_t>(k));
 
@@ -1332,7 +1334,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
                                     auto read_time = ComputeFileTransferTime(file, virtual_machine, storage);
 
                                     check += 1;
-                                    os << "r" << i << "(" << input_files[d1]->get_id() << ")<" << k << "\t";
+                                    os << "r" << i << "(" << d1 << ")<" << k << "\t";
 
                                     if (tempo[j] > 0) {
                                         os << "*** READ OVER SOMETHING ***";
@@ -1343,7 +1345,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
                                     tempo[j] = static_cast<int>(read_time);
 
                                     // Check file existence
-                                    auto y_djt = static_cast<float>(y[file->get_id()][k][t1]);
+                                    auto y_djt = static_cast<float>(y[d1][k][t1]);
 
                                     // Returns the value of the variable
                                     if (y_djt < 1) {
@@ -1364,12 +1366,13 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
                     // Writing
                     for (auto has_passed = 0ul, i = 0ul; i < n_ and check <= 1; i++) {
-                        std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(i + 1ul);
-                        std::vector<File *> output_files = task->get_output_files();
+                        auto activation = algorithm_->GetActivationPerId(i + 1ul);
+                        auto output_files = activation->get_output_files();
 
                         for (auto l = 0ul; l < output_files.size() and check <= 1; l++) {
-                            File *file = output_files[l];
+                            std::shared_ptr<File> file = output_files[l];
                             auto d1 = file->get_id();
+
                             for (auto k = 0ul; k < mb_ and check <= 1; k++) {
                                 std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(k);
 
@@ -1391,7 +1394,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
                                     tempo[j] = static_cast<int>(write_time);
 
-                                    // Checks if the task has been executed on the machine before
+                                    // Checks if the activation has been executed on the machine before
                                     has_passed = 0;
                                     for (int q = 0; q < algorithm_->get_makespan_max() and check <= 1ul; q++) {
                                         auto x_ijt = static_cast<float>(x[i][j][q]);
@@ -1482,6 +1485,8 @@ std::ostream &Solution::Write(std::ostream &os) const {
         delete[] maq_dado;
     }
 
+    DLOG(INFO) << "Getting out from Solution::Write method";
+
     return os;
 }
 
@@ -1496,7 +1501,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
  * @param partial_write_time
  * @return
  */
-size_t Solution::AllocateOneOutputFileGreedily(const File *file,
+size_t Solution::AllocateOneOutputFileGreedily(std::shared_ptr<File> file,
                                                const std::shared_ptr<VirtualMachine> &vm,
                                                const size_t start_time,
                                                const size_t read_time,
@@ -1640,18 +1645,18 @@ size_t Solution::ComputeActivationStartTime(size_t activation_id, size_t vm_id) 
     DLOG(INFO) << "StartTime: " << start_time;
 
     return std::max<size_t>(start_time, execution_vm_queue_[vm_id]);
-}  // double Solution::ComputeStartTime(...)
+}
 
 size_t Solution::AllocateOutputFiles(const std::shared_ptr<Activation> &task,
                                      const std::shared_ptr<VirtualMachine> &vm,
                                      const size_t start_time,
                                      const size_t read_time,
                                      const size_t run_time) {
-    size_t write_time = 0UL;
+    auto write_time = 0ul;
 
-//    std::vector<std::shared_ptr<File>> output_files = task->get_output_files();
-    std::vector<File *> output_files = task->get_output_files();
+    auto output_files = task->get_output_files();
 
+    // TODO: see if this behaviour is better
     // Shuffle the output files for better randomness between the solutions
 //  if (output_files.size() > 1) {
 //    std::shuffle(output_files.begin(), output_files.end(), generator());
@@ -1668,7 +1673,7 @@ size_t Solution::AllocateOutputFiles(const std::shared_ptr<Activation> &task,
     }
 
     return write_time;
-}  // size_t Solution::AllocateOutputFiles(...)
+}
 
 size_t Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &activation,
                                            const std::shared_ptr<VirtualMachine> &vm,
@@ -1676,13 +1681,12 @@ size_t Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &ac
     DLOG(INFO) << "Compute Read Time of the Activation[" << activation->get_id() << "] at VM[" << vm->get_id()
                << "]";
 
-    size_t read_time = 0UL;
+    auto read_time = 0ul;
 
     for (const auto &file: activation->get_input_files()) {
         size_t storage_id;
 
-//        if (std::shared_ptr<StaticFile> static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
-        if (auto static_file = dynamic_cast<StaticFile *>(file)) {
+        if (auto static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
             storage_id = static_file->GetFirstVm();
         } else {
             storage_id = file_allocations_[file->get_id()];
@@ -1698,7 +1702,7 @@ size_t Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &ac
 
         if (one_file_read_time == std::numeric_limits<size_t>::max()) {
             DLOG(INFO) << "read_time: " << one_file_read_time;
-//      google::FlushLogFiles(google::INFO);
+
             return std::numeric_limits<size_t>::max();
         } else {
             // read_time += std::ceil(one_file_read_time);
@@ -1709,12 +1713,12 @@ size_t Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &ac
                 DLOG(INFO) << "allocation_vm_queue_[" << storage_id << "]: " << allocation_vm_queue_[storage_id];
             }
         }
-    }  // for (std::shared_ptr<File> file : activation.get_input_files()) {
+    }
 
     DLOG(INFO) << "read_time: " << read_time;
 
     return read_time;
-}  // double Solution::ComputeActivationReadTime(Activation& activation, VirtualMachine& vm) {
+}
 
 //size_t Solution::ComputeTaskReadTimeOther(const std::shared_ptr<Activation>& task,
 //                                          const std::shared_ptr<VirtualMachine>& vm) {
@@ -1819,7 +1823,7 @@ size_t Solution::CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<A
  * @return
  */
 double Solution::ComputeFileSecurityExposureContribution(const std::shared_ptr<Storage> &storage,
-                                                         const File *file) {
+                                                         std::shared_ptr<File> file) {
     double security_exposure;
     // double task_exposure = 0.0;
     double privacy_exposure = 0.0;

@@ -142,13 +142,13 @@ protected:
     size_t ComputeActivationStartTime(size_t task, size_t vm);
 
     /// Compute the file transfer time
-    size_t ComputeFileTransferTime(const File *file,
+    size_t ComputeFileTransferTime(std::shared_ptr<File>file,
                                    const std::shared_ptr<Storage> &storage1,
                                    const std::shared_ptr<Storage> &storage2,
                                    bool check_constraints = false) const;
 
     /// Allocate just one output file selecting storage with minimal time transfer
-    size_t AllocateOneOutputFileGreedily(const File *,
+    size_t AllocateOneOutputFileGreedily(std::shared_ptr<File>,
                                          const std::shared_ptr<VirtualMachine> &,
                                          size_t,
                                          size_t,
@@ -168,7 +168,7 @@ protected:
 
     /// Compute the file contribution to the security exposure
     double ComputeFileSecurityExposureContribution(const std::shared_ptr<Storage> &storage,
-                                                   const File *file);
+                                                   std::shared_ptr<File> file);
 
     /// A pointer to the Algorithm object that contain the all necessary data
     Algorithm *algorithm_{};
