@@ -61,6 +61,6 @@ class ConflictGraph {
 
   /// A positive integer that contain the sum of all soft conflict value
   size_t maximum_of_soft_constraints = 0ul;
-};  // end of class ConflictGraph
+};
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_
