@@ -67,7 +67,8 @@ double Heft::CommunicationCostStatic(size_t activation_id, size_t vm_id) {
     auto target_vm = virtual_machines_[vm_id];
 
     for (const auto &file : activation->get_input_files()) {
-        if (auto *static_file = dynamic_cast<StaticFile *>(file)) {
+//        if (auto *static_file = dynamic_cast<StaticFile *>(file)) {
+        if (auto static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
             auto origin_vm = virtual_machines_[static_file->GetFirstVm()];
             auto bandwidth = std::min(origin_vm->get_bandwidth_GBps(), target_vm->get_bandwidth_GBps());
 
@@ -586,10 +587,8 @@ void Heft::Run() {
 #ifndef NDEBUG
     best_solution.MemoryAllocation();
     best_solution.ComputeObjectiveFunction();
-#endif
-    DLOG(INFO) << best_solution;
     std::cout << best_solution;
-#ifndef NDEBUG
+    LOG(INFO) << best_solution;
     best_solution.FreeingMemoryAllocated();
 #endif
 

@@ -95,22 +95,22 @@ public:
     /// Concatenate operator
     friend std::ostream &operator<<(std::ostream &strm, const Activation &a) {
         std::ostringstream oss;
-
+        // TODO input files
         oss << "\nInput Files { \n";
-        if (!a.input_files_.empty()) {
-            // Convert all but the last element to avoid a trailing ","
-            for (File *o: a.input_files_) {
-                oss << "\tFile[ID " << o->get_id() << ", name " << o->get_name() << ", size " << o->get_size() << "]\n";
-            }
-        }
-
+//        if (!a.input_files_.empty()) {
+//            // Convert all but the last element to avoid a trailing ","
+//            for (File *o: a.input_files_) {
+//                oss << "\tFile[ID " << o->get_id() << ", name " << o->get_name() << ", size " << o->get_size() << "]\n";
+//            }
+//        }
+        // TODO output files
         oss << "}, Output Files {\n";
-        if (!a.output_files_.empty()) {
-            // Convert all but the last element to avoid a trailing ","
-            for (File *o: a.output_files_) {
-                oss << "\tFile[ID " << o->get_id() << ", name " << o->get_name() << ", size " << o->get_size() << "]\n";
-            }
-        }
+//        if (!a.output_files_.empty()) {
+//            // Convert all but the last element to avoid a trailing ","
+//            for (File *o: a.output_files_) {
+//                oss << "\tFile[ID " << o->get_id() << ", name " << o->get_name() << ", size " << o->get_size() << "]\n";
+//            }
+//        }
 
         oss << "}, Requirements: {\n";
         if (!a.requirements_.empty()) {

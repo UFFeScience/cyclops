@@ -8,8 +8,12 @@ import subprocess
 import sys
 
 import shlex
+from multiprocessing import Pool, Lock
+from os import walk
 
 from pathlib import Path
+
+global_lock = Lock()
 
 
 def exec_command(cmd):
@@ -93,8 +97,10 @@ def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: s
         out_file += f',{security:f}'
         out_file += f',{time:f}'
         out_file += f"\n"
+        global_lock.acquire()
         with open(output_executions_file, "a") as file:
             file.write(out_file)
+        global_lock.release()
 
 
 if __name__ == "__main__":
@@ -105,16 +111,16 @@ if __name__ == "__main__":
                         default='_instances_desenv.txt')
     parser.add_argument('--algorithms-file',
                         default='_algorithms_test.txt')
-    parser.add_argument('--clouds-file')
-    parser.add_argument('--alpha-time',
-                        type=float,
-                        default=0.3)
-    parser.add_argument('--alpha-cost',
-                        type=float,
-                        default=0.3)
-    parser.add_argument('--alpha-security',
-                        type=float,
-                        default=0.4)
+    # parser.add_argument('--clouds-file')
+    # parser.add_argument('--alpha-time',
+    #                     type=float,
+    #                     default=0.3)
+    # parser.add_argument('--alpha-cost',
+    #                     type=float,
+    #                     default=0.3)
+    # parser.add_argument('--alpha-security',
+    #                     type=float,
+    #                     default=0.4)
     parser.add_argument('--number-of-iterations',
                         type=int,
                         default=100)
@@ -125,27 +131,27 @@ if __name__ == "__main__":
                         nargs='?',
                         type=int,
                         default=1)
-    parser.add_argument('--grch',
-                        help='Execute Greedy Randomized Constructive Heuristic',
-                        action='store_true')
-    parser.add_argument('--grasp',
-                        help='Execute Grasp Meta-heuristic',
-                        action='store_true')
-    parser.add_argument('--cplex',
-                        help='Execute CPLEX exact solution',
-                        action='store_true')
-    parser.add_argument('--heft',
-                        help='Execute HEFT',
-                        action='store_true')
+    # parser.add_argument('--grch',
+    #                     help='Execute Greedy Randomized Constructive Heuristic',
+    #                     action='store_true')
+    # parser.add_argument('--grasp',
+    #                     help='Execute Grasp Meta-heuristic',
+    #                     action='store_true')
+    # parser.add_argument('--cplex',
+    #                     help='Execute CPLEX exact solution',
+    #                     action='store_true')
+    # parser.add_argument('--heft',
+    #                     help='Execute HEFT',
+    #                     action='store_true')
     parser.add_argument('--output-path', default="./output")
     parser.add_argument('--verbose', help='Print more data', action='store_true')
-    parser.add_argument('--test-scenery')
-    parser.add_argument('--number-vm')
-    parser.add_argument('--number-cloud-sites')
-    parser.add_argument('--number-buckets')
-    parser.add_argument('--number-vm-req-cryptography')
-    parser.add_argument('--number-vm-req-confidentiality')
-    parser.add_argument('--cloud-type')
+    # parser.add_argument('--test-scenery')
+    # parser.add_argument('--number-vm')
+    # parser.add_argument('--number-cloud-sites')
+    # parser.add_argument('--number-buckets')
+    # parser.add_argument('--number-vm-req-cryptography')
+    # parser.add_argument('--number-vm-req-confidentiality')
+    # parser.add_argument('--cloud-type')
     parser.add_argument('--log-dir')
     parser.add_argument('--temp-dir')
     args = parser.parse_args()
@@ -187,20 +193,82 @@ if __name__ == "__main__":
         with open(output_execution_file, 'w') as oef_file:
             oef_file.write(header)
 
-    # Run the selected heuristic(s) and meta-heuristic(s)
-    for algorithm in algorithms:
-        algorithm_log_dir = args.log_dir + '/' + algorithm
-        algorithm_temp_dir = args.temp_dir + '/' + algorithm
+    alphas = (
+        (0.90, 0.05, 0.05),
+        (0.05, 0.90, 0.05),
+        (0.05, 0.05, 0.90)
+    )
 
-        for instance in instances:
-            cur_path = pathlib.Path().resolve()  # current path
-            clouds_file = args.clouds_file if args.clouds_file is not None \
-                else f'{cur_path}/input/clouds/cluster_' + instance + '.vcl'
-            tasks_and_files_file_name = f'{cur_path}/input/tasks_and_files/' + instance + '.dag'
-            conflict_graph_file_name = f'{cur_path}/input/conflict_graph/' + instance + '.scg'
+    # get the current working directory
+    current_working_directory = os.getcwd()
 
-            run(instance, tasks_and_files_file_name, clouds_file, conflict_graph_file_name, algorithm,
-                args.alpha_time, args.alpha_cost, args.alpha_security, args.number_of_iterations,
-                args.allocation_experiments, args.repeat, output_execution_file, args.test_scenery, args.number_vm,
-                args.number_cloud_sites, args.number_buckets, args.number_vm_req_cryptography,
-                args.number_vm_req_confidentiality, args.cloud_type, algorithm_log_dir, algorithm_temp_dir)
+    # print output to the console
+    print(current_working_directory)
+
+    f = []
+    filenames = []
+    subdirectory = '/temp/clouds/'
+    clouds_file_dir = current_working_directory + subdirectory
+    for (dir_path, dir_names, filenames) in walk(clouds_file_dir):
+        f.extend(filenames)
+        break
+
+    # print(filenames)
+
+    pool = Pool(processes=8)
+    p = re.compile('([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl')
+    for filename in filenames:
+        m = p.match(filename)
+        if m:
+            scenario = m.group(1)
+            number_of_cloud = m.group(2)
+            number_of_vm = m.group(3)
+            number_of_bucket = m.group(4)
+            number_of_vm_req_cryptography = m.group(5)
+            number_of_vm_req_confidentiality = m.group(6)
+            cloud_type = m.group(7)
+
+            # print(scenario, number_of_cloud, number_of_vm, number_of_bucket, number_of_vm_req_cryptography,
+            #       number_of_vm_req_confidentiality, cloud_type)
+
+            for alpha in alphas:
+                alpha_time, alpha_cost, alpha_security = alpha
+
+                # Run the selected heuristic(s) and meta-heuristic(s)
+                for algorithm in algorithms:
+                    algorithm_log_dir = args.log_dir + '/' + algorithm
+                    algorithm_temp_dir = args.temp_dir + '/' + algorithm
+
+                    for instance in instances:
+                        cur_path = pathlib.Path().resolve()  # current path
+                        full_file_name = clouds_file_dir + filename
+                        clouds_file = full_file_name if full_file_name is not None \
+                            else f'{cur_path}/input/clouds/cluster_' + instance + '.vcl'
+                        tasks_and_files_file_name = f'{cur_path}/input/tasks_and_files/' + instance + '.dag'
+                        conflict_graph_file_name = f'{cur_path}/input/conflict_graph/' + instance + '.scg'
+
+                        pool.apply_async(run, args = (instance, tasks_and_files_file_name, clouds_file,
+                                                      conflict_graph_file_name, algorithm, alpha_time, alpha_cost,
+                                                      alpha_security, args.number_of_iterations,
+                                                      args.allocation_experiments, args.repeat, output_execution_file,
+                                                      scenario, number_of_cloud, number_of_vm, number_of_bucket,
+                                                      number_of_vm_req_cryptography, number_of_vm_req_confidentiality,
+                                                      cloud_type, algorithm_log_dir, algorithm_temp_dir))
+
+                        # print(instance, tasks_and_files_file_name, clouds_file, conflict_graph_file_name, algorithm,
+                        #       alpha_time, alpha_cost, alpha_security, args.number_of_iterations,
+                        #       args.allocation_experiments, args.repeat, output_execution_file, scenario,
+                        #       number_of_cloud, number_of_vm, number_of_bucket, number_of_vm_req_cryptography,
+                        #       number_of_vm_req_confidentiality, cloud_type, algorithm_log_dir, algorithm_temp_dir)
+
+                        # run(instance, tasks_and_files_file_name, clouds_file, conflict_graph_file_name, algorithm,
+                        #     alpha_time, alpha_cost, alpha_security, args.number_of_iterations,
+                        #     args.allocation_experiments, args.repeat, output_execution_file, scenario, number_of_cloud,
+                        #     number_of_vm, number_of_bucket, number_of_vm_req_cryptography,
+                        #     number_of_vm_req_confidentiality, cloud_type, algorithm_log_dir, algorithm_temp_dir)
+        else:
+            exit('Something wrong with the file name pattern')
+    # close the process pool
+    pool.close()
+    # wait for all tasks to finish
+    pool.join()

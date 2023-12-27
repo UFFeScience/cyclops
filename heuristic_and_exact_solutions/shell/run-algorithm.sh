@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -z "$1" ] ; then
-  TASK_AND_FILES=3_toy_5_A.dag
+  TASK_AND_FILES=Synthetic_010_A.dag
 else
   TASK_AND_FILES=$1
 fi
@@ -13,25 +13,25 @@ else
 fi
 
 if [ -z "$3" ] ; then
-  CONFLICT_GRAPH=3_toy_5_A.scg
+  CONFLICT_GRAPH=Synthetic_010_A.scg
 else
   CONFLICT_GRAPH=$3
 fi
 
 if [ -z "$4" ] ; then
-  ALPHA_TIME=0.3
+  ALPHA_TIME=0.9
 else
   ALPHA_TIME=$4
 fi
 
 if [ -z "$5" ] ; then
-  ALPHA_COST=0.3
+  ALPHA_COST=0.05
 else
   ALPHA_COST=$5
 fi
 
 if [ -z "$6" ] ; then
-  ALPHA_SECURITY=0.4
+  ALPHA_SECURITY=0.05
 else
   ALPHA_SECURITY=$6
 fi

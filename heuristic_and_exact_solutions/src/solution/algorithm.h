@@ -70,7 +70,7 @@ public:
     size_t GetActivationSize() const { return activations_.size(); }
 
     /// Return the size of the \c files_
-    size_t GetFileSize() const { return files_.size(); }
+    size_t GetFilesSize() const { return files_.size(); }
 
     /// Return the size of the \c virtual_machines
     size_t GetVirtualMachineSize() const { return virtual_machines_.size(); }
@@ -151,11 +151,13 @@ public:
     static std::shared_ptr<Algorithm> ReturnAlgorithm(const std::string &algorithm);
 
 protected:
-    void ReadTasksAndFiles(const std::string &, std::unordered_map<std::string, File *> &);
+//    void ReadTasksAndFiles(const std::string &, std::unordered_map<std::string, File *> &);
+    void ReadTasksAndFiles(const std::string &, std::unordered_map<std::string, std::shared_ptr<File>> &);
 
     void ReadCluster(const std::string &);
 
-    void ReadConflictGraph(const std::string &, std::unordered_map<std::string, File *> &);
+//    void ReadConflictGraph(const std::string &, std::unordered_map<std::string, File *> &);
+    void ReadConflictGraph(const std::string &, std::unordered_map<std::string, std::shared_ptr<File>> &);
 
     void ComputeHeight(size_t, int);
 

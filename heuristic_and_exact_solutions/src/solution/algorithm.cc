@@ -21,12 +21,13 @@
 #include "src/solution/min_min.h"
 #include "src/solution/grasp.h"
 #include "src/solution/cplex.h"
-#include "src/solution/grch.h"
 #include "heft.h"
+#include "grch_hard.h"
 
+//void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
+//                                  std::unordered_map<std::string, File *> &file_map_per_name) {
 void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
-                                  std::unordered_map<std::string,
-                                  File *> &file_map_per_name) {
+                                  std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
     DLOG(INFO) << "Reading Activations and Files from input file [" + tasks_and_files + "]" ;
 
     if (!std::filesystem::exists(tasks_and_files)) {
@@ -102,7 +103,6 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
     for (size_t i = 0ul; i < static_file_size_; i++) {
         getline(in_file, line);
         DLOG(INFO) << "File: " << line;
-//    google::FlushLogFiles(google::INFO);
 
         std::vector<std::string> strs;
         boost::split(strs, line, boost::is_any_of(" "));
@@ -113,10 +113,14 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
         DLOG(INFO) << "file_size: " << my_file_size;
 
 //    StaticFile* my_staticFile = new StaticFile(i, my_file_name, my_file_size);
-        std::shared_ptr<StaticFile> my_staticFile = std::make_shared<StaticFile>(i, my_file_name, my_file_size);
+//        std::shared_ptr<File> my_staticFile = std::make_shared<StaticFile>(i, my_file_name, my_file_size);
+        std::shared_ptr<File> my_staticFile = std::make_shared<StaticFile>(i, my_file_name, my_file_size);
+//        std::shared_ptr<StaticFile> my_staticFile(new StaticFile(i, my_file_name, my_file_size));
 
         for (size_t j = 0; j < stoul(strs[2]); ++j) {
-            my_staticFile->AddVm(stoul(strs[3 + j]));
+            auto msf = std::dynamic_pointer_cast<StaticFile>(my_staticFile);
+//            my_staticFile->AddVm(stoul(strs[3 + j]));
+            msf->AddVm(stoul(strs[3 + j]));
         }
 
 //    total_file += file_size;
@@ -124,14 +128,16 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
         DLOG(INFO) << *my_staticFile;
 
         files_.push_back(my_staticFile);
-        file_map_per_name.insert(std::make_pair(my_file_name, my_staticFile.get()));
+//        file_map_per_name.insert(std::make_pair(my_file_name, my_staticFile.get()));
+        auto mfn = std::string(my_file_name);
+        auto pair = std::make_pair(mfn, my_staticFile);
+        file_map_per_name.insert(pair);
     }
 
     // Reading information about dynamic files
     for (size_t i = static_file_size_; i < static_file_size_ + dynamic_file_size_; i++) {
         getline(in_file, line);
         DLOG(INFO) << "File: " << line;
-//    google::FlushLogFiles(google::INFO);
 
         std::vector<std::string> strs;
         boost::split(strs, line, boost::is_any_of(" "));
@@ -143,14 +149,19 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
 
         // DynamicFile my_dynamicFile(i, file_name, file_size);
 //    DynamicFile* my_dynamicFile = new DynamicFile(i, my_file_name, my_file_size);
-        std::shared_ptr<DynamicFile> my_dynamicFile = std::make_shared<DynamicFile>(i, my_file_name, my_file_size);
+//        std::shared_ptr<DynamicFile> my_dynamicFile = std::make_shared<DynamicFile>(i, my_file_name, my_file_size);
+//        std::shared_ptr<File> my_dynamicFile = std::make_shared<DynamicFile>(i, my_file_name, my_file_size);
+        std::shared_ptr<File> my_dynamicFile = std::make_shared<DynamicFile>(i, my_file_name, my_file_size);
+//        std::shared_ptr<DynamicFile> my_dynamicFile(new DynamicFile(i, my_file_name, my_file_size));
 
 //    total_file += file_size;
 
         DLOG(INFO) << *my_dynamicFile;
 
         files_.push_back(my_dynamicFile);
-        file_map_per_name.insert(std::make_pair(my_file_name, my_dynamicFile.get()));
+        auto mfn = std::string(my_file_name);
+        auto pair = std::make_pair(mfn, my_dynamicFile);
+        file_map_per_name.insert(pair);
     }
 
     getline(in_file, line);  // reading blank line
@@ -194,7 +205,6 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
         DLOG(INFO) << "in_size: " << in_size;
         DLOG(INFO) << "out_size: " << out_size;
 
-//    Activation* my_task = new Activation(i, tag, task_name, base_time);
         std::shared_ptr<Activation> my_task = std::make_shared<Activation>(i, tag, task_name, base_time);
 
         // Adding requirement to the task
@@ -207,11 +217,9 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
         for (size_t j = 0; j < in_size; j++) {
             getline(in_file, line);
             DLOG(INFO) << "Input file: " << line;
-//      google::FlushLogFiles(google::INFO);
 
-//      File* my_file = file_map_per_name.find(line)->second;
-//            std::shared_ptr<File> my_file = file_map_per_name.find(line)->second;
-            File *my_file = file_map_per_name.find(line)->second;
+            std::shared_ptr<File> my_file(file_map_per_name.find(line)->second);
+
             my_task->AddInputFile(my_file);
         }
 
@@ -219,16 +227,14 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
         for (size_t j = 0; j < out_size; j++) {
             getline(in_file, line);
             DLOG(INFO) << "Output file: " << line;
-//      google::FlushLogFiles(google::INFO);
 
-            File *my_file = file_map_per_name.find(line)->second;
-//            std::shared_ptr<File> my_file = file_map_per_name.find(line)->second;
-            size_t index = my_task->AddOutputFile(my_file);
+            auto my_file(file_map_per_name.find(line)->second);
 
-//      if (std::shared_ptr<DynamicFile> dynamic_file = dynamic_cast<std::shared_ptr<DynamicFile>>(my_file)) {
-//            if (std::shared_ptr<DynamicFile> dynamic_file = std::dynamic_pointer_cast<DynamicFile>(my_file)) {
-            if (auto dynamic_file = static_cast<DynamicFile*>(my_file)) {
-                if (dynamic_file->get_parent_task() != nullptr) {
+            auto index = my_task->AddOutputFile(my_file);
+
+            if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(my_file)) {
+                auto p = dynamic_file->get_parent_task().lock();
+                if (p) {
                     LOG(FATAL) << my_file->get_name() << " already have a parent task!";
                 }
                 dynamic_file->set_parent_task(my_task);
@@ -240,7 +246,7 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
         task_map_per_name_.insert(std::make_pair(tag, my_task));
 
         DLOG(INFO) << my_task;
-    }  // for (size_t i = 1; i < task_size_ - 1; i++) {
+    }
 
 //  DLOG(INFO) << "task_map_per_id_: ";
 //  for (auto task : task_map_per_name_) {
@@ -331,7 +337,7 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
     }
 
     in_file.close();
-}  // void Algorithm::ReadTasksAndFiles(std::string tasks_and_files) {
+}
 
 void Algorithm::ReadCluster(const std::string &cluster) {
     DLOG(INFO) << "Reading Clusters from input file [" + cluster + "]" ;
@@ -450,21 +456,28 @@ void Algorithm::ReadCluster(const std::string &cluster) {
     in_cluster.close();
 }  // void Algorithm::ReadCluster(std::string cluster) {
 
+//void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
+//                                  std::unordered_map<std::string, File*> &file_map_per_name) {
 void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
-                                  std::unordered_map<std::string, File*> &file_map_per_name) {
+                                  std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
+    DLOG(INFO) << "Reading Conflict Graph from input file [" + conflict_graph + "]" ;
     std::string line;
     std::vector<std::string> tokens;
 
     std::ifstream in_conflict_graph(conflict_graph);
+
+    if (!in_conflict_graph.is_open()) {
+        LOG(FATAL) << "Conflict graph [" + conflict_graph + "] doesn't exist";
+    }
+
     // conflict_graph_.redefine(size_, size_, 0.0);
 
     // conflict_graph_ = ConflictGraph(size_);
-    conflict_graph_.Redefine(static_cast<int>(GetFileSize()));
+    conflict_graph_.Redefine(static_cast<int>(GetFilesSize()));
 
     // Reading conflict graph information
     while (getline(in_conflict_graph, line)) {
         DLOG(INFO) << "Conflict: " << line;
-//    google::FlushLogFiles(google::INFO);
 
         std::vector<std::string> strs;
         boost::split(strs, line, boost::is_any_of(" "));
@@ -484,7 +497,8 @@ void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
         conflict_graph_.AddConflict(first_file_id, second_file_id, static_cast<int>(conflict_value));
     }
 
-    // DLOG(INFO) << "Conflict Graph: " << conflict_graph_;
+//    DLOG(INFO) << "Conflict Graph: " << conflict_graph_;
+    DLOG(INFO) << "Finished reading Conflict Graph" ;
 
     in_conflict_graph.close();
 }
@@ -499,8 +513,8 @@ void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
 void Algorithm::ReadInputFiles(const std::string &tasks_and_files,
                                const std::string &cluster,
                                const std::string &conflict_graph) {
-  std::unordered_map<std::string, File*> file_map_per_name;
-//    std::unordered_map<std::string, std::shared_ptr<File>> file_map_per_name;
+//  std::unordered_map<std::string, File*> file_map_per_name;
+    std::unordered_map<std::string, std::shared_ptr<File>> file_map_per_name;
 
     ReadTasksAndFiles(tasks_and_files, file_map_per_name);
     ReadCluster(cluster);
@@ -550,6 +564,8 @@ std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string &algorit
     std::cout << "ReturnAlgorithm: " << algorithm << std::endl;
     if (algorithm == "grch") {
         return std::make_shared<Grch>();
+    } else if (algorithm == "grch_hard") {
+        return std::make_shared<GrchHard>();
     } else if (algorithm == "min_min") {
         return std::make_shared<MinMin>();
     } else if (algorithm == "cplex") {

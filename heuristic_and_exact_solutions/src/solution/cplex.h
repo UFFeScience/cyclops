@@ -59,7 +59,7 @@ public:
     ///
     Cplex() = default;
 
-    static int ComputeFileTransferTime(const File *file,
+    static int ComputeFileTransferTime(const std::shared_ptr<File>& file,
                                        const std::shared_ptr<Storage> &storage1,
                                        const std::shared_ptr<Storage> &storage2);
 
@@ -279,8 +279,12 @@ struct BEST {
         for (auto i = 0ul; i < n_; ++i) {
             for (auto j = 0ul; j < m_; ++j) {
                 for (auto t = 0ul; t < t_; ++t) {
+                    auto int_i = static_cast<int>(i);
+                    auto int_j = static_cast<int>(j);
+                    auto int_t = static_cast<int>(t);
+
                     if (x[i][j][t] > PRECISION) {
-                        os << "x[" << i << "][" << j << "][" << t << "] = " << x[i][j][t];
+                        os << "x[" << i << "][" << j << "][" << t << "] = " << x[int_i][int_j][int_t];
                     }
                 }
             }
@@ -288,16 +292,22 @@ struct BEST {
 
         // -------- r ----------
         for (auto i = 0ul; i < n_; ++i) {
-            std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(i + 1);
-            std::vector<File *> input_files = task->get_input_files();
+            auto activation = algorithm_->GetActivationPerId(i + 1ul);
+            auto input_files = activation->get_input_files();
 
             for (auto j = 0ul; j < input_files.size(); ++j) {
                 for (auto k = 0ul; k < m_; ++k) {
                     for (auto l = 0ul; l < mb_; ++l) {
                         for (auto m = 0ul; m < t_; ++m) {
-                            if (r[i][j][k][l][m] > PRECISION) {
+                            auto int_i = static_cast<int>(i);
+                            auto int_j = static_cast<int>(j);
+                            auto int_k = static_cast<int>(k);
+                            auto int_l = static_cast<int>(l);
+                            auto int_m = static_cast<int>(m);
+
+                            if (r[int_i][int_j][int_k][int_l][int_m] > PRECISION) {
                                 os << "r[" << i << "][" << j << "][" << k << "][" << l << "][" << m << "] = "
-                                        << r[i][j][k][l][m];
+                                        << r[int_i][int_j][int_k][int_l][int_m];
                             }
                         }
                     }
@@ -307,16 +317,22 @@ struct BEST {
 
         // -------- w ----------
         for (auto i = 0ul; i < n_; ++i) {
-            std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(i + 1);
-            std::vector<File *> output_files = task->get_output_files();
+            auto activation = algorithm_->GetActivationPerId(i + 1ul);
+            auto output_files = activation->get_output_files();
 
             for (auto j = 0ul; j < output_files.size(); ++j) {
                 for (auto k = 0ul; k < m_; ++k) {
                     for (auto l = 0ul; l < mb_; ++l) {
                         for (auto m = 0ul; m < t_; ++m) {
-                            if (w[i][j][k][l][m] > PRECISION) {
+                            auto int_i = static_cast<int>(i);
+                            auto int_j = static_cast<int>(j);
+                            auto int_k = static_cast<int>(k);
+                            auto int_l = static_cast<int>(l);
+                            auto int_m = static_cast<int>(m);
+
+                            if (w[int_i][int_j][int_k][int_l][int_m] > PRECISION) {
                                 std::cout << "w[" << i << "][" << j << "][" << k << "][" << l << "][" << m << "] = "
-                                        << w[i][j][k][l][m];
+                                        << w[int_i][int_j][int_k][int_l][int_m];
                             }
                         }
                     }
@@ -419,10 +435,10 @@ struct BEST {
 
         os << "Writing CPLEX solution information";
 
-        int *tempo = new int[static_cast<size_t>(mb_)];
+        int *tempo = new int[mb_];
 
         /* Relate each device with its array of data */
-        int **maq_dado = new int *[static_cast<size_t>(mb_)];
+        int **maq_dado = new int *[mb_];
 
         // Initializations
 
@@ -431,7 +447,7 @@ struct BEST {
         }
 
         for (auto i = 0ul; i < mb_; i++) {
-            maq_dado[i] = new int[static_cast<size_t>(d_)];
+            maq_dado[i] = new int[d_];
             for (auto j = 0ul; j < d_; j++) {
                 maq_dado[i][j] = -1;
             }
@@ -451,7 +467,7 @@ struct BEST {
         os << std::endl;
 
         // Time
-        for (auto check = 0ul, t1 = 0ul; t1 < static_cast<size_t>(t_) and check <= 1ul; t1++) {
+        for (auto check = 0ul, t1 = 0ul; t1 < t_ and check <= 1ul; t1++) {
             os << "t" << t1 << ")\t";
 
             // Devices
@@ -472,10 +488,14 @@ struct BEST {
 
                     // Execution
                     for (auto i = 0ul; i < n_ and check <= 1ul; i++) {
-                        std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(1ul + i);
-                        std::vector<File *> input_files = task->get_input_files();
+                        auto activation = algorithm_->GetActivationPerId(1ul + i);
+                        auto input_files = activation->get_input_files();
 
-                        auto x_ijt = static_cast<float>(x[i][j][t1]);  // Returns the value of the variable
+                        auto int_i = static_cast<int>(i);
+                        auto int_j = static_cast<int>(j);
+                        auto int_t1 = static_cast<int>(t1);
+
+                        auto x_ijt = static_cast<float>(x[int_i][int_j][int_t1]);  // Returns the value of the variable
 
                         if (x_ijt >= (1 - PRECISION)) {
                             check += 1;
@@ -487,7 +507,7 @@ struct BEST {
                                 break;
                             }
 
-                            tempo[j] = std::ceil(task->get_time() * virtual_machine->get_slowdown());
+                            tempo[j] = std::ceil(activation->get_time() * virtual_machine->get_slowdown());
 
                             // Checks if the readings were taken by the machine before execution
                             for (auto d1 = 0ul; d1 < input_files.size() and check <= 1; d1++) {
@@ -495,7 +515,12 @@ struct BEST {
 
                                 for (auto k = 0ul; k < mb_ and check <= 1; k++) {
                                     for (auto q_other = 0ul; q_other < t_ and check <= 1; q_other++) {
-                                        auto r_idjpt = static_cast<float>(r[i][d1][j][k][q_other]);
+                                        auto int_d1 = static_cast<int>(d1);
+                                        auto int_k = static_cast<int>(k);
+                                        auto int_q_other = static_cast<int>(q_other);
+
+                                        auto r_idjpt = static_cast<float>(r[int_i][int_d1][int_j][int_k][int_q_other]);
+
                                         // Returns the value of the variable
                                         if (r_idjpt >= (1 - PRECISION)) {
                                             has_read_file = true;
@@ -505,8 +530,8 @@ struct BEST {
 
                                 if (!has_read_file) {
                                     os << "*** PERFORMED THE TASK WITHOUT READING ALL THE ENTRIES *** missing data ="
-                                       << input_files[static_cast<size_t>(d1)]->get_id()
-                                       << "\n" << input_files[static_cast<size_t>(d1)];
+                                       << input_files[d1]->get_id()
+                                       << "\n" << input_files[d1];
                                     check += 1;
                                     break;
                                 }
@@ -522,22 +547,30 @@ struct BEST {
 
                     // Read
                     for (auto i = 0ul; i < n_ and check <= 1; i++) {
-                        std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(1ul + i);
-                        std::vector<File *> input_files = task->get_input_files();
+                        auto activation = algorithm_->GetActivationPerId(1ul + i);
+                        auto input_files = activation->get_input_files();
 
                         for (auto d1 = 0ul; d1 < input_files.size() and check <= 1; d1++) {
-                            File *file = input_files[static_cast<size_t>(d1)];
+                            auto file = input_files[d1];
 
                             for (auto k = 0ul; k < mb_ and check <= 1ul; k++) {
-                                std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(k);
+                                auto storage = algorithm_->GetStoragePerId(k);
 
-                                auto r_idjpt = static_cast<float>(r[i][d1][j][k][t1]);
+                                auto int_i = static_cast<int>(i);
+                                auto int_d1 = static_cast<int>(d1);
+                                auto int_j = static_cast<int>(j);
+                                auto int_k = static_cast<int>(k);
+                                auto int_t1 = static_cast<int>(t1);
+
+
+                                auto r_idjpt = static_cast<float>(r[int_i][int_d1][int_j][int_k][int_t1]);
 
                                 // Returns the value of the variable
                                 if (r_idjpt >= (1 - PRECISION)) {
 //                                    auto read_time = algorithm_->ComputeFileTransferTime(file, virtual_machine,
 //                                                                                         storage);
-                                    auto read_time = Cplex::ComputeFileTransferTime(file, virtual_machine, storage);
+                                    auto read_time = Cplex::ComputeFileTransferTime(
+                                            file, virtual_machine, storage);
                                     check += 1;
                                     os << "r" << i << "(" << input_files[d1]->get_id() << ")<" << k << "\t";
 
@@ -550,7 +583,7 @@ struct BEST {
                                     tempo[j] = read_time;
 
                                     // Check file existence
-                                    auto y_djt = static_cast<float>(y[static_cast<int>(file->get_id())][k][t1]);
+                                    auto y_djt = static_cast<float>(y[int_d1][int_k][int_t1]);
 
                                     // Returns the value of the variable
                                     if (y_djt < (1 - PRECISION)) {
@@ -571,25 +604,32 @@ struct BEST {
 
                     // Writing
                     for (auto has_passed = 0ul, i = 0ul; i < n_ and check <= 1; i++) {
-                        std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(static_cast<size_t>(1ul + i));
-                        std::vector<File *> output_files = task->get_output_files();
+                        auto activation = algorithm_->GetActivationPerId(1ul + i);
+                        auto output_files = activation->get_output_files();
 
                         for (auto d1 = 0ul; d1 < output_files.size() and check <= 1; d1++) {
-                            File *file = output_files[static_cast<size_t>(d1)];
+                            auto file = output_files[d1];
 
                             for (auto k = 0ul; k < mb_ and check <= 1; k++) {
-                                std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(k);
+                                auto storage = algorithm_->GetStoragePerId(k);
 
-                                auto w_idjpt = static_cast<float>(w[i][d1][j][k][t1]);
+                                auto int_i = static_cast<int>(i);
+                                auto int_d1 = static_cast<int>(d1);
+                                auto int_j = static_cast<int>(j);
+                                auto int_k = static_cast<int>(k);
+                                auto int_t1 = static_cast<int>(t1);
+
+                                auto w_idjpt = static_cast<float>(w[int_i][int_d1][int_j][int_k][int_t1]);
 
                                 // Returns the value of the variable
                                 if (w_idjpt >= (1 - PRECISION)) {
 //                                    int write_time = algorithm_->ComputeFileTransferTime(file, virtual_machine, storage);
-                                    auto write_time = Cplex::ComputeFileTransferTime(file, virtual_machine, storage);
+                                    auto write_time = Cplex::ComputeFileTransferTime(
+                                            file, virtual_machine, storage);
 
                                     check += 1;
 
-                                    os << "w" << i << "(" << output_files[static_cast<size_t>(d1)]->get_id() << ")<"
+                                    os << "w" << i << "(" << output_files[d1]->get_id() << ")<"
                                        << k << "\t";
 
                                     if (tempo[j] > 0) {
@@ -600,10 +640,12 @@ struct BEST {
 
                                     tempo[j] = write_time;
 
-                                    // Checks if the task has been executed on the machine before
+                                    // Checks if the activation has been executed on the machine before
                                     has_passed = 0;
                                     for (auto q_other = 0ul; q_other < t_ and check <= 1; q_other++) {
-                                        auto x_ijt = static_cast<float>(x[i][j][q_other]);
+                                        auto int_q_other = static_cast<int>(q_other);
+
+                                        auto x_ijt = static_cast<float>(x[int_i][int_j][int_q_other]);
 
                                         if (x_ijt >= (1 - PRECISION)) {
                                             has_passed = 1;
@@ -633,14 +675,18 @@ struct BEST {
 
                     // Data
                     for (auto d1 = 0ul; d1 < d_ and check <= 1; d1++) {
-                        auto y_djt = static_cast<float>(y[d1][j][t1]);
+                        auto int_d1 = static_cast<int>(d1);
+                        auto int_j = static_cast<int>(j);
+                        auto int_t1 = static_cast<int>(t1);
+
+                        auto y_djt = static_cast<float>(y[int_d1][int_j][int_t1]);
                         // Returns the value of the variable
 
                         if (y_djt >= (1 - PRECISION)) {
-                            maq_dado[j][d1] = 1;
+                            maq_dado[int_j][int_d1] = 1;
                         }
 
-                        if (maq_dado[j][d1] == 1) {
+                        if (maq_dado[int_j][int_d1] == 1) {
                             os << d1 << ",";
                         }
                     }
@@ -648,7 +694,10 @@ struct BEST {
                     os << "\t";
 
                     // Hiring
-                    auto v_jt = static_cast<float>(v[j][t1]);
+                    auto int_j = static_cast<int>(j);
+                    auto int_t1 = static_cast<int>(t1);
+
+                    auto v_jt = static_cast<float>(v[int_j][int_t1]);
 
                     // Returns the value of the variable
                     if (v_jt >= (1 - PRECISION)) {
@@ -661,13 +710,18 @@ struct BEST {
 
                     // Data
                     for (auto d1 = 0ul; d1 < d_ and check <= 1; d1++) {
-                        auto y_djt = static_cast<float>(y[d1][j][t1]);  // Returns the value of the variable
+                        auto int_d1 = static_cast<int>(d1);
+                        auto int_j = static_cast<int>(j);
+                        auto int_t1 = static_cast<int>(t1);
+
+                        // Returns the value of the variable
+                        auto y_djt = static_cast<float>(y[int_d1][int_j][int_t1]);
 
                         if (y_djt >= (1 - PRECISION)) {
-                            maq_dado[j][d1] = 1;
+                            maq_dado[int_j][int_d1] = 1;
                         }
 
-                        if (maq_dado[j][d1] == 1) {
+                        if (maq_dado[int_j][int_d1] == 1) {
                             os << d1 << ",";
                         }
                     }
@@ -691,8 +745,7 @@ struct BEST {
         delete[] maq_dado;
 
         return os;
-    }  // std::ostream &Cplex::Write(std::ostream& os) const {
-
+    }
 };
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_CPLEX_H_

@@ -438,73 +438,73 @@ echo "${now}"
 
 create_cloud_files
 
-alphas[$((0 * 3 + 0))]=0.90
-alphas[$((0 * 3 + 1))]=0.05
-alphas[$((1 * 3 + 0))]=0.05
-alphas[$((0 * 3 + 2))]=0.05
-alphas[$((1 * 3 + 1))]=0.90
-alphas[$((1 * 3 + 2))]=0.05
-alphas[$((2 * 3 + 0))]=0.05
-alphas[$((2 * 3 + 1))]=0.05
-alphas[$((2 * 3 + 2))]=0.90
-alphas[$((3 * 3 + 0))]=0.30
-alphas[$((3 * 3 + 1))]=0.30
-alphas[$((3 * 3 + 2))]=0.40
-alphas[$((4 * 3 + 0))]=1.00
-alphas[$((4 * 3 + 1))]=0.00
-alphas[$((4 * 3 + 2))]=0.00
+#alphas[$((0 * 3 + 0))]=0.90
+#alphas[$((0 * 3 + 1))]=0.05
+#alphas[$((1 * 3 + 0))]=0.05
+#alphas[$((0 * 3 + 2))]=0.05
+#alphas[$((1 * 3 + 1))]=0.90
+#alphas[$((1 * 3 + 2))]=0.05
+#alphas[$((2 * 3 + 0))]=0.05
+#alphas[$((2 * 3 + 1))]=0.05
+#alphas[$((2 * 3 + 2))]=0.90
+#alphas[$((3 * 3 + 0))]=0.30
+#alphas[$((3 * 3 + 1))]=0.30
+#alphas[$((3 * 3 + 2))]=0.40
+#alphas[$((4 * 3 + 0))]=1.00
+#alphas[$((4 * 3 + 1))]=0.00
+#alphas[$((4 * 3 + 2))]=0.00
 
 # For each time/cost/security experiment
-for ((i = 4; i < 5; i++)); do
-    alpha_time=${alphas[$((i * 3 + 0))]}
-    alpha_cost=${alphas[$((i * 3 + 1))]}
-    alpha_security=${alphas[$((i * 3 + 2))]}
-    
+#for ((i = 0; i < 5; i++)); do
+#    alpha_time=${alphas[$((i * 3 + 0))]}
+#    alpha_cost=${alphas[$((i * 3 + 1))]}
+#    alpha_security=${alphas[$((i * 3 + 2))]}
+
 	# For each cluster
-    regex="([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl"
-    for f in $(pwd)/temp/clouds/*; do
-        echo "$f"
+home_dir=$(pwd)
+regex="([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl"
+#    for f in ${home_dir}/temp/clouds/*; do
+#        echo "$f"
 
-#        out_dir=$(basename "${f}")
-        out_dir="$(pwd)/output/${now}"
-        log_dir="$(pwd)/log/${now}"
-        temp_dir="$(pwd)/temp/${now}"
+out_dir="${home_dir}/output/${now}"
+log_dir="${home_dir}/log/${now}"
+temp_dir="${home_dir}/temp/${now}"
 
-        mkdir -p "${out_dir}"
-        mkdir -p "${log_dir}"
-        mkdir -p "${temp_dir}"
+mkdir -p "${out_dir}"
+mkdir -p "${log_dir}"
+mkdir -p "${temp_dir}"
 
-        if [[ $f =~ $regex ]]; then
-            scenario="${BASH_REMATCH[1]}"
-            number_cloud="${BASH_REMATCH[2]}"
-            number_vm="${BASH_REMATCH[3]}"
-            number_buckets="${BASH_REMATCH[4]}"
-            number_vm_req_cryptography="${BASH_REMATCH[5]}"
-            number_vm_req_confidentiality="${BASH_REMATCH[6]}"
-            cloud_type="${BASH_REMATCH[7]}"
-        else
-            echo "$f doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
-        fi
+#      if [[ $f =~ $regex ]]; then
+#          scenario="${BASH_REMATCH[1]}"
+#          number_cloud="${BASH_REMATCH[2]}"
+#          number_vm="${BASH_REMATCH[3]}"
+#          number_buckets="${BASH_REMATCH[4]}"
+#          number_vm_req_cryptography="${BASH_REMATCH[5]}"
+#          number_vm_req_confidentiality="${BASH_REMATCH[6]}"
+#          cloud_type="${BASH_REMATCH[7]}"
+#      else
+#          echo "$f doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
+#      fi
 
-        pipenv run python script/run-batch.py \
-            --instances-file="_instances_toys.txt" \
-            --algorithms-file="_algorithms_test.txt" \
-            --clouds-file="$f" \
-            --alpha-time=${alpha_time} \
-            --alpha-cost=${alpha_cost} \
-            --alpha-security=${alpha_security} \
-            --number-of-iterations=100 \
-            --allocation_experiments=4 \
-            --repeat 1 \
-            --output-path="${out_dir}" \
-            --test-scenery="${scenario}" \
-            --number-cloud-sites="${number_cloud}" \
-            --number-vm="${number_vm}" \
-            --number-buckets="${number_buckets}" \
-            --number-vm-req-cryptography="${number_vm_req_cryptography}" \
-            --number-vm-req-confidentiality="${number_vm_req_confidentiality}" \
-            --cloud-type="${cloud_type}" \
-            --log-dir=${log_dir} \
-            --temp-dir=${temp_dir}
-    done
-done
+pipenv run python script/run-batch.py \
+    --instances-file="_instances.txt" \
+    --algorithms-file="_algorithms.txt" \
+    --number-of-iterations=100 \
+    --allocation_experiments=4 \
+    --repeat 1 \
+    --output-path="${out_dir}" \
+    --log-dir="${log_dir}" \
+    --temp-dir="${temp_dir}"
+#          --clouds-file="$f" \
+#          --alpha-time=${alpha_time} \
+#          --alpha-cost=${alpha_cost} \
+#          --alpha-security=${alpha_security} \
+#          --test-scenery="${scenario}" \
+#          --number-cloud-sites="${number_cloud}" \
+#          --number-vm="${number_vm}" \
+#          --number-buckets="${number_buckets}" \
+#          --number-vm-req-cryptography="${number_vm_req_cryptography}" \
+#          --number-vm-req-confidentiality="${number_vm_req_confidentiality}" \
+#          --cloud-type="${cloud_type}" \
+#    done
+#done

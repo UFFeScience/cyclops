@@ -13,6 +13,9 @@
 
 #include <src/common/my_random.h>
 #include "src/solution/grch.h"
+#include <algorithm>
+#include <random>
+#include <vector>       // std::vector
 
 #include "src/model/static_file.h"
 
@@ -27,9 +30,7 @@ DECLARE_uint64(number_of_iteration);
  * \param[in]  avail_activations     Avail tasks to be processed
  * \param[in]  solution        The solution to be built
  */
-Solution
-Grch::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> avail_activations,
-                         Solution &solution) {
+Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution &solution) {
     DLOG(INFO) << "Scheduling the availed activations to the solution ...";
     Solution best_solution = solution;
     while (!avail_activations.empty()) {
@@ -108,7 +109,10 @@ Grch::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> avail_activation
         DLOG(INFO) << "Selected Activation from Restrict Candidate List[" << selected_candidate->first->get_id() << "]";
         DLOG(INFO) << "Removing Activation[" << selected_candidate->first->get_id() << "]";
 
-        avail_activations.remove(selected_candidate->first);  // Remove task scheduled
+//        avail_activations.remove(selected_candidate->first);  // Remove task scheduled
+        // Remove task scheduled
+        auto my_pos = std::find(avail_activations.begin(), avail_activations.end(), selected_candidate->first);
+        avail_activations.erase(my_pos);
     }
 
     DLOG(INFO) << "... availed activations scheduled";
@@ -121,31 +125,44 @@ Grch::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> avail_activation
  */
 void Grch::Run() {
     DLOG(INFO) << "Executing GRCH (Greedy Randomized Constructive Heuristic) ...";
-
+    auto rng = std::default_random_engine {};
 
     Solution best_solution(this);
 
     for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
-        std::list<std::shared_ptr<Activation>> activation_list;
-        std::list<std::shared_ptr<Activation>> avail_activations;
+        std::vector<std::shared_ptr<Activation>> activation_list;
+        std::vector<std::shared_ptr<Activation>> avail_activations;
 
         Solution solution(this);
 
         // Start task list
-        DLOG(INFO) << "Initialize task list";
+        DLOG(INFO) << "Initialize activation list";
         for (const auto &activation: activations_) {
+            DLOG(INFO) << "Inserting activation " << activation->get_id();
             activation_list.push_back(activation);
         }
 
         // Order by height
         DLOG(INFO) << "Order by height";
-        activation_list.sort([&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
+        std::sort(activation_list.begin(), activation_list.end(),
+                  [&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
             return height_[a->get_id()] < height_[b->get_id()];
         });
+//        activation_list.sort([&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
+//            return height_[a->get_id()] < height_[b->get_id()];
+//        });
+
+#ifndef NDEBUG
+        {  // Just for debugging purpose
+            size_t index = 0ul;
+            for (const auto &activation: activation_list) {
+                DLOG(INFO) << ++index << ": activation " << activation->get_id();
+            }
+        }
+#endif
 
         // The activation_list is sorted by the height(t). While activation_list is not empty do
         DLOG(INFO) << "Doing scheduling";
-//    google::FlushLogFiles(google::INFO);
         while (!activation_list.empty()) {
             auto task = activation_list.front();  // Get the first task
 
@@ -155,16 +172,26 @@ void Grch::Run() {
                 // build list of ready tasks, that is the tasks which the predecessor was finish
                 DLOG(INFO) << "Putting " << activation_list.front()->get_id() << " in avail_activations";
                 avail_activations.push_back(activation_list.front());
-                activation_list.pop_front();
+                activation_list.erase(activation_list.begin());
             }
+
+            DLOG(INFO) << "Shuffling activation list";
+            std::shuffle(avail_activations.begin(), avail_activations.end(), rng);
+
+#ifndef NDEBUG
+            {  // Just for debugging purpose
+                size_t index = 0ul;
+                for (const auto &activation: avail_activations) {
+                    DLOG(INFO) << ++index << ": activation " << activation->get_id();
+                }
+            }
+#endif
 
             // Schedule the ready tasks (same height)
             solution = ScheduleAvailTasks(avail_activations, solution);
         }
 
         DLOG(INFO) << "Scheduling done";
-
-        // solution.ObjectiveFunction(false, false);
 
         if (best_solution.get_objective_value() > solution.get_objective_value()) {
             best_solution = solution;
@@ -176,10 +203,8 @@ void Grch::Run() {
 #ifndef NDEBUG
     best_solution.MemoryAllocation();
     best_solution.ComputeObjectiveFunction();
-#endif
     DLOG(INFO) << best_solution;
     std::cout << best_solution;
-#ifndef NDEBUG
     best_solution.FreeingMemoryAllocated();
 #endif
 

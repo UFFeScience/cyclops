@@ -65,6 +65,7 @@ void Grasp::localSearch(Solution &solution) {
  */
 void Grasp::Run() {
     DLOG(INFO) << "Executing GRASP Heuristic ...";
+    auto rng = std::default_random_engine {};
 
     double time_s;
 
@@ -77,12 +78,12 @@ void Grasp::Run() {
 
     for (size_t o = 0; o < std::numeric_limits<size_t>::max(); ++o) {
         // 1. Construction phase (GreedyRandomizedAlgorithm)
-        std::list<std::shared_ptr<Activation>> activation_list;
-        std::list<std::shared_ptr<Activation>> avail_activations;
+        std::vector<std::shared_ptr<Activation>> activation_list;
+        std::vector<std::shared_ptr<Activation>> avail_activations;
 
         Solution solution(this);
 
-        // Start task list
+        // Start activation list
         DLOG(INFO) << "Initialize activations list";
         for (const auto &activations: activations_) {
             activation_list.push_back(activations);
@@ -90,9 +91,13 @@ void Grasp::Run() {
 
         // Order by height
         DLOG(INFO) << "Order by height";
-        activation_list.sort([&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
-            return height_[a->get_id()] < height_[b->get_id()];
-        });
+        std::sort(activation_list.begin(), activation_list.end(),
+                  [&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
+                      return height_[a->get_id()] < height_[b->get_id()];
+                  });
+//        activation_list.sort([&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
+//            return height_[a->get_id()] < height_[b->get_id()];
+//        });
 
         // The activation_list is sorted by the height(t). While activation_list is not empty do
         DLOG(INFO) << "Doing scheduling";
@@ -105,8 +110,12 @@ void Grasp::Run() {
                 // build list of ready tasks, that is the tasks which the predecessor was finish
                 DLOG(INFO) << "Putting " << activation_list.front()->get_id() << " in avail_activations";
                 avail_activations.push_back(activation_list.front());
-                activation_list.pop_front();
+//                activation_list.pop_front();
+                activation_list.erase(activation_list.begin());
             }
+
+            DLOG(INFO) << "Shuffling activation list";
+            std::shuffle(avail_activations.begin(), avail_activations.end(), rng);
 
             // Schedule the ready tasks (same height)
             solution = ScheduleAvailTasks(avail_activations, solution);

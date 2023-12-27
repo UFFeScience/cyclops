@@ -164,7 +164,7 @@ void Solution::FreeingMemoryAllocated() {
 Solution::Solution(Algorithm *algorithm)
         : algorithm_(algorithm),
           activation_allocations_(algorithm->GetActivationSize(), std::numeric_limits<size_t>::max()),
-          file_allocations_(algorithm->GetFileSize(), std::numeric_limits<size_t>::max()),
+          file_allocations_(algorithm->GetFilesSize(), std::numeric_limits<size_t>::max()),
           task_height_(algorithm->GetActivationSize(), -1),
           time_vector_(algorithm->GetActivationSize(), 0ul),
           execution_vm_queue_(algorithm->GetVirtualMachineSize(), 0ul),
@@ -173,12 +173,12 @@ Solution::Solution(Algorithm *algorithm)
           cost_(0.0),
           security_exposure_(0.0),
           n_(algorithm_->GetActivationSize() - 2),
-          d_(algorithm_->GetFileSize()),
+          d_(algorithm_->GetFilesSize()),
           m_(algorithm_->GetVirtualMachineSize()),
           mb_(algorithm_->GetStorageSize()),
           t_(static_cast<size_t>(algorithm_->get_makespan_max())) {
     // Initialize the allocation with the static files place information (VM or Bucket)
-    for (size_t i = 0ul; i < algorithm_->GetFileSize(); ++i) {
+    for (size_t i = 0ul; i < algorithm_->GetFilesSize(); ++i) {
         auto file = algorithm_->GetFilePerId(i);
         if (auto static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
             SetFileAllocation(file->get_id(), static_file->GetFirstVm());
@@ -239,7 +239,7 @@ void Solution::PersistFile(size_t file_id, size_t storage_id, size_t initial_tim
     DLOG(INFO) << "PersistFile(" << file_id << ", " << storage_id << ", " << initial_time << ", " << ft << ");";
 
     if (initial_time >= t_) {
-        DLOG(INFO) << "*** Initial time is greater than makespan max ***"<< std::endl;
+        DLOG(INFO) << "*** Initial time is greater than makespan max ***" << std::endl;
         return;
     }
 
@@ -271,7 +271,7 @@ void Solution::ReadFileForActivation(size_t activation_id, size_t file_id, size_
                << ", " << initial_time << ", " << ft << ");";
 
     if (initial_time >= t_) {
-        DLOG(INFO) << "*** Initial time is greater than makespan max ***"<< std::endl;
+        DLOG(INFO) << "*** Initial time is greater than makespan max ***" << std::endl;
         return;
     }
 
@@ -281,7 +281,7 @@ void Solution::ReadFileForActivation(size_t activation_id, size_t file_id, size_
 
     auto t = initial_time;
 //    for (auto t = initial_time; t < final_time; t++) {
-        r[activation_id][file_id][vm_id][storage_id][t] = 1;
+    r[activation_id][file_id][vm_id][storage_id][t] = 1;
 //    }
 }
 
@@ -301,7 +301,7 @@ void Solution::RunActivation(size_t activation_id, size_t vm_id, size_t initial_
     DLOG(INFO) << "RunActivation(" << activation_id << ", " << vm_id << ", " << initial_time << ", " << ft << ");";
 
     if (initial_time >= t_) {
-        DLOG(INFO) << "*** Initial time is greater than makespan max ***"<< std::endl;
+        DLOG(INFO) << "*** Initial time is greater than makespan max ***" << std::endl;
         return;
     }
 
@@ -331,10 +331,10 @@ void Solution::WriteFileForActivation(size_t activation_id, size_t file_id, size
 
     DLOG(INFO) << "Makespan Max: " << t_ << std::endl;
     DLOG(INFO) << "WriteFileForActivation(" << activation_id << ", " << file_id << ", " << vm_id << ", " << storage_id
-            << ", " << initial_time << ", " << ft << ");";
+               << ", " << initial_time << ", " << ft << ");";
 
     if (initial_time >= t_) {
-        DLOG(INFO) << "*** Initial time is greater than makespan max ***"<< std::endl;
+        DLOG(INFO) << "*** Initial time is greater than makespan max ***" << std::endl;
         return;
     }
 
@@ -361,7 +361,7 @@ void Solution::AllocateVm(size_t vm_id, size_t initial_time, size_t final_time) 
     DLOG(INFO) << "AllocateVm(" << vm_id << ", " << initial_time << ", " << ft << ");";
 
     if (initial_time >= t_) {
-        DLOG(INFO) << "*** Initial time is greater than makespan max ***"<< std::endl;
+        DLOG(INFO) << "*** Initial time is greater than makespan max ***" << std::endl;
         return;
     }
 
@@ -389,7 +389,7 @@ double Solution::ComputeObjectiveFunction() {
     std::vector<size_t> my_allocation_vm_queue(algorithm_->GetVirtualMachineSize(), 0ul);
 
     // 1. Calculates the makespan
-    for (auto activation_id : ordering_) {
+    for (auto activation_id: ordering_) {
         // Initializations
         auto activation_start_time = 0ul;
         auto activation_read_time = 0ul;
@@ -404,7 +404,7 @@ double Solution::ComputeObjectiveFunction() {
 
         // Compute Activation Start Time
         // What came latter, allocation of the VM or the previous activation finish time
-        for (auto previous_task_id : algorithm_->GetPredecessors(activation->get_id())) {
+        for (auto previous_task_id: algorithm_->GetPredecessors(activation->get_id())) {
             if (previous_task_id == algorithm_->get_id_source()) {
                 activation_start_time = 0ul;
                 break;
@@ -466,7 +466,7 @@ double Solution::ComputeObjectiveFunction() {
             // Allocate the necessary VM for the reading
             if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm->get_id()) {
                 if (activation_start_time != std::numeric_limits<size_t>::max()
-                        && activation_read_time != std::numeric_limits<size_t>::max()) {
+                    && activation_read_time != std::numeric_limits<size_t>::max()) {
                     auto st = activation_start_time + activation_read_time;
                     my_allocation_vm_queue[storage_id] = std::max(my_allocation_vm_queue[storage_id],
                                                                   st);
@@ -485,7 +485,7 @@ double Solution::ComputeObjectiveFunction() {
 
             DLOG(INFO) << "RunActivation(" << ai << ", " << vm_id << ", " << st << ", " << ft << ");";
 
-            RunActivation(ai, vm_id, st,ft);
+            RunActivation(ai, vm_id, st, ft);
         }
         // Just for auditing - end
 
@@ -510,7 +510,7 @@ double Solution::ComputeObjectiveFunction() {
                 auto file_id = output_file->get_id();
                 auto ai = activation_id - 1ul;
                 auto st = activation_start_time + activation_read_time + activation_run_time
-                        + activation_write_time;
+                          + activation_write_time;
                 auto ft = st + one_file_write_time;
 
                 DLOG(INFO) << "WriteFileForActivation(" << ai << ", " << file_id << ", " << vm_id << ", "
@@ -522,13 +522,13 @@ double Solution::ComputeObjectiveFunction() {
                 PersistFile(file_id, storage_id, st, ft);
             }
             // Just for auditing - end
-            
+
             activation_write_time += one_file_write_time;
             if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm_id) {
                 if (activation_start_time != std::numeric_limits<size_t>::max()
-                        && activation_read_time != std::numeric_limits<size_t>::max()
-                        && activation_run_time != std::numeric_limits<size_t>::max()
-                        && activation_write_time != std::numeric_limits<size_t>::max()) {
+                    && activation_read_time != std::numeric_limits<size_t>::max()
+                    && activation_run_time != std::numeric_limits<size_t>::max()
+                    && activation_write_time != std::numeric_limits<size_t>::max()) {
                     auto write_time = activation_start_time + activation_read_time + activation_run_time
                                       + activation_write_time;
 
@@ -542,9 +542,9 @@ double Solution::ComputeObjectiveFunction() {
 
         // Compute Finish Time
         if (activation_start_time == std::numeric_limits<size_t>::max()
-                || activation_read_time == std::numeric_limits<size_t>::max()
-                || activation_run_time == std::numeric_limits<size_t>::max()
-                || activation_write_time == std::numeric_limits<size_t>::max()) {
+            || activation_read_time == std::numeric_limits<size_t>::max()
+            || activation_run_time == std::numeric_limits<size_t>::max()
+            || activation_write_time == std::numeric_limits<size_t>::max()) {
             finish_time = std::numeric_limits<size_t>::max();
         } else {
             finish_time = activation_start_time + activation_read_time + activation_run_time + activation_write_time;
@@ -608,7 +608,7 @@ double Solution::ComputeObjectiveFunction() {
 
         // If the storage is not a Virtual Machine, i.e. it is a Bucket; then calculate the bucket
         // variable cost
-        for (size_t j = 0ul; j < algorithm_->GetFileSize(); ++j) {
+        for (size_t j = 0ul; j < algorithm_->GetFilesSize(); ++j) {
             // If the Bucket is used; then accumulate de cost and break to the next Storage
             if (file_allocations_[j] == storage->get_id()) {
                 std::shared_ptr<File> file = algorithm_->GetFilePerId(j);
@@ -644,10 +644,10 @@ double Solution::ComputeObjectiveFunction() {
     }
 
     // Accumulate the privacy_exposure
-    for (size_t i = 0ul; i < algorithm_->GetFileSize() - 1; ++i) {
+    for (size_t i = 0ul; i < algorithm_->GetFilesSize() - 1; ++i) {
         const size_t storage1_id = file_allocations_[i];
 
-        for (size_t j = i + 1ul; j < algorithm_->GetFileSize(); ++j) {
+        for (size_t j = i + 1ul; j < algorithm_->GetFilesSize(); ++j) {
             const size_t storage2_id = file_allocations_[j];
 
             if (storage1_id != std::numeric_limits<size_t>::max()
@@ -798,7 +798,7 @@ size_t Solution::ComputeFileTransferTime(std::shared_ptr<File> file,
 //      << check_constraints << "]";
 
     if (check_constraints) {
-        for (size_t i = 0ul; i < algorithm_->GetFileSize(); ++i) {
+        for (size_t i = 0ul; i < algorithm_->GetFilesSize(); ++i) {
             size_t storage_id = file_allocations_[i];
 
             // If file 'i' is to transfer to the same place that file->get_id()
@@ -812,6 +812,9 @@ size_t Solution::ComputeFileTransferTime(std::shared_ptr<File> file,
             }
         }
     }
+//    else {
+//        std::cout << "Skipping constraint checking" << std::endl;
+//    }
 
     // If there is no Hard constraints; calculates de transfer time between storages
     // or if check_constraints is false
@@ -983,7 +986,7 @@ bool Solution::checkFiles() {
     // build file map and compute the storage
     // for (auto it : data->file_map) {
     // for (auto it : algorithm_->get_file_map_per_id()) {
-    for (size_t it = 0ul; it < algorithm_->GetFileSize(); ++it) {
+    for (size_t it = 0ul; it < algorithm_->GetFilesSize(); ++it) {
         std::shared_ptr<File> file = algorithm_->GetFilePerId(it);
 
         if (std::shared_ptr<DynamicFile> dynamic_file = std::dynamic_pointer_cast<DynamicFile>(file)) {
@@ -1039,7 +1042,7 @@ bool Solution::checkFiles() {
         }
 
         count++;
-    } while (flag && count < algorithm_->GetFileSize());
+    } while (flag && count < algorithm_->GetFilesSize());
     return !flag;
 }  // bool Solution::checkFiles() {
 
@@ -1107,7 +1110,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
         std::shared_ptr<Storage> vm = algorithm_->GetStoragePerId(i);
 
         os << vm->get_id() << ": \n";
-        for (size_t j = 0ul; j < algorithm_->GetFileSize(); ++j) {
+        for (size_t j = 0ul; j < algorithm_->GetFilesSize(); ++j) {
             auto file = algorithm_->GetFilePerId(j);
             size_t storage_id;
 
@@ -1159,9 +1162,9 @@ std::ostream &Solution::Write(std::ostream &os) const {
                 for (auto k = 0UL; k < m_; ++k) {
                     for (auto l = 0UL; l < mb_; ++l) {
                         for (auto m = 0UL; m < t_; ++m) {
-                            if (r[i][j][k][l][m]  > 0) {
+                            if (r[i][j][k][l][m] > 0) {
                                 os << "r[" << i << "][" << j << "][" << k << "][" << l << "][" << m << "] = "
-                                        << r[i][j][k][l][m] << std::endl;
+                                   << r[i][j][k][l][m] << std::endl;
                             }
                         }
                     }
@@ -1180,7 +1183,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
                         for (auto m = 0UL; m < t_; ++m) {
                             if (w[i][j][k][l][m] > 0) {
                                 os << "w[" << i << "][" << j << "][" << k << "][" << l << "][" << m << "] = "
-                                        << w[i][j][k][l][m] << std::endl;
+                                   << w[i][j][k][l][m] << std::endl;
                             }
                         }
                     }
@@ -1222,8 +1225,8 @@ std::ostream &Solution::Write(std::ostream &os) const {
         }
 
         for (auto i = 0ul; i < mb_; i++) {
-            maq_dado[i] = new int[algorithm_->GetFileSize()];
-            for (auto j = 0ul; j < algorithm_->GetFileSize(); j++) {
+            maq_dado[i] = new int[algorithm_->GetFilesSize()];
+            for (auto j = 0ul; j < algorithm_->GetFilesSize(); j++) {
                 maq_dado[i][j] = -1;
             }
         }
@@ -1529,7 +1532,13 @@ size_t Solution::AllocateOneOutputFileGreedily(std::shared_ptr<File> file,
     for (size_t i = 0ul; i < available_storages.size(); ++i) {
         std::shared_ptr<Storage> storage = available_storages[i];
         // 1. Calculates the File Transfer Time
-        size_t write_one_file_time = ComputeFileTransferTime(file, vm, storage, true);
+        size_t write_one_file_time;
+        if (boost::algorithm::ends_with(algorithm_->GetName(), "_hard")) {
+            write_one_file_time = ComputeFileTransferTime(file, vm, storage, true);
+        } else {
+            DLOG(INFO) << "Skipping constraint checking";
+            write_one_file_time = ComputeFileTransferTime(file, vm, storage, false);
+        }
 
         if (write_one_file_time == std::numeric_limits<size_t>::max()) {
             continue;  // Hard-constraint
@@ -1658,9 +1667,9 @@ size_t Solution::AllocateOutputFiles(const std::shared_ptr<Activation> &task,
 
     // TODO: see if this behaviour is better
     // Shuffle the output files for better randomness between the solutions
-//  if (output_files.size() > 1) {
-//    std::shuffle(output_files.begin(), output_files.end(), generator());
-//  }
+    if (output_files.size() > 1) {
+        std::shuffle(output_files.begin(), output_files.end(), generator());
+    }
 
     // For each output file Allocate the storage that impose the minor Write time
     for (auto &file: output_files) {
@@ -1831,7 +1840,7 @@ double Solution::ComputeFileSecurityExposureContribution(const std::shared_ptr<S
 //  DLOG(INFO) << "Calculate Security Exposure";
 
     // Accumulate the privacy_exposure
-    for (size_t i = 0ul; i < algorithm_->GetFileSize(); ++i) {
+    for (size_t i = 0ul; i < algorithm_->GetFilesSize(); ++i) {
         size_t storage1_id = file_allocations_[i];
 
         if (storage1_id != std::numeric_limits<size_t>::max()
@@ -1929,8 +1938,8 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
         virtual_machine_cost += static_cast<double>(allocation_vm_queue_[virtual_machine->get_id()])
                                 * virtual_machine->get_cost();
         DLOG(INFO)
-                << "allocation_vm_queue_[virtual_machine->get_id()]: "
-                << allocation_vm_queue_[virtual_machine->get_id()];
+                        << "allocation_vm_queue_[virtual_machine->get_id()]: "
+                        << allocation_vm_queue_[virtual_machine->get_id()];
         DLOG(INFO) << "virtual_machine->get_cost(): " << virtual_machine->get_cost();
     }
 
@@ -1940,7 +1949,7 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
 
         // If the storage is not a Virtual Machine, i.e. it is a Bucket; then calculate the bucket
         // variable cost
-        for (size_t j = 0ul; j < algorithm_->GetFileSize(); ++j) {
+        for (size_t j = 0ul; j < algorithm_->GetFilesSize(); ++j) {
             // If the Bucket is used; then accumulate de cost and break to the next Storage
             if (file_allocations_[j] == storage->get_id()) {
                 std::shared_ptr<File> file = algorithm_->GetFilePerId(j);
@@ -1990,6 +1999,7 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
+
 /**
  *
  *
@@ -2014,6 +2024,7 @@ int Solution::ComputeTasksHeights(size_t node) {
     task_height_[node] = dis(generator());
     return task_height_[node];
 }
+
 #pragma clang diagnostic pop
 
 /**

@@ -7,12 +7,15 @@
  * \copyright Computer Science Department
  * \date 2020
  *
- * This source file contains the methods from the \c Grch class
+ * This source file contains the methods from the \c Heft class
  * that run the mode the approximate solution.
  */
 
 #include <src/common/my_random.h>
-#include "src/solution/heft_star.h"
+#include "src/solution/grch_hard.h"
+#include <algorithm>
+#include <random>
+#include <vector>       // std::vector
 
 #include "src/model/static_file.h"
 
@@ -27,8 +30,7 @@ DECLARE_uint64(number_of_iteration);
  * \param[in]  avail_activations     Avail tasks to be processed
  * \param[in]  solution        The solution to be built
  */
-Solution HeftStar::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> avail_activations,
-                                      Solution& solution) {
+Solution GrchHard::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution &solution) {
     DLOG(INFO) << "Scheduling the availed activations to the solution ...";
     Solution best_solution = solution;
     while (!avail_activations.empty()) {
@@ -38,7 +40,7 @@ Solution HeftStar::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> ava
         std::list<std::pair<std::shared_ptr<Activation>, Solution>> avail_solutions;
 
         // 1. Compute time phase
-        for (const auto& activation: avail_activations) {
+        for (const auto &activation: avail_activations) {
             // The solution with the best O.F. after choosing a specific VM
             Solution best_selected_vm_solution(this);
 
@@ -49,7 +51,7 @@ Solution HeftStar::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> ava
 
             // For each VM
             // Select the best VM
-            for (const auto& vm: virtual_machines_) {
+            for (const auto &vm: virtual_machines_) {
                 Solution new_solution = best_solution;
 
                 double objective_value = new_solution.ScheduleActivation(activation, vm);
@@ -64,8 +66,7 @@ Solution HeftStar::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> ava
                     best_vm = virtual_machines_[vm->get_id()];
                     best_selected_vm_solution = new_solution;
                 }
-
-            }  // for (std::pair<size_t, VirtualMachine> pair : vm_map_) {
+            }
 
             if (best_actual_objective_value > total_maximum_objective_value) {
                 total_maximum_objective_value = best_actual_objective_value;
@@ -77,84 +78,114 @@ Solution HeftStar::ScheduleAvailTasks(std::list<std::shared_ptr<Activation>> ava
 
             // Put the best current solution in the list
             avail_solutions.emplace_back(activation, best_selected_vm_solution);
-        }  // for (auto task : avail_activations) {
+        }
 
         std::list<std::pair<std::shared_ptr<Activation>, Solution>> restricted_candidate_list;
 
-        for (const auto& candidate_pair: avail_solutions) {
+        for (const auto &candidate_pair: avail_solutions) {
             if (candidate_pair.second.get_objective_value()
                 <= total_minimal_objective_value + (alpha_restrict_candidate_list_
-                    * (total_maximum_objective_value
-                        - total_minimal_objective_value))) {
+                                                    * (total_maximum_objective_value
+                                                       - total_minimal_objective_value))) {
                 restricted_candidate_list.push_back(candidate_pair);
             }
         }
 
-        restricted_candidate_list.sort([&](const std::pair<std::shared_ptr<Activation>, Solution>& a,
-                                           const std::pair<std::shared_ptr<Activation>, Solution>& b) {
-          return a.second.get_objective_value() < b.second.get_objective_value();
+        restricted_candidate_list.sort([&](const std::pair<std::shared_ptr<Activation>, Solution> &a,
+                                           const std::pair<std::shared_ptr<Activation>, Solution> &b) {
+            return a.second.get_objective_value() < b.second.get_objective_value();
         });
 
-//    size_t position = static_cast<size_t>(rand()) % restricted_candidate_list.size();
-        size_t position = 0ul;
+        auto position = 0ul;
         if (!restricted_candidate_list.empty()) {
-            position = static_cast<size_t>(my_rand(0ul, restricted_candidate_list.size() - 1ul));
+            position = my_rand<size_t>(0ul, restricted_candidate_list.size() - 1ul);
         }
 
-        auto selected_candidate = std::next(restricted_candidate_list.begin(), position);
+        auto selected_candidate = std::next(restricted_candidate_list.begin(),
+                                            static_cast<long>(position));
 
-//    solution = selected_candidate->second;
         best_solution = selected_candidate->second;
 
         DLOG(INFO) << "Selected Activation from Restrict Candidate List[" << selected_candidate->first->get_id() << "]";
         DLOG(INFO) << "Removing Activation[" << selected_candidate->first->get_id() << "]";
 
-        avail_activations.remove(selected_candidate->first);  // Remove task scheduled
-    }  // while (!avail_activations.empty()) {
-    return best_solution;
+//        avail_activations.remove(selected_candidate->first);  // Remove task scheduled
+        // Remove task scheduled
+        auto my_pos = std::find(avail_activations.begin(), avail_activations.end(), selected_candidate->first);
+        avail_activations.erase(my_pos);
+    }
+
     DLOG(INFO) << "... availed activations scheduled";
-}  // void Grch::ScheduleAvailTasks(...)
 
-void HeftStar::Run() {
-    DLOG(INFO) << "Executing Greedy Randomized Constructive Heuristic ...";
-    // google::FlushLogFiles(google::INFO);
+    return best_solution;
+}
 
-    // std::srand(unsigned(std::time(0)));
+/**
+ *
+ */
+void GrchHard::Run() {
+    DLOG(INFO) << "Executing GRCH (Greedy Randomized Constructive Heuristic) ...";
+    auto rng = std::default_random_engine {};
 
     Solution best_solution(this);
 
     for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
-        std::list<std::shared_ptr<Activation>> activation_list;
-        std::list<std::shared_ptr<Activation>> avail_activations;
+        std::vector<std::shared_ptr<Activation>> activation_list;
+        std::vector<std::shared_ptr<Activation>> avail_activations;
 
         Solution solution(this);
 
         // Start task list
-        DLOG(INFO) << "Initialize task list";
-        for (const auto& activation: activations_) {
+        DLOG(INFO) << "Initialize activation list";
+        for (const auto &activation: activations_) {
+            DLOG(INFO) << "Inserting activation " << activation->get_id();
             activation_list.push_back(activation);
         }
 
         // Order by height
         DLOG(INFO) << "Order by height";
-        activation_list.sort([&](const std::shared_ptr<Activation>& a, const std::shared_ptr<Activation>& b) {
-          return height_[a->get_id()] < height_[b->get_id()];
+        std::sort(activation_list.begin(), activation_list.end(),
+                  [&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
+            return height_[a->get_id()] < height_[b->get_id()];
         });
+//        activation_list.sort([&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
+//            return height_[a->get_id()] < height_[b->get_id()];
+//        });
+
+#ifndef NDEBUG
+        {  // Just for debugging purpose
+            size_t index = 0ul;
+            for (const auto &activation: activation_list) {
+                DLOG(INFO) << ++index << ": activation " << activation->get_id();
+            }
+        }
+#endif
 
         // The activation_list is sorted by the height(t). While activation_list is not empty do
         DLOG(INFO) << "Doing scheduling";
-//    google::FlushLogFiles(google::INFO);
         while (!activation_list.empty()) {
             auto task = activation_list.front();  // Get the first task
 
             avail_activations.clear();
             while (!activation_list.empty()
-                && height_[task->get_id()] == height_[activation_list.front()->get_id()]) {
+                   && height_[task->get_id()] == height_[activation_list.front()->get_id()]) {
                 // build list of ready tasks, that is the tasks which the predecessor was finish
                 DLOG(INFO) << "Putting " << activation_list.front()->get_id() << " in avail_activations";
                 avail_activations.push_back(activation_list.front());
-                activation_list.pop_front();
+                activation_list.erase(activation_list.begin());
             }
+
+            DLOG(INFO) << "Shuffling activation list";
+            std::shuffle(avail_activations.begin(), avail_activations.end(), rng);
+
+#ifndef NDEBUG
+            {  // Just for debugging purpose
+                size_t index = 0ul;
+                for (const auto &activation: avail_activations) {
+                    DLOG(INFO) << ++index << ": activation " << activation->get_id();
+                }
+            }
+#endif
 
             // Schedule the ready tasks (same height)
             solution = ScheduleAvailTasks(avail_activations, solution);
@@ -166,17 +197,18 @@ void HeftStar::Run() {
             best_solution = solution;
         }
 
-        LOG(INFO) << solution;
+        DLOG(INFO) << solution;
     }
 
+#ifndef NDEBUG
+    best_solution.MemoryAllocation();
+    best_solution.ComputeObjectiveFunction();
     DLOG(INFO) << best_solution;
-
-    // best_solution.ObjectiveFunction(false, false);
     std::cout << best_solution;
+    best_solution.FreeingMemoryAllocated();
+#endif
 
-    double time_s;
-
-    time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
+    auto time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 
     std::cerr << best_solution.get_makespan()
               << " " << best_solution.get_cost()
@@ -184,5 +216,5 @@ void HeftStar::Run() {
               << " " << best_solution.get_objective_value() << std::endl
               << time_s << std::endl;
 
-    DLOG(INFO) << "... ending HEFT";
-}  // end of Grch::run() method
+    DLOG(INFO) << "... ending GRCH (Greedy Randomized Constructive Heuristic)";
+}
