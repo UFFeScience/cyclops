@@ -1,20 +1,21 @@
 /**
- * \file src/solution/greedy_randomized_constructive_heuristic.h
- * \brief Contains the \c Grch class declaration.
+ * \file src/solution/grch.h
+ * \brief Contains the \c Heft class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2021
  *
- * This header file contains the \c Grch class that construct
+ * This header file contains the \c Heft class that construct
  * several \c Solution objects by selecting tasks randomly inside a restrict candidate list.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
+#define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
 
 #include "src/solution/algorithm.h"
+#include <list>
 
 class Grch : public Algorithm {
  public:
@@ -22,15 +23,20 @@ class Grch : public Algorithm {
   Grch() = default;
 
   /// Default destructor
-  ~Grch() override = default;
+//  ~Grch() override = default;
 
   /// Schedule the avail task, one-by-one
-  void ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution);
+  Solution ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution& solution);
 
   ///
-  void Run();
+  [[nodiscard]] std::string GetName() const override { return name_; }
+
+  ///
+  void Run() override;
 
  private:
-};  // end of class GreedyAlgorithm
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
+  std::string name_ = "grch";
+};
+
+#endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_H_

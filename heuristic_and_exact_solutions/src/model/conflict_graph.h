@@ -10,8 +10,8 @@
  * This header file contains the \c ConflictGraph class.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_
+#define APPROXIMATE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_
 
 #include <vector>
 #include <utility>
@@ -33,7 +33,7 @@ class ConflictGraph {
   ~ConflictGraph() = default;
 
   /// Getter for the accumulated values of soft constraints
-  size_t get_maximum_of_soft_constraints() const { return maximum_of_soft_constraints; }
+  [[nodiscard]] size_t get_maximum_of_soft_constraints() const { return maximum_of_soft_constraints; }
 
   /// Redefine the size of the conflict graph
   void Redefine(const int size) {
@@ -42,13 +42,13 @@ class ConflictGraph {
 
   /// Return the conflict value between the file with ID \c i and file with ID \c j
   int ReturnConflict(size_t i, size_t j) {
-    return conflicts_(i, j);
+    return conflicts_(static_cast<int>(i), static_cast<int>(j));
   }
 
   /// Add a new conflict value between the file with ID \c i and file with ID \c j
   void AddConflict(const size_t i, const size_t j, const int value) {
-    conflicts_(i, j) = value;
-    conflicts_(j, i) = value;
+    conflicts_(static_cast<int>(i), static_cast<int>(j)) = value;
+    conflicts_(static_cast<int>(j), static_cast<int>(i)) = value;
 
     if (value > 0) {
       maximum_of_soft_constraints += static_cast<size_t>(value);
@@ -61,6 +61,6 @@ class ConflictGraph {
 
   /// A positive integer that contain the sum of all soft conflict value
   size_t maximum_of_soft_constraints = 0ul;
-};  // end of class ConflictGraph
+};
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_
+#endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_CONFLICT_GRAPH_H_

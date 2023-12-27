@@ -5,13 +5,13 @@
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2021
  *
  * This header file contains the \c StaticFile class.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STATIC_FILE_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STATIC_FILE_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_STATIC_FILE_H_
+#define APPROXIMATE_SOLUTIONS_SRC_MODEL_STATIC_FILE_H_
 
 #include <glog/logging.h>
 
@@ -23,45 +23,29 @@
 #include "src/model/file.h"
 
 class StaticFile : public File {
- public:
-  /// Parametrised constructor
-  explicit StaticFile(const size_t id, const std::string name, const double size) :
-    File(id, name, size) { }
+public:
+    /// Parametrised constructor
+    explicit StaticFile(const size_t id, const std::string &name, const double size) :
+            File(id, name, size) {}
 
-  ~StaticFile() = default;
+    ~StaticFile() override = default;
 
-  /// Adds a vm
-  void AddVm(size_t vmId) { vms_.push_back(vmId); }
+    /// Adds a vm
+    void AddVm(size_t vmId) { vms_.push_back(vmId); }
 
-  /// Getter the first virtual machine from the list vms_
-  size_t GetFirstVm() const { return vms_[0]; }
+    /// Getter the first virtual machine from the list vms_
+    [[nodiscard]] size_t GetFirstVm() const { return vms_[0]; }
 
-  friend std::ostream& operator<<(std::ostream& os, const StaticFile& a) {
-    return a.write(os);
-  }
-
- private:
-  std::ostream& write(std::ostream& os) const {
-    std::ostringstream oss;
-
-    if (!vms_.empty()) {
-      // Convert all but the last element to avoid a trailing ","
-      std::copy(vms_.begin(), vms_.end() - 1,
-          std::ostream_iterator<int>(oss, ","));
-
-      // Now add the last element with no delimiter
-      oss << vms_.back();
+    friend std::ostream &operator<<(std::ostream &os, const StaticFile &a) {
+        return a.Write(os);
     }
 
-    // std::cout << oss.str() << std::endl;
+private:
+    std::ostream &Write(std::ostream &os) const override {
+        return os << "StaticFile[id " << id_ << ", name " << name_ << ", size " << size_ << "]";
+    }
 
-    return os << "StaticFile[id_: " << id_
-              << ", name_: " << name_
-              << ", size_: " << size_
-              << ", vms_: " << oss.str() << "]";
-  }
+    std::vector<size_t> vms_;
+};
 
-  std::vector<size_t> vms_;
-};  // end of class StaticFile
-
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STATIC_FILE_H_
+#endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_STATIC_FILE_H_

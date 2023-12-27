@@ -10,8 +10,8 @@
  * This header file contains the \c Data class.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_DATA_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_DATA_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_DATA_H_
+#define APPROXIMATE_SOLUTIONS_SRC_MODEL_DATA_H_
 
 #include <sstream>
 #include <iostream>
@@ -55,4 +55,4 @@ private:
   // static void CalcLatLong(double *, double *, int , double *, double *);
 };
 
-#endif
+#endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_DATA_H_

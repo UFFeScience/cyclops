@@ -12,3 +12,9 @@ output*
 cmake*
 cplex*
 **/*.lp
+statistic*
+temp
+_algorithms_*
+_instances_*
+Reports/*
+.venv

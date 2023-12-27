@@ -1,0 +1,103 @@
+Combinações Totais de rodadas: 4 (alfas) X 24 (workflows) X 12 (ambientes + restrições) X 6 (número de buckets) -> 6.912 combinações
+4 * 24 * 4 * 6
+Variações dos Alfa:
+
+1. a1 = 0.90, a2 = 0.05 e a3 = 0.05
+2. a1 = 0.05, a2 = 0.90 e a3 = 0.05
+3. a1 = 0.05, a2 = 0.05 e a3 = 0.90
+4. a1 = 0.33, a2 = 0.33 e a3 = 0.34
+
+Tipos de VMs:
+
+VM1 -  80 GB disco, csi = 1.00, Rede =  4 Mbps, Dolar = 0.02
+VM2 - 120 GB disco, csi = 0.77, Rede =  9 Mbps, Dolar = 0.09
+VM3 - 160 GB disco, csi = 0.38, Rede = 10 Mbps, Dolar = 0.16
+VM4 - 200 GB disco, csi = 0.19, Rede = 10 Mbps, Dolar = 0.32
+
+Configurações de ambientes que temos que testar:
+
+1. 1 cloud site homogêneo: 		4 máquinas do tipo VM1
+2. 1 cloud site heterogêneo: 	4 máquinas - uma de cada tipo
+3. 2 cloud sites homogêneos: 	4 máquinas do tipo VM1 em cada cloud site - a conexão entre VMs de sites diferentes tem que ser mais lenta no momento de montar a matriz
+4. 2 cloud sites heterogêneos: 	4 máquinas - uma de cada tipo em cada cloud site - a conexão entre VMs de sites diferentes tem que ser mais lenta no momento de montar a matriz
+
+Restrições de segurança
+
+R1. Anonimização / Criptografia
+R2. Confiabilidade da Nuvem (GDPR - General Data Protection Regulation)
+
+Combinação de Ambientes com Restrições de segurança:
+
+1) 1 cloud site homogêneo: 4 máquinas do tipo VM1
+	
+	1.1 - 1 cloud site homogêneo: 4 máquinas do tipo VM1 com uma só atendendo ao requisito de criptografia/anonimização e todas atendendo ao requisito de  confiabilidade
+	1.2 - 1 cloud site homogêneo: 4 máquinas do tipo VM1 com duas atendendo ao requisito de criptografia/anonimização e todas atendendo ao requisito de  confiabilidade
+
+2) 1 cloud site heterogêneo: 4 máquinas - uma de cada tipo:
+	
+	2.1 - 1 cloud site heterogêneo: 4 máquinas - uma de cada tipo com uma só atendendo ao requisito de criptografia/anonimização e todas atendendo ao requisito de  confiabilidade
+	2.1 - 1 cloud site heterogêneo: 4 máquinas - uma de cada tipo com duas atendendo ao requisito de criptografia/anonimização e todas atendendo ao requisito de  confiabilidade
+
+3) 2 cloud sites homogêneos: 4 máquinas do tipo VM1 em cada cloud site - a conexão entre VMs de sites diferentes tem que ser mais lenta no momento de montar a matriz
+	
+	3.1 - 2 cloud sites homogêneos: 4 máquinas do tipo VM1 em cada cloud site - os dois sites atendendo o requisito de confiabilidade e uma máquina em cada site atendendo o requisito de criptografia/anonimização
+	3.2 - 2 cloud sites homogêneos: 4 máquinas do tipo VM1 em cada cloud site - os dois sites atendendo o requisito de confiabilidade e duas máquinas em cada site atendendo o requisito de criptografia/anonimização
+	3.3 -  2 cloud sites homogêneos: 4 máquinas do tipo VM1 em cada cloud site - apenas um site atendendo o requisito de confiabilidade e uma máquina em cada site atendendo o requisito de criptografia/anonimização
+	3.4 - 2 cloud sites homogêneos: 4 máquinas do tipo VM1 em cada cloud site - apenas um site atendendo o requisito de confiabilidade e duas máquinas em cada site atendendo o requisito de criptografia/anonimização
+
+4) 2 cloud sites heterogêneos: 4 máquinas - uma de cada tipo em cada cloud site - a conexão entre VMs de sites diferentes tem que ser mais lenta no momento de montar a matriz:
+	
+	4.1 - 2 cloud sites heterogêneos: 4 máquinas - uma de cada tipo em cada cloud site - os dois sites atendendo o requisito de confiabilidade e uma máquina em cada site atendendo o requisito de criptografia/anonimização
+	4.2 - 2 cloud sites heterogêneos: 4 máquinas - uma de cada tipo em cada cloud site - os dois sites atendendo o requisito de confiabilidade e duas máquinas em cada site atendendo o requisito de criptografia/anonimização
+	4.3 - 2 cloud sites heterogêneos: 4 máquinas - uma de cada tipo em cada cloud site - apenas um site atendendo o requisito de confiabilidade e uma máquina em cada site atendendo o requisito de criptografia/anonimização
+	4.4 - 2 cloud sites heterogêneos: 4 máquinas - uma de cada tipo em cada cloud site - apenas um site atendendo o requisito de confiabilidade e duas máquinas em cada site atendendo o requisito de criptografia/anonimização
+
+Buckets:
+
+50 TB Capacidade, 25 Mbps de Rede, 0.023 de Custo financeiro
+Variar a quantidade de buckets em 2, 4, 8, 16, 32, 64
+
+
+Workflows:
+
+Synthetic_5_A
+Synthetic_5_B
+Synthetic_5_C
+Synthetic_10_A
+Synthetic_10_B
+Synthetic_10_C
+Synthetic_15_A
+Synthetic_15_B
+Synthetic_15_C
+CyberShake_30
+CyberShake_50
+CyberShake_100
+Epigenomics_24
+Epigenomics_46
+Epigenomics_100
+Inspiral_30
+Inspiral_50
+Inspiral_100
+Montage_25
+Montage_50
+Montage_100
+Sipht_30
+Sipht_60
+Sipht_100
+
+. fazer tabelão
+. ajustar epigenomics
+. escrever proposta
+
+Mario Dantas (Juiz de Fora)
+Isabel ()
+
+4 (alfas) X 24 (workflows) X 12 (ambientes + restrições) X 6 (número de buckets) -> 6.912 combinações
+
+algoritmo,instancia,cenario,alfa_tempo,alfa_custo,alfa_seguranca,qtd_cloud_sites,qtd_vm,qtd_buckets,qtd_vm_req_crip,qtd_vm_req_confi,tipo_cloud(homogenea/heterogenea),qtd_iteracoes,qtd_experimentacoes_alocacao,fo,makespan,custo,seguranca,tempo
+
+19 campos
+
+. MinMin
+. HEFT
+

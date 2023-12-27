@@ -1,0 +1,35 @@
+1 5 4 2 300.00 440.00
+
+0 1
+1 1
+
+file0 1000000 1 0
+file1 2000000
+file2 3000000
+file3 4000000
+file4 5000000
+file5 6400000
+
+t0 task0 40 1 2 1 1
+file0
+file1
+file2
+t1 task1 35 1 1 1 1
+file1
+file3
+t2 task2 30 1 1 1 1
+file2
+file4
+t3 task3 100 2 1 1 1
+file3
+file4
+file5
+
+t0 2
+t1
+t2
+t1 1
+t3
+t2 1
+t3
+t3 0

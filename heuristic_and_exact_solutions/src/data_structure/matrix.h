@@ -11,8 +11,8 @@
  * This header file contains the \c Matrix class.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_DATA_STRUCTURE_MATRIX_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_DATA_STRUCTURE_MATRIX_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_DATA_STRUCTURE_MATRIX_H_
+#define APPROXIMATE_SOLUTIONS_SRC_DATA_STRUCTURE_MATRIX_H_
 
 #include <new>
 #include <iostream>
@@ -24,7 +24,7 @@ class Matrix {
   Matrix() : pType(NULL), n(0), m(0) { }
 
   ///
-  Matrix(const int nin, const int min, const T val = 0);
+  Matrix(int nin, int min, T val = 0);
 
   ///
   Matrix(const Matrix &rhs);
@@ -33,25 +33,25 @@ class Matrix {
   ~Matrix();
 
   ///
-  T& operator()(const int i, const int j);
+  T& operator()(int i, int j);
 
   ///
-  const T& operator()(const int i, const int j) const;
+  const T& operator()(int i, int j) const;
 
   ///
   Matrix& operator=(const Matrix&);
 
   /// aloca a Matrix e os elementos ficam igual a val
-  void redefine(const int novo_n, const int novo_m, const T val = 0);
+  void redefine(int novo_n, int novo_m, T val = 0);
 
   ///
-  void aloca(const int novo_n, const int novo_m);  // aloca a Matrix
+  void aloca(int novo_n, int novo_m);  // aloca a Matrix
 
   ///
-  void set(const T val = 0);  // toda a Matrix fica igual a val
+  void set(T val = 0);  // toda a Matrix fica igual a val
 
   ///
-  void set(const int i, const T val);
+  void set(int i, T val);
 
   ///
   void get_size(int &nout, int &mout) { nout = n; mout = m; }
@@ -63,10 +63,10 @@ class Matrix {
   void imprime();
 
   ///
-  int getNumLinhas() const { return n; }
+  [[nodiscard]] int getNumLinhas() const { return n; }
 
   ///
-  int getNumColunas() const { return m; }
+  [[nodiscard]] int getNumColunas() const { return m; }
 
   ///
   template<typename U>
@@ -93,10 +93,10 @@ class Matrix {
   T** pType;
 
   /// Number of lines
-  int n;
+  int n{};
 
   /// Number of columns
-  int m;
+  int m{};
 };
 
 template<typename T>
@@ -225,4 +225,4 @@ std::ostream& operator<<(std::ostream& os, const Matrix<T>& m) {
   // return os << '}';
 }
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_DATA_STRUCTURE_MATRIX_H_
+#endif  // APPROXIMATE_SOLUTIONS_SRC_DATA_STRUCTURE_MATRIX_H_

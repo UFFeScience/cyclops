@@ -11,135 +11,33 @@
  * that run the mode the approximate solution.
  */
 
+#include <src/common/my_random.h>
 #include "src/solution/grasp.h"
-
-#include <gflags/gflags.h>
-#include <glog/logging.h>
-
-#include <list>
-#include <vector>
-#include <limits>
-#include <cmath>
-#include <memory>
-#include <ctime>
-#include <utility>
-
-#include "src/model/static_file.h"
-#include "src/model/storage.h"
 
 DECLARE_uint64(number_of_iteration);
 
-// std::random_device rd_chr;
-// std::mt19937 engine_chr(rd_chr());
-
-/**
- * Do the scheduling
- *
- * Use allocates the availed task into \c allocation_ and store the execution ordering into
- * \c ordering_.
- *
- * \param[in]  avail_tasks     Avail tasks to be processed
- * \param[in]  solution        The solution to be built
- */
-void Grasp::ScheduleAvailTasks(std::list<Task *> avail_tasks, Solution &solution) {
-  while (!avail_tasks.empty()) {
-    double total_minimal_objective_value = std::numeric_limits<double>::max();
-    double total_maximum_objective_value = 0.0;
-
-    std::list <std::pair<Task *, Solution>> avail_solutions;
-
-    // 1. Compute time phase
-    for (auto task: avail_tasks) {
-      Solution best_solution = solution;
-
-      // Compute the finish time off all tasks in each Vm
-      double task_minimal_objective_value = std::numeric_limits<double>::max();
-      size_t min_vm_id = 0;
-
-      for (VirtualMachine *vm: virtual_machines_) {
-        Solution new_solution = solution;
-
-        double objective_value = new_solution.ScheduleTask(task, vm);
-
-        VirtualMachine *min_vm = virtual_machines_[min_vm_id];
-
-        if (objective_value < task_minimal_objective_value) {
-          task_minimal_objective_value = objective_value;
-          min_vm_id = vm->get_id();
-          best_solution = new_solution;
-        } else if (objective_value == task_minimal_objective_value
-                   && vm->get_cost() < min_vm->get_cost()) {
-          task_minimal_objective_value = objective_value;
-          min_vm_id = vm->get_id();
-          best_solution = new_solution;
-        } else if (objective_value == task_minimal_objective_value
-                   && vm->get_cost() == min_vm->get_cost()
-                   && vm->get_slowdown() < min_vm->get_slowdown()) {
-          task_minimal_objective_value = objective_value;
-          min_vm_id = vm->get_id();
-          best_solution = new_solution;
+void Grasp::localSearch(Solution &solution) {
+    DLOG(INFO) << "Executing localSearch ...";
+    bool proceed = true;
+    while (proceed) {
+        double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+        proceed = solution.localSearchN1();
+        double time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+        lsFile1.writeLine(time_f - time_s);
+        if (!proceed) {
+            time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+            proceed = solution.localSearchN2();
+            time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+            lsFile2.writeLine(time_f - time_s);
         }
-      }  // for (std::pair<size_t, VirtualMachine> pair : vm_map_) {
-
-      if (task_minimal_objective_value > total_maximum_objective_value) {
-        total_maximum_objective_value = task_minimal_objective_value;
-      }
-
-      if (task_minimal_objective_value < total_minimal_objective_value) {
-        total_minimal_objective_value = task_minimal_objective_value;
-      }
-
-      avail_solutions.push_back(std::make_pair(task, best_solution));
-    }  // for (auto task : avail_tasks) {
-
-    std::list <std::pair<Task *, Solution>> retricted_candidate_list;
-
-    for (std::pair < Task * , Solution > candidate_pair: avail_solutions) {
-      if (candidate_pair.second.get_objective_value()
-          <= total_minimal_objective_value + (alpha_restrict_candidate_list_
-                                              * (total_maximum_objective_value
-                                                 - total_minimal_objective_value))) {
-        retricted_candidate_list.push_back(candidate_pair);
-      }
+        if (!proceed) {
+            time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+            proceed = solution.localSearchN3();
+            time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+            lsFile3.writeLine(time_f - time_s);
+        }
     }
-
-    retricted_candidate_list.sort([&](const std::pair<Task *, Solution> &a,
-                                      const std::pair<Task *, Solution> &b) {
-      return a.second.get_objective_value() < b.second.get_objective_value();
-    });
-
-    size_t position = static_cast<size_t>(rand()) % retricted_candidate_list.size();
-
-    std::list < std::pair < Task * , Solution >> ::iterator
-    selected_candidate =
-        std::next(retricted_candidate_list.begin(), static_cast<unsigned int>(position));
-
-    solution = selected_candidate->second;
-
-    DLOG(INFO) << "Selected Task from Restrict Candidate List[" << selected_candidate->first << "]";
-    DLOG(INFO) << "Removing Task[" << selected_candidate->first << "]";
-
-    avail_tasks.remove(selected_candidate->first);  // Remove task scheduled
-  }  // while (!avail_tasks.empty()) {
-}  // void Grasp::schedule(...)
-
-void localSearch(Solution &solution) {
-  DLOG(INFO) << "Executing localSearch ...";
-  bool proceed = true;
-//    int how_many = setting->alpha * setting->num_chromosomes;
-
-//    for (int j = 0; j < how_many; j++) {
-  while (proceed) {
-    proceed = false;
-//        auto ch_pos = tournamentSelection(Population);
-//        Population[ch_pos] = localSearchN1(data, Population[ch_pos]);
-//        Population[ch_pos] = localSearchN2(data, Population[ch_pos]);
-//        Population[ch_pos] = localSearchN3(data, Population[ch_pos]);
-    proceed = solution.localSearchN1();
-//        proceed = solution.localSearchN2() || proceed;
-//        proceed = solution.localSearchN3() || proceed;
-  }
-  DLOG(INFO) << "... ending localSearch";
+    DLOG(INFO) << "... ending localSearch";
 }
 
 // https://stackoverflow.com/questions/2342162/stdstring-formatting-like-sprintf
@@ -152,114 +50,123 @@ void localSearch(Solution &solution) {
 //  snprintf( buf.get(), size, format.c_str(), args ... );
 //  return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
 //}
-
+/**
+ * Print out.
+ *
+ *      <makespan> <cost> <security_exposure> <O.F.>
+ *      <time_in_seconds>
+ *
+ * Where,
+ * <makespan> -
+ * <cost> -
+ * <security_exposure> -
+ * <O.F.> -
+ * <time_in_seconds> -
+ */
 void Grasp::Run() {
-  DLOG(INFO) << "Executing GRASP Heuristic ...";
-  // google::FlushLogFiles(google::INFO);
+    DLOG(INFO) << "Executing GRASP Heuristic ...";
+    auto rng = std::default_random_engine {};
 
-  // std::srand(unsigned(std::time(0)));
+    double time_s;
 
-  Solution best_solution(this);
+    Solution best_solution(this);
 
-  for (size_t o = 0; o < FLAGS_number_of_iteration; ++o) {
-    // S ← GreedyRandomizedAlgorithm(Seed);
+    size_t max_iter = 5ul;
+    size_t iter = 0ul;
+    double delta = 0.005;
+    double baseline = best_solution.get_objective_value();
 
-    // Construction phase
-    std::list < Task * > task_list;
-    std::list < Task * > avail_tasks;
+    for (size_t o = 0; o < std::numeric_limits<size_t>::max(); ++o) {
+        // 1. Construction phase (GreedyRandomizedAlgorithm)
+        std::vector<std::shared_ptr<Activation>> activation_list;
+        std::vector<std::shared_ptr<Activation>> avail_activations;
 
-    Solution solution(this);
+        Solution solution(this);
 
-    // Initialize the allocation with the static files place information (VM or Bucket)
-    for (File *file: files_) {
-      if (StaticFile * static_file = dynamic_cast<StaticFile *>(file)) {
-        solution.SetFileAllocation(file->get_id(), static_file->GetFirstVm());
-      }
+        // Start activation list
+        DLOG(INFO) << "Initialize activations list";
+        for (const auto &activations: activations_) {
+            activation_list.push_back(activations);
+        }
+
+        // Order by height
+        DLOG(INFO) << "Order by height";
+        std::sort(activation_list.begin(), activation_list.end(),
+                  [&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
+                      return height_[a->get_id()] < height_[b->get_id()];
+                  });
+//        activation_list.sort([&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
+//            return height_[a->get_id()] < height_[b->get_id()];
+//        });
+
+        // The activation_list is sorted by the height(t). While activation_list is not empty do
+        DLOG(INFO) << "Doing scheduling";
+        while (!activation_list.empty()) {
+            auto task = activation_list.front();  // Get the first task
+
+            avail_activations.clear();
+            while (!activation_list.empty()
+                   && height_[task->get_id()] == height_[activation_list.front()->get_id()]) {
+                // build list of ready tasks, that is the tasks which the predecessor was finish
+                DLOG(INFO) << "Putting " << activation_list.front()->get_id() << " in avail_activations";
+                avail_activations.push_back(activation_list.front());
+//                activation_list.pop_front();
+                activation_list.erase(activation_list.begin());
+            }
+
+            DLOG(INFO) << "Shuffling activation list";
+            std::shuffle(avail_activations.begin(), avail_activations.end(), rng);
+
+            // Schedule the ready tasks (same height)
+            solution = ScheduleAvailTasks(avail_activations, solution);
+        }
+
+        DLOG(INFO) << "Scheduling done";
+
+        // 2. S ← LocalSearch(S);
+        localSearch(solution);
+
+        // Store the best solution
+        if (best_solution.get_objective_value() > solution.get_objective_value()) {
+            best_solution = solution;
+            time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time
+            tttFile.writeLine(best_solution.get_objective_value(),
+                              static_cast<size_t>(best_solution.get_makespan()),
+                              best_solution.get_cost(),
+                              best_solution.get_security_exposure(),
+                              time_s);
+        }
+
+        double new_of = best_solution.get_objective_value();
+        if (baseline - new_of >= delta) {
+            iter = 0ul;
+            baseline = new_of;
+        } else {
+            iter += 1ul;
+        }
+
+        if (iter >= max_iter) {
+            break;
+        }
+
+        time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time
+        iterationFile.writeLine(o, time_s);
     }
 
-    // Start task list
-    DLOG(INFO) << "Initialize task list";
-    // for (auto task : task_map_per_id_) {
-    for (Task *task: tasks_) {
-      task_list.push_back(task);
-    }
+    DLOG(INFO) << best_solution;
+    std::cout << best_solution;
 
-    // Order by height
-    DLOG(INFO) << "Order by height";
-    task_list.sort([&](const Task *a, const Task *b) {
-      return height_[a->get_id()] < height_[b->get_id()];
-    });
+    time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time
 
-    // The task_list is sorted by the height(t). While task_list is not empty do
-    DLOG(INFO) << "Doing scheduling";
-    google::FlushLogFiles(google::INFO);
-    while (!task_list.empty()) {
-      auto task = task_list.front();  // Get the first task
+    tttFile.writeLine(best_solution.get_objective_value(),
+                      static_cast<size_t>(best_solution.get_makespan()),
+                      best_solution.get_cost(),
+                      best_solution.get_security_exposure(),
+                      time_s);
 
-      avail_tasks.clear();
-      while (!task_list.empty()
-             && height_[task->get_id()] == height_[task_list.front()->get_id()]) {
-        // build list of ready tasks, that is the tasks which the predecessor was finish
-        DLOG(INFO) << "Putting " << task_list.front()->get_id() << " in avail_tasks";
-        avail_tasks.push_back(task_list.front());
-        task_list.pop_front();
-      }
+    std::cerr << best_solution.get_makespan() << " " << best_solution.get_cost() << " "
+              << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure() << " "
+              << best_solution.get_objective_value() << std::endl << time_s << std::endl;
 
-      // Schedule the ready tasks (same height)
-      ScheduleAvailTasks(avail_tasks, solution);
-    }
-
-    DLOG(INFO) << "Scheduling done";
-    // google::FlushLogFiles(google::INFO);
-
-    // solution.ObjectiveFunction(false, false);
-//
-    if (best_solution.get_objective_value() > solution.get_objective_value()) {
-      best_solution = solution;
-    }
-
-//          LOG(INFO) << solution;
-//      }  // for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
-
-    // S ← LocalSearch(S);
-    localSearch(best_solution);
-
-//      if (best_solution.get_objective_value() > solution.get_objective_value()) {
-//          best_solution = solution;
-//      }
-
-    LOG(INFO) << best_solution;
-
-    // if f(S) < f ∗ then
-    // S ∗ ← S;
-    // f ∗ ← f(S);
-
-  }  // for (size_t o = 0; o < 100; ++o) {
-
-  // std::cout << best_solution << std::endl;
-
-  // best_solution.ObjectiveFunction(false, false);
-
-  DLOG(INFO) << best_solution;
-  // std::cerr << best_solution;
-
-  // best_solution.ObjectiveFunction(false, false);
-  std::cout << best_solution;
-
-  // std::cout << best_solution.get_makespan()
-  //     << " " << best_solution.get_cost()
-  //     << " " << best_solution.get_security_exposure()
-  //     << " " << best_solution.get_objective_value() << std::endl;
-
-  double time_s;
-
-  time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // tempo de processamento
-
-  std::cerr << best_solution.get_makespan()
-            << " " << best_solution.get_cost()
-            << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
-            << " " << best_solution.get_objective_value() << std::endl
-            << time_s << std::endl;
-
-  DLOG(INFO) << "... ending Grasp";
-}  // end of Grasp::run() method
+    DLOG(INFO) << "... ending GRASP";
+}
