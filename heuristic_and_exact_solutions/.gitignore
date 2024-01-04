@@ -18,3 +18,4 @@ _algorithms_*
 _instances_*
 Reports/*
 .venv
+**/*.ipynb_checkpoints
