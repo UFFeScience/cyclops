@@ -11,7 +11,6 @@
  * that run the mode the approximate solution.
  */
 
-#include <src/common/my_random.h>
 #include "src/solution/grasp.h"
 
 DECLARE_uint64(number_of_iteration);
@@ -65,7 +64,6 @@ void Grasp::localSearch(Solution &solution) {
  */
 void Grasp::Run() {
     DLOG(INFO) << "Executing GRASP Heuristic ...";
-    auto rng = std::default_random_engine {};
 
     double time_s;
 
@@ -95,9 +93,6 @@ void Grasp::Run() {
                   [&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
                       return height_[a->get_id()] < height_[b->get_id()];
                   });
-//        activation_list.sort([&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
-//            return height_[a->get_id()] < height_[b->get_id()];
-//        });
 
         // The activation_list is sorted by the height(t). While activation_list is not empty do
         DLOG(INFO) << "Doing scheduling";
@@ -115,7 +110,7 @@ void Grasp::Run() {
             }
 
             DLOG(INFO) << "Shuffling activation list";
-            std::shuffle(avail_activations.begin(), avail_activations.end(), rng);
+            std::shuffle(avail_activations.begin(), avail_activations.end(), generator());
 
             // Schedule the ready tasks (same height)
             solution = ScheduleAvailTasks(avail_activations, solution);
@@ -153,8 +148,13 @@ void Grasp::Run() {
         iterationFile.writeLine(o, time_s);
     }
 
+#ifndef NDEBUG
+    best_solution.MemoryAllocation();
+    best_solution.ComputeObjectiveFunction();
     DLOG(INFO) << best_solution;
-    std::cout << best_solution;
+//    std::cout << best_solution;
+    best_solution.FreeingMemoryAllocated();
+#endif
 
     time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time
 

@@ -17,6 +17,9 @@
 #include "src/solution/algorithm.h"
 #include <list>
 #include <map>
+#include <boost/range/join.hpp>
+#include <iomanip>
+
 
 /* Event represents the start and end time of a task(id)*/
 struct Event {

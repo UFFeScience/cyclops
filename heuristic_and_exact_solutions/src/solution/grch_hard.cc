@@ -11,11 +11,7 @@
  * that run the mode the approximate solution.
  */
 
-#include <src/common/my_random.h>
 #include "src/solution/grch_hard.h"
-#include <algorithm>
-#include <random>
-#include <vector>       // std::vector
 
 #include "src/model/static_file.h"
 
@@ -204,7 +200,7 @@ void GrchHard::Run() {
     best_solution.MemoryAllocation();
     best_solution.ComputeObjectiveFunction();
     DLOG(INFO) << best_solution;
-    std::cout << best_solution;
+//    std::cout << best_solution;
     best_solution.FreeingMemoryAllocated();
 #endif
 

@@ -15,7 +15,11 @@
 #define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_HARD_H_
 
 #include "src/solution/algorithm.h"
+
 #include <list>
+#include <algorithm>
+#include <vector>       // std::vector
+
 
 class GrchHard : public Algorithm {
  public:

@@ -16,6 +16,8 @@
 
 #include "src/solution/algorithm.h"
 #include <list>
+#include <algorithm>
+#include <vector>       // std::vector
 
 class Grch : public Algorithm {
  public:

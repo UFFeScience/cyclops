@@ -11,11 +11,7 @@
  * that run the mode the approximate solution.
  */
 
-#include <src/common/my_random.h>
 #include "src/solution/grch.h"
-#include <algorithm>
-#include <random>
-#include <vector>       // std::vector
 
 #include "src/model/static_file.h"
 
@@ -125,7 +121,6 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
  */
 void Grch::Run() {
     DLOG(INFO) << "Executing GRCH (Greedy Randomized Constructive Heuristic) ...";
-    auto rng = std::default_random_engine {};
 
     Solution best_solution(this);
 
@@ -176,7 +171,7 @@ void Grch::Run() {
             }
 
             DLOG(INFO) << "Shuffling activation list";
-            std::shuffle(avail_activations.begin(), avail_activations.end(), rng);
+            std::shuffle(avail_activations.begin(), avail_activations.end(), generator());
 
 #ifndef NDEBUG
             {  // Just for debugging purpose
@@ -204,7 +199,7 @@ void Grch::Run() {
     best_solution.MemoryAllocation();
     best_solution.ComputeObjectiveFunction();
     DLOG(INFO) << best_solution;
-    std::cout << best_solution;
+//    std::cout << best_solution;
     best_solution.FreeingMemoryAllocated();
 #endif
 

@@ -19,8 +19,8 @@
 #include <utility>
 #include <vector>
 
+#include "src/model/activation.h"
 #include "src/model/storage.h"
-#include "activation.h"
 
 /// Forward declaration of the class Algorithm, needed because of the circular reference
 class Activation;

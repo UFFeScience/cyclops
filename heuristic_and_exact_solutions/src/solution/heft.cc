@@ -11,13 +11,7 @@
  * that run the mode the approximate solution.
  */
 
-#include <src/common/my_random.h>
-#include <map>
 #include "src/solution/heft.h"
-#include <boost/range/join.hpp>
-#include <iomanip>
-
-#include "src/model/static_file.h"
 
 DECLARE_uint64(number_of_iteration);
 
@@ -587,8 +581,8 @@ void Heft::Run() {
 #ifndef NDEBUG
     best_solution.MemoryAllocation();
     best_solution.ComputeObjectiveFunction();
-    std::cout << best_solution;
-    LOG(INFO) << best_solution;
+    DLOG(INFO) << best_solution;
+//    std::cout << best_solution;
     best_solution.FreeingMemoryAllocated();
 #endif
 
