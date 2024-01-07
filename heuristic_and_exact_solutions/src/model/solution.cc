@@ -12,11 +12,6 @@
 
 #include "src/model/solution.h"
 
-#include <boost/algorithm/string.hpp>
-#include <src/common/my_random.h>
-#include "src/model/dynamic_file.h"
-#include "src/model/static_file.h"
-
 DECLARE_uint64(number_of_allocation_experiments);
 
 // TODO: Remove those variables.
@@ -414,7 +409,7 @@ double Solution::ComputeObjectiveFunction() {
         activation_start_time = std::max<size_t>(activation_start_time, my_execution_vm_queue[vm->get_id()]);
 
         // Compute Activation Read Time
-        for (auto file: activation->get_input_files()) {
+        for (const auto& file: activation->get_input_files()) {
             size_t storage_id;
             auto file_id = file->get_id();
 
@@ -491,7 +486,7 @@ double Solution::ComputeObjectiveFunction() {
 
         // Compute Write Time
         auto output_files = activation->get_output_files();
-        for (auto output_file: output_files) {
+        for (const auto& output_file: output_files) {
             auto output_file_id = output_file->get_id();
             auto storage_id = file_allocations_[output_file_id];
             auto storage = algorithm_->GetStoragePerId(storage_id);
@@ -787,7 +782,7 @@ double Solution::ObjectiveFunction(bool check_storage, bool check_sequence) {
  * \retval     time + penalties   The time to transfer \c file from \c file_vm to \c vm with possible
  *                                applied penalties
  */
-size_t Solution::ComputeFileTransferTime(std::shared_ptr<File> file,
+size_t Solution::ComputeFileTransferTime(const std::shared_ptr<File>& file,
                                          const std::shared_ptr<Storage> &storage1,
                                          const std::shared_ptr<Storage> &storage2,
                                          bool check_constraints) const {
@@ -1504,7 +1499,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
  * @param partial_write_time
  * @return
  */
-size_t Solution::AllocateOneOutputFileGreedily(std::shared_ptr<File> file,
+size_t Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<File>& file,
                                                const std::shared_ptr<VirtualMachine> &vm,
                                                const size_t start_time,
                                                const size_t read_time,
@@ -1832,7 +1827,7 @@ size_t Solution::CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<A
  * @return
  */
 double Solution::ComputeFileSecurityExposureContribution(const std::shared_ptr<Storage> &storage,
-                                                         std::shared_ptr<File> file) {
+                                                         const std::shared_ptr<File>& file) {
     double security_exposure;
     // double task_exposure = 0.0;
     double privacy_exposure = 0.0;
@@ -1937,9 +1932,8 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
         std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(i);
         virtual_machine_cost += static_cast<double>(allocation_vm_queue_[virtual_machine->get_id()])
                                 * virtual_machine->get_cost();
-        DLOG(INFO)
-                        << "allocation_vm_queue_[virtual_machine->get_id()]: "
-                        << allocation_vm_queue_[virtual_machine->get_id()];
+        DLOG(INFO) << "allocation_vm_queue_[virtual_machine->get_id()]: "
+                << allocation_vm_queue_[virtual_machine->get_id()];
         DLOG(INFO) << "virtual_machine->get_cost(): " << virtual_machine->get_cost();
     }
 
@@ -2029,7 +2023,8 @@ int Solution::ComputeTasksHeights(size_t node) {
 
 /**
  * N1 - Swap-vm
- *
+ * For each pair of Activations (i, j), if them both are not assigned to the same VM, swap VMs and recompute O.F.
+ * If better O.F. keep it, o.w. undo the swapping and restore O.F. values.
  * @return
  */
 bool Solution::localSearchN1() {
