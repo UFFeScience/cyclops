@@ -2410,7 +2410,9 @@ void Cplex::Run() {
         LOG(INFO) << "UB (X*)  : " << res << endl;
         LOG(INFO) << endl;
 
-        cerr << best.z_max << " " << cost << " " << security << " " << res << endl << time_s << endl;
+//        cerr << best.z_max << " " << cost << " " << security << " " << res << endl << time_s << endl;
+
+        std::cout << best.z_max << " " << cost << " " << security << " " << res << time_s << endl;
 
         LOG(INFO) << "Results:";
         LOG(INFO) << best.z_max << " " << cost << " " << security << " " << res << endl << time_s;

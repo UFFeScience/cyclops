@@ -2,7 +2,7 @@
 
 ALGORITHM=grch
 
-INSTANCE=Synthetic_5_A
+INSTANCE=Synthetic_005_A
 
 PROGRAM=/home/vagrant/Wf-Security/bin/wf_security_greedy.x
 TASK_AND_FILES=/home/vagrant/Wf-Security/input/tasks_and_files/$INSTANCE.dag

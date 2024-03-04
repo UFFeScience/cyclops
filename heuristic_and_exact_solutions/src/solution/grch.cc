@@ -29,83 +29,92 @@ DECLARE_uint64(number_of_iteration);
 Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution &solution) {
     DLOG(INFO) << "Scheduling the availed activations to the solution ...";
     Solution best_solution = solution;
+
+    // As long as there are allocations to be allocated, do
     while (!avail_activations.empty()) {
-        double total_minimal_objective_value = std::numeric_limits<double>::max();
-        double total_maximum_objective_value = 0.0;
+//        double minimal_of_found = std::numeric_limits<double>::max();
+//        double maximum_of_found = 0.0;
 
         std::list<std::pair<std::shared_ptr<Activation>, Solution>> avail_solutions;
 
-        // 1. Compute time phase
+        // 1. Computing time
         for (const auto &activation: avail_activations) {
             // The solution with the best O.F. after choosing a specific VM
-            Solution best_selected_vm_solution(this);
+            Solution best_temporary_solution(this);
 
-            // Compute the finish time off all tasks in each Vm
             // Begin with a BIG O.F.
-            double best_actual_objective_value = std::numeric_limits<double>::max();
-            std::shared_ptr<VirtualMachine> best_vm = virtual_machines_[0ul];
+            auto best_of = std::numeric_limits<double>::max();
+            auto best_vm = virtual_machines_[0ul];
 
-            // For each VM
-            // Select the best VM
-            for (const auto &vm: virtual_machines_) {
-                Solution new_solution = best_solution;
+            // Compute the O.F. in each Vm
+            for (auto &vm: virtual_machines_) {
+                auto new_solution = best_solution;
+                auto of = new_solution.ScheduleActivation(activation, vm);
 
-                double objective_value = new_solution.ScheduleActivation(activation, vm);
-
-                if ((objective_value < best_actual_objective_value)
-                    || (objective_value == best_actual_objective_value
+                // Select the best VM
+                if ((of < best_of)
+                    || (of == best_of
                         && vm->get_cost() < best_vm->get_cost())
-                    || (objective_value == best_actual_objective_value
+                    || (of == best_of
                         && vm->get_cost() == best_vm->get_cost()
                         && vm->get_slowdown() < best_vm->get_slowdown())) {
-                    best_actual_objective_value = objective_value;
-                    best_vm = virtual_machines_[vm->get_id()];
-                    best_selected_vm_solution = new_solution;
+                    best_of = of;
+//                    best_vm = virtual_machines_[vm->get_id()];
+                    best_vm = vm;
+                    best_temporary_solution = new_solution;
                 }
             }
 
-            if (best_actual_objective_value > total_maximum_objective_value) {
-                total_maximum_objective_value = best_actual_objective_value;
-            }
-
-            if (best_actual_objective_value < total_minimal_objective_value) {
-                total_minimal_objective_value = best_actual_objective_value;
-            }
+            // Register
+//            if (best_of > maximum_of_found) {
+//                maximum_of_found = best_of;
+//            }
+//
+//            if (best_of < minimal_of_found) {
+//                minimal_of_found = best_of;
+//            }
 
             // Put the best current solution in the list
-            avail_solutions.emplace_back(activation, best_selected_vm_solution);
+            avail_solutions.emplace_back(activation, best_temporary_solution);
         }
 
-        std::list<std::pair<std::shared_ptr<Activation>, Solution>> restricted_candidate_list;
-
-        for (const auto &candidate_pair: avail_solutions) {
-            if (candidate_pair.second.get_objective_value()
-                <= total_minimal_objective_value + (alpha_restrict_candidate_list_
-                                                    * (total_maximum_objective_value
-                                                       - total_minimal_objective_value))) {
-                restricted_candidate_list.push_back(candidate_pair);
-            }
-        }
-
-        restricted_candidate_list.sort([&](const std::pair<std::shared_ptr<Activation>, Solution> &a,
-                                           const std::pair<std::shared_ptr<Activation>, Solution> &b) {
+        // Sorting elements
+        avail_solutions.sort([&](const std::pair<std::shared_ptr<Activation>, Solution> &a,
+                                      const std::pair<std::shared_ptr<Activation>, Solution> &b) {
             return a.second.get_objective_value() < b.second.get_objective_value();
         });
+        auto sol_size = avail_solutions.size();
+        auto upper_limit = std::min<size_t>(std::ceil<size_t>(alpha_restrict_candidate_list_ * sol_size), sol_size);
+
+//        std::list<std::pair<std::shared_ptr<Activation>, Solution>> restricted_candidate_list;
+
+
+//        for (const auto &candidate_pair: avail_solutions) {
+//            if (candidate_pair.second.get_objective_value()
+//                <= minimal_of_found + (alpha_restrict_candidate_list_
+//                                       * (maximum_of_found
+//                                          - minimal_of_found))) {
+//                restricted_candidate_list.push_back(candidate_pair);
+//            }
+//        }
+
+//        restricted_candidate_list.sort([&](const std::pair<std::shared_ptr<Activation>, Solution> &a,
+//                                           const std::pair<std::shared_ptr<Activation>, Solution> &b) {
+//            return a.second.get_objective_value() < b.second.get_objective_value();
+//        });
 
         auto position = 0ul;
-        if (!restricted_candidate_list.empty()) {
-            position = my_rand<size_t>(0ul, restricted_candidate_list.size() - 1ul);
+        if (!avail_solutions.empty()) {
+            position = my_rand<size_t>(0ul, upper_limit);
         }
 
-        auto selected_candidate = std::next(restricted_candidate_list.begin(),
-                                            static_cast<long>(position));
+        auto selected_candidate = std::next(avail_solutions.begin(), static_cast<long>(position));
 
         best_solution = selected_candidate->second;
 
         DLOG(INFO) << "Selected Activation from Restrict Candidate List[" << selected_candidate->first->get_id() << "]";
         DLOG(INFO) << "Removing Activation[" << selected_candidate->first->get_id() << "]";
 
-//        avail_activations.remove(selected_candidate->first);  // Remove task scheduled
         // Remove task scheduled
         auto my_pos = std::find(avail_activations.begin(), avail_activations.end(), selected_candidate->first);
         avail_activations.erase(my_pos);
@@ -160,6 +169,10 @@ void Grch::Run() {
         DLOG(INFO) << "Doing scheduling";
         while (!activation_list.empty()) {
             auto task = activation_list.front();  // Get the first task
+
+            /*
+             *  Gets the next available activations of the same height and shuffles them.
+             */
 
             avail_activations.clear();
             while (!activation_list.empty()

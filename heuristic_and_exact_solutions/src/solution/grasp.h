@@ -21,30 +21,40 @@
 #include "grch.h"
 
 class Grasp : public Grch {
- public:
-  ///
-  Grasp() = default;
+public:
+    ///
+    Grasp() = default;
 
-  ///
-  [[nodiscard]] std::string GetName() const override { return name_; }
+    ///
+    [[nodiscard]] std::string GetName() const override { return name_; }
 
-  ///
-  void localSearch(Solution&);
+    ///
+    void localSearch(Solution &);
 
-  ///
-  void Run() override;
+    ///
+    void Run() override;
 
- private:
+private:
+    std::string name_ = "grasp";
 
-  std::string name_ = "grasp";
+    WriteToTttFile tttFile{"grasp"};
 
-  WriteToTttFile tttFile{"grasp"};
+    WriteToIteration iterationFile{"grasp"};
 
-  WriteToIteration iterationFile{"grasp"};
+    WriteToLocalSearchFile lsFile1{"grasp", 1};
 
-  WriteToLocalSearchFile lsFile1{"grasp", 1};
-  WriteToLocalSearchFile lsFile2{"grasp", 2};
-  WriteToLocalSearchFile lsFile3{"grasp", 3};
+    WriteToLocalSearchFile lsFile2{"grasp", 2};
+
+    WriteToLocalSearchFile lsFile3{"grasp", 3};
+
+    double lsn_time_1 = 0.0;  // Total Elapsed Time of Local Search Neighborhood 1
+    size_t lsn_noi_1 = 0ul;  // Total Number of Improvements made by Local Search Neighborhood 1
+
+    double lsn_time_2 = 0.0;  // Total Elapsed Time of Local Search Neighborhood 2
+    size_t lsn_noi_2 = 0ul;  // Total Number of Improvements made by Local Search Neighborhood 2
+
+    double lsn_time_3 = 0.0;  // Total Elapsed Time of Local Search Neighborhood 3
+    size_t lsn_noi_3 = 0ul;  // Total Number of Improvements made by Local Search Neighborhood 3
 };
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_

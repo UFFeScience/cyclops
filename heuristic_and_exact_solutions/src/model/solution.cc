@@ -10,6 +10,10 @@
  * This source file contains the \c Solution class definition
  */
 
+#include <iostream>
+#include <deque>
+#include <utility>  // Para std::pair
+#include <algorithm>  // Para std::find_if
 #include "src/model/solution.h"
 
 DECLARE_uint64(number_of_allocation_experiments);
@@ -378,10 +382,13 @@ double Solution::ComputeObjectiveFunction() {
 
     // Finish time for each activation
     std::vector<size_t> my_time_vector(algorithm_->GetActivationSize(), 0ul);
+//    my_time_vector.assign(algorithm_->GetActivationSize(), 0ul);
     // Finish time for each VM
     std::vector<size_t> my_execution_vm_queue(algorithm_->GetVirtualMachineSize(), 0ul);
+//    my_execution_vm_queue.assign(algorithm_->GetVirtualMachineSize(), 0ul);
     // Allocation time needed for each VM
     std::vector<size_t> my_allocation_vm_queue(algorithm_->GetVirtualMachineSize(), 0ul);
+//    my_allocation_vm_queue.assign(algorithm_->GetVirtualMachineSize(), 0ul);
 
     // 1. Calculates the makespan
     for (auto activation_id: ordering_) {
@@ -2030,13 +2037,85 @@ int Solution::ComputeTasksHeights(size_t node) {
 bool Solution::localSearchN1() {
     DLOG(INFO) << "Executing localSearchN1 local search ...";
     double best_known_objective_value = objective_value_;
-
     for (size_t i = 1; i < algorithm_->GetActivationSize() - 2; i++) {
         for (size_t j = i + 1; j < algorithm_->GetActivationSize() - 1; j++) {
             if (activation_allocations_[i] != activation_allocations_[j]) {
+                auto i_vm = activation_allocations_[i];
+                auto j_vm = activation_allocations_[j];
+                std::deque<std::pair<size_t, size_t>> files_changed;
                 // Do the swap
                 iter_swap(activation_allocations_.begin() + static_cast<long int>(i),
                           activation_allocations_.begin() + static_cast<long int>(j));
+                auto i_activation = algorithm_->GetActivationPerId(i);
+                auto i_input_files = i_activation->get_input_files();
+                for (auto input_file : i_input_files) {
+                    if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(input_file)) {
+                        auto file_id = dynamic_file->get_id();
+                        auto file_allocation = file_allocations_[file_id];
+                        if (file_allocation == i_vm) {
+                            auto it = std::find_if(files_changed.begin(), files_changed.end(),
+                                                   [file_id](const std::pair<size_t, size_t>& my_pair) {
+                                                       return my_pair.first == file_id;
+                                                   });
+                            if (it == files_changed.end()) {
+                                file_allocations_[file_id] = j_vm;
+                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                            }
+                        }
+                    }
+                }
+                auto i_output_files = i_activation->get_output_files();
+                for (auto output_file : i_output_files) {
+                    if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(output_file)) {
+                        auto file_id = dynamic_file->get_id();
+                        auto file_allocation = file_allocations_[file_id];
+                        if (file_allocation == i_vm) {
+                            auto it = std::find_if(files_changed.begin(), files_changed.end(),
+                                                   [file_id](const std::pair<size_t, size_t>& my_pair) {
+                                                       return my_pair.first == file_id;
+                                                   });
+                            if (it == files_changed.end()) {
+                                file_allocations_[file_id] = j_vm;
+                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                            }
+                        }
+                    }
+                }
+                auto j_activation = algorithm_->GetActivationPerId(j);
+                auto j_input_files = j_activation->get_input_files();
+                for (auto input_file : j_input_files) {
+                    if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(input_file)) {
+                        auto file_id = dynamic_file->get_id();
+                        auto file_allocation = file_allocations_[file_id];
+                        if (file_allocation == j_vm) {
+                            auto it = std::find_if(files_changed.begin(), files_changed.end(),
+                                                   [file_id](const std::pair<size_t, size_t>& my_pair) {
+                                                       return my_pair.first == file_id;
+                                                   });
+                            if (it == files_changed.end()) {
+                                file_allocations_[file_id] = i_vm;
+                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                            }
+                        }
+                    }
+                }
+                auto j_output_files = j_activation->get_output_files();
+                for (auto output_file : j_output_files) {
+                    if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(output_file)) {
+                        auto file_id = dynamic_file->get_id();
+                        auto file_allocation = file_allocations_[file_id];
+                        if (file_allocation == j_vm) {
+                            auto it = std::find_if(files_changed.begin(), files_changed.end(),
+                                                   [file_id](const std::pair<size_t, size_t>& my_pair) {
+                                                       return my_pair.first == file_id;
+                                                   });
+                            if (it == files_changed.end()) {
+                                file_allocations_[file_id] = i_vm;
+                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                            }
+                        }
+                    }
+                }
                 ComputeObjectiveFunction();
                 makespan_ = of_makespan;
                 cost_ = of_cost;
@@ -2053,6 +2132,11 @@ bool Solution::localSearchN1() {
                 // Return elements
                 iter_swap(activation_allocations_.begin() + static_cast<long int>(i),
                           activation_allocations_.begin() + static_cast<long int>(j));
+                while (!files_changed.empty()) {
+                    auto my_pair = files_changed.front();
+                    file_allocations_[my_pair.first] = my_pair.second;
+                    files_changed.pop_front();
+                }
                 ComputeObjectiveFunction();
                 makespan_ = of_makespan;
                 cost_ = of_cost;
@@ -2073,7 +2157,6 @@ bool Solution::localSearchN1() {
 bool Solution::localSearchN2() {
     DLOG(INFO) << "Executing localSearchN2 local search ...";
     double best_known_objective_value = objective_value_;
-
     // for each task, do
     for (size_t i = 0; i < algorithm_->GetActivationSize(); i++) {
         auto task_i = ordering_[i];
@@ -2117,14 +2200,48 @@ bool Solution::localSearchN2() {
  */
 bool Solution::localSearchN3() {
     DLOG(INFO) << "Executing localSearchN3 local search ...";
-
     double best_known_objective_value = objective_value_;
-
     for (size_t i = 0; i < algorithm_->GetActivationSize(); ++i) {
-        size_t old_vm = activation_allocations_[i];
+        std::deque<std::pair<size_t, size_t>> files_changed;
+        auto old_vm = activation_allocations_[i];
         for (size_t j = 0; j < algorithm_->GetVirtualMachineSize(); j++) {
             if (old_vm != j) {
                 activation_allocations_[i] = j;
+                auto i_activation = algorithm_->GetActivationPerId(i);
+                auto i_input_files = i_activation->get_input_files();
+                for (auto input_file : i_input_files) {
+                    if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(input_file)) {
+                        auto file_id = dynamic_file->get_id();
+                        auto file_allocation = file_allocations_[file_id];
+                        if (file_allocation == old_vm) {
+                            auto it = std::find_if(files_changed.begin(), files_changed.end(),
+                                                   [file_id](const std::pair<size_t, size_t>& my_pair) {
+                                                       return my_pair.first == file_id;
+                                                   });
+                            if (it == files_changed.end()) {
+                                file_allocations_[file_id] = old_vm;
+                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                            }
+                        }
+                    }
+                }
+                auto i_output_files = i_activation->get_output_files();
+                for (auto output_file : i_output_files) {
+                    if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(output_file)) {
+                        auto file_id = dynamic_file->get_id();
+                        auto file_allocation = file_allocations_[file_id];
+                        if (file_allocation == old_vm) {
+                            auto it = std::find_if(files_changed.begin(), files_changed.end(),
+                                                   [file_id](const std::pair<size_t, size_t>& my_pair) {
+                                                       return my_pair.first == file_id;
+                                                   });
+                            if (it == files_changed.end()) {
+                                file_allocations_[file_id] = old_vm;
+                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                            }
+                        }
+                    }
+                }
                 ComputeObjectiveFunction();
                 makespan_ = of_makespan;
                 cost_ = of_cost;
@@ -2140,6 +2257,11 @@ bool Solution::localSearchN3() {
             }
         }
         activation_allocations_[i] = old_vm;
+        while (!files_changed.empty()) {
+            auto my_pair = files_changed.front();
+            file_allocations_[my_pair.first] = my_pair.second;
+            files_changed.pop_front();
+        }
         ComputeObjectiveFunction();
         makespan_ = of_makespan;
         cost_ = of_cost;

@@ -78,16 +78,16 @@ public:
     double ComputeObjectiveFunction();
 
     /// Getter for \c makespan_
-    double get_makespan() const { return makespan_; }
+    [[nodiscard]] double get_makespan() const { return static_cast<double>(makespan_); }
 
     /// Getter for \c cost_
-    double get_cost() const { return cost_; }
+    [[nodiscard]] double get_cost() const { return cost_; }
 
     /// Getter for \c security_exposure_
-    double get_security_exposure() const { return security_exposure_; }
+    [[nodiscard]] double get_security_exposure() const { return security_exposure_; }
 
     /// Getter for \c objective_value_
-    double get_objective_value() const { return objective_value_; }
+    [[nodiscard]] double get_objective_value() const { return objective_value_; }
 
     /// Adds a Storage to a File
     void SetFileAllocation(size_t position, size_t storage_id) {
@@ -110,7 +110,7 @@ public:
     void ClearOrdering();
 
     /// Schedule the \c activation to be executed at \c virtual_machine
-    void AddOrdering(const size_t);
+    void AddOrdering(size_t);
 
     /// Check the files
     inline bool checkFiles();
@@ -139,17 +139,17 @@ protected:
     /// Computes the time of reading input files for the execution of the \c activation
     size_t ComputeActivationReadTime(const std::shared_ptr<Activation> &,
                                      const std::shared_ptr<VirtualMachine> &,
-                                     const size_t);
+                                     size_t);
 
     /// Compute the starting time of the \c task
 //  double ComputeActivationStartTime(size_t activation_id, size_t vm_id);
     size_t ComputeActivationStartTime(size_t task, size_t vm);
 
     /// Compute the file transfer time
-    size_t ComputeFileTransferTime(const std::shared_ptr<File>&file,
-                                   const std::shared_ptr<Storage> &storage1,
-                                   const std::shared_ptr<Storage> &storage2,
-                                   bool check_constraints = false) const;
+    [[nodiscard]] size_t ComputeFileTransferTime(const std::shared_ptr<File> &file,
+                                                 const std::shared_ptr<Storage> &storage1,
+                                                 const std::shared_ptr<Storage> &storage2,
+                                                 bool check_constraints = false) const;
 
     /// Allocate just one output file selecting storage with minimal time transfer
     size_t AllocateOneOutputFileGreedily(const std::shared_ptr<File>&,
@@ -162,9 +162,9 @@ protected:
     /// Define where the output files of the execution of the \c task will be stored
     size_t AllocateOutputFiles(const std::shared_ptr<Activation> &,
                                const std::shared_ptr<VirtualMachine> &,
-                               const size_t,
-                               const size_t,
-                               const size_t);
+                               size_t,
+                               size_t,
+                               size_t);
 
     /// Calculate the actual makespan and Allocate the output files
     size_t CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation> &,
@@ -194,15 +194,12 @@ protected:
 
     /// Final time of each Virtual Machine
     std::vector<size_t> execution_vm_queue_;
-//  std::vector<size_t> execution_vm_queue_;
 
     /// Final time of each Virtual Machine
     std::vector<size_t> allocation_vm_queue_;
-//  std::vector<size_t> allocation_vm_queue_;
 
     /// Makespan of the solution, the total execution time
     size_t makespan_{};
-//  size_t makespan_;
 
     /// Total cost of the solution
     double cost_{};

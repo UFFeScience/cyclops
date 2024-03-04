@@ -5,21 +5,44 @@ import os.path
 import pathlib
 import re
 import subprocess
-import sys
-
+# import sys
+import time
 import shlex
-from multiprocessing import Pool, Lock
+
+from ctypes import c_int
+from multiprocessing import Pool, Lock, Manager
 from os import walk
 
 from pathlib import Path
 
 global_lock = Lock()
+# global_iteration = 0
+start_time = time.time()
+total = 0
+
+
+def progress_bar(valor):
+    global total
+    # print(valor.value)
+    # with valor.get_lock():
+    valor.value += 1
+    progress = valor.value / total
+    bar_length = 30
+    elapsed_time = time.time() - start_time
+    estimated_time = (elapsed_time / progress) - elapsed_time if progress > 0 else 0
+    # Limpar a tela
+    os.system('cls' if os.name == 'nt' else 'clear')
+    # Imprimir a barra de progresso
+    bar = '|' + '#' * int(progress * bar_length) + '-' * (bar_length - int(progress * bar_length)) + '|'
+    print(f'Progresso: {bar} {progress * 100:.2f}%', flush=True)
+    # Imprimir estimativa do tempo restante
+    print(f'Tempo estimado restante: {estimated_time:.2f} segundos', flush=True)
 
 
 def exec_command(cmd):
     p = None
     try:
-        print('cmd:', cmd)
+        # print('cmd:', cmd)
         p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     except Exception as ex:
         print(ex)
@@ -27,22 +50,33 @@ def exec_command(cmd):
 
 
 def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: str, inner_algorithm: str,
-        alpha_time: float, alpha_cost: float, alpha_security: float, number_of_iterations: int,
-        allocation_experiments: int, repeat: int, output_executions_file: str, test_scenery: str, number_vm: str,
-        number_cloud_sites: str, number_buckets: str, number_vm_req_cryptography: str,
-        number_vm_req_confidentiality: str, cloud_type: str, log_dir: str, temp_dir: str):
+        alpha_time: float, alpha_cost: float, alpha_security: float, alpha_restricted_candidate_list: float,
+        number_of_iterations: int, allocation_experiments: int, repeat: int, output_executions_file: str,
+        test_scenery: str, number_vm: str, number_cloud_sites: str, number_buckets: str,
+        number_vm_req_cryptography: str, number_vm_req_confidentiality: str, cloud_type: str, log_dir: str,
+        temp_dir: str, valor_compartilhado):
+    # print('dentro')
+    # with valor_compartilhado.get_lock():
+    # print("Valor compartilhado dentro de minha_funcao:", )
     for r in range(repeat):
         cloud_file = Path(clouds).stem
         actual_log_dir = log_dir + '/' + str(alpha_time) + '_' + str(alpha_cost) + '_' + str(alpha_security) + '/' \
-            + cloud_file + '/' + str(r) + '/' + inner_instance + '/'
+                         + cloud_file + '/' + str(r) + '/' + inner_instance + '/'
         os.makedirs(actual_log_dir)
         current_path = pathlib.Path().resolve()
-        command_list = [f'{current_path}/bin/wf_security_greedy.x', '--tasks_and_files=' + task_and_files, '--cluster='
-                        + clouds, '--conflict_graph=' + conflict_graph, '--algorithm=' + inner_algorithm,
-                        '--alpha_time=' + str(alpha_time), '--alpha_budget=' + str(alpha_cost), '--alpha_security '
-                        + str(alpha_security), '--number_of_iteration=' + str(number_of_iterations),
-                        '--number_of_allocation_experiments=' + str(allocation_experiments), '--log_dir='
-                        + actual_log_dir, '--logbuflevel=-1']
+        command_list = [f'{current_path}/bin/wf_security_greedy.x',
+                        f'--tasks_and_files={task_and_files}',
+                        f'--cluster={clouds}',
+                        f'--conflict_graph={conflict_graph}',
+                        f'--algorithm={inner_algorithm}',
+                        f'--alpha_time={alpha_time}',
+                        f'--alpha_budget={alpha_cost}',
+                        f'--alpha_security={alpha_security}',
+                        f'--alpha_restrict_candidate_list={alpha_restricted_candidate_list}',
+                        f'--number_of_iteration={number_of_iterations}',
+                        f'--number_of_allocation_experiments={allocation_experiments}',
+                        f'--log_dir={actual_log_dir}',
+                        f'--logbuflevel=-1']
         if inner_algorithm == 'cplex':
             cplex_output_dir = temp_dir + '/' + str(alpha_time) + '_' + str(alpha_cost) + '_' + str(alpha_security) \
                                + '/' + cloud_file + '/' + str(r) + '/' + inner_instance
@@ -53,51 +87,87 @@ def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: s
             command_list.append('--cplex_output_file=' + cplex_output_file)
         command = " ".join(command_list)
         # print('Command:', command)
-        output, error = exec_command(command)
+        stdout, stderr = exec_command(command)
+        # print('Print output:', stdout.decode())
+        # print('Print error:', stderr.decode())
+        # Decodificar a saída em texto
+        lines = stdout.decode().splitlines()
+        line = ''
+        # Retorna a última line da saída
+        if lines:
+            line = lines[-1]
         regex = "^"
         regex += "([0-9]*[.]?[0-9]*)"
         regex += " ([0-9]*[.]?[0-9]*)"
         regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)\n([0-9]*[.]?[0-9]*)"
-        regex += "$"
-        m = re.search(regex, error.decode(sys.stdout.encoding), re.M)
-        print('Print output:', output.decode(sys.stdout.encoding))
-        print('Print error:', error.decode(sys.stdout.encoding))
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ([0-9]*[.]?[0-9]*)"
+        # regex += "$"
+        # m = re.search(regex, error.decode(sys.stdout.encoding), re.M)
+        m = re.search(regex, line, re.M)
         if hasattr(m, 'group'):
-            of = float(m.group(4))
-            makespan = float(m.group(1))
-            cost = float(m.group(2))
-            security = float(m.group(3))
-            time = float(m.group(5))
+            of = float(m.group(1))
+            makespan = float(m.group(2))
+            cost = float(m.group(3))
+            security = float(m.group(4))
+            execution_time = float(m.group(5))
+            if "grasp" in inner_algorithm:
+                number_of_iterations = int(m.group(6))
+                best_solution_iteration = int(m.group(7))
+                best_solution_time = float(m.group(8))
+                lsn_time_1 = float(m.group(9))
+                lsn_noi_1 = int(m.group(10))
+                lsn_time_2 = float(m.group(1))
+                lsn_noi_2 = int(m.group(12))
+                lsn_time_3 = float(m.group(13))
+                lsn_noi_3 = int(m.group(14))
         else:
             print(f'In the {r} iteration, program do not return any value. That means unfeasible solution.')
             of = float("-1")
             makespan = float("-1")
             cost = float("-1")
             security = float("-1")
-            time = float("-1")
-
+            execution_time = float("-1")
         out_file = inner_algorithm
         out_file += f',{inner_instance}'
         out_file += f',{test_scenery}'
         out_file += f',{alpha_time}'
         out_file += f',{alpha_cost}'
         out_file += f',{alpha_security}'
+        out_file += f',{alpha_restricted_candidate_list}'
         out_file += f',{number_cloud_sites}'
         out_file += f',{number_vm}'
         out_file += f',{number_buckets}'
         out_file += f',{number_vm_req_cryptography}'
         out_file += f',{number_vm_req_confidentiality}'
         out_file += f',{cloud_type}'
-        out_file += f',{str(number_of_iterations)}'
-        out_file += f',{str(allocation_experiments)}'
+        out_file += f',{number_of_iterations}'
+        out_file += f',{allocation_experiments}'
         out_file += f',{of:f}'
         out_file += f',{makespan:f}'
         out_file += f',{cost:f}'
         out_file += f',{security:f}'
-        out_file += f',{time:f}'
+        out_file += f',{execution_time:f}'
+        out_file += f',{best_solution_iteration}'
+        out_file += f',{best_solution_time:f}'
+        out_file += f',{lsn_time_1:f}'
+        out_file += f',{lsn_noi_1}'
+        out_file += f',{lsn_time_2:f}'
+        out_file += f',{lsn_noi_2}'
+        out_file += f',{lsn_time_3:f}'
+        out_file += f',{lsn_noi_3}'
         out_file += f"\n"
         global_lock.acquire()
+        progress_bar(valor_compartilhado)
         with open(output_executions_file, "a") as file:
             file.write(out_file)
         global_lock.release()
@@ -176,6 +246,7 @@ if __name__ == "__main__":
         header += f',alpha_time'
         header += f',alpha_cost'
         header += f',alpha_security'
+        header += f',alpha_restricted_candidate_list'
         header += f',num_clouds'
         header += f',num_vm'
         header += f',num_buckets'
@@ -189,21 +260,35 @@ if __name__ == "__main__":
         header += f',cost'
         header += f',security'
         header += f',time'
+        header += f',best_solution_iteration'
+        header += f',best_solution_time'
+        header += f',lsn_time_1'
+        header += f',lsn_noi_1'
+        header += f',lsn_time_2'
+        header += f',lsn_noi_2'
+        header += f',lsn_time_3'
+        header += f',lsn_noi_3'
         header += f'\n'
         with open(output_execution_file, 'w') as oef_file:
             oef_file.write(header)
 
     alphas = (
-        (0.90, 0.05, 0.05),
-        (0.05, 0.90, 0.05),
-        (0.05, 0.05, 0.90)
+        (0.90, 0.05, 0.05, 0.3),
+        (0.05, 0.90, 0.05, 0.3),
+        (0.05, 0.05, 0.90, 0.3),
+        (0.90, 0.05, 0.05, 0.5),
+        (0.05, 0.90, 0.05, 0.5),
+        (0.05, 0.05, 0.90, 0.5),
+        (0.90, 0.05, 0.05, 0.7),
+        (0.05, 0.90, 0.05, 0.7),
+        (0.05, 0.05, 0.90, 0.7)
     )
 
     # get the current working directory
     current_working_directory = os.getcwd()
 
     # print output to the console
-    print(current_working_directory)
+    # print(current_working_directory)
 
     f = []
     filenames = []
@@ -212,10 +297,15 @@ if __name__ == "__main__":
     for (dir_path, dir_names, filenames) in walk(clouds_file_dir):
         f.extend(filenames)
         break
-
     # print(filenames)
-
-    pool = Pool(processes=8)
+    # Criar o valor compartilhado
+    # print('antes')
+    # Criar um Manager para gerenciar o objeto compartilhado
+    manager = Manager()
+    valor_compartilhado = manager.Value('i', 0)
+    # print('depois')
+    total = len(filenames) * len(alphas) * len(algorithms) * len(instances) * args.repeat
+    pool = Pool(processes=16)
     p = re.compile('([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl')
     for filename in filenames:
         m = p.match(filename)
@@ -227,18 +317,14 @@ if __name__ == "__main__":
             number_of_vm_req_cryptography = m.group(5)
             number_of_vm_req_confidentiality = m.group(6)
             cloud_type = m.group(7)
-
             # print(scenario, number_of_cloud, number_of_vm, number_of_bucket, number_of_vm_req_cryptography,
             #       number_of_vm_req_confidentiality, cloud_type)
-
             for alpha in alphas:
-                alpha_time, alpha_cost, alpha_security = alpha
-
+                alpha_time, alpha_cost, alpha_security, alpha_rcl = alpha
                 # Run the selected heuristic(s) and meta-heuristic(s)
                 for algorithm in algorithms:
                     algorithm_log_dir = args.log_dir + '/' + algorithm
                     algorithm_temp_dir = args.temp_dir + '/' + algorithm
-
                     for instance in instances:
                         cur_path = pathlib.Path().resolve()  # current path
                         full_file_name = clouds_file_dir + filename
@@ -246,26 +332,15 @@ if __name__ == "__main__":
                             else f'{cur_path}/input/clouds/cluster_' + instance + '.vcl'
                         tasks_and_files_file_name = f'{cur_path}/input/tasks_and_files/' + instance + '.dag'
                         conflict_graph_file_name = f'{cur_path}/input/conflict_graph/' + instance + '.scg'
-
-                        pool.apply_async(run, args = (instance, tasks_and_files_file_name, clouds_file,
-                                                      conflict_graph_file_name, algorithm, alpha_time, alpha_cost,
-                                                      alpha_security, args.number_of_iterations,
-                                                      args.allocation_experiments, args.repeat, output_execution_file,
-                                                      scenario, number_of_cloud, number_of_vm, number_of_bucket,
-                                                      number_of_vm_req_cryptography, number_of_vm_req_confidentiality,
-                                                      cloud_type, algorithm_log_dir, algorithm_temp_dir))
-
-                        # print(instance, tasks_and_files_file_name, clouds_file, conflict_graph_file_name, algorithm,
-                        #       alpha_time, alpha_cost, alpha_security, args.number_of_iterations,
-                        #       args.allocation_experiments, args.repeat, output_execution_file, scenario,
-                        #       number_of_cloud, number_of_vm, number_of_bucket, number_of_vm_req_cryptography,
-                        #       number_of_vm_req_confidentiality, cloud_type, algorithm_log_dir, algorithm_temp_dir)
-
-                        # run(instance, tasks_and_files_file_name, clouds_file, conflict_graph_file_name, algorithm,
-                        #     alpha_time, alpha_cost, alpha_security, args.number_of_iterations,
-                        #     args.allocation_experiments, args.repeat, output_execution_file, scenario, number_of_cloud,
-                        #     number_of_vm, number_of_bucket, number_of_vm_req_cryptography,
-                        #     number_of_vm_req_confidentiality, cloud_type, algorithm_log_dir, algorithm_temp_dir)
+                        # print('chamada')
+                        pool.apply_async(run, args=(instance, tasks_and_files_file_name, clouds_file,
+                                                    conflict_graph_file_name, algorithm, alpha_time, alpha_cost,
+                                                    alpha_security, alpha_rcl, args.number_of_iterations,
+                                                    args.allocation_experiments, args.repeat, output_execution_file,
+                                                    scenario, number_of_cloud, number_of_vm, number_of_bucket,
+                                                    number_of_vm_req_cryptography, number_of_vm_req_confidentiality,
+                                                    cloud_type, algorithm_log_dir, algorithm_temp_dir,
+                                                    valor_compartilhado))
         else:
             exit('Something wrong with the file name pattern')
     # close the process pool

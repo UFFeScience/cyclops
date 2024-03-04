@@ -22,18 +22,32 @@ void Grasp::localSearch(Solution &solution) {
         double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
         proceed = solution.localSearchN1();
         double time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
-        lsFile1.writeLine(time_f - time_s);
+        auto elapsed_time = time_f - time_s;
+        lsn_time_1 += elapsed_time;
+//        lsFile1.writeLine(elapsed_time);
         if (!proceed) {
             time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
             proceed = solution.localSearchN2();
             time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
-            lsFile2.writeLine(time_f - time_s);
+            elapsed_time = time_f - time_s;
+//            lsFile2.writeLine(elapsed_time);
+            lsn_time_2 += elapsed_time;
+        } else {
+            lsn_noi_1++;
+            continue;
         }
         if (!proceed) {
             time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
             proceed = solution.localSearchN3();
             time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
-            lsFile3.writeLine(time_f - time_s);
+            elapsed_time = time_f - time_s;
+//            lsFile3.writeLine(elapsed_time);
+            lsn_time_3 += elapsed_time;
+        } else {
+            lsn_noi_2++;
+        }
+        if (proceed) {
+            lsn_noi_3++;
         }
     }
     DLOG(INFO) << "... ending localSearch";
@@ -69,10 +83,14 @@ void Grasp::Run() {
 
     Solution best_solution(this);
 
-    size_t max_iter = 5ul;
-    size_t iter = 0ul;
-    double delta = 0.005;
-    double baseline = best_solution.get_objective_value();
+    auto max_iter_without_improve = 5ul;
+    auto iter = 0ul;
+    auto number_of_iterations = 0ul;
+    auto best_solution_iteration = 0ul;
+    double best_solution_time;
+//    double delta = 0.005;
+//    auto delta = 0.0;
+    auto baseline = best_solution.get_objective_value();
 
     for (size_t o = 0; o < std::numeric_limits<size_t>::max(); ++o) {
         // 1. Construction phase (GreedyRandomizedAlgorithm)
@@ -97,7 +115,7 @@ void Grasp::Run() {
         // The activation_list is sorted by the height(t). While activation_list is not empty do
         DLOG(INFO) << "Doing scheduling";
         while (!activation_list.empty()) {
-            auto task = activation_list.front();  // Get the first task
+            auto task = activation_list.front();  // Get the first activation
 
             avail_activations.clear();
             while (!activation_list.empty()
@@ -105,7 +123,6 @@ void Grasp::Run() {
                 // build list of ready tasks, that is the tasks which the predecessor was finish
                 DLOG(INFO) << "Putting " << activation_list.front()->get_id() << " in avail_activations";
                 avail_activations.push_back(activation_list.front());
-//                activation_list.pop_front();
                 activation_list.erase(activation_list.begin());
             }
 
@@ -115,7 +132,6 @@ void Grasp::Run() {
             // Schedule the ready tasks (same height)
             solution = ScheduleAvailTasks(avail_activations, solution);
         }
-
         DLOG(INFO) << "Scheduling done";
 
         // 2. S ← LocalSearch(S);
@@ -133,19 +149,24 @@ void Grasp::Run() {
         }
 
         double new_of = best_solution.get_objective_value();
-        if (baseline - new_of >= delta) {
+//        if (baseline - new_of >= delta) {
+        if (new_of < baseline) {
             iter = 0ul;
             baseline = new_of;
+            best_solution_iteration = number_of_iterations;
+            best_solution_time = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time
         } else {
             iter += 1ul;
         }
 
-        if (iter >= max_iter) {
+        if (iter >= max_iter_without_improve) {
             break;
         }
 
         time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time
         iterationFile.writeLine(o, time_s);
+
+        number_of_iterations++;
     }
 
 #ifndef NDEBUG
@@ -158,15 +179,32 @@ void Grasp::Run() {
 
     time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time
 
-    tttFile.writeLine(best_solution.get_objective_value(),
-                      static_cast<size_t>(best_solution.get_makespan()),
-                      best_solution.get_cost(),
-                      best_solution.get_security_exposure(),
-                      time_s);
+//    tttFile.writeLine(best_solution.get_objective_value(),
+//                      static_cast<size_t>(best_solution.get_makespan()),
+//                      best_solution.get_cost(),
+//                      best_solution.get_security_exposure(),
+//                      time_s);
 
-    std::cerr << best_solution.get_makespan() << " " << best_solution.get_cost() << " "
-              << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure() << " "
-              << best_solution.get_objective_value() << std::endl << time_s << std::endl;
+//    std::cerr << best_solution.get_makespan() << " " << best_solution.get_cost() << " "
+//              << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure() << " "
+//              << best_solution.get_objective_value() << std::endl << time_s << std::endl;
+
+    std::cout
+            << best_solution.get_objective_value()
+            << " " << best_solution.get_makespan()
+            << " " << best_solution.get_cost()
+            << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
+            << " " << time_s
+            << " " << number_of_iterations
+            << " " << best_solution_iteration
+            << " " << best_solution_time
+            << " " << lsn_time_1
+            << " " << lsn_noi_1
+            << " " << lsn_time_2
+            << " " << lsn_noi_2
+            << " " << lsn_time_3
+            << " " << lsn_noi_3
+            << std::endl;
 
     DLOG(INFO) << "... ending GRASP";
 }
