@@ -491,7 +491,7 @@ pipenv run python script/run-batch.py \
     --algorithms-file="_algorithms.txt" \
     --number-of-iterations=100 \
     --allocation_experiments=4 \
-    --repeat 1 \
+    --repeat 10 \
     --output-path="${out_dir}" \
     --log-dir="${log_dir}" \
     --temp-dir="${temp_dir}"

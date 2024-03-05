@@ -19,10 +19,10 @@
 DECLARE_uint64(number_of_allocation_experiments);
 
 // TODO: Remove those variables.
-auto of_makespan = 0ul;
-auto of_cost = 0.0;
-auto of_security_exposure = 0.0;
-auto of = 0.0;
+//auto of_makespan = 0ul;
+//auto of_cost = 0.0;
+//auto of_security_exposure = 0.0;
+//auto of = 0.0;
 
 /**
  * Allocate memory for debugging purpose.
@@ -381,14 +381,13 @@ double Solution::ComputeObjectiveFunction() {
     }
 
     // Finish time for each activation
-    std::vector<size_t> my_time_vector(algorithm_->GetActivationSize(), 0ul);
-//    my_time_vector.assign(algorithm_->GetActivationSize(), 0ul);
+    time_vector_.assign(algorithm_->GetActivationSize(), 0ul);
+
     // Finish time for each VM
-    std::vector<size_t> my_execution_vm_queue(algorithm_->GetVirtualMachineSize(), 0ul);
-//    my_execution_vm_queue.assign(algorithm_->GetVirtualMachineSize(), 0ul);
+    execution_vm_queue_.assign(algorithm_->GetVirtualMachineSize(), 0ul);
+
     // Allocation time needed for each VM
-    std::vector<size_t> my_allocation_vm_queue(algorithm_->GetVirtualMachineSize(), 0ul);
-//    my_allocation_vm_queue.assign(algorithm_->GetVirtualMachineSize(), 0ul);
+    allocation_vm_queue_.assign(algorithm_->GetVirtualMachineSize(), 0ul);
 
     // 1. Calculates the makespan
     for (auto activation_id: ordering_) {
@@ -411,9 +410,9 @@ double Solution::ComputeObjectiveFunction() {
                 activation_start_time = 0ul;
                 break;
             }
-            activation_start_time = std::max<size_t>(activation_start_time, my_time_vector[previous_task_id]);
+            activation_start_time = std::max<size_t>(activation_start_time, time_vector_[previous_task_id]);
         }
-        activation_start_time = std::max<size_t>(activation_start_time, my_execution_vm_queue[vm->get_id()]);
+        activation_start_time = std::max<size_t>(activation_start_time, execution_vm_queue_[vm->get_id()]);
 
         // Compute Activation Read Time
         for (const auto& file: activation->get_input_files()) {
@@ -470,8 +469,7 @@ double Solution::ComputeObjectiveFunction() {
                 if (activation_start_time != std::numeric_limits<size_t>::max()
                     && activation_read_time != std::numeric_limits<size_t>::max()) {
                     auto st = activation_start_time + activation_read_time;
-                    my_allocation_vm_queue[storage_id] = std::max(my_allocation_vm_queue[storage_id],
-                                                                  st);
+                    allocation_vm_queue_[storage_id] = std::max(allocation_vm_queue_[storage_id], st);
                 }
             }
         }
@@ -535,7 +533,7 @@ double Solution::ComputeObjectiveFunction() {
                                       + activation_write_time;
 
                     // Need to Allocate VM until output_file is writen
-                    my_allocation_vm_queue[storage_id] = std::max(write_time, my_allocation_vm_queue[storage_id]);
+                    allocation_vm_queue_[storage_id] = std::max(write_time, allocation_vm_queue_[storage_id]);
                 } else {
                     LOG(FATAL) << "Something very very very wrong";
                 }
@@ -553,19 +551,19 @@ double Solution::ComputeObjectiveFunction() {
         }
 
         // Update structures
-        my_time_vector[activation_id] = finish_time;
+        time_vector_[activation_id] = finish_time;
         if (activation_id != algorithm_->get_id_source() && activation_id != algorithm_->get_id_target()) {
-            my_execution_vm_queue[vm_id] = finish_time;
-            my_allocation_vm_queue[vm_id] = std::max(finish_time, my_allocation_vm_queue[vm_id]);
+            execution_vm_queue_[vm_id] = finish_time;
+            allocation_vm_queue_[vm_id] = std::max(finish_time, allocation_vm_queue_[vm_id]);
         }
 
         time_vector_[activation_id] = finish_time;
         if (activation_id != algorithm_->get_id_source() && activation_id != algorithm_->get_id_target()) {
             execution_vm_queue_[vm_id] = finish_time;
-            allocation_vm_queue_[vm_id] = std::max(finish_time, my_allocation_vm_queue[vm_id]);
+            allocation_vm_queue_[vm_id] = std::max(finish_time, allocation_vm_queue_[vm_id]);
         }
 
-        DLOG(INFO) << "my_allocation_vm_queue[" << vm_id << "]: " << my_allocation_vm_queue[vm_id];
+        DLOG(INFO) << "my_allocation_vm_queue[" << vm_id << "]: " << allocation_vm_queue_[vm_id];
         DLOG(INFO) << "activation_id: " << activation_id;
         DLOG(INFO) << "vm->get_id(): " << vm_id;
         DLOG(INFO) << "activation_start_time: " << activation_start_time;
@@ -580,15 +578,15 @@ double Solution::ComputeObjectiveFunction() {
         for (auto vm_id = 0ul; vm_id < m_; ++vm_id) {
             auto virtual_machine = algorithm_->GetVirtualMachinePerId(vm_id);
             auto st = 0ul;
-            auto ft = my_allocation_vm_queue[vm_id];
+            auto ft = allocation_vm_queue_[vm_id];
 
             AllocateVm(vm_id, st, ft);
         }
     }
     // Just for auditing - end
 
-    of_makespan = my_time_vector[ordering_.back()];
-    makespan_ = my_time_vector[ordering_.back()];
+//    of_makespan = time_vector_[ordering_.back()];
+    makespan_ = time_vector_[ordering_.back()];
 
     // 2. Calculates the cost
     double virtual_machine_cost = 0.0;
@@ -597,10 +595,10 @@ double Solution::ComputeObjectiveFunction() {
     // Accumulate the Virtual Machine rent cost
     for (size_t i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
         std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(i);
-        auto max_time = static_cast<double>(my_allocation_vm_queue[virtual_machine->get_id()]);
+        auto max_time = static_cast<double>(allocation_vm_queue_[virtual_machine->get_id()]);
         virtual_machine_cost += (max_time * virtual_machine->get_cost());
-        DLOG(INFO) << "my_allocation_vm_queue[" << virtual_machine->get_id() << "]: "
-                   << my_allocation_vm_queue[virtual_machine->get_id()];
+        DLOG(INFO) << "allocation_vm_queue_[" << virtual_machine->get_id() << "]: "
+                   << allocation_vm_queue_[virtual_machine->get_id()];
         DLOG(INFO) << "virtual_machine->get_cost(): " << virtual_machine->get_cost();
     }
 
@@ -618,7 +616,7 @@ double Solution::ComputeObjectiveFunction() {
             }
         }
     }
-    of_cost = virtual_machine_cost + bucket_variable_cost;
+//    of_cost = virtual_machine_cost + bucket_variable_cost;
     cost_ = virtual_machine_cost + bucket_variable_cost;
 
     // 3. Calculates the security exposure
@@ -665,25 +663,20 @@ double Solution::ComputeObjectiveFunction() {
         }
     }
 
-    of_security_exposure = task_exposure + privacy_exposure;
+//    of_security_exposure = task_exposure + privacy_exposure;
     security_exposure_ = task_exposure + privacy_exposure;
 
-    of = algorithm_->get_alpha_time() * (static_cast<double>(of_makespan) / algorithm_->get_makespan_max())
-         + algorithm_->get_alpha_budget() * (of_cost / algorithm_->get_budget_max())
-         + algorithm_->get_alpha_security() * (of_security_exposure
-                                               / algorithm_->get_maximum_security_and_privacy_exposure());
+//    of = algorithm_->get_alpha_time() * (static_cast<double>(of_makespan) / algorithm_->get_makespan_max())
+//         + algorithm_->get_alpha_budget() * (of_cost / algorithm_->get_budget_max())
+//         + algorithm_->get_alpha_security() * (of_security_exposure
+//                                               / algorithm_->get_maximum_security_and_privacy_exposure());
 
-    objective_value_ = of;
+    objective_value_ = algorithm_->get_alpha_time() * (static_cast<double>(makespan_) / algorithm_->get_makespan_max())
+           + algorithm_->get_alpha_budget() * (cost_ / algorithm_->get_budget_max())
+           + algorithm_->get_alpha_security() * (security_exposure_
+                                                 / algorithm_->get_maximum_security_and_privacy_exposure());
 
-    // Updating variables
-    // Finish time for each activation
-    time_vector_ = my_time_vector;
-    // Finish time for each VM
-    execution_vm_queue_ = my_execution_vm_queue;
-    // Allocation time needed for each VM
-    allocation_vm_queue_ = my_allocation_vm_queue;
-
-    return of;
+    return objective_value_;
 }
 
 /**
@@ -2036,7 +2029,10 @@ int Solution::ComputeTasksHeights(size_t node) {
  */
 bool Solution::localSearchN1() {
     DLOG(INFO) << "Executing localSearchN1 local search ...";
-    double best_known_objective_value = objective_value_;
+    double best_known_of = objective_value_;
+    size_t best_known_makespan = makespan_;
+    double best_known_cost = cost_;
+    double best_known_security_exposure_ = security_exposure_;
     for (size_t i = 1; i < algorithm_->GetActivationSize() - 2; i++) {
         for (size_t j = i + 1; j < algorithm_->GetActivationSize() - 1; j++) {
             if (activation_allocations_[i] != activation_allocations_[j]) {
@@ -2048,7 +2044,7 @@ bool Solution::localSearchN1() {
                           activation_allocations_.begin() + static_cast<long int>(j));
                 auto i_activation = algorithm_->GetActivationPerId(i);
                 auto i_input_files = i_activation->get_input_files();
-                for (auto input_file : i_input_files) {
+                for (const auto &input_file : i_input_files) {
                     if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(input_file)) {
                         auto file_id = dynamic_file->get_id();
                         auto file_allocation = file_allocations_[file_id];
@@ -2059,13 +2055,13 @@ bool Solution::localSearchN1() {
                                                    });
                             if (it == files_changed.end()) {
                                 file_allocations_[file_id] = j_vm;
-                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                                files_changed.emplace_back(file_id, file_allocation);
                             }
                         }
                     }
                 }
                 auto i_output_files = i_activation->get_output_files();
-                for (auto output_file : i_output_files) {
+                for (const auto &output_file : i_output_files) {
                     if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(output_file)) {
                         auto file_id = dynamic_file->get_id();
                         auto file_allocation = file_allocations_[file_id];
@@ -2076,14 +2072,14 @@ bool Solution::localSearchN1() {
                                                    });
                             if (it == files_changed.end()) {
                                 file_allocations_[file_id] = j_vm;
-                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                                files_changed.emplace_back(file_id, file_allocation);
                             }
                         }
                     }
                 }
                 auto j_activation = algorithm_->GetActivationPerId(j);
                 auto j_input_files = j_activation->get_input_files();
-                for (auto input_file : j_input_files) {
+                for (const auto &input_file : j_input_files) {
                     if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(input_file)) {
                         auto file_id = dynamic_file->get_id();
                         auto file_allocation = file_allocations_[file_id];
@@ -2094,13 +2090,13 @@ bool Solution::localSearchN1() {
                                                    });
                             if (it == files_changed.end()) {
                                 file_allocations_[file_id] = i_vm;
-                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                                files_changed.emplace_back(file_id, file_allocation);
                             }
                         }
                     }
                 }
                 auto j_output_files = j_activation->get_output_files();
-                for (auto output_file : j_output_files) {
+                for (const auto &output_file : j_output_files) {
                     if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(output_file)) {
                         auto file_id = dynamic_file->get_id();
                         auto file_allocation = file_allocations_[file_id];
@@ -2111,24 +2107,21 @@ bool Solution::localSearchN1() {
                                                    });
                             if (it == files_changed.end()) {
                                 file_allocations_[file_id] = i_vm;
-                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                                files_changed.emplace_back(file_id, file_allocation);
                             }
                         }
                     }
                 }
                 ComputeObjectiveFunction();
-                makespan_ = of_makespan;
-                cost_ = of_cost;
-                security_exposure_ = of_security_exposure;
-                objective_value_ = of;
-                DLOG(INFO) << "... localSearchN1 : " << objective_value_ << " < " << best_known_objective_value
+                DLOG(INFO) << "... localSearchN1 : " << objective_value_ << " < " << best_known_of
                            << std::endl;
-                if (objective_value_ < best_known_objective_value) {
-                    DLOG(INFO) << "... localSearchN1 : " << objective_value_ << " < " << best_known_objective_value
+                if (objective_value_ < best_known_of) {
+                    DLOG(INFO) << "... localSearchN1 : " << objective_value_ << " < " << best_known_of
                                << std::endl;
                     DLOG(INFO) << "... ending localSearchN1 local search";
                     return true;
                 }
+
                 // Return elements
                 iter_swap(activation_allocations_.begin() + static_cast<long int>(i),
                           activation_allocations_.begin() + static_cast<long int>(j));
@@ -2137,11 +2130,10 @@ bool Solution::localSearchN1() {
                     file_allocations_[my_pair.first] = my_pair.second;
                     files_changed.pop_front();
                 }
-                ComputeObjectiveFunction();
-                makespan_ = of_makespan;
-                cost_ = of_cost;
-                security_exposure_ = of_security_exposure;
-                objective_value_ = of;
+                objective_value_ = best_known_of;
+                makespan_ = best_known_makespan;
+                cost_ = best_known_cost;
+                security_exposure_ = best_known_security_exposure_;
             }
         }
     }
@@ -2156,7 +2148,10 @@ bool Solution::localSearchN1() {
  */
 bool Solution::localSearchN2() {
     DLOG(INFO) << "Executing localSearchN2 local search ...";
-    double best_known_objective_value = objective_value_;
+    double best_known_of = objective_value_;
+    size_t best_known_makespan = makespan_;
+    double best_known_cost = cost_;
+    double best_known_security_exposure_ = security_exposure_;
     // for each task, do
     for (size_t i = 0; i < algorithm_->GetActivationSize(); i++) {
         auto task_i = ordering_[i];
@@ -2166,24 +2161,20 @@ bool Solution::localSearchN2() {
                 // Do the swap
                 iter_swap(ordering_.begin() + static_cast<long int>(i), ordering_.begin() + static_cast<long int>(j));
                 ComputeObjectiveFunction();
-                makespan_ = of_makespan;
-                cost_ = of_cost;
-                security_exposure_ = of_security_exposure;
-                objective_value_ = of;
                 DLOG(INFO) << "new objective value " << objective_value_ << " i " << i << " j " << j << std::endl;
-                if (objective_value_ < best_known_objective_value) {
-                    DLOG(INFO) << "... localSearchN2 : " << objective_value_ << " < " << best_known_objective_value
+                if (objective_value_ < best_known_of) {
+                    DLOG(INFO) << "... localSearchN2 : " << objective_value_ << " < " << best_known_of
                                << std::endl;
                     DLOG(INFO) << "... ending localSearchN2 local search";
                     return true;
                 }
                 // Return elements
                 iter_swap(ordering_.begin() + static_cast<long int>(i), ordering_.begin() + static_cast<long int>(j));
-                ComputeObjectiveFunction();
-                makespan_ = of_makespan;
-                cost_ = of_cost;
-                security_exposure_ = of_security_exposure;
-                objective_value_ = of;
+//                ComputeObjectiveFunction();
+                objective_value_ = best_known_of;
+                makespan_ = best_known_makespan;
+                cost_ = best_known_cost;
+                security_exposure_ = best_known_security_exposure_;
             } else {
                 break;
             }
@@ -2200,7 +2191,10 @@ bool Solution::localSearchN2() {
  */
 bool Solution::localSearchN3() {
     DLOG(INFO) << "Executing localSearchN3 local search ...";
-    double best_known_objective_value = objective_value_;
+    double best_known_of = objective_value_;
+    size_t best_known_makespan = makespan_;
+    double best_known_cost = cost_;
+    double best_known_security_exposure_ = security_exposure_;
     for (size_t i = 0; i < algorithm_->GetActivationSize(); ++i) {
         std::deque<std::pair<size_t, size_t>> files_changed;
         auto old_vm = activation_allocations_[i];
@@ -2209,7 +2203,7 @@ bool Solution::localSearchN3() {
                 activation_allocations_[i] = j;
                 auto i_activation = algorithm_->GetActivationPerId(i);
                 auto i_input_files = i_activation->get_input_files();
-                for (auto input_file : i_input_files) {
+                for (const auto &input_file : i_input_files) {
                     if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(input_file)) {
                         auto file_id = dynamic_file->get_id();
                         auto file_allocation = file_allocations_[file_id];
@@ -2220,13 +2214,13 @@ bool Solution::localSearchN3() {
                                                    });
                             if (it == files_changed.end()) {
                                 file_allocations_[file_id] = old_vm;
-                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                                files_changed.emplace_back(file_id, file_allocation);
                             }
                         }
                     }
                 }
                 auto i_output_files = i_activation->get_output_files();
-                for (auto output_file : i_output_files) {
+                for (const auto &output_file : i_output_files) {
                     if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(output_file)) {
                         auto file_id = dynamic_file->get_id();
                         auto file_allocation = file_allocations_[file_id];
@@ -2237,19 +2231,19 @@ bool Solution::localSearchN3() {
                                                    });
                             if (it == files_changed.end()) {
                                 file_allocations_[file_id] = old_vm;
-                                files_changed.push_back(std::make_pair(file_id, file_allocation));
+                                files_changed.emplace_back(file_id, file_allocation);
                             }
                         }
                     }
                 }
                 ComputeObjectiveFunction();
-                makespan_ = of_makespan;
-                cost_ = of_cost;
-                security_exposure_ = of_security_exposure;
-                objective_value_ = of;
+//                makespan_ = of_makespan;
+//                cost_ = of_cost;
+//                security_exposure_ = of_security_exposure;
+//                objective_value_ = of;
                 DLOG(INFO) << "new objective value " << objective_value_ << " i " << i << " j " << j << std::endl;
-                if (objective_value_ < best_known_objective_value) {
-                    DLOG(INFO) << "... localSearchN3 : " << objective_value_ << " < " << best_known_objective_value
+                if (objective_value_ < best_known_of) {
+                    DLOG(INFO) << "... localSearchN3 : " << objective_value_ << " < " << best_known_of
                                << std::endl;
                     DLOG(INFO) << "... ending localSearchN3 local search";
                     return true;
@@ -2262,11 +2256,11 @@ bool Solution::localSearchN3() {
             file_allocations_[my_pair.first] = my_pair.second;
             files_changed.pop_front();
         }
-        ComputeObjectiveFunction();
-        makespan_ = of_makespan;
-        cost_ = of_cost;
-        security_exposure_ = of_security_exposure;
-        objective_value_ = of;
+        // Rollback
+        objective_value_ = best_known_of;
+        makespan_ = best_known_makespan;
+        cost_ = best_known_cost;
+        security_exposure_ = best_known_security_exposure_;
     }
     DLOG(INFO) << "... ending localSearchN3 local search";
     return false;

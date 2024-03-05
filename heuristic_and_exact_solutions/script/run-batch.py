@@ -305,7 +305,7 @@ if __name__ == "__main__":
     valor_compartilhado = manager.Value('i', 0)
     # print('depois')
     total = len(filenames) * len(alphas) * len(algorithms) * len(instances) * args.repeat
-    pool = Pool(processes=16)
+    pool = Pool(processes=8)
     p = re.compile('([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl')
     for filename in filenames:
         m = p.match(filename)
