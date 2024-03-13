@@ -1,0 +1,13 @@
+#ifndef WF_SECURITY_ACTIVATIONEXECUTIONDATA_H
+#define WF_SECURITY_ACTIVATIONEXECUTIONDATA_H
+
+
+class ActivationExecutionData {
+public:
+
+private:
+
+};
+
+
+#endif //WF_SECURITY_ACTIVATIONEXECUTIONDATA_H

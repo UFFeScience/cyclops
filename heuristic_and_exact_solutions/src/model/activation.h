@@ -146,6 +146,18 @@ private:
 
     /// A vector containing the requirement values
     std::vector<int> requirements_;
+
+    ///
+    std::vector<std::shared_ptr<Activation>> successors_{};
+
+    ///
+    std::vector<std::shared_ptr<Activation>> predecessors_{};
+
+    ///
+    double finish_time_ = 0.0;
+
+    ///
+    std::shared_ptr<VirtualMachine> vm_;
 };
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_ACTIVATION_H_

@@ -13,7 +13,7 @@
 #include "src/model/virtual_machine.h"
 
 void VirtualMachine::AddActivation(std::shared_ptr<Activation> activation) {
-  DLOG(INFO) << "Adding the activation [" << activation->get_id() << "] to the VM [" << id_ << "] ...";
-  activation_list_.push_back(activation);
-  DLOG(INFO) << ".. activation added to the VM";
+    DLOG(INFO) << "Adding the activation [" << activation->get_id() << "] to the VM [" << id_ << "] ...";
+    activation_list_.push_back(activation);
+    DLOG(INFO) << ".. activation added to the VM";
 }

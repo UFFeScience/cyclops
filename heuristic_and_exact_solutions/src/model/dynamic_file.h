@@ -32,7 +32,7 @@ class DynamicFile : public File {
 public:
     /// Parametrized constructor
     explicit DynamicFile(const size_t id, const std::string &name, const double size) :
-            File(id, name, size) { }
+            File(id, name, size) {}
 
     /// Default destructor
     ~DynamicFile() override = default;

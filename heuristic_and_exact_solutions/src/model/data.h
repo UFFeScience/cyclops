@@ -25,34 +25,38 @@
 
 class Data {
 public:
-  // Data(int qtParam, char *instance);
-  Data(std::string);
-  ~Data();
+    // Data(int qtParam, char *instance);
+    Data(std::string);
 
-  // static int dim;
-  void readData();
-  int getDimension() { return m_pNumber; };
-  inline int getEdgeValue(int i, int j){ return m_edgeMatrix[i][j]; };
-  inline int **getEdegeMatrix(){ return m_edgeMatrix; };
+    ~Data();
 
-  static std::string getInstanceName(std::string); // Get instance's name
+    // static int dim;
+    void readData();
+
+    int getDimension() { return m_pNumber; };
+
+    inline int getEdgeValue(int i, int j) { return m_edgeMatrix[i][j]; };
+
+    inline int **getEdegeMatrix() { return m_edgeMatrix; };
+
+    static std::string getInstanceName(std::string); // Get instance's name
 
 private:
-  const std::string m_instanceName;
-  int m_pNumber;
-  int m_eNumber;
+    const std::string m_instanceName;
+    int m_pNumber;
+    int m_eNumber;
 
-  // int array[0][0];
+    // int array[0][0];
 
-  int **m_edgeMatrix;
-  // int m_edgeMatrix[][];
-  // double *xCoord, *yCoord;
+    int **m_edgeMatrix;
+    // int m_edgeMatrix[][];
+    // double *xCoord, *yCoord;
 
-  // Computing Distances
-  // static double CalcDistEuc(double *, double *, int , int);
-  // static double CalcDistAtt(double *, double *, int , int);
-  // static double CalcDistGeo(double *, double *, int , int);
-  // static void CalcLatLong(double *, double *, int , double *, double *);
+    // Computing Distances
+    // static double CalcDistEuc(double *, double *, int , int);
+    // static double CalcDistAtt(double *, double *, int , int);
+    // static double CalcDistGeo(double *, double *, int , int);
+    // static void CalcLatLong(double *, double *, int , double *, double *);
 };
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_DATA_H_

@@ -75,7 +75,21 @@ public:
 
     void AllocateVm(size_t vm_id, size_t initial_time, size_t final_time) const;
 
+    double OptimizedComputeObjectiveFunction();
+
     double ComputeObjectiveFunction();
+
+    size_t GetVmIdForActivationAllocation(size_t i) {
+        return activation_allocations_[i];
+    }
+
+    size_t GetActivationIdFromOrdering(size_t i) {
+        return ordering_[i];
+    }
+
+    size_t GetActivationHeightFromOrdering(size_t i) {
+        return activation_height_[i];
+    }
 
     /// Getter for \c makespan_
     [[nodiscard]] double get_makespan() const { return static_cast<double>(makespan_); }
@@ -123,6 +137,12 @@ public:
     bool localSearchN2();
 
     bool localSearchN3();
+
+    void SwapActivationsVms(size_t, size_t);
+
+    void SwapActivationsOrders(size_t, size_t);
+
+    void ChangeActivationVm(size_t);
 
     /// Copy operator
     Solution &operator=(const Solution &) = default;
@@ -187,13 +207,13 @@ protected:
     std::vector<size_t> ordering_;
 
     /// The height of each task in terms of dependencies
-    std::vector<int> task_height_;
+    std::vector<int> activation_height_;
 
     /// Makespan for each task
-    std::vector<size_t> time_vector_;
+    std::vector<size_t> activation_finish_time_;
 
     /// Final time of each Virtual Machine
-    std::vector<size_t> execution_vm_queue_;
+    std::vector<size_t> vm_finish_time_;
 
     /// Final time of each Virtual Machine
     std::vector<size_t> allocation_vm_queue_;
@@ -201,8 +221,20 @@ protected:
     /// Makespan of the solution, the total execution time
     size_t makespan_{};
 
+    /// The cost for allocate Virtual Machines for the execution
+    double virtual_machine_cost_{};
+
+    /// The cost for utilize the utilize the storage from Buckets for the execution
+    double bucket_variable_cost_{};
+
     /// Total cost of the solution
     double cost_{};
+
+    /// The accumulation of the activation exposure
+    double activation_exposure_{};
+
+    /// The accumulation of the the privacy exposure
+    double privacy_exposure_{};
 
     /// Total security exposure of the solution
     double security_exposure_{};
@@ -212,6 +244,30 @@ protected:
 
     // For printing the solution timeline
     size_t n_, d_, m_, mb_, t_;
+
+    double PopulateExecutionAndAllocationsTimeVectors();
+
+    void ComputeCost();
+
+    void ComputeConfidentialityExposure();
+
+    double ComputeAndFetchOF();
+
+    double fetch_makespan();
+
+    double fetch_cost();
+
+    double fetch_confidentiality_exposure();
+
+    double AccumulateVMCost();
+
+    double AccumulateBucketCost();
+
+    double AccumulateActivationExposure();
+
+    double AccumulatePrivacyExposyre();
+
+    double fetch_confidentiality_exposure() const;
 };
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_SOLUTION_H_

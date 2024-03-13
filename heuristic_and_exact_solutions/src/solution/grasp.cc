@@ -15,20 +15,97 @@
 
 DECLARE_uint64(number_of_iteration);
 
+/// Local Search 1
+bool Grasp::localSearchSwapVms(Solution &solution) {
+    DLOG(INFO) << "Executing localSearchSwapVms ...";
+    auto best_of = solution.get_objective_value();
+    for (auto i = 1; i < GetActivationSize() - 2; i++) {
+        for (auto j = i + 1; j < GetActivationSize() - 1; j++) {
+            auto vm_id_i = solution.GetVmIdForActivationAllocation(i);
+            auto vm_id_j = solution.GetVmIdForActivationAllocation(i);
+            if (vm_id_i != vm_id_j) {
+                // swap activations
+                auto new_of = solution.get_objective_value();
+                if (new_of < best_of) {
+                    DLOG(INFO) << "... localSearchSwapVms: " << new_of << " < " << best_of << std::endl;
+                    DLOG(INFO) << "... ending localSearchSwapVms";
+                    return true;
+                }
+                // swap back
+            }
+        }
+    }
+    DLOG(INFO) << "... ending localSearchSwapVms";
+    return false;
+}
+
+/// Local Search 2
+bool Grasp::localSearchSwapOrderPosition(Solution &solution) {
+    DLOG(INFO) << "Executing localSearchSwapOrderPosition local search ...";
+    auto best_of = solution.get_objective_value();
+    for (auto i = 0; i < GetActivationSize(); i++) {
+        auto activation_id_i = solution.GetActivationIdFromOrdering(i);
+        for (auto j = i + 1; j < GetActivationSize(); j++) {
+            auto activation_id_j = solution.GetActivationIdFromOrdering(j);
+            if (solution.GetActivationHeightFromOrdering(activation_id_i)
+                    == solution.GetActivationHeightFromOrdering(activation_id_j)) {
+                // swap order
+                auto new_of = solution.get_objective_value();
+                DLOG(INFO) << "new objective value " << new_of << " i " << i << " j " << j << std::endl;
+                if (new_of < best_of) {
+                    DLOG(INFO) << "... localSearchSwapOrderPosition : " << new_of << " < " << best_of << std::endl;
+                    DLOG(INFO) << "... ending localSearchSwapOrderPosition";
+                    return true;
+                }
+                // swap back
+            } else {
+                break;
+            }
+        }
+    }
+    DLOG(INFO) << "... ending localSearchSwapOrderPosition";
+    return false;
+}
+
+/// Local Search 3
+bool Grasp::localSearchMoveElement(Solution &solution) {
+    DLOG(INFO) << "Executing localSearchMoveElement ...";
+    auto best_of = solution.get_objective_value();
+    for (size_t i = 0; i < GetActivationSize(); ++i) {
+        auto old_vm_id = solution.GetVmIdForActivationAllocation(i);
+        for (size_t j = 0; j < GetVirtualMachineSize(); j++) {
+            if (old_vm_id != j) {
+                // change vm
+                auto new_of = solution.get_objective_value();
+                DLOG(INFO) << "new objective value " << new_of << " i " << i << " j " << j << std::endl;
+                if (new_of < best_of) {
+                    DLOG(INFO) << "... localSearchMoveElement: " << new_of << " < " << best_of << std::endl;
+                    DLOG(INFO) << "... ending localSearchMoveElement";
+                    return true;
+                }
+            }
+        }
+        // change back
+
+    }
+    DLOG(INFO) << "... ending localSearchMoveElement";
+    return false;
+}
+
 void Grasp::localSearch(Solution &solution) {
     DLOG(INFO) << "Executing localSearch ...";
     bool proceed = true;
     while (proceed) {
-        double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+        double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time;
         proceed = solution.localSearchN1();
-        double time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+        double time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time;
         auto elapsed_time = time_f - time_s;
         lsn_time_1 += elapsed_time;
 //        lsFile1.writeLine(elapsed_time);
         if (!proceed) {
-            time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+            time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time;
             proceed = solution.localSearchN2();
-            time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time;
+            time_f = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time;
             elapsed_time = time_f - time_s;
 //            lsFile2.writeLine(elapsed_time);
             lsn_time_2 += elapsed_time;
@@ -189,7 +266,7 @@ void Grasp::Run() {
 //              << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure() << " "
 //              << best_solution.get_objective_value() << std::endl << time_s << std::endl;
 
-    std::cout
+    std::cout << std::fixed
             << best_solution.get_objective_value()
             << " " << best_solution.get_makespan()
             << " " << best_solution.get_cost()

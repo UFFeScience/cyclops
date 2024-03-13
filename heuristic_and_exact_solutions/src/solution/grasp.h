@@ -32,6 +32,15 @@ public:
     void localSearch(Solution &);
 
     ///
+    bool localSearchSwapVms(Solution &solution);
+
+    ///
+    bool localSearchSwapOrderPosition(Solution &solution);
+
+    ///
+    bool localSearchMoveElement(Solution &solution);
+
+    ///
     void Run() override;
 
 private:
