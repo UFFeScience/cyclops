@@ -13,6 +13,7 @@
 #ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
 #define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
 
+
 #include <string>
 #include <memory>
 #include <unordered_map>
@@ -23,7 +24,6 @@
 #include "src/model/activation.h"
 #include "src/model/virtual_machine.h"
 #include "src/model/bucket.h"
-#include "src/model/provider.h"
 #include "src/model/solution.h"
 #include "src/model/conflict_graph.h"
 
@@ -41,12 +41,16 @@ class Solution;
 
 class Algorithm {
 public:
-    Algorithm() = default;
+    ///
+    explicit Algorithm();
+
+    ///
+    virtual ~Algorithm() = default;
 
     /// Read input files.
-    void ReadInputFiles(const std::string &tasks_and_files,
-                        const std::string &cluster,
-                        const std::string &conflict_graph);
+    void ReadInputFiles(const std::string &tasks_and_files_file,
+                        const std::string &cluster_file,
+                        const std::string &conflict_graph_file);
 
     /// Getter for \c id_source_
     size_t get_id_source() const { return id_source_; }
@@ -55,7 +59,7 @@ public:
     size_t get_id_target() const { return id_target_; }
 
     /// Getter for \c conflict_graph_
-    ConflictGraph &get_conflict_graph() { return conflict_graph_; }
+    std::shared_ptr<ConflictGraph> get_conflict_graph() { return conflict_graph_; }
 
     /// Getter for \c storage_vet_
     std::vector<double> &get_storage_vet() { return storage_vet_; }
@@ -92,10 +96,6 @@ public:
 
     /// Return a pointer to the \c VirtualMachine identified by \c id
     std::shared_ptr<VirtualMachine> GetVirtualMachinePerId(size_t id) { return virtual_machines_[id]; }
-
-    // TODO: Erase or redo the lines below.
-    /// Return a pointer to the \c Requirement identified by \c id
-//  Requirement GetRequirementPerId(size_t id) { return requirements_[id]; }
 
     /// Return a reference to the successors of the \c Activation identified by \c activation_id
     std::vector<size_t> &GetSuccessors(size_t activation_id) { return successors_[activation_id]; }
@@ -150,28 +150,29 @@ public:
      */
     static std::shared_ptr<Algorithm> ReturnAlgorithm(const std::string &algorithm);
 
+    std::shared_ptr<ConflictGraph> conflict_graph_;
 protected:
-//    void ReadTasksAndFiles(const std::string &, std::unordered_map<std::string, File *> &);
     void ReadTasksAndFiles(const std::string &, std::unordered_map<std::string, std::shared_ptr<File>> &);
 
     void ReadCluster(const std::string &);
 
-//    void ReadConflictGraph(const std::string &, std::unordered_map<std::string, File *> &);
     void ReadConflictGraph(const std::string &, std::unordered_map<std::string, std::shared_ptr<File>> &);
 
     void ComputeHeight(size_t, int);
 
-    size_t static_file_size_;
+    void ComputeFileTransferMatrix();
 
-    size_t dynamic_file_size_;
+    size_t static_file_size_{};
 
-    double makespan_max_;
+    size_t dynamic_file_size_{};
 
-    double budget_max_;
+    double makespan_max_{};
 
-    size_t id_source_;
+    double budget_max_{};
 
-    size_t id_target_;
+    size_t id_source_{};
+
+    size_t id_target_{};
     
     std::vector<Requirement> requirements_;
 
@@ -194,23 +195,22 @@ protected:
 
     std::vector<int> height_;
 
-    ConflictGraph conflict_graph_;
-
     /// The weight of the time
-    double alpha_time_;
+    double alpha_time_{};
 
     /// The weight of the budget
-    double alpha_budget_;
+    double alpha_budget_{};
 
     /// The weight of the security
-    double alpha_security_;
+    double alpha_security_{};
 
     ///
-    double alpha_restrict_candidate_list_;
+    double alpha_restrict_candidate_list_{};
 
-    double maximum_security_and_privacy_exposure_;
+    double maximum_security_and_privacy_exposure_{};
 
     clock_t t_start = clock();
 };
+
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_

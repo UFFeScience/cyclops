@@ -8,8 +8,8 @@ import subprocess
 # import sys
 import time
 import shlex
+import traceback
 
-from ctypes import c_int
 from multiprocessing import Pool, Lock, Manager
 from os import walk
 
@@ -27,7 +27,7 @@ def progress_bar(valor):
     # with valor.get_lock():
     valor.value += 1
     progress = valor.value / total
-    bar_length = 30
+    bar_length = 80
     elapsed_time = time.time() - start_time
     estimated_time = (elapsed_time / progress) - elapsed_time if progress > 0 else 0
     # Limpar a tela
@@ -38,30 +38,42 @@ def progress_bar(valor):
     # Imprimir estimativa do tempo restante
     print(f'Tempo estimado restante: {estimated_time:.2f} segundos', flush=True)
 
+    # Converter o tempo restante em minutos e horas
+    estimated_minutes = estimated_time / 60
+    estimated_hours = estimated_minutes / 60
+    print(f'Tempo estimado restante: {estimated_minutes:.2f} minutos', flush=True)
+    print(f'Tempo estimado restante: {estimated_hours:.2f} horas', flush=True)
+
+    # Imprimir tempo decorrido em segundos, minutos e horas
+    print(f'Tempo decorrido: {elapsed_time:.2f} segundos', flush=True)
+    elapsed_minutes = elapsed_time / 60
+    elapsed_hours = elapsed_minutes / 60
+    print(f'Tempo decorrido: {elapsed_minutes:.2f} minutos', flush=True)
+    print(f'Tempo decorrido: {elapsed_hours:.2f} horas', flush=True)
+
 
 def exec_command(cmd):
-    p = None
+    p_result = None
     try:
         # print('cmd:', cmd)
-        p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+        p_result = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     except Exception as ex:
         print(ex)
-    return p
+    return p_result
 
 
 def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: str, inner_algorithm: str,
         alpha_time: float, alpha_cost: float, alpha_security: float, alpha_restricted_candidate_list: float,
-        number_of_iterations: int, allocation_experiments: int, repeat: int, output_executions_file: str,
+        number_of_iterations: int, allocation_experiments: int, output_executions_file: str,
         test_scenery: str, number_vm: str, number_cloud_sites: str, number_buckets: str,
         number_vm_req_cryptography: str, number_vm_req_confidentiality: str, cloud_type: str, log_dir: str,
-        temp_dir: str, valor_compartilhado):
-    # print('dentro')
-    # with valor_compartilhado.get_lock():
-    # print("Valor compartilhado dentro de minha_funcao:", )
-    for r in range(repeat):
+        temp_dir: str, test_number: int, valor_compartilhado):
+    try:
         cloud_file = Path(clouds).stem
-        actual_log_dir = log_dir + '/' + str(alpha_time) + '_' + str(alpha_cost) + '_' + str(alpha_security) + '/' \
-                         + cloud_file + '/' + str(r) + '/' + inner_instance + '/'
+        # actual_log_dir = log_dir + '/' + str(alpha_time) + '_' + str(alpha_cost) + '_' + str(alpha_security) + '/' \
+        #                  + cloud_file + '/' + str(r) + '/' + inner_instance + '/'
+        actual_log_dir = f'{log_dir}/{alpha_time}_{alpha_cost}_{alpha_security}_{alpha_restricted_candidate_list}/' \
+                         f'{cloud_file}/{test_number}/{inner_instance}/'
         os.makedirs(actual_log_dir)
         current_path = pathlib.Path().resolve()
         command_list = [f'{current_path}/bin/wf_security_greedy.x',
@@ -79,7 +91,7 @@ def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: s
                         f'--logbuflevel=-1']
         if inner_algorithm == 'cplex':
             cplex_output_dir = temp_dir + '/' + str(alpha_time) + '_' + str(alpha_cost) + '_' + str(alpha_security) \
-                               + '/' + cloud_file + '/' + str(r) + '/' + inner_instance
+                               + '/' + cloud_file + '/' + str(test_number) + '/' + inner_instance
             cplex_output_file = cplex_output_dir + '/output.lp'
             Path(cplex_output_dir).mkdir(parents=True, exist_ok=True)
             if not os.path.isfile(cplex_output_file):
@@ -102,28 +114,42 @@ def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: s
         regex += " ([0-9]*[.]?[0-9]*)"
         regex += " ([0-9]*[.]?[0-9]*)"
         regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)"
-        regex += " ([0-9]*[.]?[0-9]*)"
+        regex += " ?([0-9]*[.]?[0-9]*)"
+        regex += " ?([0-9]*[.]?[0-9]*)"
+        regex += " ?([0-9]*[.]?[0-9]*)"
+        regex += " ?([0-9]*[.]?[0-9]*)"
+        regex += " ?([0-9]*[.]?[0-9]*)"
+        regex += " ?([0-9]*[.]?[0-9]*)"
+        regex += " ?([0-9]*[.]?[0-9]*)"
+        regex += " ?([0-9]*[.]?[0-9]*)"
+        regex += " ?([0-9]*[.]?[0-9]*)"
         # regex += "$"
         # m = re.search(regex, error.decode(sys.stdout.encoding), re.M)
         m = re.search(regex, line, re.M)
+        of = float("-1")
+        makespan = float("-1")
+        cost = float("-1")
+        security = float("-1")
+        execution_time = float("-1")
+        number_of_iterations = float("-1")
+        best_solution_iteration = float("-1")
+        best_solution_time = float("-1")
+        lsn_time_1 = float("-1")
+        lsn_noi_1 = float("-1")
+        lsn_time_2 = float("-1")
+        lsn_noi_2 = float("-1")
+        lsn_time_3 = float("-1")
+        lsn_noi_3 = float("-1")
         if hasattr(m, 'group'):
             of = float(m.group(1))
             makespan = float(m.group(2))
             cost = float(m.group(3))
             security = float(m.group(4))
             execution_time = float(m.group(5))
+            number_of_iterations = int(m.group(6))
+            best_solution_iteration = int(m.group(7))
+            best_solution_time = float(m.group(8))
             if "grasp" in inner_algorithm:
-                number_of_iterations = int(m.group(6))
-                best_solution_iteration = int(m.group(7))
-                best_solution_time = float(m.group(8))
                 lsn_time_1 = float(m.group(9))
                 lsn_noi_1 = int(m.group(10))
                 lsn_time_2 = float(m.group(1))
@@ -131,12 +157,21 @@ def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: s
                 lsn_time_3 = float(m.group(13))
                 lsn_noi_3 = int(m.group(14))
         else:
-            print(f'In the {r} iteration, program do not return any value. That means unfeasible solution.')
-            of = float("-1")
-            makespan = float("-1")
-            cost = float("-1")
-            security = float("-1")
-            execution_time = float("-1")
+            print(f'In the {test_number} iteration, program do not return any value. That means unfeasible solution.')
+            # of = float("-1")
+            # makespan = float("-1")
+            # cost = float("-1")
+            # security = float("-1")
+            # execution_time = float("-1")
+            # number_of_iterations = float("-1")
+            # best_solution_iteration = float("-1")
+            # best_solution_time = float("-1")
+            # lsn_time_1 = float("-1")
+            # lsn_noi_1 = float("-1")
+            # lsn_time_2 = float("-1")
+            # lsn_noi_2 = float("-1")
+            # lsn_time_3 = float("-1")
+            # lsn_noi_3 = float("-1")
         out_file = inner_algorithm
         out_file += f',{inner_instance}'
         out_file += f',{test_scenery}'
@@ -171,6 +206,10 @@ def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: s
         with open(output_executions_file, "a") as file:
             file.write(out_file)
         global_lock.release()
+    except BaseException:
+        print("A-ha!")
+        traceback.print_exc()
+        exit(1)
 
 
 if __name__ == "__main__":
@@ -302,48 +341,54 @@ if __name__ == "__main__":
     # print('antes')
     # Criar um Manager para gerenciar o objeto compartilhado
     manager = Manager()
-    valor_compartilhado = manager.Value('i', 0)
+    my_valor_compartilhado = manager.Value('i', 0)
     # print('depois')
     total = len(filenames) * len(alphas) * len(algorithms) * len(instances) * args.repeat
     pool = Pool(processes=8)
     p = re.compile('([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl')
+    contador = 0
     for filename in filenames:
-        m = p.match(filename)
-        if m:
-            scenario = m.group(1)
-            number_of_cloud = m.group(2)
-            number_of_vm = m.group(3)
-            number_of_bucket = m.group(4)
-            number_of_vm_req_cryptography = m.group(5)
-            number_of_vm_req_confidentiality = m.group(6)
-            cloud_type = m.group(7)
+        m_filename = p.match(filename)
+        if m_filename:
+            scenario = m_filename.group(1)
+            number_of_cloud = m_filename.group(2)
+            number_of_vm = m_filename.group(3)
+            number_of_bucket = m_filename.group(4)
+            number_of_vm_req_cryptography = m_filename.group(5)
+            number_of_vm_req_confidentiality = m_filename.group(6)
+            my_cloud_type = m_filename.group(7)
             # print(scenario, number_of_cloud, number_of_vm, number_of_bucket, number_of_vm_req_cryptography,
             #       number_of_vm_req_confidentiality, cloud_type)
             for alpha in alphas:
-                alpha_time, alpha_cost, alpha_security, alpha_rcl = alpha
+                my_alpha_time, my_alpha_cost, my_alpha_security, my_alpha_rcl = alpha
                 # Run the selected heuristic(s) and meta-heuristic(s)
                 for algorithm in algorithms:
                     algorithm_log_dir = args.log_dir + '/' + algorithm
                     algorithm_temp_dir = args.temp_dir + '/' + algorithm
                     for instance in instances:
-                        cur_path = pathlib.Path().resolve()  # current path
-                        full_file_name = clouds_file_dir + filename
-                        clouds_file = full_file_name if full_file_name is not None \
-                            else f'{cur_path}/input/clouds/cluster_' + instance + '.vcl'
-                        tasks_and_files_file_name = f'{cur_path}/input/tasks_and_files/' + instance + '.dag'
-                        conflict_graph_file_name = f'{cur_path}/input/conflict_graph/' + instance + '.scg'
-                        # print('chamada')
-                        pool.apply_async(run, args=(instance, tasks_and_files_file_name, clouds_file,
-                                                    conflict_graph_file_name, algorithm, alpha_time, alpha_cost,
-                                                    alpha_security, alpha_rcl, args.number_of_iterations,
-                                                    args.allocation_experiments, args.repeat, output_execution_file,
-                                                    scenario, number_of_cloud, number_of_vm, number_of_bucket,
-                                                    number_of_vm_req_cryptography, number_of_vm_req_confidentiality,
-                                                    cloud_type, algorithm_log_dir, algorithm_temp_dir,
-                                                    valor_compartilhado))
+                        for my_test_number in range(args.repeat):
+                            cur_path = pathlib.Path().resolve()  # current path
+                            full_file_name = clouds_file_dir + filename
+                            clouds_file = full_file_name if full_file_name is not None \
+                                else f'{cur_path}/input/clouds/cluster_' + instance + '.vcl'
+                            tasks_and_files_file_name = f'{cur_path}/input/tasks_and_files/' + instance + '.dag'
+                            conflict_graph_file_name = f'{cur_path}/input/conflict_graph/' + instance + '.scg'
+                            # print('chamada')
+                            pool.apply_async(run, args=(instance, tasks_and_files_file_name, clouds_file,
+                                                        conflict_graph_file_name, algorithm, my_alpha_time,
+                                                        my_alpha_cost, my_alpha_security, my_alpha_rcl,
+                                                        args.number_of_iterations, args.allocation_experiments,
+                                                        output_execution_file, scenario, number_of_cloud, number_of_vm,
+                                                        number_of_bucket, number_of_vm_req_cryptography,
+                                                        number_of_vm_req_confidentiality, my_cloud_type,
+                                                        algorithm_log_dir, algorithm_temp_dir, my_test_number,
+                                                        my_valor_compartilhado))
+                            contador += 1
         else:
             exit('Something wrong with the file name pattern')
     # close the process pool
     pool.close()
     # wait for all tasks to finish
     pool.join()
+    # print(contador, total, my_valor_compartilhado)
+    # print(len(filenames), len(alphas), len(algorithms), len(instances), args.repeat)

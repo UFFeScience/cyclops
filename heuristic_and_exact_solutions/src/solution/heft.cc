@@ -56,16 +56,12 @@ double Heft::CommunicationCostStatic(size_t activation_id, size_t vm_id) {
     // TODO: Insert debug message
     // TODO: use the transfer file computation method
     auto cost = 0.0;
-
     auto activation = activations_[activation_id];
     auto target_vm = virtual_machines_[vm_id];
-
     for (const auto &file : activation->get_input_files()) {
-//        if (auto *static_file = dynamic_cast<StaticFile *>(file)) {
         if (auto static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
             auto origin_vm = virtual_machines_[static_file->GetFirstVm()];
             auto bandwidth = std::min(origin_vm->get_bandwidth_GBps(), target_vm->get_bandwidth_GBps());
-
             // Calculate time
             if (origin_vm->get_id() != target_vm->get_id()) {
                 cost += ceil(file->get_size_in_GB() / bandwidth);
@@ -74,10 +70,8 @@ double Heft::CommunicationCostStatic(size_t activation_id, size_t vm_id) {
             }
         }
     }
-
     DLOG(INFO) << "CommunicationCostStatic(" << activation_id << ", " << vm_id << ") " << std::fixed
             << std::setprecision(6) << cost << ".";
-
     return cost;
 }
 
@@ -97,41 +91,32 @@ double Heft::CommunicationCostOfDynamicFiles(size_t activation_id_i,
                                              size_t vm_id_j) {
     // TODO: Insert debug message
     double cost = 0.0;
-
     // If VMs are the same, just return zero
     if (vm_id_i == vm_id_j) {
         return 1.0;
     }
-
     auto activation_i = activations_[activation_id_i];
     auto activation_j = activations_[activation_id_j];
-
     auto vm_i = virtual_machines_[vm_id_i];
     auto vm_j = virtual_machines_[vm_id_j];
-
     // Get the lowest bandwidth
     auto bandwidth = std::min(vm_i->get_bandwidth_GBps(), vm_j->get_bandwidth_GBps());
-
     std::vector<size_t> activation_i_output_files_id;
     for (const auto& o: activation_i->get_output_files()) {
         activation_i_output_files_id.push_back(o->get_id());
     }
-
     std::vector<size_t> activation_j_input_files_id;
     for (const auto& i: activation_j->get_input_files()) {
         activation_i_output_files_id.push_back(i->get_id());
     }
-
     // Get the files that are written by activation i and read by activation j
     auto common_files = intersection(activation_i_output_files_id, activation_j_input_files_id);
-
     // Now, sum all the cost (in time) to transfer all those files
     for (auto file_id: common_files) {
         auto file = files_[file_id];
         // TODO: Use the appropriated method
         cost += ceil(file->get_size_in_GB() / bandwidth);
     }
-
     return cost;
 }
 
@@ -155,21 +140,17 @@ double Heft::ComputeAverageCommunicationCost(size_t activation_id_i, size_t acti
     double communication_cost = 0.0;
     double static_files_communication_cost = 0.0;
     double dynamic_files_communication_cost = 0.0;
-
     // Just a protection, if exists only one virtual machine then, just, return zero.
     if (GetVirtualMachineSize() == 1) {
         return communication_cost;
     }
-
     // Calculate the number of possible virtual machine pairs.
     auto number_of_vm = GetVirtualMachineSize();
     auto number_of_vm_pairs = GetVirtualMachineSize() * (GetVirtualMachineSize() - 1);
-
     // Compute the static file communication cost for each vm.
     for (const auto &vm: virtual_machines_) {
         static_files_communication_cost = CommunicationCostStatic(activation_id_j, vm->get_id());
     }
-
     // Compute the communication between activation i and activation j for each pair of VMs.
     for (const auto &vm_i : virtual_machines_) {
         for (const auto &vm_j: virtual_machines_) {
@@ -181,11 +162,9 @@ double Heft::ComputeAverageCommunicationCost(size_t activation_id_i, size_t acti
             }
         }
     }
-
     // Calculate the average cost
     communication_cost = static_files_communication_cost / static_cast<double>(number_of_vm)
                        + dynamic_files_communication_cost / static_cast<double>(number_of_vm_pairs);
-
     return communication_cost;
 }
 
@@ -202,7 +181,6 @@ double Heft::ComputeAverageCommunicationCost(size_t activation_id_i, size_t acti
 double Heft::RankUpward(size_t activation_id, std::vector<double> &communication_plus_max_successor_rank_cache) {
     // TODO: paste the equation on the documentation
     auto successors = GetSuccessors(activation_id);
-
     // Prepare the lambda function to calculate the second term of the equation
     auto rank = [&](size_t inner_activation_id) {
         auto communication_cost = ComputeAverageCommunicationCost(activation_id, inner_activation_id);
@@ -210,13 +188,10 @@ double Heft::RankUpward(size_t activation_id, std::vector<double> &communication
 
         return communication_cost + successor_rank;
     };
-
     if (!successors.empty()) {
         auto max_value = 0.0;
-
         for (auto successor_activation_id: successors) {
             double communication_plus_successor_rank;
-
             if (communication_plus_max_successor_rank_cache[successor_activation_id] == -1) {
                 // Get the rank of the successor
                 communication_plus_successor_rank = rank(successor_activation_id);
@@ -225,7 +200,6 @@ double Heft::RankUpward(size_t activation_id, std::vector<double> &communication
             } else {  // Use the cached value for the communication plus the max successor rank.
                 communication_plus_successor_rank = communication_plus_max_successor_rank_cache[successor_activation_id];
             }
-
             max_value = std::max(max_value, communication_plus_successor_rank);
         }
         // Check if activation_id is source (this ensures that the source activation has the greatest rank)
@@ -265,13 +239,11 @@ double FindFirstGap(std::vector<Event> vm_orders, double desired_start_time, dou
      * Find the first gap in an agent's list of jobs.
      * The gap must be after `desired_start_time` and of length at least duration.
      */
-
     // (previous comment): No activation: can fit it in whenever the job is ready to run.
     // Virtual machine has no activations scheduled, so, can start whenever its desire.
     if (vm_orders.empty()) {
         return desired_start_time;
     }
-
     /*
      * Try to fit it in between each pair of Events, but first prepend dummy_plus_vm_orders dummy Event which ends at time 0 to check for
      * gaps before any real Event starts.
@@ -281,7 +253,6 @@ double FindFirstGap(std::vector<Event> vm_orders, double desired_start_time, dou
 //    auto dummy_plus_vm_orders = std::merge(aux, vm_orders);
 //    std::vector<Event> dummy_plus_vm_orders;
 //    std::merge(aux.begin(), aux.end(), vm_orders.begin(), vm_orders.end(), std::inserter(dummy_plus_vm_orders, dummy_plus_vm_orders.begin()));
-
     for (auto i = 0ul; i < dummy_plus_vm_orders.size() - 1; i++) {
         auto earliest_start = std::max<double>(desired_start_time, dummy_plus_vm_orders[static_cast<long>(i)].end);
 
@@ -289,7 +260,6 @@ double FindFirstGap(std::vector<Event> vm_orders, double desired_start_time, dou
             return earliest_start;
         }
     }
-
     // No gaps found: put it at the end, or whenever the activation is ready
     return std::max(vm_orders.back().end, desired_start_time);
 }
@@ -316,7 +286,6 @@ double Heft::StartTime(size_t activation_id,  // IN
     auto predecessors = GetPredecessors(activation_id);
     auto queue_value = 0.0;
     double start_time;
-
     // Communication cost
     communication_read_cost += CommunicationCostStatic(activation_id, vm_id);
     if (activation_id != get_id_source() and !predecessors.empty()) {
@@ -328,10 +297,8 @@ double Heft::StartTime(size_t activation_id,  // IN
                                                                        vm_id);
         }
     }
-
     auto pair_of_key_and_a_vector_of_events = orders.find(vm_id);
     auto vector_of_events = pair_of_key_and_a_vector_of_events->second;
-
     if (pair_of_key_and_a_vector_of_events != orders.end()) {
         if (!vector_of_events.empty()) {
             auto &event = vector_of_events.back();
@@ -339,11 +306,8 @@ double Heft::StartTime(size_t activation_id,  // IN
             queue_value = event.end;
         }
     }
-
     max_value = std::max(max_value, queue_value);
-
     start_time = communication_read_cost + max_value;
-
     return FindFirstGap(vector_of_events, start_time, activation_computation_cost);
 }
 
@@ -365,17 +329,14 @@ void Heft::Allocate(size_t activation_id,
                     std::map<size_t, std::vector<Event>> &orders, // IN, OUT
                     std::vector<double> &end_time) {
     Event event;
-
     // Initialise the start time lambda function
     auto st = [&](size_t id_vm) {
         return StartTime(activation_id, id_vm, activation_allocation, orders, end_time);
     };
-
     // Initialise the finish time lambda function
     auto ft = [&](size_t id_vm) {
         return st(id_vm) + ComputationCost(activation_id, id_vm);
     };
-
     // Sort vms based on task finish time
     // For each processor P_k in the processor-set (P_k E P) do:
     // TODO: Do better, iterate through VM list, just once
@@ -391,32 +352,24 @@ void Heft::Allocate(size_t activation_id,
 
         return result;
     });
-
     auto vm_id = vm_keys.front();  // Get the selected VM id.
     auto start = st(vm_id);
     auto end = ft(vm_id);
-
     DLOG(INFO) << "Selected VM id: " << vm_id;
-
     // Store the ending time
     end_time[activation_id] = end;
-
     // Initialising the event object
     event.id = activation_id;
     event.start = start;
     event.end = end;
-
     auto pair_of_vector_of_events = orders.find(vm_id);
-
     // Assign activation n_i to VM P_j that minimizes the Earliest Execution Finish Time of activation n_i
     pair_of_vector_of_events->second.push_back(event);
-
     // Sort the orders of events
     sort(pair_of_vector_of_events->second.begin(), pair_of_vector_of_events->second.end(),
          [&](const Event &event_a, const Event &event_b) {
              return event_a.start < event_b.start;
          });
-
     activation_allocation[activation_id] = vm_id;
 }
 
@@ -441,11 +394,9 @@ static size_t GetNextTask(std::map<size_t, std::vector<Event>> &orders) {
             }
         }
     }
-
     if (activation_id != std::numeric_limits<size_t>::max()) {
         orders.find(vm_id)->second.erase(orders.find(vm_id)->second.begin());
     }
-
     return activation_id;
 }
 
@@ -455,48 +406,34 @@ static size_t GetNextTask(std::map<size_t, std::vector<Event>> &orders) {
  */
 void Heft::Run() {
     DLOG(INFO) << "Executing HEFT ...";
-
     DLOG(INFO) << "Initialising ranks variables";
-
     // Defining variables
-
     Solution best_solution(this);
-
     std::map<size_t, std::vector<Event>> activation_order;
-
     std::vector<Activation> scheduling_list;  // Will be filled with activation IDs.
-
     std::vector<double> end_time(GetActivationSize(), 0.0);
     std::vector<double> ranku(GetActivationSize(), 0.0);
     std::vector<double> communication_plus_max_successor_rank_cache(GetActivationSize(), -1.0);
-
     std::vector<size_t> activation_on(GetActivationSize(), -1ul);
-
     // Initialising variables
-
     DLOG(INFO) << "Creating a list of VM IDs";
     std::vector<size_t> vm_ids;
     for (const auto &item : virtual_machines_) {
         VirtualMachine vm = *item;
         vm_ids.push_back(vm.get_id());
     }
-
     DLOG(INFO) << "Build activation_order struct (event_map)";
     for (auto vm_id: vm_ids) {
         activation_order.insert(make_pair(vm_id, std::vector<Event>()));
     }
-
     DLOG(INFO) << "Building the scheduling_list";
     for (const auto& item: activations_) {
         Activation act = *item;
         scheduling_list.push_back(act);
     }
-
     // Begin the algorithm
-
     DLOG(INFO) << "No. of scheduling_list: " << GetActivationSize();
     DLOG(INFO) << "No. of processors: " << GetVirtualMachineSize();
-
     DLOG(INFO) << "Compute the ranku for all activations by traversing the graph UPWARD, starting from the exit "
                   "activation (reached through recursive function).";
     // TODO: ranku vs rank (comment)
@@ -504,49 +441,41 @@ void Heft::Run() {
         auto activation_id = activation.get_id();
         ranku[activation_id] = RankUpward(activation_id, communication_plus_max_successor_rank_cache);
     });
-
     DLOG(INFO) << "Sorting the activations in a scheduling list by a non-increasing order of ranku values.";
     // TODO: ranku vs rank (comment)
     std::sort(scheduling_list.begin(), scheduling_list.end(),
               [&](const Activation &activation_i, const Activation &activation_j) {
                   return ranku[activation_i.get_id()] > ranku[activation_j.get_id()];
               });
-
+#ifndef NDEBUG
     DLOG(INFO) << "The upward rank values:";
     for (const auto &activation : scheduling_list) {
-        auto index = activation.get_id();
-        DLOG(INFO) << "Activation " << index << ": " <<  std::fixed << std::setprecision(6) << ranku[index];
+        DLOG(INFO) << "Activation " << activation.get_id() << ": " <<  std::fixed << std::setprecision(6)
+                << ranku[activation.get_id()];
     }
-
+#endif
     // ### I stopped here!!! ###
-
     /*
      * TODO: a lot of variables created and populated isolated, maybe initialize everything in the beginning or create
      * more Methods
      */
-
     DLOG(INFO) << "Allocating scheduling_list";
-//    for (auto activation = scheduling_list.begin(); activation != scheduling_list.end(); activation++) {
     // While there are unscheduled activations in the list do:
     for (const auto &activation : scheduling_list) {
         // Select the first activation, n_i, from the list for scheduling.
         Allocate(activation.get_id(), activation_on, vm_ids, activation_order, end_time);
     }
-
     // build allocation
     DLOG(INFO) << "Fulfilling the solution object";
     // TODO: Allocate directly into the solution object instead of translating one solution into another
     for (const auto &pair_key_event : activation_order) {
         auto vm_id = pair_key_event.first;
         auto events = pair_key_event.second;
-
         for (auto event : events) {
             auto activation = activations_[event.id];
-
             DLOG(INFO) << "Allocating [" << activation->get_name() << "], [" << activation->get_id() << "], VM[" << vm_id << "]";
             auto vm = virtual_machines_[vm_id];
             best_solution.AllocateTask(activation, vm);
-
             // Update output files;
             DLOG(INFO) << "Allocating files";
             for (const auto& out: activation->get_output_files()) {
@@ -554,45 +483,34 @@ void Heft::Run() {
             }
         }
     }
-
     // Build ordering
     DLOG(INFO) << "Clear ordering";
     best_solution.ClearOrdering();
-
     // Add root
     best_solution.AddOrdering(this->get_id_source());
-
     DLOG(INFO) << "Add ordering";
     auto activation_id = GetNextTask(activation_order);
-
     do {
         if (activation_id != get_id_source() && activation_id != get_id_target()) {
             best_solution.AddOrdering(activation_id);
         }
         activation_id = GetNextTask(activation_order);
     } while (activation_id != std::numeric_limits<size_t>::max());
-
     // add sink
     best_solution.AddOrdering(get_id_target());
-
     DLOG(INFO) << "Compute Objective Function";
-    best_solution.ComputeObjectiveFunction();
-
+//    best_solution.ComputeObjectiveFunction();
 #ifndef NDEBUG
     best_solution.MemoryAllocation();
     best_solution.ComputeObjectiveFunction();
     DLOG(INFO) << best_solution;
-//    std::cout << best_solution;
     best_solution.FreeingMemoryAllocated();
 #endif
-
     double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
-
     // TODO: This printing could be through a method to uniform the output values
     std::cerr << best_solution.get_makespan() << " " << best_solution.get_cost() << " "
             << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure() << " "
             << best_solution.get_objective_value() << std::endl << time_s << std::endl;
-
     DLOG(INFO) << "... ending HEFT";
     // TODO: Printing the scheduling
     // TODO: See the warning messages

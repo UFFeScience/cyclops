@@ -1,13 +1,13 @@
 /**
  * \file src/model/bucket.h
- * \brief Contains the \c Bucket class declaration.
+ * \brief Contains the \c Bucket class declaration
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
- * This header file contains the \c Bucket class.
+ * This header file contains the \c Bucket class
  */
 
 #ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_BUCKET_H_

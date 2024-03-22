@@ -2,10 +2,10 @@
  * \file src/model/virtual_machine.cc
  * \brief Contains the \c VirtualMachine class definition
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2021
+ * \date 2024
  *
  * This source file contains the \c VirtualMachine class definition
  */

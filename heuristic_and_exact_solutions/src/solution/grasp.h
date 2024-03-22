@@ -1,18 +1,19 @@
 /**
  * \file src/solution/greedy_randomized_constructive_heuristic.h
- * \brief Contains the \c Grasp class declaration.
+ * \brief Contains the \c Grasp class declaration
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2021
+ * \date 2024
  *
  * This header file contains the \c Grasp class that construct
- * several \c Solution objects by selecting tasks randomly inside a restrict candidate list.
+ * several \c Solution objects by selecting tasks randomly inside a restrict candidate list
  */
 
 #ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
 #define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
+
 
 #include <src/statistic/write_to_local_search_file.h>
 #include <src/statistic/write_to_ttt_file.h>
@@ -32,17 +33,7 @@ public:
     void localSearch(Solution &);
 
     ///
-    bool localSearchSwapVms(Solution &solution);
-
-    ///
-    bool localSearchSwapOrderPosition(Solution &solution);
-
-    ///
-    bool localSearchMoveElement(Solution &solution);
-
-    ///
     void Run() override;
-
 private:
     std::string name_ = "grasp";
 
@@ -65,5 +56,6 @@ private:
     double lsn_time_3 = 0.0;  // Total Elapsed Time of Local Search Neighborhood 3
     size_t lsn_noi_3 = 0ul;  // Total Number of Improvements made by Local Search Neighborhood 3
 };
+
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_

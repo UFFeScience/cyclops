@@ -1,22 +1,20 @@
 /**
  * \file src/solution/cplex.cc
- * \brief Contains the \c Algorithm class methods.
+ * \brief Contains the \c Algorithm class methods
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \authors Yuri Frota \<abitbol@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
  * This source file contains the methods from the \c Cplex class that run the mode of the
- * exact solution.
+ * exact solution
  */
 
 #include "src/solution/cplex.h"
 
 #include "src/model/data.h"
-#include "src/model/dynamic_file.h"
-#include "src/model/static_file.h"
 
 DECLARE_string(cplex_output_file);
 
@@ -426,8 +424,8 @@ void PrintBest(struct BEST *data) {
     // -------- ws ----------
     for (auto i = 0ul; i < algorithm->GetFilesSize() - 1ul; ++i) {
         for (auto j = i + 1ul; j < algorithm->GetFilesSize(); ++j) {
-            auto conflict = algorithm->get_conflict_graph().ReturnConflict(static_cast<size_t>(i),
-                                                                           static_cast<size_t>(j));
+            auto conflict = algorithm->get_conflict_graph()->ReturnConflict(static_cast<size_t>(i),
+                                                                            static_cast<size_t>(j));
 
             if (conflict > 0) {  // soft constraint
                 if (data->ws[i][j] > data->PRECISION) {
@@ -588,8 +586,8 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx) {
         // -------- ws ----------
         for (auto d1 = 0ul; d1 < algorithm->GetFilesSize() - 1ul; ++d1) {
             for (auto d2 = d1 + 1ul; d2 < algorithm->GetFilesSize(); ++d2) {
-                int conflict = algorithm->get_conflict_graph().ReturnConflict(static_cast<size_t>(d1),
-                                                                              static_cast<size_t>(d2));
+                int conflict = algorithm->get_conflict_graph()->ReturnConflict(static_cast<size_t>(d1),
+                                                                               static_cast<size_t>(d2));
 
                 if (conflict > 0) {  // soft constraint
                     data->ws[d1][d2] = static_cast<int>((float) getValue(
@@ -835,7 +833,7 @@ void Cplex::Run() {
         for (auto d2 = d1 + 1ul; d2 < GetFilesSize(); d2++) {
             auto int_d2 = static_cast<int>(d2);
 
-            auto conflict = conflict_graph_.ReturnConflict(d1, d2);
+            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
 
             if (conflict > 0) {  // soft constraint
                 sprintf(var_name, "ws_%d_%d", (int) d1, (int) d2);  // Variable name
@@ -1003,7 +1001,7 @@ void Cplex::Run() {
         for (auto d2 = d1 + 1ul; d2 < static_cast<size_t>(_d); d2++) {
             auto int_d2 = static_cast<int>(d2);
 
-            auto conflict = conflict_graph_.ReturnConflict(d1, d2);
+            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
 
             if (conflict > 0) {  // soft constraint
                 fo += alpha_security_ * (conflict * cplex.ws[int_d1][int_d2] / _security_max);
@@ -2011,7 +2009,7 @@ void Cplex::Run() {
         for (auto d2 = d1 + 1ul; d2 < static_cast<size_t>(_d); d2++) {
             auto int_d2 = static_cast<int>(d2);
 
-            auto conflict = conflict_graph_.ReturnConflict(d1, d2);
+            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
 
             // hard constraint
             if (conflict == -1) {
@@ -2044,7 +2042,7 @@ void Cplex::Run() {
         for (auto d2 = d1 + 1ul; d2 < static_cast<size_t>(_d); d2++) {
             auto int_d2 = static_cast<int>(d2);
 
-            auto conflict = conflict_graph_.ReturnConflict(d1, d2);
+            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
 
             // Hard constraint
             if (conflict > 0) {
@@ -2380,7 +2378,7 @@ void Cplex::Run() {
         // Soft edge penalties
         for (auto d1 = 0; d1 < _d - 1; d1++) {
             for (auto d2 = d1 + 1; d2 < _d; d2++) {
-                int conflict = conflict_graph_.ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
+                int conflict = conflict_graph_->ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
                 if (conflict > 0) {  // Soft constraint
                     security += conflict * best.ws[d1][d2] / _security_max;

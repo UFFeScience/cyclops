@@ -1,17 +1,18 @@
 /**
  * \file src/model/storage.h
- * \brief Contains the \c Storage class declaration.
+ * \brief Contains the \c Storage class declaration
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
- * This header file contains the \c Storage class.
+ * This header file contains the \c Storage class
  */
 
 #ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STORAGE_H_
 #define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STORAGE_H_
+
 
 #include <string>
 #include <utility>
@@ -38,9 +39,6 @@ public:
     /// Getter for id_
     [[nodiscard]] size_t get_id() const { return id_; }
 
-    /// Getter for name_
-//  const std::string &get_name() const { return name_; }
-
     /// Getter for storage_
     [[nodiscard]] double get_storage() const { return storage_; }
 
@@ -48,13 +46,7 @@ public:
     [[nodiscard]] double get_cost() const { return cost_; }
 
     /// Getter for bandwidth_
-//  double get_bandwidth() const { return bandwidth_; }
-
-    /// Getter for bandwidth_
     [[nodiscard]] double get_bandwidth_GBps() const { return bandwidth_GBps_; }
-
-    /// Getter for bandwidth_
-//  double get_type_id() const { return type_id_; }
 
     /// Adds a requiremnt value
     void AddRequirement(double requirement) { requirements_.push_back(static_cast<int>(requirement)); }
@@ -85,5 +77,6 @@ protected:
 
     std::vector<int> requirements_;
 };
+
 
 #endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STORAGE_H_

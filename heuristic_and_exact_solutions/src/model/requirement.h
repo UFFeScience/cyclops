@@ -1,13 +1,13 @@
 /**
  * \file src/model/requirement.h
- * \brief Contains the \c Requirement class declaration.
+ * \brief Contains the \c Requirement class declaration
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
- * This header file contains the \c Requirement class.
+ * This header file contains the \c Requirement class
  */
 
 #ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_REQUIREMENT_H_
