@@ -363,7 +363,7 @@ struct BEST {
         // -------- ws ----------
         for (auto i = 0ul; i < d_ - 1; ++i) {
             for (auto j = i + 1; j < d_; ++j) {
-                int conflict = algorithm_->get_conflict_graph().ReturnConflict(i, j);
+                int conflict = algorithm_->get_conflict_graph()->ReturnConflict(i, j);
 
                 if (conflict > 0) {  // soft constraint
                     if (ws[i][j] > PRECISION) {

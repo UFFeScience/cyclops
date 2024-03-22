@@ -58,7 +58,7 @@ file(GLOB_RECURSE HEADERS "src/*/*.h")
 file(GLOB_RECURSE SOURCES "src/*/*.cc")
 
 ##### executables
-add_executable(wf_security_greedy.x ${MAIN} ${HEADERS} ${SOURCES} src/statistic/write_to_ttt_file.h)
+add_executable(wf_security_greedy.x ${MAIN} ${HEADERS} ${SOURCES})
 target_link_libraries(wf_security_greedy.x ${CPLEX_LIBRARIES} ${GLOG_LIBRARIES} gflags dl)
 
 ##### auxiliary make directives

@@ -1,87 +1,116 @@
 /**
  * \file src/model/file.h
- * \brief Contains the \c File class declaration.
+ * \brief Contains the \c File class declaration
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
  * \date 2020
  *
- * This header file contains the \c File class.
+ * This header file contains the \c File class
  */
 
 #ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_FILE_H_
 #define APPROXIMATE_SOLUTIONS_SRC_MODEL_FILE_H_
 
+
+#include <cmath>
+#include <iterator>
+#include <limits>
+#include <sstream>
+#include "storage.h"
 #include <string>
 #include <utility>
 #include <vector>
 
-#include <sstream>
-#include <iterator>
-
-#include <limits>
-#include "storage.h"
+#include "src/model/storage.h"
 
 /**
  * \class File file.h "src/model/file.h"
  * \brief It is a file abstraction used by the \c DynamicFile and the \c StaticFile
  */
 class File {
- public:
-  /// Parametrized constructor
-  explicit File(const size_t id,
-                std::string name,
-                const double size)
-      : id_(id),
-        name_(std::move(name)),
-        size_(size),
-        size_in_MB_(size / 1000.0),
-        size_in_GB_(size / 1000000.0) { }
+public:
+    /// Parametrized constructor
+    explicit File(const size_t id,
+                  std::string name,
+                  const double size)
+            : id_(id),
+              name_(std::move(name)),
+              size_(size),
+              size_in_MB_(size / 1000.0),
+              size_in_GB_(size / 1000000.0) {}
 
-  /// Default destructor
-  virtual ~File() = default;
+    /// Default destructor
+    virtual ~File() = default;
 
-  /// Getter for the ID of the file
-  [[nodiscard]] size_t get_id() const { return id_; }
+    ///
+    void PopulateFileTransferMatrix(std::vector<std::shared_ptr<Storage>> storages) {
+        storages_size_ = storages.size();
+        matrix_.resize(storages_size_ * storages_size_, std::numeric_limits<size_t>::max());
+        for (auto line = 0ul; line < storages_size_; line++) {
+            for (auto column = 0ul; column < storages_size_; column++) {
+                if (line == column) {
+                    matrix_[(line * storages_size_) + column] = 1ul;
+                } else {
+                    auto link = std::min<double>(storages[line]->get_bandwidth_GBps(),
+                                                 storages[column]->get_bandwidth_GBps());
+                    auto time = static_cast<size_t>(std::ceil(size_in_MB_ / link));
+                    matrix_[(line * storages_size_) + column] = time;
+                }
+            }
+        }
+    }
 
-  /// Getter for name of the file
-  [[nodiscard]] const std::string &get_name() const { return name_; }
+    /// origin_vm_id ==> line, target_vm_id ==> column
+    size_t GetFileTransfer(size_t origin_vm_id, size_t target_vm_id) {
+        return matrix_[(origin_vm_id * storages_size_) + target_vm_id];
+    }
 
-  /// Getter for size in KBs of the file
-  [[nodiscard]] double get_size() const { return size_; }
+    /// Getter for the ID of the file
+    [[nodiscard]] size_t get_id() const { return id_; }
 
-  /// Getter for size in KBs of the file
-  [[nodiscard]] double get_size_in_MB() const { return size_in_MB_; }
+    /// Getter for name of the file
+    [[nodiscard]] const std::string &get_name() const { return name_; }
 
-  /// Getter for size in KBs of the file
-  [[nodiscard]] double get_size_in_GB() const { return size_in_GB_; }
+    /// Getter for size in KBs of the file
+    [[nodiscard]] double get_size() const { return size_; }
 
-  /// Concatenate operator
-  friend std::ostream& operator<<(std::ostream& os, const File& a) {
-    return a.Write(os);
-  }
+    /// Getter for size in KBs of the file
+    [[nodiscard]] double get_size_in_GB() const { return size_in_GB_; }
 
- protected:
-  virtual /// Print the File object to the output stream
-  std::ostream& Write(std::ostream& os) const {
-    return os << "File[_id " << id_ << ", name " << name_ << ", size " << size_ << "]";
-  }
+    /// Concatenate operator
+    friend std::ostream &operator<<(std::ostream &os, const File &a) {
+        return a.Write(os);
+    }
 
-  /// The ID of the file
-  size_t id_;
+protected:
+    virtual /// Print the File object to the output stream
+    std::ostream &Write(std::ostream &os) const {
+        return os << "File[_id " << id_ << ", name " << name_ << ", size " << size_ << "]";
+    }
 
-  /// The file name
-  std::string name_;
+    /// The ID of the file
+    size_t id_;
 
-  /// The file size in KB
-  double size_;
+    /// The file name
+    std::string name_;
 
-  /// The file size in MB
-  double size_in_MB_;
+    /// The file size in KB
+    double size_;
 
-  /// The file size in GB
-  double size_in_GB_;
+    /// The file size in MB
+    double size_in_MB_;
+
+    /// The file size in GB
+    double size_in_GB_;
+
+    ///
+    size_t storages_size_{};
+
+    ///
+    std::vector<size_t> matrix_;
 };  // end of class File
+
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_FILE_H_
