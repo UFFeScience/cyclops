@@ -19,3 +19,4 @@ _instances_*
 Reports/*
 .venv
 **/*.ipynb_checkpoints
+**/*.pyc
