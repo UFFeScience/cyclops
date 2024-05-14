@@ -21,146 +21,150 @@ DECLARE_uint64(number_of_allocation_experiments);
 /**
  * Allocate memory for debugging purpose.
  */
-void Solution::MemoryAllocation() {
-    x = new int **[n_];
-    for (auto i = 0ul; i < n_; ++i) {
-        x[i] = new int *[m_];
-        for (auto j = 0ul; j < m_; ++j) {
-            x[i][j] = new int[t_];
-            std::fill_n(x[i][j], t_, -1);
-        }
-    }
-
-    r = new int ****[n_];
-    for (auto i = 0ul; i < n_; ++i) {
-        r[i] = new int ***[d_];
-        for (auto j = 0ul; j < d_; ++j) {
-            r[i][j] = new int **[m_];
-            for (auto k = 0ul; k < m_; ++k) {
-                r[i][j][k] = new int *[mb_];
-                for (auto l = 0ul; l < mb_; ++l) {
-                    r[i][j][k][l] = new int[t_];
-                    std::fill_n(r[i][j][k][l], t_, -1);
-                }
-            }
-        }
-    }
-
-    w = new int ****[n_];
-    for (auto i = 0ul; i < n_; ++i) {
-        w[i] = new int ***[d_];
-        for (auto j = 0ul; j < d_; ++j) {
-            w[i][j] = new int **[m_];
-            for (auto k = 0ul; k < m_; ++k) {
-                w[i][j][k] = new int *[mb_];
-                for (auto l = 0ul; l < mb_; ++l) {
-                    w[i][j][k][l] = new int[t_];
-                    std::fill_n(w[i][j][k][l], t_, -1);
-                }
-            }
-        }
-    }
-
-    y = new int **[d_];
-    for (auto i = 0ul; i < d_; ++i) {
-        y[i] = new int *[mb_];
-        for (auto j = 0ul; j < mb_; ++j) {
-            y[i][j] = new int[t_ + 1];
-            std::fill_n(y[i][j], t_, -1);
-        }
-    }
-
-    v = new int *[m_];
-    for (auto i = 0ul; i < m_; ++i) {
-        v[i] = new int[t_];
-        std::fill_n(v[i], t_, -1);
-    }
-}
+//void Solution::MemoryAllocation() {
+//    x = new int **[n_];
+//    for (auto i = 0ul; i < n_; ++i) {
+//        x[i] = new int *[m_];
+//        for (auto j = 0ul; j < m_; ++j) {
+//            x[i][j] = new int[t_];
+//            std::fill_n(x[i][j], t_, -1);
+//        }
+//    }
+//
+//    r = new int ****[n_];
+//    for (auto i = 0ul; i < n_; ++i) {
+//        r[i] = new int ***[d_];
+//        for (auto j = 0ul; j < d_; ++j) {
+//            r[i][j] = new int **[m_];
+//            for (auto k = 0ul; k < m_; ++k) {
+//                r[i][j][k] = new int *[mb_];
+//                for (auto l = 0ul; l < mb_; ++l) {
+//                    r[i][j][k][l] = new int[t_];
+//                    std::fill_n(r[i][j][k][l], t_, -1);
+//                }
+//            }
+//        }
+//    }
+//
+//    w = new int ****[n_];
+//    for (auto i = 0ul; i < n_; ++i) {
+//        w[i] = new int ***[d_];
+//        for (auto j = 0ul; j < d_; ++j) {
+//            w[i][j] = new int **[m_];
+//            for (auto k = 0ul; k < m_; ++k) {
+//                w[i][j][k] = new int *[mb_];
+//                for (auto l = 0ul; l < mb_; ++l) {
+//                    w[i][j][k][l] = new int[t_];
+//                    std::fill_n(w[i][j][k][l], t_, -1);
+//                }
+//            }
+//        }
+//    }
+//
+//    y = new int **[d_];
+//    for (auto i = 0ul; i < d_; ++i) {
+//        y[i] = new int *[mb_];
+//        for (auto j = 0ul; j < mb_; ++j) {
+//            y[i][j] = new int[t_ + 1];
+//            std::fill_n(y[i][j], t_, -1);
+//        }
+//    }
+//
+//    v = new int *[m_];
+//    for (auto i = 0ul; i < m_; ++i) {
+//        v[i] = new int[t_];
+//        std::fill_n(v[i], t_, -1);
+//    }
+//}
 
 /**
  * Should be called after Solution::MemoryAllocation().
  */
-void Solution::FreeingMemoryAllocated() {
-    for (auto i = 0ul; i < n_; ++i) {
-        for (size_t j = 0; j < m_; ++j) {
-            delete[] x[i][j];
-            x[i][j] = nullptr;
-        }
-        delete[] x[i];
-        x[i] = nullptr;
-    }
-    delete[] x;
-    x = nullptr;
-
-    for (auto i = 0ul; i < n_; ++i) {
-        for (auto j = 0ul; j < d_; ++j) {
-            for (auto k = 0ul; k < m_; ++k) {
-                for (auto l = 0ul; l < mb_; ++l) {
-                    delete[] r[i][j][k][l];
-                    r[i][j][k][l] = nullptr;
-                }
-                delete[] r[i][j][k];
-                r[i][j][k] = nullptr;
-            }
-            delete[] r[i][j];
-            r[i][j] = nullptr;
-        }
-        delete[] r[i];
-        r[i] = nullptr;
-    }
-    delete[] r;
-    r = nullptr;
-
-    for (auto i = 0ul; i < n_; ++i) {
-        for (auto j = 0ul; j < d_; ++j) {
-            for (auto k = 0ul; k < m_; ++k) {
-                for (auto l = 0ul; l < mb_; ++l) {
-                    delete[] w[i][j][k][l];
-                    w[i][j][k][l] = nullptr;
-                }
-                delete[] w[i][j][k];
-                w[i][j][k] = nullptr;
-            }
-            delete[] w[i][j];
-            w[i][j] = nullptr;
-        }
-        delete[] w[i];
-        w[i] = nullptr;
-    }
-    delete[] w;
-    w = nullptr;
-
-    for (auto i = 0ul; i < d_; ++i) {
-        for (auto j = 0ul; j < mb_; ++j) {
-            delete[] y[i][j];
-            y[i][j] = nullptr;
-        }
-        delete[] y[i];
-        y[i] = nullptr;
-    }
-    delete[] y;
-    y = nullptr;
-
-    for (auto i = 0ul; i < m_; ++i) {
-        delete[] v[i];
-        v[i] = nullptr;
-    }
-    delete[] v;
-    v = nullptr;
-}
+//void Solution::FreeingMemoryAllocated() {
+//    for (auto i = 0ul; i < n_; ++i) {
+//        for (size_t j = 0; j < m_; ++j) {
+//            delete[] x[i][j];
+//            x[i][j] = nullptr;
+//        }
+//        delete[] x[i];
+//        x[i] = nullptr;
+//    }
+//    delete[] x;
+//    x = nullptr;
+//
+//    for (auto i = 0ul; i < n_; ++i) {
+//        for (auto j = 0ul; j < d_; ++j) {
+//            for (auto k = 0ul; k < m_; ++k) {
+//                for (auto l = 0ul; l < mb_; ++l) {
+//                    delete[] r[i][j][k][l];
+//                    r[i][j][k][l] = nullptr;
+//                }
+//                delete[] r[i][j][k];
+//                r[i][j][k] = nullptr;
+//            }
+//            delete[] r[i][j];
+//            r[i][j] = nullptr;
+//        }
+//        delete[] r[i];
+//        r[i] = nullptr;
+//    }
+//    delete[] r;
+//    r = nullptr;
+//
+//    for (auto i = 0ul; i < n_; ++i) {
+//        for (auto j = 0ul; j < d_; ++j) {
+//            for (auto k = 0ul; k < m_; ++k) {
+//                for (auto l = 0ul; l < mb_; ++l) {
+//                    delete[] w[i][j][k][l];
+//                    w[i][j][k][l] = nullptr;
+//                }
+//                delete[] w[i][j][k];
+//                w[i][j][k] = nullptr;
+//            }
+//            delete[] w[i][j];
+//            w[i][j] = nullptr;
+//        }
+//        delete[] w[i];
+//        w[i] = nullptr;
+//    }
+//    delete[] w;
+//    w = nullptr;
+//
+//    for (auto i = 0ul; i < d_; ++i) {
+//        for (auto j = 0ul; j < mb_; ++j) {
+//            delete[] y[i][j];
+//            y[i][j] = nullptr;
+//        }
+//        delete[] y[i];
+//        y[i] = nullptr;
+//    }
+//    delete[] y;
+//    y = nullptr;
+//
+//    for (auto i = 0ul; i < m_; ++i) {
+//        delete[] v[i];
+//        v[i] = nullptr;
+//    }
+//    delete[] v;
+//    v = nullptr;
+//}
 
 /**
  * Parameterised constructor.
  *
  * @param algorithm
  */
-Solution::Solution(Algorithm *algorithm)
+Solution::Solution(std::shared_ptr<Algorithm> algorithm)
         : algorithm_(algorithm),
           activation_allocations_(algorithm->GetActivationSize(), std::numeric_limits<size_t>::max()),
           file_manager_(algorithm->GetFilesSize(), algorithm->GetStorageSize(), algorithm->conflict_graph_),
           activation_height_(algorithm->GetActivationSize(), -1),
           makespan_(0.0),
+          virtual_machine_cost_(0.0),
+          bucket_variable_cost_(0.0),
           cost_(0.0),
+          activation_exposure_(0.0),
+          file_privacy_exposure_(0.0),
           security_exposure_(0.0),
           n_(algorithm_->GetActivationSize() - 2),
           d_(algorithm_->GetFilesSize()),
@@ -188,35 +192,38 @@ Solution::Solution(Algorithm *algorithm)
 /**
  *
  */
-Solution::~Solution() {
-    algorithm_ = nullptr;
-}
+//Solution::~Solution() {
+//    algorithm_ = nullptr;
+//}
 
 /**
  *
  *
  * @param other
  */
-Solution::Solution(const Solution &other)
-        : algorithm_(other.algorithm_),
-          activation_allocations_(other.activation_allocations_),
-//          file_allocations_(other.file_allocations_),
-          file_manager_(other.file_manager_),
-          ordering_(other.ordering_),
-          activation_height_(other.activation_height_),
-          activation_execution_data_(other.activation_execution_data_),
-          makespan_(other.makespan_),
-          cost_(other.cost_),
-          security_exposure_(other.security_exposure_),
-          objective_value_(other.objective_value_),
-          n_(other.n_),
-          d_(other.d_),
-          m_(other.m_),
-          mb_(other.mb_),
-          t_(other.t_) {
-    DLOG(INFO) << "Initiating copy constructor of solution ...";
-    DLOG(INFO) << "... copy constructor of solution finished";
-}
+//Solution::Solution(const Solution &other)
+//        : algorithm_(other.algorithm_),
+//          activation_allocations_(other.activation_allocations_),
+//          file_manager_(other.file_manager_),
+//          ordering_(other.ordering_),
+//          activation_height_(other.activation_height_),
+//          activation_execution_data_(other.activation_execution_data_),
+//          makespan_(other.makespan_),
+//          virtual_machine_cost_(other.virtual_machine_cost_),
+//          bucket_variable_cost_(other.bucket_variable_cost_),
+//          cost_(other.cost_),
+//          activation_exposure_(other.activation_exposure_),
+//          file_privacy_exposure_(other.file_privacy_exposure_),
+//          security_exposure_(other.security_exposure_),
+//          objective_value_(other.objective_value_),
+//          n_(other.n_),
+//          d_(other.d_),
+//          m_(other.m_),
+//          mb_(other.mb_),
+//          t_(other.t_) {
+//    DLOG(INFO) << "Initiating copy constructor of solution ...";
+//    DLOG(INFO) << "... copy constructor of solution finished";
+//}
 
 void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_ordering) {
 //    for (auto activation_id: ordering_) {
@@ -398,11 +405,10 @@ double Solution::AccumulateVMCost() {
     double vm_cost = 0.0;
     for (auto i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
         auto virtual_machine = algorithm_->GetVirtualMachinePerId(i);
-//        auto max_time = static_cast<double>(vm_allocation_time_[virtual_machine->get_id()]);
-        auto max_time = static_cast<double>(activation_execution_data_[ordering_.back()].get_vm_allocation_time(i));
-        vm_cost += (max_time * virtual_machine->get_cost());
-        DLOG(INFO) << "allocation_vm_queue_[" << i << "]: "
-                   << activation_execution_data_[ordering_.back()].get_vm_allocation_time(i);
+        auto alloc_time = static_cast<double>(activation_execution_data_[ordering_.back()].get_vm_allocation_time(i));
+        vm_cost += ((alloc_time / 3600) * virtual_machine->get_cost());  // Billed per hour
+        DLOG(INFO) << "allocation_vm_queue_[" << i << "]: " << activation_execution_data_[ordering_.back()]
+                .get_vm_allocation_time(i);
         DLOG(INFO) << "virtual_machine->get_cost(): " << virtual_machine->get_cost();
     }
     return vm_cost;
@@ -418,7 +424,6 @@ double Solution::AccumulateBucketCost() {
         // variable cost
         for (auto j = 0ul; j < algorithm_->GetFilesSize(); ++j) {
             // If the Bucket is used; then accumulate de cost and break to the next Storage
-//            if (file_allocations_[j] == i) {
             if (file_manager_.get_file_allocation(j) == i) {
                 auto file = algorithm_->GetFilePerId(j);
                 bucket_cost += (storage->get_cost() * file->get_size_in_GB());
@@ -429,12 +434,6 @@ double Solution::AccumulateBucketCost() {
 }
 
 void Solution::ComputeCost() {
-//    double virtual_machine_cost = 0.0;
-//    double bucket_variable_cost = 0.0;
-
-    virtual_machine_cost_ = 0.0;
-    bucket_variable_cost_ = 0.0;
-
     virtual_machine_cost_ = AccumulateVMCost();
     bucket_variable_cost_ = AccumulateBucketCost();
 }
@@ -1225,357 +1224,357 @@ std::ostream &Solution::Write(std::ostream &os) const {
     os << algorithm_->GetName() << std::endl;
     os << "################################################################################################"
        << std::endl;
-
-    if (x) {
-        os << "Printing BEST" << std::endl;
-
-        // -------- x ----------
-        for (auto i = 0UL; i < n_; ++i) {
-            for (auto j = 0UL; j < m_; ++j) {
-                for (auto t = 0UL; t < t_; ++t) {
-                    if (x[i][j][t] > 0) {
-                        os << "x[" << i << "][" << j << "][" << t << "] = " << x[i][j][t] << std::endl;
-                    }
-                }
-            }
-        }
-
-        // -------- r ----------
-        for (size_t i = 0UL; i < n_; ++i) {
-            auto activation = algorithm_->GetActivationPerId(i + 1ul);
-            auto input_files = activation->get_input_files();
-
-            for (auto j = 0UL; j < d_; ++j) {
-                for (auto k = 0UL; k < m_; ++k) {
-                    for (auto l = 0UL; l < mb_; ++l) {
-                        for (auto m = 0UL; m < t_; ++m) {
-                            if (r[i][j][k][l][m] > 0) {
-                                os << "r[" << i << "][" << j << "][" << k << "][" << l << "][" << m << "] = "
-                                   << r[i][j][k][l][m] << std::endl;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // -------- w ----------
-        for (auto i = 0UL; i < n_; ++i) {
-            auto activation = algorithm_->GetActivationPerId(i + 1ul);
-            auto output_files = activation->get_output_files();
-
-            for (auto j = 0UL; j < d_; ++j) {
-                for (auto k = 0UL; k < m_; ++k) {
-                    for (auto l = 0UL; l < mb_; ++l) {
-                        for (auto m = 0UL; m < t_; ++m) {
-                            if (w[i][j][k][l][m] > 0) {
-                                os << "w[" << i << "][" << j << "][" << k << "][" << l << "][" << m << "] = "
-                                   << w[i][j][k][l][m] << std::endl;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // -------- y ----------
-        for (auto i = 0UL; i < d_; ++i) {
-            for (auto j = 0UL; j < mb_; ++j) {
-                for (auto k = 0UL; k < t_; ++k) {
-                    if (y[i][j][k] > 0) {
-                        os << "y[" << i << "][" << j << "][" << k << "] = " << y[i][j][k] << std::endl;
-                    }
-                }
-            }
-        }
-
-        // -------- v ----------
-        for (auto i = 0UL; i < m_; ++i) {
-            for (auto j = 0UL; j < t_; ++j) {
-                if (v[i][j] > 0) {
-                    os << "v[" << i << "][" << j << "] = " << v[i][j] << std::endl;
-                }
-            }
-        }
-
-        os << "Writing solution timeline information";
-
-        auto *tempo = new int[mb_];
-
-        /* Relate each device with its array of data */
-        auto **maq_dado = new int *[mb_];
-
-        // Initializations
-
-        for (auto i = 0ul; i < mb_; i++) {
-            tempo[i] = 0;
-        }
-
-        for (auto i = 0ul; i < mb_; i++) {
-            maq_dado[i] = new int[algorithm_->GetFilesSize()];
-            for (auto j = 0ul; j < algorithm_->GetFilesSize(); j++) {
-                maq_dado[i][j] = -1;
-            }
-        }
-
-        // Vector for TEST that saves the actual time the machine spends performing its action (exec., read, Write)
-        // Save files per machine
-
-        os << std::endl;
-        os << "---------------- Timeline --------------" << std::endl;
-        os << "t)\t";
-        for (auto j = 0ul; j < algorithm_->GetStorageSize(); j++) {
-            os << "(M" << j << ")\t" << "(Y)\t" << "(V)\t";
-        }
-        os << std::endl;
-
-        os << std::endl;
-
-        // Time
-        for (auto check = 0ul, t1 = 0ul; t1 < t_ and check <= 1ul; t1++) {
-            os << "t" << t1 << ")\t";
-
-            // Devices
-            // Virtual Machines
-            for (auto j = 0ul; j < mb_ and check <= 1; j++) {
-                std::shared_ptr<Storage> device = algorithm_->GetStoragePerId(j);
-
-                if (auto virtual_machine = std::dynamic_pointer_cast<VirtualMachine>(device)) {
-                    // Check if more than one action is started at the same time on the same machine
-                    check = 0ul;
-
-                    // During an action (read, execute, Write)
-                    tempo[j] = tempo[j] - 1;
-
-                    if (tempo[j] > 0) {
-                        check += 1;
-                        os << "(" << tempo[j] << ")" << "\t";
-                    }
-
-                    // Execution
-                    for (auto i = 0ul; i < algorithm_->GetActivationSize() - 2ul and check <= 1ul; i++) {
-                        std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(1ul + i);
-                        std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
-
-                        auto x_ijt = x[i][j][t1];  // Returns the value of the variable
-
-                        if (x_ijt > 0) {
-                            check += 1;
-                            os << "x" << i << "\t";
-
-                            if (tempo[j] > 0) {
-                                os << "*** RUN ON TOP OF SOMETHING ***";
-                                check += 1;
-                                break;
-                            }
-
-                            tempo[j] = std::ceil(task->get_time() * virtual_machine->get_slowdown());
-
-                            // Checks if the readings were taken by the machine before execution
-                            for (auto l = 0ul; l < input_files.size() and check <= 1; l++) {
-                                auto file = input_files[l];
-                                auto d1 = file->get_id();
-                                bool has_read_file = false;
-
-                                for (auto k = 0ul; k < algorithm_->GetStorageSize() and check <= 1ul; k++) {
-                                    auto q_max = static_cast<size_t>(algorithm_->get_makespan_max());
-                                    for (auto q = 0ul; q < q_max and check <= 1; q++) {
-                                        auto r_idjpt = static_cast<float>(r[i][d1][j][k][q]);
-                                        // Returns the value of the variable
-                                        if (r_idjpt > 0) {
-                                            has_read_file = true;
-                                        }
-                                    }
-                                }
-
-                                if (!has_read_file) {
-                                    os << "*** PERFORMED THE TASK WITHOUT READING ALL THE ENTRIES *** missing data ="
-                                       << d1
-                                       << "\n" << file;
-                                    check += 1;
-                                    break;
-                                }
-                            }
-                            // ----------------------------------------------------------------
-                        }
-
-                        if (check > 1) {
-                            os << "*** CONFLICT WITH EXECUTION ***";
-                            break;
-                        }
-                    }
-
-                    // Read
-                    for (auto i = 0ul; i < algorithm_->GetActivationSize() - 2ul and check <= 1ul; i++) {
-                        auto activation = algorithm_->GetActivationPerId(i + 1ul);
-                        auto input_files = activation->get_input_files();
-
-                        for (auto l = 0ul; l < input_files.size() and check <= 1; l++) {
-                            auto file = input_files[l];
-                            auto d1 = file->get_id();
-
-                            for (auto k = 0ul; k < mb_ and check <= 1ul; k++) {
-                                std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(static_cast<size_t>(k));
-
-                                auto r_idjpt = r[i][d1][j][k][t1];
-
-                                // Returns the value of the variable
-                                if (r_idjpt > 0) {
-//                                    auto read_time = ComputeFileTransferTime(file, virtual_machine, storage);
-                                    auto read_time = file->GetFileTransfer(virtual_machine->get_id(), storage->get_id());
-
-                                    check += 1;
-                                    os << "r" << i << "(" << d1 << ")<" << k << "\t";
-
-                                    if (tempo[j] > 0) {
-                                        os << "*** READ OVER SOMETHING ***";
-                                        check += 1;
-                                        break;
-                                    }
-
-                                    tempo[j] = static_cast<int>(read_time);
-
-                                    // Check file existence
-                                    auto y_djt = static_cast<float>(y[d1][k][t1]);
-
-                                    // Returns the value of the variable
-                                    if (y_djt < 1) {
-                                        os << "*** READ NON-EXISTENT FILE IN THE MACHINE ***";
-                                        check += 1;
-                                        break;
-                                    }
-                                    // ---------------------------
-                                }
-
-                                if (check > 1) {
-                                    os << "*** CONFLICT WITH READING ***";
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    // Writing
-                    for (auto has_passed = 0ul, i = 0ul; i < n_ and check <= 1; i++) {
-                        auto activation = algorithm_->GetActivationPerId(i + 1ul);
-                        auto output_files = activation->get_output_files();
-
-                        for (auto l = 0ul; l < output_files.size() and check <= 1; l++) {
-                            std::shared_ptr<File> file = output_files[l];
-                            auto d1 = file->get_id();
-
-                            for (auto k = 0ul; k < mb_ and check <= 1; k++) {
-                                std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(k);
-
-                                auto w_idjpt = w[i][d1][j][k][t1];
-
-                                // Returns the value of the variable
-                                if (w_idjpt > 0) {
-//                                    auto write_time = ComputeFileTransferTime(file, virtual_machine, storage);
-                                    auto write_time = file->GetFileTransfer(virtual_machine->get_id(), storage->get_id());
-
-                                    check += 1;
-
-                                    os << "w" << i << "(" << d1 << ")<" << k << "\t";
-
-                                    if (tempo[j] > 0) {
-                                        os << "*** WRITE ON SOMETHING ***";
-                                        check += 1;
-                                        break;
-                                    }
-
-                                    tempo[j] = static_cast<int>(write_time);
-
-                                    // Checks if the activation has been executed on the machine before
-                                    has_passed = 0;
-                                    for (int q = 0; q < algorithm_->get_makespan_max() and check <= 1ul; q++) {
-                                        auto x_ijt = static_cast<float>(x[i][j][q]);
-
-                                        if (x_ijt > 0) {
-                                            has_passed = 1;
-                                        }
-                                    }
-
-                                    if (has_passed == 0) {
-                                        os << "*** WROTE DATA WITHOUT HAVING PERFORMED THE TASK ON THE MACHINE ***";
-                                        check += 1;
-                                        break;
-                                    }
-                                    // -----------------------------------------------
-                                }
-
-                                if (check > 1) {
-                                    os << "*** CONFLICT WITH WRITING ***";
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    // Idle machine at this time
-                    if (check == 0ul) {
-                        os << "-\t";
-                    }
-
-                    // Data
-                    for (auto d1 = 0ul; d1 < d_ and check <= 1; d1++) {
-                        auto y_djt = y[d1][j][t1];
-                        // Returns the value of the variable
-
-                        if (y_djt > 0) {
-                            maq_dado[j][d1] = 1;
-                        }
-
-                        if (maq_dado[j][d1] == 1) {
-                            os << d1 << ",";
-                        }
-                    }
-
-                    os << "\t";
-
-                    // Hiring
-                    auto v_jt = v[j][t1];
-
-                    // Returns the value of the variable
-                    if (v_jt > 0) {
-                        os << "*\t";
-                    } else {
-                        os << "\t";
-                    }
-                } else {
-                    os << "N\\A\t";
-
-                    // Data
-                    for (auto d1 = 0ul; d1 < d_ and check <= 1; d1++) {
-                        auto y_djt = y[d1][j][t1];
-
-                        if (y_djt > 0) {
-                            maq_dado[j][d1] = 1;
-                        }
-
-                        if (maq_dado[j][d1] == 1) {
-                            os << d1 << ",";
-                        }
-                    }
-
-                    os << "\t";
-
-                    // Hiring
-                    os << "N\\A\t";
-                }
-            }
-            os << std::endl;
-        }
-        os << "---------------------------------------------" << std::endl;
-
-        // Releasing resources
-
-        delete[] tempo;
-        for (size_t i = 0; i < algorithm_->GetStorageSize(); i++) {
-            delete[] maq_dado[i];
-        }
-        delete[] maq_dado;
-    }
+//
+//    if (x) {
+//        os << "Printing BEST" << std::endl;
+//
+//        // -------- x ----------
+//        for (auto i = 0UL; i < n_; ++i) {
+//            for (auto j = 0UL; j < m_; ++j) {
+//                for (auto t = 0UL; t < t_; ++t) {
+//                    if (x[i][j][t] > 0) {
+//                        os << "x[" << i << "][" << j << "][" << t << "] = " << x[i][j][t] << std::endl;
+//                    }
+//                }
+//            }
+//        }
+//
+//        // -------- r ----------
+//        for (size_t i = 0UL; i < n_; ++i) {
+//            auto activation = algorithm_->GetActivationPerId(i + 1ul);
+//            auto input_files = activation->get_input_files();
+//
+//            for (auto j = 0UL; j < d_; ++j) {
+//                for (auto k = 0UL; k < m_; ++k) {
+//                    for (auto l = 0UL; l < mb_; ++l) {
+//                        for (auto m = 0UL; m < t_; ++m) {
+//                            if (r[i][j][k][l][m] > 0) {
+//                                os << "r[" << i << "][" << j << "][" << k << "][" << l << "][" << m << "] = "
+//                                   << r[i][j][k][l][m] << std::endl;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        // -------- w ----------
+//        for (auto i = 0UL; i < n_; ++i) {
+//            auto activation = algorithm_->GetActivationPerId(i + 1ul);
+//            auto output_files = activation->get_output_files();
+//
+//            for (auto j = 0UL; j < d_; ++j) {
+//                for (auto k = 0UL; k < m_; ++k) {
+//                    for (auto l = 0UL; l < mb_; ++l) {
+//                        for (auto m = 0UL; m < t_; ++m) {
+//                            if (w[i][j][k][l][m] > 0) {
+//                                os << "w[" << i << "][" << j << "][" << k << "][" << l << "][" << m << "] = "
+//                                   << w[i][j][k][l][m] << std::endl;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        // -------- y ----------
+//        for (auto i = 0UL; i < d_; ++i) {
+//            for (auto j = 0UL; j < mb_; ++j) {
+//                for (auto k = 0UL; k < t_; ++k) {
+//                    if (y[i][j][k] > 0) {
+//                        os << "y[" << i << "][" << j << "][" << k << "] = " << y[i][j][k] << std::endl;
+//                    }
+//                }
+//            }
+//        }
+//
+//        // -------- v ----------
+//        for (auto i = 0UL; i < m_; ++i) {
+//            for (auto j = 0UL; j < t_; ++j) {
+//                if (v[i][j] > 0) {
+//                    os << "v[" << i << "][" << j << "] = " << v[i][j] << std::endl;
+//                }
+//            }
+//        }
+//
+//        os << "Writing solution timeline information";
+//
+//        auto *tempo = new int[mb_];
+//
+//        /* Relate each device with its array of data */
+//        auto **maq_dado = new int *[mb_];
+//
+//        // Initializations
+//
+//        for (auto i = 0ul; i < mb_; i++) {
+//            tempo[i] = 0;
+//        }
+//
+//        for (auto i = 0ul; i < mb_; i++) {
+//            maq_dado[i] = new int[algorithm_->GetFilesSize()];
+//            for (auto j = 0ul; j < algorithm_->GetFilesSize(); j++) {
+//                maq_dado[i][j] = -1;
+//            }
+//        }
+//
+//        // Vector for TEST that saves the actual time the machine spends performing its action (exec., read, Write)
+//        // Save files per machine
+//
+//        os << std::endl;
+//        os << "---------------- Timeline --------------" << std::endl;
+//        os << "t)\t";
+//        for (auto j = 0ul; j < algorithm_->GetStorageSize(); j++) {
+//            os << "(M" << j << ")\t" << "(Y)\t" << "(V)\t";
+//        }
+//        os << std::endl;
+//
+//        os << std::endl;
+//
+//        // Time
+//        for (auto check = 0ul, t1 = 0ul; t1 < t_ and check <= 1ul; t1++) {
+//            os << "t" << t1 << ")\t";
+//
+//            // Devices
+//            // Virtual Machines
+//            for (auto j = 0ul; j < mb_ and check <= 1; j++) {
+//                std::shared_ptr<Storage> device = algorithm_->GetStoragePerId(j);
+//
+//                if (auto virtual_machine = std::dynamic_pointer_cast<VirtualMachine>(device)) {
+//                    // Check if more than one action is started at the same time on the same machine
+//                    check = 0ul;
+//
+//                    // During an action (read, execute, Write)
+//                    tempo[j] = tempo[j] - 1;
+//
+//                    if (tempo[j] > 0) {
+//                        check += 1;
+//                        os << "(" << tempo[j] << ")" << "\t";
+//                    }
+//
+//                    // Execution
+//                    for (auto i = 0ul; i < algorithm_->GetActivationSize() - 2ul and check <= 1ul; i++) {
+//                        std::shared_ptr<Activation> task = algorithm_->GetActivationPerId(1ul + i);
+//                        std::vector<std::shared_ptr<File>> input_files = task->get_input_files();
+//
+//                        auto x_ijt = x[i][j][t1];  // Returns the value of the variable
+//
+//                        if (x_ijt > 0) {
+//                            check += 1;
+//                            os << "x" << i << "\t";
+//
+//                            if (tempo[j] > 0) {
+//                                os << "*** RUN ON TOP OF SOMETHING ***";
+//                                check += 1;
+//                                break;
+//                            }
+//
+//                            tempo[j] = std::ceil(task->get_time() * virtual_machine->get_slowdown());
+//
+//                            // Checks if the readings were taken by the machine before execution
+//                            for (auto l = 0ul; l < input_files.size() and check <= 1; l++) {
+//                                auto file = input_files[l];
+//                                auto d1 = file->get_id();
+//                                bool has_read_file = false;
+//
+//                                for (auto k = 0ul; k < algorithm_->GetStorageSize() and check <= 1ul; k++) {
+//                                    auto q_max = static_cast<size_t>(algorithm_->get_makespan_max());
+//                                    for (auto q = 0ul; q < q_max and check <= 1; q++) {
+//                                        auto r_idjpt = static_cast<float>(r[i][d1][j][k][q]);
+//                                        // Returns the value of the variable
+//                                        if (r_idjpt > 0) {
+//                                            has_read_file = true;
+//                                        }
+//                                    }
+//                                }
+//
+//                                if (!has_read_file) {
+//                                    os << "*** PERFORMED THE TASK WITHOUT READING ALL THE ENTRIES *** missing data ="
+//                                       << d1
+//                                       << "\n" << file;
+//                                    check += 1;
+//                                    break;
+//                                }
+//                            }
+//                            // ----------------------------------------------------------------
+//                        }
+//
+//                        if (check > 1) {
+//                            os << "*** CONFLICT WITH EXECUTION ***";
+//                            break;
+//                        }
+//                    }
+//
+//                    // Read
+//                    for (auto i = 0ul; i < algorithm_->GetActivationSize() - 2ul and check <= 1ul; i++) {
+//                        auto activation = algorithm_->GetActivationPerId(i + 1ul);
+//                        auto input_files = activation->get_input_files();
+//
+//                        for (auto l = 0ul; l < input_files.size() and check <= 1; l++) {
+//                            auto file = input_files[l];
+//                            auto d1 = file->get_id();
+//
+//                            for (auto k = 0ul; k < mb_ and check <= 1ul; k++) {
+//                                std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(static_cast<size_t>(k));
+//
+//                                auto r_idjpt = r[i][d1][j][k][t1];
+//
+//                                // Returns the value of the variable
+//                                if (r_idjpt > 0) {
+////                                    auto read_time = ComputeFileTransferTime(file, virtual_machine, storage);
+//                                    auto read_time = file->GetFileTransfer(virtual_machine->get_id(), storage->get_id());
+//
+//                                    check += 1;
+//                                    os << "r" << i << "(" << d1 << ")<" << k << "\t";
+//
+//                                    if (tempo[j] > 0) {
+//                                        os << "*** READ OVER SOMETHING ***";
+//                                        check += 1;
+//                                        break;
+//                                    }
+//
+//                                    tempo[j] = static_cast<int>(read_time);
+//
+//                                    // Check file existence
+//                                    auto y_djt = static_cast<float>(y[d1][k][t1]);
+//
+//                                    // Returns the value of the variable
+//                                    if (y_djt < 1) {
+//                                        os << "*** READ NON-EXISTENT FILE IN THE MACHINE ***";
+//                                        check += 1;
+//                                        break;
+//                                    }
+//                                    // ---------------------------
+//                                }
+//
+//                                if (check > 1) {
+//                                    os << "*** CONFLICT WITH READING ***";
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    // Writing
+//                    for (auto has_passed = 0ul, i = 0ul; i < n_ and check <= 1; i++) {
+//                        auto activation = algorithm_->GetActivationPerId(i + 1ul);
+//                        auto output_files = activation->get_output_files();
+//
+//                        for (auto l = 0ul; l < output_files.size() and check <= 1; l++) {
+//                            std::shared_ptr<File> file = output_files[l];
+//                            auto d1 = file->get_id();
+//
+//                            for (auto k = 0ul; k < mb_ and check <= 1; k++) {
+//                                std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(k);
+//
+//                                auto w_idjpt = w[i][d1][j][k][t1];
+//
+//                                // Returns the value of the variable
+//                                if (w_idjpt > 0) {
+////                                    auto write_time = ComputeFileTransferTime(file, virtual_machine, storage);
+//                                    auto write_time = file->GetFileTransfer(virtual_machine->get_id(), storage->get_id());
+//
+//                                    check += 1;
+//
+//                                    os << "w" << i << "(" << d1 << ")<" << k << "\t";
+//
+//                                    if (tempo[j] > 0) {
+//                                        os << "*** WRITE ON SOMETHING ***";
+//                                        check += 1;
+//                                        break;
+//                                    }
+//
+//                                    tempo[j] = static_cast<int>(write_time);
+//
+//                                    // Checks if the activation has been executed on the machine before
+//                                    has_passed = 0;
+//                                    for (int q = 0; q < algorithm_->get_makespan_max() and check <= 1ul; q++) {
+//                                        auto x_ijt = static_cast<float>(x[i][j][q]);
+//
+//                                        if (x_ijt > 0) {
+//                                            has_passed = 1;
+//                                        }
+//                                    }
+//
+//                                    if (has_passed == 0) {
+//                                        os << "*** WROTE DATA WITHOUT HAVING PERFORMED THE TASK ON THE MACHINE ***";
+//                                        check += 1;
+//                                        break;
+//                                    }
+//                                    // -----------------------------------------------
+//                                }
+//
+//                                if (check > 1) {
+//                                    os << "*** CONFLICT WITH WRITING ***";
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    // Idle machine at this time
+//                    if (check == 0ul) {
+//                        os << "-\t";
+//                    }
+//
+//                    // Data
+//                    for (auto d1 = 0ul; d1 < d_ and check <= 1; d1++) {
+//                        auto y_djt = y[d1][j][t1];
+//                        // Returns the value of the variable
+//
+//                        if (y_djt > 0) {
+//                            maq_dado[j][d1] = 1;
+//                        }
+//
+//                        if (maq_dado[j][d1] == 1) {
+//                            os << d1 << ",";
+//                        }
+//                    }
+//
+//                    os << "\t";
+//
+//                    // Hiring
+//                    auto v_jt = v[j][t1];
+//
+//                    // Returns the value of the variable
+//                    if (v_jt > 0) {
+//                        os << "*\t";
+//                    } else {
+//                        os << "\t";
+//                    }
+//                } else {
+//                    os << "N\\A\t";
+//
+//                    // Data
+//                    for (auto d1 = 0ul; d1 < d_ and check <= 1; d1++) {
+//                        auto y_djt = y[d1][j][t1];
+//
+//                        if (y_djt > 0) {
+//                            maq_dado[j][d1] = 1;
+//                        }
+//
+//                        if (maq_dado[j][d1] == 1) {
+//                            os << d1 << ",";
+//                        }
+//                    }
+//
+//                    os << "\t";
+//
+//                    // Hiring
+//                    os << "N\\A\t";
+//                }
+//            }
+//            os << std::endl;
+//        }
+//        os << "---------------------------------------------" << std::endl;
+//
+//        // Releasing resources
+//
+//        delete[] tempo;
+//        for (size_t i = 0; i < algorithm_->GetStorageSize(); i++) {
+//            delete[] maq_dado[i];
+//        }
+//        delete[] maq_dado;
+//    }
 
     DLOG(INFO) << "Getting out from Solution::Write method";
 

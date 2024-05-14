@@ -5,14 +5,13 @@
  * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
  * This header file contains the \c File class
  */
 
 #ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_FILE_H_
 #define APPROXIMATE_SOLUTIONS_SRC_MODEL_FILE_H_
-
 
 #include <cmath>
 #include <iterator>
@@ -34,12 +33,14 @@ public:
     /// Parametrized constructor
     explicit File(const size_t id,
                   std::string name,
-                  const double size)
+                  const double size_in_megabytes)
             : id_(id),
               name_(std::move(name)),
-              size_(size),
-              size_in_MB_(size / 1000.0),
-              size_in_GB_(size / 1000000.0) {}
+              size_(size_in_megabytes * 1000000.0),
+              size_in_KB_(size_in_megabytes * 1000.0),
+              size_in_MB_(size_in_megabytes),
+              size_in_GB_(size_in_megabytes / 1000.0) {
+    }
 
     /// Default destructor
     virtual ~File() = default;
@@ -55,7 +56,7 @@ public:
                 } else {
                     auto link = std::min<double>(storages[line]->get_bandwidth_GBps(),
                                                  storages[column]->get_bandwidth_GBps());
-                    auto time = static_cast<size_t>(std::ceil(size_in_MB_ / link));
+                    auto time = static_cast<size_t>(std::ceil(size_in_GB_ / link));
                     matrix_[(line * storages_size_) + column] = time;
                 }
             }
@@ -96,13 +97,16 @@ protected:
     /// The file name
     std::string name_;
 
-    /// The file size in KB
+    /// The file size in Bytes
     double size_;
 
-    /// The file size in MB
+    /// The file size in KiloBytes
+    double size_in_KB_;
+
+    /// The file size in MegaBytes
     double size_in_MB_;
 
-    /// The file size in GB
+    /// The file size in GigaBytes
     double size_in_GB_;
 
     ///

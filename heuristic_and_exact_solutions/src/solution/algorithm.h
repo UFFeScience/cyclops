@@ -5,7 +5,7 @@
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
  * This header file contains the \c Algorithm class that handles different execution modes.
  */
@@ -39,7 +39,7 @@ class Solution;
  * execute a specific implementation.
  */
 
-class Algorithm {
+class Algorithm : public std::enable_shared_from_this<Algorithm> {
 public:
     ///
     explicit Algorithm();
@@ -151,6 +151,11 @@ public:
     static std::shared_ptr<Algorithm> ReturnAlgorithm(const std::string &algorithm);
 
     std::shared_ptr<ConflictGraph> conflict_graph_;
+
+    // Método para criar um shared_ptr apontando para este objeto
+    std::shared_ptr<Algorithm> get_shared_ptr() {
+        return shared_from_this();
+    }
 protected:
     void ReadTasksAndFiles(const std::string &, std::unordered_map<std::string, std::shared_ptr<File>> &);
 

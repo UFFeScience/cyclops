@@ -48,24 +48,24 @@ class VirtualMachine;
 class Solution {
 public:
     // Store the best solutions
-    int *** x = nullptr;  // Run the activation
-    int ***** r = nullptr;  // Read files for the activation
-    int ***** w = nullptr;  // Write files for the activation
-    int *** y = nullptr;  // Files associated with storages
-    int ** v = nullptr;  // Virtual machine allocation
+//    int *** x = nullptr;  // Run the activation
+//    int ***** r = nullptr;  // Read files for the activation
+//    int ***** w = nullptr;  // Write files for the activation
+//    int *** y = nullptr;  // Files associated with storages
+//    int ** v = nullptr;  // Virtual machine allocation
 
     /// Constructor declaration
-    explicit Solution(Algorithm *algorithm);
+    explicit Solution(std::shared_ptr<Algorithm> algorithm);
 
     /// Copy constructor
-    Solution(const Solution &other);
+//    Solution(const Solution &other);
 
     /// Destructor
-    ~Solution();
+    ~Solution() = default;
 
-    void MemoryAllocation();
+//    void MemoryAllocation();
 
-    void FreeingMemoryAllocated();
+//    void FreeingMemoryAllocated();
 
     double OptimizedComputeObjectiveFunction(size_t start_of_ordering = 1ul);
 
@@ -167,7 +167,8 @@ protected:
                                                    const std::shared_ptr<File>& file);
 
     /// A pointer to the Algorithm object that contain the all necessary data
-    Algorithm *algorithm_{};
+//    Algorithm *algorithm_{};
+    std::shared_ptr<Algorithm> algorithm_;
 
     /// Allocation of task in theirs VM
     std::vector<size_t> activation_allocations_;
@@ -187,15 +188,6 @@ protected:
     /// Auxiliary data, helps recalculate important information in case of modifications, and swaps
 //    std::vector<std::shared_ptr<ActivationExecutionData>> activation_execution_data_;
     std::vector<ActivationExecutionData> activation_execution_data_;
-
-//    /// Makespan for each task
-//    std::vector<size_t> activation_finish_time_;
-//
-//    /// Final time of each Virtual Machine
-//    std::vector<size_t> vm_finish_time_;
-//
-//    /// Total allocation time needed for each VM
-//    std::vector<size_t> vm_allocation_time_;
 
     /// Makespan of the solution, the total execution time
     size_t makespan_{};

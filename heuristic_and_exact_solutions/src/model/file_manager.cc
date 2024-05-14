@@ -14,12 +14,12 @@
 
 #include <utility>
 
-FileManager::FileManager(size_t files_size, size_t storages_size, std::shared_ptr<ConflictGraph> &conflict_graph_)
+FileManager::FileManager(size_t files_size, size_t storages_size, const std::shared_ptr<ConflictGraph> &conflict_graph)
         : total_conflict_(0ul),
           file_allocations_(files_size, std::numeric_limits<size_t>::max()),
           storages_conflict_(storages_size, 0ul),
           files_distribution_(storages_size, std::list<size_t>()),
-          conflict_graph_(std::move(conflict_graph_)) {
+          conflict_graph_(conflict_graph) {
 }
 
 size_t FileManager::get_file_allocation(size_t file_id) const {

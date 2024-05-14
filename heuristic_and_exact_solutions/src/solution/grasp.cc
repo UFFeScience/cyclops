@@ -76,7 +76,7 @@ void Grasp::localSearch(Solution &solution) {
 void Grasp::Run() {
     DLOG(INFO) << "Executing GRASP Heuristic ...";
     double time_s;
-    Solution best_solution(this);
+    Solution best_solution(get_shared_ptr());
     auto max_iter_without_improve = 10ul;
     auto iter_without_improve = 1ul;
     auto number_of_iterations = 0ul;
@@ -87,7 +87,7 @@ void Grasp::Run() {
         // 1. Construction phase (GreedyRandomizedAlgorithm)
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
-        Solution solution(this);
+        Solution solution(get_shared_ptr());
         // Start activation list
         DLOG(INFO) << "Initialize activations list";
         for (const auto &activations: activations_) {
@@ -144,12 +144,12 @@ void Grasp::Run() {
             break;
         }
     }
-#ifndef NDEBUG
-    best_solution.MemoryAllocation();
-    best_solution.ComputeObjectiveFunction();
-    DLOG(INFO) << best_solution;
-    best_solution.FreeingMemoryAllocated();
-#endif
+//#ifndef NDEBUG
+//    best_solution.MemoryAllocation();
+//    best_solution.OptimizedComputeObjectiveFunction();
+//    DLOG(INFO) << best_solution;
+//    best_solution.FreeingMemoryAllocated();
+//#endif
     std::cout << std::fixed
             << best_solution.get_objective_value()
             << " " << best_solution.get_makespan()

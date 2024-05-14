@@ -34,7 +34,7 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
         // 1. Computing time
         for (const auto &activation: avail_activations) {
             // The solution with the best O.F. after choosing a specific VM
-            Solution best_temporary_solution(this);
+            Solution best_temporary_solution(get_shared_ptr());
             // Begin with a BIG O.F.
             auto best_of = std::numeric_limits<double>::max();
             auto best_vm = virtual_machines_[0ul];
@@ -56,6 +56,8 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
             }
             // Put the best current solution in the list
             avail_solutions.emplace_back(activation, best_temporary_solution);
+//            avail_solutions.emplace_back(activation, best_temporary_solution);
+//            avail_solutions.push_back(std::make_pair(activation, best_temporary_solution));
         }
         // Sorting elements
         avail_solutions.sort([&](const std::pair<std::shared_ptr<Activation>, Solution> &a,
@@ -88,7 +90,7 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
 void Grch::Run() {
     DLOG(INFO) << "Executing GRCH (Greedy Randomized Constructive Heuristic) ...";
     double time_s;
-    Solution best_solution(this);
+    Solution best_solution(get_shared_ptr());
     auto max_iter_without_improve = 10ul;
     auto iter_without_improve = 1ul;
     auto number_of_iterations = 0ul;
@@ -97,7 +99,7 @@ void Grch::Run() {
     for (auto i = 0ul; i < std::numeric_limits<size_t>::max(); ++i) {
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
-        Solution solution(this);
+        Solution solution(get_shared_ptr());
         // Start task list
         DLOG(INFO) << "Initialize activation list";
         for (const auto &activation: activations_) {
@@ -162,12 +164,12 @@ void Grch::Run() {
             break;
         }
     }
-#ifndef NDEBUG
-    best_solution.MemoryAllocation();
-    best_solution.ComputeObjectiveFunction();
-    DLOG(INFO) << best_solution;
-    best_solution.FreeingMemoryAllocated();
-#endif
+//#ifndef NDEBUG
+//    best_solution.MemoryAllocation();
+//    best_solution.OptimizedComputeObjectiveFunction();
+//    DLOG(INFO) << best_solution;
+//    best_solution.FreeingMemoryAllocated();
+//#endif
     std::cout << std::fixed
               << best_solution.get_objective_value()
               << " " << best_solution.get_makespan()

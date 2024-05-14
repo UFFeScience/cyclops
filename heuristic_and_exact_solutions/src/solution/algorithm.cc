@@ -16,18 +16,17 @@
 #include <boost/algorithm/string.hpp>
 #include <filesystem>
 #include "src/solution/grch.h"
-#include "src/solution/min_min.h"
 #include "src/solution/grasp.h"
 #include "src/solution/cplex.h"
 #include "heft.h"
-#include "grch_hard.h"
 
 Algorithm::Algorithm() {
     conflict_graph_ = std::make_shared<ConflictGraph>();
 }
 
 void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
-                                  std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
+                                  std::unordered_map<std::string,
+                                  std::shared_ptr<File>> &file_map_per_name) {
     DLOG(INFO) << "Reading Activations and Files from input file [" + tasks_and_files + "]" ;
 
     if (!std::filesystem::exists(tasks_and_files)) {
@@ -448,10 +447,6 @@ std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string &algorit
     std::cout << "ReturnAlgorithm: " << algorithm << std::endl;
     if (algorithm == "grch") {
         return std::make_shared<Grch>();
-    } else if (algorithm == "grch_hard") {
-        return std::make_shared<GrchHard>();
-    } else if (algorithm == "min_min") {
-        return std::make_shared<MinMin>();
     } else if (algorithm == "cplex") {
         return std::make_shared<Cplex>();
     } else if (algorithm == "grasp") {
@@ -465,6 +460,8 @@ std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string &algorit
 }
 
 void Algorithm::ComputeHeight(size_t node, int n) {
+    DLOG(INFO) << "Height " << n << " node " << node << " name " << activations_[node]->get_tag() << std::endl;
+
     if (height_[node] < n) {
         height_[node] = n;
         // auto vet = successors_.find(node)->second;

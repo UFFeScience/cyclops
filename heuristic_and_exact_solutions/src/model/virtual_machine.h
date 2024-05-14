@@ -76,9 +76,6 @@ protected:
 
     ///
     double slowdown_;
-
-    ///
-    std::vector<std::shared_ptr<Activation>> activation_list_;
 };
 
 

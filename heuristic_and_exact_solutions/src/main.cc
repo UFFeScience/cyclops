@@ -5,7 +5,7 @@
  * \author Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
  * This source file contains the \c main() function that reads the execution mode from the
  * command-line and calls the appropriate methods.

@@ -408,7 +408,7 @@ void Heft::Run() {
     DLOG(INFO) << "Executing HEFT ...";
     DLOG(INFO) << "Initialising ranks variables";
     // Defining variables
-    Solution best_solution(this);
+    Solution best_solution(get_shared_ptr());
     std::map<size_t, std::vector<Event>> activation_order;
     std::vector<Activation> scheduling_list;  // Will be filled with activation IDs.
     std::vector<double> end_time(GetActivationSize(), 0.0);
@@ -500,12 +500,12 @@ void Heft::Run() {
     best_solution.AddOrdering(get_id_target());
     DLOG(INFO) << "Compute Objective Function";
 //    best_solution.ComputeObjectiveFunction();
-#ifndef NDEBUG
-    best_solution.MemoryAllocation();
-    best_solution.ComputeObjectiveFunction();
-    DLOG(INFO) << best_solution;
-    best_solution.FreeingMemoryAllocated();
-#endif
+//#ifndef NDEBUG
+//    best_solution.MemoryAllocation();
+//    best_solution.OptimizedComputeObjectiveFunction();
+//    DLOG(INFO) << best_solution;
+//    best_solution.FreeingMemoryAllocated();
+//#endif
     double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
     // TODO: This printing could be through a method to uniform the output values
     std::cerr << best_solution.get_makespan() << " " << best_solution.get_cost() << " "

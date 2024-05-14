@@ -27,7 +27,7 @@
 class FileManager {
 public:
     /// Constructor declaration
-    explicit FileManager(size_t, size_t, std::shared_ptr<ConflictGraph> &);
+    explicit FileManager(size_t, size_t, const std::shared_ptr<ConflictGraph> &);
 
     /// Pass the file id, and return the storage id where the file is located
     [[nodiscard]] size_t get_file_allocation(size_t) const;
