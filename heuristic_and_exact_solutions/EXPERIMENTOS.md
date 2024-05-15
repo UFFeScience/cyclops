@@ -1,3 +1,19 @@
+# Índice
+
+1. [Introdução](#introdução)
+2. [Arquitetura](#arquitetura)
+3. [Escalonamento #1](#escalonamento-1)
+    1. [Ativações por Máquina Virtual](#escalonamento-1)
+    2. [Distribuições dos Arquivos por Dispositivos de Armazenamento](#distribuições-dos-arquivos-por-dispositivos-de-armazenamento-1)
+    3. [Ordem de Execução](#ordem-de-execução)
+4. [Escalonamento #2](#escalonamento-2)
+    1. [Ativações por Máquina Virtual](#escalonamento-2)
+    2. [Distribuições dos Arquivos por Dispositivos de Armazenamento](#distribuições-dos-arquivos-por-dispositivos-de-armazenamento-2)
+    3. [Ordem de Execução](#ordem-de-execução-2)
+5. [Escalonamento #3](#escalonamento-3)
+    1. [Ativações por Máquina Virtual](#escalonamento-3)
+    2. [Distribuições dos Arquivos por Dispositivos de Armazenamento](#distribuições-dos-arquivos-por-dispositivos-de-armazenamento-3)
+    3. [Ordem de Execução](#ordem-de-execução-3)
 
 ## Introdução
 
@@ -22,7 +38,7 @@ Algumas observações para o restante deste documento:
 
 Neste escalonamento, estamos considerando a execução numa nuvem com as 4 máquinas virtuais definidas em [Arquitetura](#arquitetura) com 8 *buckets*.
 
-### Ativações por Máquina Virtual
+### Ativações por Máquina Virtual (#1)
 
 Nesta subseção, definimos quais ativações serão executadas em quais máquinas virtuais. A seta (-->) indica a ordem em que as ativações precisam ser executadas em cada máquina virtual.
 
@@ -35,7 +51,7 @@ ID0000014 --> ID0000015 --> ID0000022 --> ID0000025 --> ID0000026 --> ID0000028 
 **MV4**: \
 ID0000001 --> ID0000003 --> ID0000004 --> ID0000005 --> ID0000010 --> ID0000011 --> ID0000012 --> ID0000027 --> ID0000032 --> ID0000035 --> ID0000036 --> ID0000041 --> ID0000042 --> ID0000043 --> ID0000044 --> ID0000047 --> ID0000048 --> ID0000052
 
-### Distribuições dos Arquivos por Dispositivos de Armazenamento
+### Distribuições dos Arquivos por Dispositivos de Armazenamento (#1)
 
 Nesta subseção, a tabela abaixo apresenta onde cada um dos arquivos estáticos, presentes desde o início da execução, e cada um dos arquivos dinâmicos, gerados durante a execução, deverão estar no final da execução do *workflow*.
 
@@ -201,9 +217,9 @@ Nesta subseção, a tabela abaixo apresenta onde cada um dos arquivos estáticos
 |  |cposs2ukstu_red_002_001.fits
 |  |3-mosaic.fits
 
-### Ordem de Execução
+### Ordem de Execução #1
 
-A ordem para executar o *workflow* é a seguinte: <br>
+A ordem para executar o *workflow* é a seguinte:
 
 ID0000021 --> ID0000023 --> ID0000039 --> ID0000042 --> ID0000002 --> ID0000040 --> ID0000003 --> ID0000041 --> ID0000022 --> ID0000001 --> ID0000004 --> ID0000020 --> ID0000045 --> ID0000005 --> ID0000047 --> ID0000025 --> ID0000043 --> ID0000046 --> ID0000048 --> ID0000028 --> ID0000044 --> ID0000026 --> ID0000024 --> ID0000007 --> ID0000029 --> ID0000010 --> ID0000008 --> ID0000009 --> ID0000006 --> ID0000027 --> ID0000049 --> ID0000030 --> ID0000011 --> ID0000050 --> ID0000012 --> ID0000031 --> ID0000013 --> ID0000052 --> ID0000014 --> ID0000033 --> ID0000032 --> ID0000015 --> ID0000016 --> ID0000035 --> ID0000034 --> ID0000054 --> ID0000053 --> ID0000051 --> ID0000055 --> ID0000036 --> ID0000017 --> ID0000037 --> ID0000056 --> ID0000018 --> ID0000019 --> ID0000057 --> ID0000038 --> ID0000058
 
@@ -211,7 +227,7 @@ ID0000021 --> ID0000023 --> ID0000039 --> ID0000042 --> ID0000002 --> ID0000040 
 
 Neste escalonamento, estamos considerando a execução numa nuvem com as 4 máquinas virtuais definidas em [Arquitetura](#arquitetura) com 16 *buckets*.
 
-### Ativações por Máquina Virtual
+### Ativações por Máquina Virtual (#2)
 
 **MV1**: \
 ID0000001 --> ID0000006 --> ID0000024 --> ID0000025 --> ID0000027 --> ID0000028 --> ID0000029 --> ID0000032 --> ID0000038 --> ID0000043 --> ID0000044 --> ID0000045 --> ID0000048 --> ID0000049 --> ID0000050 --> ID0000051 --> ID0000052 --> ID0000053 --> ID0000054 \
@@ -222,7 +238,7 @@ ID0000002 --> ID0000005 --> ID0000011 --> ID0000012 --> ID0000013 --> ID0000015 
 **MV4**: \
 ID0000004 --> ID0000007 --> ID0000008 --> ID0000014 --> ID0000016 --> ID0000020 --> ID0000021 --> ID0000030 --> ID0000031 --> ID0000034 --> ID0000036 --> ID0000037 --> ID0000040 --> ID0000041 --> ID0000042 --> ID0000058
 
-### Distribuições dos Arquivos por Dispositivos de Armazenamento
+### Distribuições dos Arquivos por Dispositivos de Armazenamento (#2)
 
 Nesta subseção, a tabela abaixo apresenta onde cada um dos arquivos estáticos, presentes desde o início da execução, e cada um dos arquivos dinâmicos, gerados durante a execução, deverão estar no final da execução do *workflow*.
 
@@ -396,9 +412,9 @@ Nesta subseção, a tabela abaixo apresenta onde cada um dos arquivos estáticos
 | |1-diff.000001.000003_area.fits
 | |2-diff.000002.000003_area.fits
 
-### Ordem de Execução
+### Ordem de Execução (#2)
 
-A ordem para executar o *workflow* é a seguinte: <br>
+A ordem para executar o *workflow* é a seguinte:
 
 ID0000023 --> ID0000039 --> ID0000041 --> ID0000040 --> ID0000001 --> ID0000022 --> ID0000020 --> ID0000021 --> ID0000003 --> ID0000042 --> ID0000002 --> ID0000004 --> ID0000024 --> ID0000027 --> ID0000025 --> ID0000048 --> ID0000026 --> ID0000047 --> ID0000029 --> ID0000046 --> ID0000005 --> ID0000028 --> ID0000043 --> ID0000045 --> ID0000010 --> ID0000009 --> ID0000006 --> ID0000044 --> ID0000007 --> ID0000008 --> ID0000011 --> ID0000049 --> ID0000030 --> ID0000050 --> ID0000012 --> ID0000031 --> ID0000033 --> ID0000051 --> ID0000052 --> ID0000034 --> ID0000015 --> ID0000054 --> ID0000035 --> ID0000053 --> ID0000013 --> ID0000016 --> ID0000014 --> ID0000032 --> ID0000055 --> ID0000017 --> ID0000036 --> ID0000037 --> ID0000056 --> ID0000018 --> ID0000038 --> ID0000057 --> ID0000058 --> ID0000019
 
@@ -406,7 +422,7 @@ ID0000023 --> ID0000039 --> ID0000041 --> ID0000040 --> ID0000001 --> ID0000022 
 
 Neste escalonamento, estamos considerando a execução numa nuvem com as 4 máquinas virtuais definidas em [Arquitetura](#arquitetura) com 32 *buckets*.
 
-### Ativações por Máquina Virtual
+### Ativações por Máquina Virtual (#3)
 
 **MV1**: \
 ID0000007 --> ID0000013 --> ID0000015 --> ID0000021 --> ID0000023 --> ID0000026 --> ID0000037 --> ID0000038 --> ID0000053 --> ID0000054 \
@@ -417,7 +433,7 @@ ID0000016 --> ID0000019 --> ID0000022 --> ID0000028 --> ID0000030 --> ID0000031 
 **MV4**: \
 ID0000001 --> ID0000002 --> ID0000003 --> ID0000004 --> ID0000008 --> ID0000009 --> ID0000012 --> ID0000017 --> ID0000018 --> ID0000025 --> ID0000033 --> ID0000034 --> ID0000036 --> ID0000041 --> ID0000049 --> ID0000050 --> ID0000058
 
-### Distribuições dos Arquivos por Dispositivos de Armazenamento
+### Distribuições dos Arquivos por Dispositivos de Armazenamento (#3)
 
 |  **Dispersão dos Dados** | |
 |:-:|:-|
@@ -608,8 +624,8 @@ ID0000001 --> ID0000002 --> ID0000003 --> ID0000004 --> ID0000008 --> ID0000009 
 |***Bucket32***| |
 | | \<vazio\> |
 
-### Ordem de Execução
+### Ordem de Execução (#3)
 
-A ordem para executar o *workflow* é a seguinte: <br>
+A ordem para executar o *workflow* é a seguinte:
 
 ID0000021 --> ID0000023 --> ID0000022 --> ID0000041 --> ID0000042 --> ID0000039 --> ID0000004 --> ID0000040 --> ID0000003 --> ID0000001 --> ID0000020 --> ID0000002 --> ID0000043 --> ID0000046 --> ID0000027 --> ID0000047 --> ID0000008 --> ID0000044 --> ID0000048 --> ID0000006 --> ID0000026 --> ID0000045 --> ID0000024 --> ID0000028 --> ID0000005 --> ID0000029 --> ID0000010 --> ID0000025 --> ID0000007 --> ID0000009 --> ID0000049 --> ID0000011 --> ID0000030 --> ID0000050 --> ID0000012 --> ID0000031 --> ID0000032 --> ID0000051 --> ID0000054 --> ID0000033 --> ID0000034 --> ID0000053 --> ID0000016 --> ID0000052 --> ID0000015 --> ID0000035 --> ID0000013 --> ID0000014 --> ID0000036 --> ID0000055 --> ID0000017 --> ID0000056 --> ID0000037 --> ID0000018 --> ID0000057 --> ID0000038 --> ID0000019 --> ID0000058
