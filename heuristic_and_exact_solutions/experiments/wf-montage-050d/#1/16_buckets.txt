@@ -1,0 +1,290 @@
+Input File of the Tasks and Files: /home/wsl/git/Wf-Security/heuristic_and_exact_solutions/input/tasks_and_files/wf-montage-050d.dag
+Input File of the Cluster: /home/wsl/git/Wf-Security/heuristic_and_exact_solutions/temp/clouds/4_1_4_64_2_4_heterogeneous_cloud.vcl
+Input File of the Conflict Graph: /home/wsl/git/Wf-Security/heuristic_and_exact_solutions/input/conflict_graph/wf-montage-050d.scg
+Selected algorithm: grasp
+Alpha Time weight: 0.9
+Alpha Budget weight: 0.05
+Alpha Security weight: 0.05
+Alpha Restrict Candidate List threshold: 0.5
+Number of iteration: 100
+Number of allocation experiments: 4
+CPLEX output file: ./temp/manual/cplex/not_applicable.lp
+ReturnAlgorithm: grasp
+0.700106 1928 0.359328 0.0486486 14.2267 9 4 7.67374 13.0056 906 0.855707 15 0.215837 98
+
+################################################################################################
+grasp
+################################################################################################
+makespan_: 1928 seconds
+makespan_: 32.1333 minutes
+cost_: 0.359328
+security_exposure_: 27
+objective_value_: 0.700106
+Maximum security and privacy exposure: 555
+
+Ordering: 
+ordering_[0]: 	0
+ordering_[1]: 	23
+ordering_[2]: 	39
+ordering_[3]: 	41
+ordering_[4]: 	40
+ordering_[5]: 	1
+ordering_[6]: 	22
+ordering_[7]: 	20
+ordering_[8]: 	21
+ordering_[9]: 	3
+ordering_[10]: 	42
+ordering_[11]: 	2
+ordering_[12]: 	4
+ordering_[13]: 	24
+ordering_[14]: 	27
+ordering_[15]: 	25
+ordering_[16]: 	48
+ordering_[17]: 	26
+ordering_[18]: 	47
+ordering_[19]: 	29
+ordering_[20]: 	46
+ordering_[21]: 	5
+ordering_[22]: 	28
+ordering_[23]: 	43
+ordering_[24]: 	45
+ordering_[25]: 	10
+ordering_[26]: 	9
+ordering_[27]: 	6
+ordering_[28]: 	44
+ordering_[29]: 	7
+ordering_[30]: 	8
+ordering_[31]: 	11
+ordering_[32]: 	49
+ordering_[33]: 	30
+ordering_[34]: 	50
+ordering_[35]: 	12
+ordering_[36]: 	31
+ordering_[37]: 	33
+ordering_[38]: 	51
+ordering_[39]: 	52
+ordering_[40]: 	34
+ordering_[41]: 	15
+ordering_[42]: 	54
+ordering_[43]: 	35
+ordering_[44]: 	53
+ordering_[45]: 	13
+ordering_[46]: 	16
+ordering_[47]: 	14
+ordering_[48]: 	32
+ordering_[49]: 	55
+ordering_[50]: 	17
+ordering_[51]: 	36
+ordering_[52]: 	37
+ordering_[53]: 	56
+ordering_[54]: 	18
+ordering_[55]: 	38
+ordering_[56]: 	57
+ordering_[57]: 	58
+ordering_[58]: 	19
+ordering_[59]: 	59
+
+Allocations and executions: 
+a[0]: 	1928	a[1]: 	1928	a[2]: 	1928	a[3]: 	1927	
+x[0]: 	1928	x[1]: 	1928	x[2]: 	1926	x[3]: 	1927	
+
+Activations: 
+0: source ID0000001 ID0000006 ID0000024 ID0000025 ID0000027 ID0000028 ID0000029 ID0000032 ID0000038 ID0000043 ID0000044 ID0000045 ID0000048 ID0000049 ID0000050 ID0000051 ID0000052 ID0000053 ID0000054 target 
+1: ID0000003 ID0000009 ID0000010 ID0000019 ID0000022 ID0000026 ID0000033 ID0000035 ID0000046 ID0000047 ID0000055 ID0000056 
+2: ID0000002 ID0000005 ID0000011 ID0000012 ID0000013 ID0000015 ID0000017 ID0000018 ID0000023 ID0000039 ID0000057 
+3: ID0000004 ID0000007 ID0000008 ID0000014 ID0000016 ID0000020 ID0000021 ID0000030 ID0000031 ID0000034 ID0000036 ID0000037 ID0000040 ID0000041 ID0000042 ID0000058 
+
+Files: 
+0: 
+ region.hdr
+ region-oversized.hdr
+ poss2ukstu_blue_001_001.fits
+ poss2ukstu_blue_001_002.fits
+ poss2ukstu_blue_002_001.fits
+ poss2ukstu_blue_002_002.fits
+ 1-stat.tbl
+ 1-images.tbl
+ 1-projected.tbl
+ 1-corrected.tbl
+ poss2ukstu_red_001_001.fits
+ poss2ukstu_red_001_002.fits
+ poss2ukstu_red_002_001.fits
+ poss2ukstu_red_002_002.fits
+ 2-stat.tbl
+ 2-images.tbl
+ 2-projected.tbl
+ 2-corrected.tbl
+ poss2ukstu_ir_001_001.fits
+ poss2ukstu_ir_001_002.fits
+ poss2ukstu_ir_002_001.fits
+ poss2ukstu_ir_002_002.fits
+ 3-stat.tbl
+ 3-images.tbl
+ 3-projected.tbl
+ 3-corrected.tbl
+ pposs2ukstu_blue_001_002.fits
+ pposs2ukstu_blue_001_002_area.fits
+ pposs2ukstu_red_001_001.fits
+ pposs2ukstu_red_001_001_area.fits
+ pposs2ukstu_red_001_002.fits
+ pposs2ukstu_red_001_002_area.fits
+ pposs2ukstu_red_002_001_area.fits
+ 2-fits.tbl
+ pposs2ukstu_ir_001_002.fits
+ pposs2ukstu_ir_001_002_area.fits
+ pposs2ukstu_ir_002_001.fits
+ pposs2ukstu_ir_002_001_area.fits
+ 3-fits.tbl
+
+1: 
+ 1-fit.000002.000004.txt
+ 1-diff.000002.000004.fits
+ 1-diff.000002.000004_area.fits
+ 2-diff.000002.000004_area.fits
+ cposs2ukstu_red_001_002.fits
+ cposs2ukstu_red_001_002_area.fits
+ cposs2ukstu_red_002_002.fits
+ cposs2ukstu_red_002_002_area.fits
+ 3-fit.000001.000003.txt
+ 3-diff.000001.000003.fits
+ 3-diff.000001.000003_area.fits
+ 3-fit.000002.000003.txt
+ 3-diff.000002.000003.fits
+ 3-diff.000002.000003_area.fits
+ 3-fit.000002.000004.txt
+ 3-diff.000002.000004.fits
+ 3-fit.000003.000004.txt
+ 3-diff.000003.000004.fits
+ 3-diff.000003.000004_area.fits
+
+2: 
+ pposs2ukstu_blue_001_001.fits
+ pposs2ukstu_blue_001_001_area.fits
+ 1-fit.000002.000003.txt
+ 1-diff.000002.000003.fits
+ 1-updated-corrected.tbl
+ 2-corrections.tbl
+ 2-mosaic.png
+ 3-diff.000002.000004_area.fits
+
+3: 
+ pposs2ukstu_blue_002_002.fits
+ pposs2ukstu_blue_002_002_area.fits
+ 1-diff.000002.000003_area.fits
+ cposs2ukstu_blue_001_002.fits
+ cposs2ukstu_blue_001_002_area.fits
+ pposs2ukstu_red_002_001.fits
+ 2-fit.000001.000004.txt
+ 2-diff.000001.000004.fits
+ 2-diff.000001.000004_area.fits
+ 2-fit.000002.000004.txt
+ 2-diff.000002.000004.fits
+ 2-updated-corrected.tbl
+ pposs2ukstu_ir_002_002.fits
+ pposs2ukstu_ir_002_002_area.fits
+
+4: 
+ pposs2ukstu_red_002_002.fits
+ 2-fit.000001.000002.txt
+ cposs2ukstu_ir_002_002_area.fits
+
+5: 
+ pposs2ukstu_blue_002_001_area.fits
+ 2-diff.000001.000002_area.fits
+ pposs2ukstu_ir_001_001.fits
+ 3-mosaic_area.fits
+
+6: 
+ 1-diff.000001.000004_area.fits
+ 2-fit.000002.000003.txt
+ pposs2ukstu_ir_001_001_area.fits
+ cposs2ukstu_ir_001_002_area.fits
+
+7: 
+ pposs2ukstu_blue_002_001.fits
+
+8: 
+ 1-diff.000001.000002.fits
+ cposs2ukstu_blue_001_001_area.fits
+ 2-diff.000002.000003.fits
+ cposs2ukstu_ir_002_001.fits
+
+9: 
+ 1-diff.000001.000003.fits
+ 1-fit.000003.000004.txt
+ 1-corrections.tbl
+ 1-mosaic.fits
+ 2-diff.000001.000003.fits
+ cposs2ukstu_red_001_001_area.fits
+ cposs2ukstu_red_002_001.fits
+ 3-fit.000001.000002.txt
+ 3-corrections.tbl
+ 3-updated-corrected.tbl
+
+10: 
+ 1-fit.000001.000002.txt
+ cposs2ukstu_blue_002_002.fits
+ 1-mosaic.png
+ 2-fit.000001.000003.txt
+ cposs2ukstu_red_002_001_area.fits
+ cposs2ukstu_ir_002_001_area.fits
+ mosaic-color.png
+
+11: 
+ 1-fit.000001.000003.txt
+ 2-mosaic_area.fits
+ 3-fit.000001.000004.txt
+ cposs2ukstu_ir_001_002.fits
+ cposs2ukstu_ir_002_002.fits
+
+12: 
+ 1-diff.000003.000004_area.fits
+ 2-diff.000003.000004.fits
+ 2-diff.000003.000004_area.fits
+
+13: 
+ cposs2ukstu_blue_001_001.fits
+ cposs2ukstu_blue_002_002_area.fits
+ cposs2ukstu_ir_001_001_area.fits
+
+14: 
+ 1-fit.000001.000004.txt
+
+15: 
+ 1-diff.000003.000004.fits
+ pposs2ukstu_red_002_002_area.fits
+ 2-diff.000001.000003_area.fits
+ 3-diff.000001.000002.fits
+ 3-diff.000001.000004_area.fits
+
+16: 
+ 1-fits.tbl
+ cposs2ukstu_blue_002_001.fits
+ 2-mosaic.fits
+ 3-diff.000001.000002_area.fits
+ 3-diff.000001.000004.fits
+ cposs2ukstu_ir_001_001.fits
+
+17: 
+ 1-diff.000001.000002_area.fits
+ cposs2ukstu_blue_002_001_area.fits
+ 2-diff.000001.000002.fits
+ 3-mosaic.png
+
+18: 
+ 1-diff.000001.000004.fits
+ 1-mosaic_area.fits
+ 2-fit.000003.000004.txt
+ cposs2ukstu_red_001_001.fits
+ 3-mosaic.fits
+
+19: 
+ 1-diff.000001.000003_area.fits
+ 2-diff.000002.000003_area.fits
+
+
+Activation Sequence: 
+source, ID0000023, ID0000039, ID0000041, ID0000040, ID0000001, ID0000022, ID0000020, ID0000021, ID0000003, ID0000042, ID0000002, ID0000004, ID0000024, ID0000027, ID0000025, ID0000048, ID0000026, ID0000047, ID0000029, ID0000046, ID0000005, ID0000028, ID0000043, ID0000045, ID0000010, ID0000009, ID0000006, ID0000044, ID0000007, ID0000008, ID0000011, ID0000049, ID0000030, ID0000050, ID0000012, ID0000031, ID0000033, ID0000051, ID0000052, ID0000034, ID0000015, ID0000054, ID0000035, ID0000053, ID0000013, ID0000016, ID0000014, ID0000032, ID0000055, ID0000017, ID0000036, ID0000037, ID0000056, ID0000018, ID0000038, ID0000057, ID0000058, ID0000019, target, 
+################################################################################################
+grasp
+################################################################################################
