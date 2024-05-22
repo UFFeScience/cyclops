@@ -148,15 +148,6 @@ void GrchHard::Run() {
 //            return height_[a->get_id()] < height_[b->get_id()];
 //        });
 
-#ifndef NDEBUG
-        {  // Just for debugging purpose
-            size_t index = 0ul;
-            for (const auto &activation: activation_list) {
-                DLOG(INFO) << ++index << ": activation " << activation->get_id();
-            }
-        }
-#endif
-
         // The activation_list is sorted by the height(t). While activation_list is not empty do
         DLOG(INFO) << "Doing scheduling";
         while (!activation_list.empty()) {
@@ -174,15 +165,6 @@ void GrchHard::Run() {
             DLOG(INFO) << "Shuffling activation list";
             std::shuffle(avail_activations.begin(), avail_activations.end(), rng);
 
-#ifndef NDEBUG
-            {  // Just for debugging purpose
-                size_t index = 0ul;
-                for (const auto &activation: avail_activations) {
-                    DLOG(INFO) << ++index << ": activation " << activation->get_id();
-                }
-            }
-#endif
-
             // Schedule the ready tasks (same height)
             solution = ScheduleAvailTasks(avail_activations, solution);
         }
@@ -195,14 +177,6 @@ void GrchHard::Run() {
 
         DLOG(INFO) << solution;
     }
-
-#ifndef NDEBUG
-    best_solution.MemoryAllocation();
-    best_solution.ComputeObjectiveFunction();
-    DLOG(INFO) << best_solution;
-//    std::cout << best_solution;
-    best_solution.FreeingMemoryAllocated();
-#endif
 
     auto time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 

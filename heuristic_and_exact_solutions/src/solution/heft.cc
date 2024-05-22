@@ -578,14 +578,6 @@ void Heft::Run() {
     DLOG(INFO) << "Compute Objective Function";
     best_solution.ComputeObjectiveFunction();
 
-#ifndef NDEBUG
-    best_solution.MemoryAllocation();
-    best_solution.ComputeObjectiveFunction();
-    DLOG(INFO) << best_solution;
-//    std::cout << best_solution;
-    best_solution.FreeingMemoryAllocated();
-#endif
-
     double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 
     // TODO: This printing could be through a method to uniform the output values

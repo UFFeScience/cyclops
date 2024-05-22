@@ -32,9 +32,6 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
 
     // As long as there are allocations to be allocated, do
     while (!avail_activations.empty()) {
-//        double minimal_of_found = std::numeric_limits<double>::max();
-//        double maximum_of_found = 0.0;
-
         std::list<std::pair<std::shared_ptr<Activation>, Solution>> avail_solutions;
 
         // 1. Computing time
@@ -65,15 +62,6 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
                 }
             }
 
-            // Register
-//            if (best_of > maximum_of_found) {
-//                maximum_of_found = best_of;
-//            }
-//
-//            if (best_of < minimal_of_found) {
-//                minimal_of_found = best_of;
-//            }
-
             // Put the best current solution in the list
             avail_solutions.emplace_back(activation, best_temporary_solution);
         }
@@ -85,23 +73,6 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
         });
         auto sol_size = avail_solutions.size();
         auto upper_limit = std::min<size_t>(std::ceil<size_t>(alpha_restrict_candidate_list_ * sol_size), sol_size);
-
-//        std::list<std::pair<std::shared_ptr<Activation>, Solution>> restricted_candidate_list;
-
-
-//        for (const auto &candidate_pair: avail_solutions) {
-//            if (candidate_pair.second.get_objective_value()
-//                <= minimal_of_found + (alpha_restrict_candidate_list_
-//                                       * (maximum_of_found
-//                                          - minimal_of_found))) {
-//                restricted_candidate_list.push_back(candidate_pair);
-//            }
-//        }
-
-//        restricted_candidate_list.sort([&](const std::pair<std::shared_ptr<Activation>, Solution> &a,
-//                                           const std::pair<std::shared_ptr<Activation>, Solution> &b) {
-//            return a.second.get_objective_value() < b.second.get_objective_value();
-//        });
 
         auto position = 0ul;
         if (!avail_solutions.empty()) {
@@ -156,15 +127,6 @@ void Grch::Run() {
 //            return height_[a->get_id()] < height_[b->get_id()];
 //        });
 
-#ifndef NDEBUG
-        {  // Just for debugging purpose
-            size_t index = 0ul;
-            for (const auto &activation: activation_list) {
-                DLOG(INFO) << ++index << ": activation " << activation->get_id();
-            }
-        }
-#endif
-
         // The activation_list is sorted by the height(t). While activation_list is not empty do
         DLOG(INFO) << "Doing scheduling";
         while (!activation_list.empty()) {
@@ -186,15 +148,6 @@ void Grch::Run() {
             DLOG(INFO) << "Shuffling activation list";
             std::shuffle(avail_activations.begin(), avail_activations.end(), generator());
 
-#ifndef NDEBUG
-            {  // Just for debugging purpose
-                size_t index = 0ul;
-                for (const auto &activation: avail_activations) {
-                    DLOG(INFO) << ++index << ": activation " << activation->get_id();
-                }
-            }
-#endif
-
             // Schedule the ready tasks (same height)
             solution = ScheduleAvailTasks(avail_activations, solution);
         }
@@ -207,14 +160,6 @@ void Grch::Run() {
 
         DLOG(INFO) << solution;
     }
-
-#ifndef NDEBUG
-    best_solution.MemoryAllocation();
-    best_solution.ComputeObjectiveFunction();
-    DLOG(INFO) << best_solution;
-//    std::cout << best_solution;
-    best_solution.FreeingMemoryAllocated();
-#endif
 
     auto time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 

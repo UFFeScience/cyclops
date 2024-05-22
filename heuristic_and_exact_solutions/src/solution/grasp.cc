@@ -169,14 +169,6 @@ void Grasp::Run() {
         number_of_iterations++;
     }
 
-#ifndef NDEBUG
-    best_solution.MemoryAllocation();
-    best_solution.ComputeObjectiveFunction();
-    DLOG(INFO) << best_solution;
-//    std::cout << best_solution;
-    best_solution.FreeingMemoryAllocated();
-#endif
-
     time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time
 
 //    tttFile.writeLine(best_solution.get_objective_value(),
@@ -205,6 +197,8 @@ void Grasp::Run() {
             << " " << lsn_time_3
             << " " << lsn_noi_3
             << std::endl;
+
+    std::cout << best_solution;
 
     DLOG(INFO) << "... ending GRASP";
 }
