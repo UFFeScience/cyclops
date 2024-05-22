@@ -730,31 +730,48 @@ std::ostream &Solution::Write(std::ostream &os) const {
     for (size_t i = 0ul; i < execution_vm_queue_.size(); ++i) {
         os << "x[" << i << "]: \t" << execution_vm_queue_[i] << "\t";
     }
-    os << std::endl;
+    os << std::endl << std::endl;
+
+    auto at = algorithm_->get_alpha_time();
+    auto ac = algorithm_->get_alpha_budget();
+    auto as = algorithm_->get_alpha_security();
+    auto arcl = algorithm_->get_alpha_restrict_candidate_list();
+
+    os << std::fixed << std::setprecision(6); // Define precisão e formato fixo
+    os << "Alphas: " << std::endl;
+    os << "| $\\alpha_{tempo}$ | $\\alpha_{custo}$ | $\\alpha_{seguran\\c{c}a}$ | $\\alpha_{ListaRestritaCandidatos}$ |" << std::endl;
+    os << "|:----------------:|:----------------:|:--------------------:|:----------------------------------:|" << std::endl;
+    os << "| " << at << " | " << ac << " | " << as << " | " << arcl << " |" << std::endl;
 
     os << std::endl;
     os << "Activations: " << std::endl;
     for (size_t i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
         std::shared_ptr<VirtualMachine> vm = algorithm_->GetVirtualMachinePerId(i);
 
-        os << vm->get_id() << ": ";
+        os << "**MV" << vm->get_id() + 1 << "**: \\" << std::endl;
         for (size_t j = 0ul; j < algorithm_->GetActivationSize(); ++j) {
             std::shared_ptr<Activation> activation = algorithm_->GetActivationPerId(j);
             size_t virtual_machine_id = activation_allocations_[j];
 
             if (virtual_machine_id == vm->get_id()) {
-                os << activation->get_tag() << " ";
+                os << activation->get_tag() << " --> ";
             }
         }
-        os << std::endl;
+        os << "\\" << std::endl;
     }
 
     os << std::endl;
     os << "Files: " << std::endl;
     for (size_t i = 0ul; i < algorithm_->GetStorageSize(); ++i) {
-        std::shared_ptr<Storage> vm = algorithm_->GetStoragePerId(i);
+        auto storage = algorithm_->GetStoragePerId(i);
 
-        os << vm->get_id() << ": \n";
+        if (const auto s = std::dynamic_pointer_cast<VirtualMachine>(storage)) {
+            os << "|**MV" << s->get_id() + 1 << "**| |" << std::endl;
+        } else {
+            os << "|***Bucket" << storage->get_id() - algorithm_->GetVirtualMachineSize() + 1 << "***| |" << std::endl;
+        }
+
+//        os << storage->get_id() << ": \n";
         for (size_t j = 0ul; j < algorithm_->GetFilesSize(); ++j) {
             auto file = algorithm_->GetFilePerId(j);
             size_t storage_id;
@@ -765,8 +782,8 @@ std::ostream &Solution::Write(std::ostream &os) const {
                 storage_id = file_allocations_[file->get_id()];
             }
 
-            if (storage_id == vm->get_id()) {
-                os << " " << file->get_name() << "\n";
+            if (storage_id == storage->get_id()) {
+                os << "| | " << file->get_name() << " |\n";
             }
         }
         os << std::endl;
@@ -775,7 +792,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
     os << std::endl;
     os << "Activation Sequence: " << std::endl;
     for (auto task_id: ordering_) {
-        os << algorithm_->GetActivationPerId(task_id)->get_name() << ", ";
+        os << algorithm_->GetActivationPerId(task_id)->get_tag() << " --> ";
     }
     os << std::endl;
     os << "################################################################################################"
