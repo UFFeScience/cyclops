@@ -1,17 +1,18 @@
 /**
  * \file src/model/dynamic_file.h
- * \brief Contains the \c DynamicFile class declaration.
+ * \brief Contains the \c DynamicFile class declaration
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
- * This header file contains the \c DynamicFile class.
+ * This header file contains the \c DynamicFile class
  */
 
 #ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_DYNAMIC_FILE_H_
 #define APPROXIMATE_SOLUTIONS_SRC_MODEL_DYNAMIC_FILE_H_
+
 
 #include <glog/logging.h>
 
@@ -32,7 +33,7 @@ class DynamicFile : public File {
 public:
     /// Parametrized constructor
     explicit DynamicFile(const size_t id, const std::string &name, const double size) :
-            File(id, name, size) { }
+            File(id, name, size) {}
 
     /// Default destructor
     ~DynamicFile() override = default;
@@ -44,8 +45,7 @@ public:
     [[nodiscard]] size_t get_parent_output_file_index() const { return parent_output_file_index_; }
 
     /// Setter for the parent task
-    // TODO fix pointing to activation
-    void set_parent_task(std::shared_ptr<Activation> parent_task) { parent_task_ = parent_task; }
+    void set_parent_task(const std::shared_ptr<Activation> &parent_task) { parent_task_ = parent_task; }
 
     /// Setter for the parent output file index
     void set_parent_output_file_index(const size_t parent_output_file_index) {
@@ -69,5 +69,6 @@ private:
     /// The index position of this generated file
     size_t parent_output_file_index_ = std::numeric_limits<size_t>::max();
 };
+
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_DYNAMIC_FILE_H_
