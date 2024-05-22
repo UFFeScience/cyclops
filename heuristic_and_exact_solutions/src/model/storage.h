@@ -28,7 +28,7 @@ class Storage {
       : id_(id),
         name_(std::move(name)),
         storage_(storage),
-        cost_(cost),
+        cost_(cost / 3600.0),
         bandwidth_(bandwidth),
         bandwidth_GBps_(bandwidth / 8.0),
         type_id_(type_id) { }
