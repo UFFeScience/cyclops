@@ -467,7 +467,7 @@ size_t Solution::ComputeFileTransferTime(const std::shared_ptr<File>& file,
     // Calculate time
     if (storage1->get_id() != storage2->get_id()) {
         // get the smallest link
-        double link = std::min(storage1->get_bandwidth_GBps(), storage2->get_bandwidth_GBps());
+        double link = std::min(storage1->get_bandwidth_in_GBps(), storage2->get_bandwidth_in_GBps());
         time = std::ceil(file->get_size_in_GB() / link);
     } else {
         time = 1ul;
