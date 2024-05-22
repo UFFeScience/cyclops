@@ -15,14 +15,10 @@
 
 #include <boost/algorithm/string.hpp>
 #include <filesystem>
-#include "src/model/static_file.h"
-#include "src/model/dynamic_file.h"
 #include "src/solution/grch.h"
-#include "src/solution/min_min.h"
 #include "src/solution/grasp.h"
 #include "src/solution/cplex.h"
 #include "heft.h"
-#include "grch_hard.h"
 
 //void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
 //                                  std::unordered_map<std::string, File *> &file_map_per_name) {
@@ -564,10 +560,6 @@ std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string &algorit
     std::cout << "ReturnAlgorithm: " << algorithm << std::endl;
     if (algorithm == "grch") {
         return std::make_shared<Grch>();
-    } else if (algorithm == "grch_hard") {
-        return std::make_shared<GrchHard>();
-    } else if (algorithm == "min_min") {
-        return std::make_shared<MinMin>();
     } else if (algorithm == "cplex") {
         return std::make_shared<Cplex>();
     } else if (algorithm == "grasp") {
