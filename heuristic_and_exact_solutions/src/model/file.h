@@ -32,12 +32,10 @@ class File {
   /// Parametrized constructor
   explicit File(const size_t id,
                 std::string name,
-                const double size)
+                const double size_in_MB)
       : id_(id),
         name_(std::move(name)),
-        size_(size),
-        size_in_MB_(size / 1000.0),
-        size_in_GB_(size / 1000000.0) { }
+        size_in_GB_(size_in_MB / 1000.0) { }
 
   /// Default destructor
   virtual ~File() = default;
@@ -47,12 +45,6 @@ class File {
 
   /// Getter for name of the file
   [[nodiscard]] const std::string &get_name() const { return name_; }
-
-  /// Getter for size in KBs of the file
-  [[nodiscard]] double get_size() const { return size_; }
-
-  /// Getter for size in KBs of the file
-  [[nodiscard]] double get_size_in_MB() const { return size_in_MB_; }
 
   /// Getter for size in KBs of the file
   [[nodiscard]] double get_size_in_GB() const { return size_in_GB_; }
@@ -65,7 +57,7 @@ class File {
  protected:
   virtual /// Print the File object to the output stream
   std::ostream& Write(std::ostream& os) const {
-    return os << "File[_id " << id_ << ", name " << name_ << ", size " << size_ << "]";
+    return os << "File[_id " << id_ << ", name " << name_ << ", size_in_GB " << size_in_GB_ << "]";
   }
 
   /// The ID of the file
@@ -73,12 +65,6 @@ class File {
 
   /// The file name
   std::string name_;
-
-  /// The file size in KB
-  double size_;
-
-  /// The file size in MB
-  double size_in_MB_;
 
   /// The file size in GB
   double size_in_GB_;
