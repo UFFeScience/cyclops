@@ -16,7 +16,6 @@
 
 #include <vector>
 #include <utility>
-//#include "src/data_structure/matrix.h"
 
 /**
  * \class ConflictGraph conflict_graph.h "src/model/conflict_graph.h"
