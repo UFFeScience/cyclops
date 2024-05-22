@@ -13,6 +13,7 @@
 #ifndef APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STORAGE_H_
 #define APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STORAGE_H_
 
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -22,15 +23,13 @@ class Storage {
   Storage(size_t id,
          std::string name,
          double storage,
-         double cost,
          double bandwidth,
          int type_id)
       : id_(id),
         name_(std::move(name)),
         storage_(storage),
-        cost_(cost / 3600.0),
         bandwidth_(bandwidth),
-        bandwidth_GBps_(bandwidth / 8.0),
+        bandwidth_in_GBps_(bandwidth / 8.0),
         type_id_(type_id) { }
 
   virtual ~Storage() = default;
@@ -44,23 +43,17 @@ class Storage {
   /// Getter for storage_
   [[nodiscard]] double get_storage() const { return storage_; }
 
-  /// Getter for cost_
-  [[nodiscard]] double get_cost() const { return cost_; }
-
   /// Getter for bandwidth_
-//  double get_bandwidth() const { return bandwidth_; }
-
-  /// Getter for bandwidth_
-  [[nodiscard]] double get_bandwidth_GBps() const { return bandwidth_GBps_; }
-
-  /// Getter for bandwidth_
-//  double get_type_id() const { return type_id_; }
+  [[nodiscard]] double get_bandwidth_in_GBps() const { return bandwidth_in_GBps_; }
 
   /// Adds a requiremnt value
   void AddRequirement(double requirement) { requirements_.push_back(static_cast<int>(requirement)); }
 
   /// Get a requiremnt value
   [[nodiscard]] int GetRequirementValue(size_t requirement_id) const { return requirements_[requirement_id]; }
+
+  /// Get cost
+  virtual double get_cost() const = 0;
 
   bool operator==(const Storage &rhs) const {
     return rhs.get_id() == id_;
@@ -73,17 +66,16 @@ class Storage {
 
   double storage_;
 
-  double cost_;
-
   /// Bandwidth in Gbps
   double bandwidth_;
 
   /// Bandwidth in GBps
-  double bandwidth_GBps_;
+  double bandwidth_in_GBps_;
 
   int type_id_;
 
   std::vector<int> requirements_;
 };
+
 
 #endif  // APPROXIMATIVE_SOLUTIONS_SRC_MODEL_STORAGE_H_

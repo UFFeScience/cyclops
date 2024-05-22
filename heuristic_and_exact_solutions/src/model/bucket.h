@@ -35,8 +35,9 @@ public:
            double bandwidth,
            int type_id,
            size_t numberOfIntervals)
-            : Storage(id, std::move(name), storage, cost, bandwidth, type_id),
-              number_of_GB_per_cost_intervals_(numberOfIntervals) {}
+            : Storage(id, std::move(name), storage, bandwidth, type_id),
+              number_of_GB_per_cost_intervals_(numberOfIntervals),
+              cost_(cost) {}
 
     /// Default destructor
     ~Bucket() override = default;
@@ -53,7 +54,14 @@ public:
     }
 
     /// Getter for numberOfIntervals_ (not used for now)
-    [[nodiscard]] size_t get_number_of_GB_per_cost_intervals() const { return number_of_GB_per_cost_intervals_; }
+    [[nodiscard]] size_t get_number_of_GB_per_cost_intervals() const {
+        return number_of_GB_per_cost_intervals_;
+    }
+
+    /// Getter for cost_
+    [[nodiscard]] double get_cost() const {
+        return cost_;
+    }
 
     /// Concatenate operator
     friend std::ostream &operator<<(std::ostream &os, const Bucket &a) {
@@ -87,6 +95,9 @@ private:
 
     /// Number of the GBs/Cost intervals
     size_t number_of_GB_per_cost_intervals_;
+
+    /// Cost
+    double cost_;
 };
 
 
