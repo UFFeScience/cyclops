@@ -13,6 +13,7 @@
 #ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
 #define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
 
+
 #include <string>
 #include <memory>
 #include <unordered_map>
@@ -213,5 +214,6 @@ protected:
 
     clock_t t_start = clock();
 };
+
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
