@@ -135,14 +135,6 @@ double Solution::ComputeObjectiveFunction() {
             if (auto static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
                 // If the file is static, get the ID of the storage where the file is stored from its definition
                 storage_id = static_file->GetFirstVm();
-                // Just for auditing - begin
-                if (x && activation_id != algorithm_->get_id_source() && activation_id != algorithm_->get_id_target()) {
-                    auto st = 0ul;
-                    auto ft = static_cast<size_t>(algorithm_->get_makespan_max());
-
-                    PersistFile(file_id, storage_id, st, ft);
-                }
-                // Just for auditing - end
             } else {
                 // If the file is dynamic, get the ID of the storage where the file is stored from its allocation
                 storage_id = file_allocations_[file_id];
@@ -162,18 +154,6 @@ double Solution::ComputeObjectiveFunction() {
                 LOG(FATAL) << "Something is wrong with file reading";
             }
 
-            // Just for auditing - begin
-            if (x && activation_id != algorithm_->get_id_source() and activation_id != algorithm_->get_id_target()) {
-                auto real_activation_id = activation_id - 1ul;
-                auto st = activation_start_time + activation_read_time;
-                auto ft = st + one_file_read_time;
-
-                DLOG(INFO) << "ReadFileForActivation(" << real_activation_id << ", " << file->get_id() << ", " << vm_id
-                           << ", " << storage_id << ", " << st << ", " << ft << ");";
-                ReadFileForActivation(real_activation_id, file_id, vm_id, storage_id, st, ft);
-            }
-            // Just for auditing - end
-
             activation_read_time += one_file_read_time;
 
             // If the storage is some VM (not bucket) different from the execution VM
@@ -190,18 +170,6 @@ double Solution::ComputeObjectiveFunction() {
         // Compute Run time
         activation_run_time = std::ceil(activation->get_time() * vm->get_slowdown());
 
-        // Just for auditing - begin
-        if (x and activation_id != algorithm_->get_id_source() && activation_id != algorithm_->get_id_target()) {
-            auto ai = activation_id - 1ul;
-            auto st = activation_start_time + activation_read_time;
-            auto ft = st + activation_run_time;
-
-            DLOG(INFO) << "RunActivation(" << ai << ", " << vm_id << ", " << st << ", " << ft << ");";
-
-            RunActivation(ai, vm_id, st, ft);
-        }
-        // Just for auditing - end
-
         // Compute Write Time
         auto output_files = activation->get_output_files();
         for (const auto& output_file: output_files) {
@@ -217,24 +185,6 @@ double Solution::ComputeObjectiveFunction() {
 
             DLOG(INFO) << "output_file: " << output_file->get_name();
             DLOG(INFO) << "one_file_write_time: " << one_file_write_time;
-
-            // Just for auditing - begin
-            if (x && activation_id != algorithm_->get_id_source() && activation_id != algorithm_->get_id_target()) {
-                auto file_id = output_file->get_id();
-                auto ai = activation_id - 1ul;
-                auto st = activation_start_time + activation_read_time + activation_run_time
-                          + activation_write_time;
-                auto ft = st + one_file_write_time;
-
-                DLOG(INFO) << "WriteFileForActivation(" << ai << ", " << file_id << ", " << vm_id << ", "
-                           << storage_id << ", " << st << ", " << ft << ");";
-
-                WriteFileForActivation(ai, file_id, vm_id, storage_id, st, ft);
-                st = ft;
-                ft = t_;
-                PersistFile(file_id, storage_id, st, ft);
-            }
-            // Just for auditing - end
 
             activation_write_time += one_file_write_time;
             if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm_id) {
@@ -286,19 +236,6 @@ double Solution::ComputeObjectiveFunction() {
         DLOG(INFO) << "finish_time: " << finish_time;
     }
 
-    // Just for auditing - begin
-    if (x) {
-        for (auto vm_id = 0ul; vm_id < m_; ++vm_id) {
-            auto virtual_machine = algorithm_->GetVirtualMachinePerId(vm_id);
-            auto st = 0ul;
-            auto ft = allocation_vm_queue_[vm_id];
-
-            AllocateVm(vm_id, st, ft);
-        }
-    }
-    // Just for auditing - end
-
-//    of_makespan = time_vector_[ordering_.back()];
     makespan_ = time_vector_[ordering_.back()];
 
     // 2. Calculates the cost
