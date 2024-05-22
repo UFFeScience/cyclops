@@ -60,7 +60,7 @@ public:
 private:
     /// Writes the Dynamic File object to the output stream
     std::ostream &Write(std::ostream &os) const override {
-        return os << "DynamicFile[id " << id_ << ", name " << name_ << ", size " << size_ << "]";
+        return os << "DynamicFile[id " << id_ << ", name " << name_ << ", size_in_GB " << size_in_GB_ << "]";
     }
 
     /// The \c Activation that generated this file
