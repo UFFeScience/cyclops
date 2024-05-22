@@ -118,6 +118,9 @@ public:
     /// Getter for \c alpha_security_
     double get_alpha_security() const { return alpha_security_; }
 
+    /// Getter for \c alpha_security_
+    double get_alpha_restrict_candidate_list() const { return alpha_restrict_candidate_list_; }
+
     /// Getter for \c maximum_security_and_privacy_exposure_
     double get_maximum_security_and_privacy_exposure() const {
         return maximum_security_and_privacy_exposure_;
