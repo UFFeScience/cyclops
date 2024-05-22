@@ -42,7 +42,7 @@ public:
 
 private:
     std::ostream &Write(std::ostream &os) const override {
-        return os << "StaticFile[id " << id_ << ", name " << name_ << ", size " << size_ << "]";
+        return os << "StaticFile[id " << id_ << ", name " << name_ << ", size_in_GB " << size_in_GB_ << "]";
     }
 
     std::vector<size_t> vms_;
