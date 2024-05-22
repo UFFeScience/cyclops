@@ -14,14 +14,7 @@
 
 #include "src/solution/cplex.h"
 
-#include "src/model/data.h"
-#include "src/model/dynamic_file.h"
-#include "src/model/static_file.h"
-
 DECLARE_string(cplex_output_file);
-
-//template<typename T= VirtualMachine>
-//T dynamic_pointer_cast(Storage);
 
 /**
  * If file reside in the same vm, then the transfer time is 0.0.

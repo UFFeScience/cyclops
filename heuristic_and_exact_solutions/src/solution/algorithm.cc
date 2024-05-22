@@ -473,7 +473,7 @@ void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
     // conflict_graph_.redefine(size_, size_, 0.0);
 
     // conflict_graph_ = ConflictGraph(size_);
-    conflict_graph_.Redefine(static_cast<int>(GetFilesSize()));
+    conflict_graph_.Redefine(GetFilesSize());
 
     // Reading conflict graph information
     while (getline(in_conflict_graph, line)) {

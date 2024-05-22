@@ -27,8 +27,6 @@
 #include "src/model/solution.h"
 #include "src/model/conflict_graph.h"
 
-#include "src/data_structure/matrix.h"
-
 class Solution;
 
 /**
