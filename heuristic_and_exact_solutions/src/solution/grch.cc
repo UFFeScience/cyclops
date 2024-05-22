@@ -13,8 +13,6 @@
 
 #include "src/solution/grch.h"
 
-#include "src/model/static_file.h"
-
 DECLARE_uint64(number_of_iteration);
 
 /**
