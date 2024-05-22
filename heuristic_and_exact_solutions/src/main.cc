@@ -101,7 +101,8 @@ int main(int argc, char **argv) {
     DLOG(INFO) << "... algorithm picked-up ...";
 
     algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
-    std::cout << "Number of Activation: " << algorithm->GetActivationSize() << std::endl;
+    std::cout << "Number of Activation: " << algorithm->GetActivationSize() << " (including source and target)"
+              << std::endl;
     std::cout << "Number of files: " << algorithm->GetFilesSize() << std::endl;
     algorithm->SetAlphas(FLAGS_alpha_time,
                          FLAGS_alpha_budget,
