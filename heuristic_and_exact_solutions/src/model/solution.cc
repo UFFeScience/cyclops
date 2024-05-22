@@ -14,6 +14,7 @@
 #include <deque>
 #include <utility>  // Para std::pair
 #include <algorithm>  // Para std::find_if
+#include <iomanip>
 #include "src/model/solution.h"
 
 DECLARE_uint64(number_of_allocation_experiments);
@@ -738,8 +739,8 @@ bool Solution::checkFiles() {
             // MinFile will be moved to machine with more empty space
             file_allocations_[file_min->get_id()] = new_storage;
             // Update aux Storage
-            aux_storage[old_vm] += file_min->get_size();
-            aux_storage[new_storage] -= file_min->get_size();
+            aux_storage[old_vm] += file_min->get_size_in_GB();
+            aux_storage[new_storage] -= file_min->get_size_in_GB();
             // Update mapFile structure
             map_file[old_vm].erase(remove(map_file[old_vm].begin(), map_file[old_vm].end(), min_file),
                                    map_file[old_vm].end());
