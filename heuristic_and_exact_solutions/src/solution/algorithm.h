@@ -37,7 +37,7 @@ class Solution;
  * execute a specific implementation.
  */
 
-class Algorithm {
+class Algorithm : public std::enable_shared_from_this<Algorithm> {
 public:
     Algorithm() = default;
 

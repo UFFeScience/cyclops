@@ -52,13 +52,13 @@ public:
     int ** v = nullptr;  // Virtual machine allocation
 
     /// Constructor declaration
-    explicit Solution(Algorithm *algorithm);
+    explicit Solution(std::shared_ptr<Algorithm> algorithm);
 
     /// Copy constructor
     Solution(const Solution &other);
 
     /// Destructor
-    ~Solution();
+//    ~Solution();
 
     void MemoryAllocation();
 
@@ -176,7 +176,8 @@ protected:
                                                    const std::shared_ptr<File>& file);
 
     /// A pointer to the Algorithm object that contain the all necessary data
-    Algorithm *algorithm_{};
+//    Algorithm *algorithm_{};
+    std::shared_ptr<Algorithm> algorithm_;
 
     /// Allocation of task in theirs VM
     std::vector<size_t> activation_allocations_;

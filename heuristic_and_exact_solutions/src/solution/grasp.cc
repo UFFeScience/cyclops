@@ -81,7 +81,7 @@ void Grasp::Run() {
 
     double time_s;
 
-    Solution best_solution(this);
+    Solution best_solution(shared_from_this());
 
     auto max_iter_without_improve = 5ul;
     auto iter = 0ul;
@@ -97,7 +97,7 @@ void Grasp::Run() {
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
 
-        Solution solution(this);
+        Solution solution(shared_from_this());
 
         // Start activation list
         DLOG(INFO) << "Initialize activations list";

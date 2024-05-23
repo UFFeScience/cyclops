@@ -24,7 +24,7 @@ DECLARE_uint64(number_of_allocation_experiments);
  *
  * @param algorithm
  */
-Solution::Solution(Algorithm *algorithm)
+Solution::Solution(std::shared_ptr<Algorithm> algorithm)
         : algorithm_(algorithm),
           activation_allocations_(algorithm->GetActivationSize(), std::numeric_limits<size_t>::max()),
           file_allocations_(algorithm->GetFilesSize(), std::numeric_limits<size_t>::max()),
@@ -55,9 +55,9 @@ Solution::Solution(Algorithm *algorithm)
 /**
  *
  */
-Solution::~Solution() {
-    algorithm_ = nullptr;
-}
+//Solution::~Solution() {
+//    algorithm_ = nullptr;
+//}
 
 /**
  *

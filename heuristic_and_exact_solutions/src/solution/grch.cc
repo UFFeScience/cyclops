@@ -35,7 +35,7 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
         // 1. Computing time
         for (const auto &activation: avail_activations) {
             // The solution with the best O.F. after choosing a specific VM
-            Solution best_temporary_solution(this);
+            Solution best_temporary_solution(shared_from_this());
 
             // Begin with a BIG O.F.
             auto best_of = std::numeric_limits<double>::max();
@@ -100,13 +100,13 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
 void Grch::Run() {
     DLOG(INFO) << "Executing GRCH (Greedy Randomized Constructive Heuristic) ...";
 
-    Solution best_solution(this);
+    Solution best_solution(shared_from_this());
 
     for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
 
-        Solution solution(this);
+        Solution solution(shared_from_this());
 
         // Start task list
         DLOG(INFO) << "Initialize activation list";

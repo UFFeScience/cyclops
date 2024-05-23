@@ -460,7 +460,7 @@ void Heft::Run() {
 
     // Defining variables
 
-    Solution best_solution(this);
+    Solution best_solution(shared_from_this());
 
     std::map<size_t, std::vector<Event>> activation_order;
 
