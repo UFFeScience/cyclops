@@ -1122,7 +1122,7 @@ size_t Solution::CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<A
         && write_time != std::numeric_limits<size_t>::max()) {
         finish_time = start_time + read_time + run_time + write_time;
     } else {
-        DLOG(FATAL) << "Something is wrong!";
+        LOG(FATAL) << "Something is wrong!";
     }
 
 //    DLOG(INFO) << "start_time: " << StartTime;
