@@ -99,10 +99,12 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
  */
 void Grch::Run() {
     DLOG(INFO) << "Executing GRCH (Greedy Randomized Constructive Heuristic) ...";
-
+    double time_s;
     Solution best_solution(shared_from_this());
-
-    for (size_t i = 0; i < FLAGS_number_of_iteration; ++i) {
+    auto number_of_iterations = 0ul;
+    auto best_solution_iteration = 0ul;
+    double best_solution_time;
+    for (auto i = 0ul; i < std::numeric_limits<size_t>::max(); ++i) {
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
 
@@ -151,21 +153,26 @@ void Grch::Run() {
         }
 
         DLOG(INFO) << "Scheduling done";
-
-        if (best_solution.get_objective_value() > solution.get_objective_value()) {
-            best_solution = solution;
-        }
-
         DLOG(INFO) << solution;
+        time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
+        number_of_iterations++;
+        if (solution.get_objective_value() < best_solution.get_objective_value()) {
+            best_solution = solution;
+            best_solution_iteration = number_of_iterations;
+            best_solution_time = time_s;
+        }
     }
-
-    auto time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
-
-    std::cerr << best_solution.get_makespan()
+    
+    std::cout << std::fixed
+              << best_solution.get_objective_value()
+              << " " << best_solution.get_makespan()
               << " " << best_solution.get_cost()
               << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
-              << " " << best_solution.get_objective_value() << std::endl
-              << time_s << std::endl;
+              << " " << time_s
+              << " " << number_of_iterations
+              << " " << best_solution_iteration
+              << " " << best_solution_time
+              << std::endl;
 
     DLOG(INFO) << "... ending GRCH (Greedy Randomized Constructive Heuristic)";
 }
