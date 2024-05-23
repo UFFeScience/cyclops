@@ -1,17 +1,18 @@
 /**
  * \file src/model/solution.h
- * \brief Contains the \c Solution class declaration.
+ * \brief Contains the \c Solution class declaration
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
- * This header file contains the \c Solution class.
+ * This header file contains the \c Solution class
  */
 
 #ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_SOLUTION_H_
 #define APPROXIMATE_SOLUTIONS_SRC_MODEL_SOLUTION_H_
+
 
 #include <algorithm>
 #include <iostream>
@@ -213,5 +214,6 @@ protected:
     // For printing the solution timeline
     size_t n_, d_, m_, mb_, t_;
 };
+
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_SOLUTION_H_

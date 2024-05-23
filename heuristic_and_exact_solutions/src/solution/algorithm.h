@@ -5,7 +5,7 @@
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
  * This header file contains the \c Algorithm class that handles different execution modes.
  */
@@ -24,7 +24,6 @@
 #include "src/model/activation.h"
 #include "src/model/virtual_machine.h"
 #include "src/model/bucket.h"
-#include "src/model/provider.h"
 #include "src/model/solution.h"
 #include "src/model/conflict_graph.h"
 

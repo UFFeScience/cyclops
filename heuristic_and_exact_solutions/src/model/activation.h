@@ -1,17 +1,18 @@
 /**
  * \file src/model/activation.h
- * \brief Contains the \c Activation class declaration.
+ * \brief Contains the \c Activation class declaration
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
- * This header file contains the \c Activation class.
+ * This header file contains the \c Activation class
  */
 
 #ifndef APPROXIMATE_SOLUTIONS_SRC_MODEL_ACTIVATION_H_
 #define APPROXIMATE_SOLUTIONS_SRC_MODEL_ACTIVATION_H_
+
 
 #include <string>
 #include <utility>
@@ -147,5 +148,6 @@ private:
     /// A vector containing the requirement values
     std::vector<int> requirements_;
 };
+
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_MODEL_ACTIVATION_H_
