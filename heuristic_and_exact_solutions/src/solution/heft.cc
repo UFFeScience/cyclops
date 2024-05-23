@@ -580,10 +580,16 @@ void Heft::Run() {
 
     double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 
-    // TODO: This printing could be through a method to uniform the output values
-    std::cerr << best_solution.get_makespan() << " " << best_solution.get_cost() << " "
-            << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure() << " "
-            << best_solution.get_objective_value() << std::endl << time_s << std::endl;
+    std::cout << std::fixed
+              << best_solution.get_objective_value()
+              << " " << best_solution.get_makespan()
+              << " " << best_solution.get_cost()
+              << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
+              << " " << time_s
+              << " 1"
+              << " 1"
+              << " " << time_s
+              << std::endl;
 
     DLOG(INFO) << "... ending HEFT";
     // TODO: Printing the scheduling
