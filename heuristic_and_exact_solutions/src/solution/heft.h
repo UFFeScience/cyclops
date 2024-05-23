@@ -33,6 +33,8 @@ public:
     ///
     Heft() = default;
 
+    virtual ~Heft() = default;
+
     double RankUpward(size_t activation_id, std::vector<double> &communication_plus_max_successor_rank_cache);
 
     double ComputeAverageCommunicationCost(size_t activation_id_i, size_t activation_id_j);

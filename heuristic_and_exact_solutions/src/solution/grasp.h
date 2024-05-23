@@ -27,6 +27,9 @@ public:
     Grasp() = default;
 
     ///
+    virtual ~Grasp() = default;
+
+    ///
     [[nodiscard]] std::string GetName() const override { return name_; }
 
     ///

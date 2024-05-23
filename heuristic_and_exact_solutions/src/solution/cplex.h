@@ -59,6 +59,9 @@ public:
     ///
     Cplex() = default;
 
+    ///
+    virtual ~Cplex() = default;
+
     static int ComputeFileTransferTime(const std::shared_ptr<File>& file,
                                        const std::shared_ptr<Storage> &storage1,
                                        const std::shared_ptr<Storage> &storage2);
