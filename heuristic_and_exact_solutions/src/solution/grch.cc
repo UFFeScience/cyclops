@@ -1,14 +1,14 @@
 /**
  * \file src/solution/greedy_randomized_constructive_heuristic.cc
- * \brief Contains the \c Algorithm class methods.
+ * \brief Contains the \c Algorithm class methods for the Greed Randomized Constructive Heuristic
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
- * This source file contains the methods from the \c Heft class
- * that run the mode the approximate solution.
+ * This source file contains the methods for the \c Grch class that run the Greed Randomized Constructive Heuristic
+ * methods
  */
 
 #include "src/solution/grch.h"
