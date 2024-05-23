@@ -69,7 +69,7 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
                                       const std::pair<std::shared_ptr<Activation>, Solution> &b) {
             return a.second.get_objective_value() < b.second.get_objective_value();
         });
-        auto sol_size = avail_solutions.size();
+        auto sol_size = static_cast<double>(avail_solutions.size());
         auto upper_limit = std::min<size_t>(std::ceil<size_t>(alpha_restrict_candidate_list_ * sol_size), sol_size);
 
         auto position = 0ul;
@@ -104,7 +104,7 @@ void Grch::Run() {
     auto number_of_iterations = 0ul;
     auto best_solution_iteration = 0ul;
     double best_solution_time;
-    for (auto i = 0ul; i < std::numeric_limits<size_t>::max(); ++i) {
+    for (auto i = 0ul; i < FLAGS_number_of_iteration; ++i) {
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
 
