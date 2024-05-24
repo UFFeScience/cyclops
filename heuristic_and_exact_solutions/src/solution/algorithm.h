@@ -39,12 +39,10 @@ class Solution;
 
 class Algorithm : public std::enable_shared_from_this<Algorithm> {
 public:
-    Algorithm() = default;
-
     /// Read input files.
-    void ReadInputFiles(const std::string &tasks_and_files,
-                        const std::string &cluster,
-                        const std::string &conflict_graph);
+    void ReadInputFiles(const std::string &tasks_and_files_file,
+                        const std::string &cluster_file,
+                        const std::string &conflict_graph_file);
 
     /// Getter for \c id_source_
     size_t get_id_source() const { return id_source_; }
@@ -152,49 +150,69 @@ public:
     static std::shared_ptr<Algorithm> ReturnAlgorithm(const std::string &algorithm);
 
 protected:
-//    void ReadTasksAndFiles(const std::string &, std::unordered_map<std::string, File *> &);
-    void ReadTasksAndFiles(const std::string &, std::unordered_map<std::string, std::shared_ptr<File>> &);
+    ///
+    void ReadTasksAndFiles(const std::string &tasks_and_files_file,
+                           std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name);
 
+    ///
     void ReadCluster(const std::string &);
 
-//    void ReadConflictGraph(const std::string &, std::unordered_map<std::string, File *> &);
-    void ReadConflictGraph(const std::string &, std::unordered_map<std::string, std::shared_ptr<File>> &);
+    ///
+    void ReadConflictGraph(const std::string &conflict_graph,
+                           std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name);
 
+    ///
     void ComputeHeight(size_t, int);
+
 
     size_t static_file_size_{};
 
+
     size_t dynamic_file_size_{};
 
+    ///
     double makespan_max_{};
 
+    ///
     double budget_max_{};
 
+    ///
     size_t id_source_{};
 
+    ///
     size_t id_target_{};
-    
+
+    ///
     std::vector<Requirement> requirements_;
 
+    ///
     std::vector<double> storage_vet_;  // storage of vm
 
+    ///
     std::vector<std::shared_ptr<File>> files_;
 
+    ///
     std::vector<std::shared_ptr<Activation>> activations_;
 
+    ///
     std::vector<std::shared_ptr<Storage>> storages_;
 
+    ///
     std::vector<std::shared_ptr<VirtualMachine>> virtual_machines_;
 
+    ///
     std::vector<std::vector<size_t>> successors_;
 
+    ///
     std::vector<std::vector<size_t>> predecessors_;
 
     /// Number of the buckets
     size_t bucket_size_ = 0ul;
 
+    ///
     std::vector<int> height_;
 
+    ///
     ConflictGraph conflict_graph_;
 
     /// The weight of the time
@@ -209,8 +227,10 @@ protected:
     ///
     double alpha_restrict_candidate_list_{};
 
+    ///
     double maximum_security_and_privacy_exposure_{};
 
+    ///
     clock_t t_start = clock();
 };
 

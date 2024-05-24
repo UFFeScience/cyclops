@@ -55,21 +55,21 @@ public:
     [[nodiscard]] double get_time() const { return execution_time_; }
 
     /// Getter for input_files_
-    std::vector<std::shared_ptr<File>> get_input_files() const { return input_files_; }
+    [[nodiscard]] std::vector<std::shared_ptr<File>> get_input_files() const { return input_files_; }
 
     /// Getter for output_files_
-    std::vector<std::shared_ptr<File>> get_output_files() const { return output_files_; }
+    [[nodiscard]] std::vector<std::shared_ptr<File>> get_output_files() const { return output_files_; }
 
     /// Getter for requirements_
     [[nodiscard]] std::vector<int> get_requirements() const { return requirements_; }
 
     /// Adds a input file
-    void AddInputFile(std::shared_ptr<File> file) {
+    void AddInputFile(const std::shared_ptr<File> &file) {
         input_files_.push_back(file);
     }
 
     /// Adds a output file
-    size_t AddOutputFile(std::shared_ptr<File> file) {
+    size_t AddOutputFile(const std::shared_ptr<File> &file) {
         size_t index = output_files_.size();
         output_files_.push_back(file);
         return index;

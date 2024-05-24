@@ -20,13 +20,12 @@
 #include "src/solution/cplex.h"
 #include "heft.h"
 
-void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
-                                  std::unordered_map<std::string,
-                                  std::shared_ptr<File>> &file_map_per_name) {
-    DLOG(INFO) << "Reading Activations and Files from input file [" + tasks_and_files + "]" ;
+void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
+                                  std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
+    DLOG(INFO) << "Reading Activations and Files from input file [" + tasks_and_files_file + "]" ;
 
-    if (!std::filesystem::exists(tasks_and_files)) {
-        LOG(FATAL) << "Activations and Tasks input file could not be found in \"" << tasks_and_files << "\"!";
+    if (!std::filesystem::exists(tasks_and_files_file)) {
+        LOG(FATAL) << "Activations and Tasks input file could not be found in \"" << tasks_and_files_file << "\"!";
     }
 
     size_t task_size;
@@ -36,7 +35,7 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files,
 
     // Reading file
     std::string line;
-    std::ifstream in_file(tasks_and_files);
+    std::ifstream in_file(tasks_and_files_file);
 
     // Get number of tasks and number of files
     getline(in_file, line);
@@ -380,8 +379,7 @@ void Algorithm::ReadCluster(const std::string &cluster) {
 }
 
 void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
-                                  std::unordered_map<std::string,
-                                  std::shared_ptr<File>> &file_map_per_name) {
+                                  std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
     DLOG(INFO) << "Reading Conflict Graph from input file [" + conflict_graph + "]" ;
     std::string line;
     std::vector<std::string> tokens;
