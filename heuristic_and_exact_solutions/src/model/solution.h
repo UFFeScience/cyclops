@@ -44,37 +44,11 @@ class VirtualMachine;
  */
 class Solution {
 public:
-    // Store the best solutions
-    int *** x = nullptr;  // Run the activation
-    int ***** r = nullptr;  // Read files for the activation
-    int ***** w = nullptr;  // Write files for the activation
-    int *** y = nullptr;  // Files associated with storages
-    int ** v = nullptr;  // Virtual machine allocation
-
     /// Constructor declaration
     explicit Solution(std::shared_ptr<Algorithm> algorithm);
 
     /// Copy constructor
     Solution(const Solution &other);
-
-    /// Destructor
-//    ~Solution();
-
-    void MemoryAllocation();
-
-    void FreeingMemoryAllocated();
-
-    void PersistFile(size_t file_id, size_t storage_id, size_t initial_time, size_t final_time) const;
-
-    void ReadFileForActivation(size_t activation_id, size_t file_id, size_t vm_id, size_t storage_id,
-                               size_t initial_time, size_t final_time) const;
-
-    void RunActivation(size_t activation_id, size_t vm_id, size_t initial_time, size_t final_time) const;
-
-    void WriteFileForActivation(size_t activation_id, size_t file_id, size_t vm_id, size_t storage_id,
-                                size_t initial_time, size_t final_time) const;
-
-    void AllocateVm(size_t vm_id, size_t initial_time, size_t final_time) const;
 
     double ComputeObjectiveFunction();
 
@@ -101,9 +75,6 @@ public:
     /// Schedule the \c activation to be executed at \c virtual_machine
     double ScheduleActivation(const std::shared_ptr<Activation> &activation, const std::shared_ptr<VirtualMachine> &vm);
 
-    // / Verify that que sequence of the task; terminate if the sequence is broken
-//  inline bool CheckTaskSequence(size_t);
-
     /// Schedule the \c activation to be executed at \c virtual_machine
     void AllocateTask(const std::shared_ptr<Activation> &, const std::shared_ptr<VirtualMachine> &);
 
@@ -119,10 +90,13 @@ public:
     ///
     int ComputeTasksHeights(size_t node);
 
+    ///
     bool localSearchN1();
 
+    ///
     bool localSearchN2();
 
+    ///
     bool localSearchN3();
 
     /// Copy operator
@@ -143,8 +117,7 @@ protected:
                                      size_t);
 
     /// Compute the starting time of the \c task
-//  double ComputeActivationStartTime(size_t activation_id, size_t vm_id);
-    size_t ComputeActivationStartTime(size_t task, size_t vm);
+    size_t ComputeActivationStartTime(size_t activation_id, size_t vm_id);
 
     /// Compute the file transfer time
     [[nodiscard]] size_t ComputeFileTransferTime(const std::shared_ptr<File> &file,
@@ -176,7 +149,6 @@ protected:
                                                    const std::shared_ptr<File>& file);
 
     /// A pointer to the Algorithm object that contain the all necessary data
-//    Algorithm *algorithm_{};
     std::shared_ptr<Algorithm> algorithm_;
 
     /// Allocation of task in theirs VM
@@ -211,9 +183,6 @@ protected:
 
     /// Objective value based on \c makespan_, \c cost_ and \c security_exposure_
     double objective_value_ = std::numeric_limits<double>::max();
-
-    // For printing the solution timeline
-    size_t n_, d_, m_, mb_, t_;
 };
 
 

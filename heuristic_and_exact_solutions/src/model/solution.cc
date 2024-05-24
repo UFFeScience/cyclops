@@ -34,12 +34,7 @@ Solution::Solution(std::shared_ptr<Algorithm> algorithm)
           allocation_vm_queue_(algorithm->GetVirtualMachineSize(), 0ul),
           makespan_(0.0),
           cost_(0.0),
-          security_exposure_(0.0),
-          n_(algorithm_->GetActivationSize() - 2),
-          d_(algorithm_->GetFilesSize()),
-          m_(algorithm_->GetVirtualMachineSize()),
-          mb_(algorithm_->GetStorageSize()),
-          t_(static_cast<size_t>(algorithm_->get_makespan_max())) {
+          security_exposure_(0.0) {
     // Initialize the allocation with the static files place information (VM or Bucket)
     for (size_t i = 0ul; i < algorithm_->GetFilesSize(); ++i) {
         auto file = algorithm_->GetFilePerId(i);
@@ -51,13 +46,6 @@ Solution::Solution(std::shared_ptr<Algorithm> algorithm)
     // Setting Activations Heights
     ComputeTasksHeights(algorithm->get_id_source());
 }
-
-/**
- *
- */
-//Solution::~Solution() {
-//    algorithm_ = nullptr;
-//}
 
 /**
  *
@@ -76,12 +64,7 @@ Solution::Solution(const Solution &other)
           makespan_(other.makespan_),
           cost_(other.cost_),
           security_exposure_(other.security_exposure_),
-          objective_value_(other.objective_value_),
-          n_(other.n_),
-          d_(other.d_),
-          m_(other.m_),
-          mb_(other.mb_),
-          t_(other.t_) {
+          objective_value_(other.objective_value_) {
     DLOG(INFO) << "Initiating copy constructor of solution ...";
     DLOG(INFO) << "... copy constructor of solution finished";
 }
@@ -313,18 +296,12 @@ double Solution::ComputeObjectiveFunction() {
         }
     }
 
-//    of_security_exposure = task_exposure + privacy_exposure;
     security_exposure_ = task_exposure + privacy_exposure;
 
-//    of = algorithm_->get_alpha_time() * (static_cast<double>(of_makespan) / algorithm_->get_makespan_max())
-//         + algorithm_->get_alpha_budget() * (of_cost / algorithm_->get_budget_max())
-//         + algorithm_->get_alpha_security() * (of_security_exposure
-//                                               / algorithm_->get_maximum_security_and_privacy_exposure());
-
     objective_value_ = algorithm_->get_alpha_time() * (static_cast<double>(makespan_) / algorithm_->get_makespan_max())
-           + algorithm_->get_alpha_budget() * (cost_ / algorithm_->get_budget_max())
-           + algorithm_->get_alpha_security() * (security_exposure_
-                                                 / algorithm_->get_maximum_security_and_privacy_exposure());
+                       + algorithm_->get_alpha_budget() * (cost_ / algorithm_->get_budget_max())
+                       + algorithm_->get_alpha_security() * (security_exposure_
+                                                             / algorithm_->get_maximum_security_and_privacy_exposure());
 
     return objective_value_;
 }
@@ -1042,57 +1019,6 @@ size_t Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &ac
     return read_time;
 }
 
-//size_t Solution::ComputeTaskReadTimeOther(const std::shared_ptr<Activation>& task,
-//                                          const std::shared_ptr<VirtualMachine>& vm) {
-//  double read_time = 0.0;
-//
-////  DLOG(INFO) << "Compute Read Time of the Activation[" << task->get_id() << "] at VM[" << vm->get_id()
-////             << "]";
-//
-//  for (const auto& file: task->get_input_files()) {
-//    size_t storage_id;
-//
-////    if (std::shared_ptr<StaticFile> static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
-////      storage_id = static_file->GetFirstVm();
-////    } else {
-////      storage_id = file_allocations_[file->get_id()];
-////    }
-//    storage_id = file->GetStorageId();
-//
-//    std::shared_ptr<Storage> file_vm = algorithm_->GetStoragePerId(storage_id);
-//
-//    // Ceil of File Transfer Time + File Size * lambda
-//    double one_file_read_time = ComputeFileTransferTime(file, file_vm, vm);
-//
-//    if (one_file_read_time == std::numeric_limits<double>::max()) {
-//      DLOG(INFO) << "read_time: " << one_file_read_time;
-//      return one_file_read_time;
-//    } else {
-//      // read_time += std::ceil(one_file_read_time);
-//      read_time += one_file_read_time;
-//      if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm->get_id()) {
-//        double diff = (aux_start_time + read_time) - execution_vm_queue_[storage_id];
-//
-//        if (diff > 0.0) {
-//          std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(storage_id);
-//
-////          cost_ += diff * virtual_machine->get_cost();
-//          allocation_vm_queue_[storage_id] = aux_start_time + read_time;
-////          execution_vm_queue_[storage_id] = aux_start_time + read_time;
-//          // std::c out << "diff: " << diff << " virtual_machine->get_cost(): " << virtual_machine->get_cost()
-//          //           << " storage_id: " << storage_id << " vm: " << vm->get_id() << std::endl;
-//        }
-//      }
-//      // allocation_vm_queue_[storage_id] = std::max(aux_start_time
-//      //     + one_file_read_time, allocation_vm_queue_[storage_id]);
-//    }
-//  }  // for (std::shared_ptr<File> file : task.get_input_files()) {
-//
-////  DLOG(INFO) << "read_time: " << read_time;
-//
-//  return read_time;
-//}  // double Solution::ComputeActivationReadTime(Activation& task, VirtualMachine& vm) {
-
 /**
  * This method is important for calculate de makespan and to Allocate the output files into
  * Storages(VMs and Buckets)
@@ -1125,12 +1051,6 @@ size_t Solution::CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<A
         LOG(FATAL) << "Something is wrong!";
     }
 
-//    DLOG(INFO) << "start_time: " << StartTime;
-//    DLOG(INFO) << "read_time: " << read_time;
-//    DLOG(INFO) << "run_time: " << run_time;
-//    DLOG(INFO) << "write_time: " << write_time;
-//    DLOG(INFO) << "finish_time: " << finish_time;
-
     DLOG(INFO) << "Start time: " << start_time << ", read_time: " << read_time << ", run_time: " << run_time
                << "write_time: " << write_time << "finish_time: " << finish_time;
 
@@ -1147,10 +1067,7 @@ size_t Solution::CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<A
 double Solution::ComputeFileSecurityExposureContribution(const std::shared_ptr<Storage> &storage,
                                                          const std::shared_ptr<File>& file) {
     double security_exposure;
-    // double task_exposure = 0.0;
     double privacy_exposure = 0.0;
-
-//  DLOG(INFO) << "Calculate Security Exposure";
 
     // Accumulate the privacy_exposure
     for (size_t i = 0ul; i < algorithm_->GetFilesSize(); ++i) {
@@ -1166,11 +1083,8 @@ double Solution::ComputeFileSecurityExposureContribution(const std::shared_ptr<S
                 DLOG(INFO) << "File[" << i << "] has conflict with File[" << file->get_id() << "]";
                 privacy_exposure += conflict_value;  // Adds the penalties
             }
-        }  // else; allocated file resides in different storage or was not allocated yet
-    }  // for (size_t i...) {
-
-    // DLOG(INFO) << "task_exposure: " << task_exposure;
-//  DLOG(INFO) << "privacy_exposure: " << privacy_exposure;
+        }
+    }
 
     security_exposure = privacy_exposure;
 
