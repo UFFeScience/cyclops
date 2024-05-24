@@ -39,6 +39,9 @@ class Solution;
 
 class Algorithm : public std::enable_shared_from_this<Algorithm> {
 public:
+    ///
+    explicit Algorithm();
+
     /// Read input files.
     void ReadInputFiles(const std::string &tasks_and_files_file,
                         const std::string &cluster_file,
@@ -51,7 +54,7 @@ public:
     size_t get_id_target() const { return id_target_; }
 
     /// Getter for \c conflict_graph_
-    ConflictGraph &get_conflict_graph() { return conflict_graph_; }
+    std::shared_ptr<ConflictGraph> get_conflict_graph() { return conflict_graph_; }
 
     /// Getter for \c storage_vet_
     std::vector<double> &get_storage_vet() { return storage_vet_; }
@@ -88,10 +91,6 @@ public:
 
     /// Return a pointer to the \c VirtualMachine identified by \c id
     std::shared_ptr<VirtualMachine> GetVirtualMachinePerId(size_t id) { return virtual_machines_[id]; }
-
-    // TODO: Erase or redo the lines below.
-    /// Return a pointer to the \c Requirement identified by \c id
-//  Requirement GetRequirementPerId(size_t id) { return requirements_[id]; }
 
     /// Return a reference to the successors of the \c Activation identified by \c activation_id
     std::vector<size_t> &GetSuccessors(size_t activation_id) { return successors_[activation_id]; }
@@ -164,10 +163,10 @@ protected:
     ///
     void ComputeHeight(size_t, int);
 
-
+    ///
     size_t static_file_size_{};
 
-
+    ///
     size_t dynamic_file_size_{};
 
     ///
@@ -213,7 +212,7 @@ protected:
     std::vector<int> height_;
 
     ///
-    ConflictGraph conflict_graph_;
+    std::shared_ptr<ConflictGraph> conflict_graph_;
 
     /// The weight of the time
     double alpha_time_{};

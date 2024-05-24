@@ -1,6 +1,6 @@
 /**
  * \file src/solution/algorithm.cc
- * \brief Contains the \c Algorithm class methods.
+ * \brief Contains the \c Algorithm class methods
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
@@ -8,7 +8,7 @@
  * \date 2024
  *
  * This source file contains the methods from the \c Algorithm class that run the mode the
- * approximate solution.
+ * approximate solution
  */
 
 #include "src/solution/algorithm.h"
@@ -19,6 +19,10 @@
 #include "src/solution/grasp.h"
 #include "src/solution/cplex.h"
 #include "heft.h"
+
+Algorithm::Algorithm() {
+    conflict_graph_ = std::make_shared<ConflictGraph>();
+}
 
 void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
                                   std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
@@ -390,7 +394,7 @@ void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
         LOG(FATAL) << "Conflict graph [" + conflict_graph + "] doesn't exist";
     }
 
-    conflict_graph_.Redefine(GetFilesSize());
+    conflict_graph_->Redefine(GetFilesSize());
 
     // Reading conflict graph information
     while (getline(in_conflict_graph, line)) {
@@ -403,7 +407,7 @@ void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
         auto conflict_value = stod(strs[2]);
         auto first_file_id = file_map_per_name.find(first_file)->second->get_id();
         auto second_file_id = file_map_per_name.find(second_file)->second->get_id();
-        conflict_graph_.AddConflict(first_file_id, second_file_id, static_cast<int>(conflict_value));
+        conflict_graph_->AddConflict(first_file_id, second_file_id, static_cast<int>(conflict_value));
     }
 
     DLOG(INFO) << "Finished reading Conflict Graph" ;
@@ -491,7 +495,7 @@ void Algorithm::CalculateMaximumSecurityAndPrivacyExposure() {
     DLOG(INFO) << "task_exposure: " << maximum_task_exposure;
 
     auto maximum_privacy_exposure =
-            static_cast<double>(conflict_graph_.get_maximum_of_soft_constraints());
+            static_cast<double>(conflict_graph_->get_maximum_of_soft_constraints());
 
     maximum_security_and_privacy_exposure_ = maximum_task_exposure + maximum_privacy_exposure;
 

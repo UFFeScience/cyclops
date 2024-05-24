@@ -286,7 +286,7 @@ double Solution::ComputeObjectiveFunction() {
             if (storage1_id != std::numeric_limits<size_t>::max()
                 && storage2_id != std::numeric_limits<size_t>::max()
                 && storage1_id == storage2_id) {
-                const int conflict_value = algorithm_->get_conflict_graph().ReturnConflict(i, j);
+                const int conflict_value = algorithm_->get_conflict_graph()->ReturnConflict(i, j);
 
                 if (conflict_value > 0) {
                     DLOG(INFO) << "File[" << i << "] has conflict with File[" << j << "]";
@@ -425,7 +425,7 @@ size_t Solution::ComputeFileTransferTime(const std::shared_ptr<File>& file,
 
             // If file 'i' is to transfer to the same place that file->get_id()
             if (storage_id == storage2->get_id()) {
-                int conflict_value = algorithm_->get_conflict_graph().ReturnConflict(i, file->get_id());
+                int conflict_value = algorithm_->get_conflict_graph()->ReturnConflict(i, file->get_id());
 
                 if (conflict_value < 0) {
                     // Hard constraint; just return with std::numeric_limits<double>::max();
@@ -1077,7 +1077,7 @@ double Solution::ComputeFileSecurityExposureContribution(const std::shared_ptr<S
             && storage->get_id() != std::numeric_limits<size_t>::max()
             && storage1_id == storage->get_id()) {
             // int conflict_value = algorithm_->get_conflict_graph().ReturnConflict(i, file->get_id());
-            int conflict_value = algorithm_->get_conflict_graph().ReturnConflict(file->get_id(), i);
+            int conflict_value = algorithm_->get_conflict_graph()->ReturnConflict(file->get_id(), i);
 
             if (conflict_value > 0) {
                 DLOG(INFO) << "File[" << i << "] has conflict with File[" << file->get_id() << "]";
