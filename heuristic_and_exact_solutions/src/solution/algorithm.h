@@ -62,7 +62,7 @@ public:
     std::vector<int> &get_height() { return height_; }
 
     /// Getter for \c bucket_size_
-    size_t get_bucket_size() { return bucket_size_; }
+    size_t get_bucket_size() const { return bucket_size_; }
 
     /// Return the size of the \c activations_
     size_t GetActivationSize() const { return activations_.size(); }
@@ -162,17 +162,17 @@ protected:
 
     void ComputeHeight(size_t, int);
 
-    size_t static_file_size_;
+    size_t static_file_size_{};
 
-    size_t dynamic_file_size_;
+    size_t dynamic_file_size_{};
 
-    double makespan_max_;
+    double makespan_max_{};
 
-    double budget_max_;
+    double budget_max_{};
 
-    size_t id_source_;
+    size_t id_source_{};
 
-    size_t id_target_;
+    size_t id_target_{};
     
     std::vector<Requirement> requirements_;
 
@@ -198,18 +198,18 @@ protected:
     ConflictGraph conflict_graph_;
 
     /// The weight of the time
-    double alpha_time_;
+    double alpha_time_{};
 
     /// The weight of the budget
-    double alpha_budget_;
+    double alpha_budget_{};
 
     /// The weight of the security
-    double alpha_security_;
+    double alpha_security_{};
 
     ///
-    double alpha_restrict_candidate_list_;
+    double alpha_restrict_candidate_list_{};
 
-    double maximum_security_and_privacy_exposure_;
+    double maximum_security_and_privacy_exposure_{};
 
     clock_t t_start = clock();
 };
