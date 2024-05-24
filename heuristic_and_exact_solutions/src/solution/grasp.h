@@ -15,9 +15,6 @@
 #define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
 
 
-#include <src/statistic/write_to_local_search_file.h>
-#include <src/statistic/write_to_ttt_file.h>
-#include <src/statistic/write_to_iteration.h>
 #include "src/solution/algorithm.h"
 #include "grch.h"
 
@@ -39,16 +36,6 @@ public:
     void Run() override;
 private:
     std::string name_ = "grasp";
-
-    WriteToTttFile tttFile{"grasp"};
-
-    WriteToIteration iterationFile{"grasp"};
-
-    WriteToLocalSearchFile lsFile1{"grasp", 1};
-
-    WriteToLocalSearchFile lsFile2{"grasp", 2};
-
-    WriteToLocalSearchFile lsFile3{"grasp", 3};
 
     double lsn_time_1 = 0.0;  // Total Elapsed Time of Local Search Neighborhood 1
     size_t lsn_noi_1 = 0ul;  // Total Number of Improvements made by Local Search Neighborhood 1
