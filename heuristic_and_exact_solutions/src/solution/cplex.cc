@@ -1,15 +1,15 @@
 /**
  * \file src/solution/cplex.cc
- * \brief Contains the \c Algorithm class methods.
+ * \brief Contains the \c Algorithm class methods
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \authors Yuri Frota \<abitbol@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
  * This source file contains the methods from the \c Cplex class that run the mode of the
- * exact solution.
+ * exact solution
  */
 
 #include "src/solution/cplex.h"
