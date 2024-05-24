@@ -132,11 +132,6 @@ void Grasp::Run() {
         if (best_solution.get_objective_value() > solution.get_objective_value()) {
             best_solution = solution;
             time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;    // Processing time
-            tttFile.writeLine(best_solution.get_objective_value(),
-                              static_cast<size_t>(best_solution.get_makespan()),
-                              best_solution.get_cost(),
-                              best_solution.get_security_exposure(),
-                              time_s);
         }
 
         double new_of = best_solution.get_objective_value();
