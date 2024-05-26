@@ -50,7 +50,10 @@ create_cloud_files() {
     # <id-bucket> <capacidade> <cost> <numero de intervalos> [<limite superior> <valor contratado por intervalo>] <requirement-1> <requirement-2 (pode assumir 0 1 2{so bucket})>
     middle_bucket_desc="Standard 51200 25.0 0.023 1 1"
 
-    BUCKETS=(2 4 8 16 32 64)
+#    BUCKETS=(2 4 8 16 32 64)
+    # Bucket variable from 1 to 64
+    BUCKETS=($(seq 1 64))
+#    BUCKETS=(16)
 
     # certify folder exists
     FOLDER=./temp
@@ -68,65 +71,65 @@ create_cloud_files() {
 
     # 12 scenarios
 
-    # 1st - homogeneous cloud (one VM met R1 requirement)
-    for elem in "${BUCKETS[@]}"; do
-        # Header and cloud
-        file_name="${FOLDER}/1_1_4_${elem}_1_4_homogeneous_cloud.vcl"
-        echo "${file_name}"
-        cat <<EOF >"${file_name}"
-1 2
-
-1 ${middle_cloud_desc} ${elem}
-0 ${middle_vm1_desc} 1 1
-1 ${middle_vm1_desc} 0 1
-2 ${middle_vm1_desc} 0 1
-3 ${middle_vm1_desc} 0 1
-EOF
-        # Buckets
-        for ((i = 0; i < elem; i++)); do
-            echo "${i} ${middle_bucket_desc}" >>"${file_name}"
-        done
-    done
-
-    # 2nd - homogeneous cloud (two met R1 requirement)
-    for elem in "${BUCKETS[@]}"; do
-        # Header and cloud
-        file_name="${FOLDER}/2_1_4_${elem}_2_4_homogeneous_cloud.vcl"
-        echo "${file_name}"
-        cat <<EOF >"${file_name}"
-1 2
-
-1 ${middle_cloud_desc} ${elem}
-0 ${middle_vm1_desc} 1 1
-1 ${middle_vm1_desc} 1 1
-2 ${middle_vm1_desc} 0 1
-3 ${middle_vm1_desc} 0 1
-EOF
-        # Buckets
-        for ((i = 0; i < elem; i++)); do
-            echo "${i} ${middle_bucket_desc}" >>"${file_name}"
-        done
-    done
-
-    # 3rd - heterogeneous cloud (one met R1 requirement)
-    for elem in "${BUCKETS[@]}"; do
-        # Header and cloud
-        file_name="${FOLDER}/3_1_4_${elem}_1_4_heterogeneous_cloud.vcl"
-        echo "${file_name}"
-        cat <<EOF >"${file_name}"
-1 2
-
-1 ${middle_cloud_desc} ${elem}
-0 ${middle_vm1_desc} 1 1
-1 ${middle_vm2_desc} 0 1
-2 ${middle_vm3_desc} 0 1
-3 ${middle_vm4_desc} 0 1
-EOF
-        # Buckets
-        for ((i = 0; i < elem; i++)); do
-            echo "${i} ${middle_bucket_desc}" >>"${file_name}"
-        done
-    done
+#    # 1st - homogeneous cloud (one VM met R1 requirement)
+#    for elem in "${BUCKETS[@]}"; do
+#        # Header and cloud
+#        file_name="${FOLDER}/1_1_4_${elem}_1_4_homogeneous_cloud.vcl"
+#        echo "${file_name}"
+#        cat <<EOF >"${file_name}"
+#1 2
+#
+#1 ${middle_cloud_desc} ${elem}
+#0 ${middle_vm1_desc} 1 1
+#1 ${middle_vm1_desc} 0 1
+#2 ${middle_vm1_desc} 0 1
+#3 ${middle_vm1_desc} 0 1
+#EOF
+#        # Buckets
+#        for ((i = 0; i < elem; i++)); do
+#            echo "${i} ${middle_bucket_desc}" >>"${file_name}"
+#        done
+#    done
+#
+#    # 2nd - homogeneous cloud (two met R1 requirement)
+#    for elem in "${BUCKETS[@]}"; do
+#        # Header and cloud
+#        file_name="${FOLDER}/2_1_4_${elem}_2_4_homogeneous_cloud.vcl"
+#        echo "${file_name}"
+#        cat <<EOF >"${file_name}"
+#1 2
+#
+#1 ${middle_cloud_desc} ${elem}
+#0 ${middle_vm1_desc} 1 1
+#1 ${middle_vm1_desc} 1 1
+#2 ${middle_vm1_desc} 0 1
+#3 ${middle_vm1_desc} 0 1
+#EOF
+#        # Buckets
+#        for ((i = 0; i < elem; i++)); do
+#            echo "${i} ${middle_bucket_desc}" >>"${file_name}"
+#        done
+#    done
+#
+#    # 3rd - heterogeneous cloud (one met R1 requirement)
+#    for elem in "${BUCKETS[@]}"; do
+#        # Header and cloud
+#        file_name="${FOLDER}/3_1_4_${elem}_1_4_heterogeneous_cloud.vcl"
+#        echo "${file_name}"
+#        cat <<EOF >"${file_name}"
+#1 2
+#
+#1 ${middle_cloud_desc} ${elem}
+#0 ${middle_vm1_desc} 1 1
+#1 ${middle_vm2_desc} 0 1
+#2 ${middle_vm3_desc} 0 1
+#3 ${middle_vm4_desc} 0 1
+#EOF
+#        # Buckets
+#        for ((i = 0; i < elem; i++)); do
+#            echo "${i} ${middle_bucket_desc}" >>"${file_name}"
+#        done
+#    done
 
     # 4th - homogeneous cloud (two met R1 requirement)
     for elem in "${BUCKETS[@]}"; do
@@ -487,8 +490,8 @@ mkdir -p "${temp_dir}"
 #      fi
 
 pipenv run python script/run-batch.py \
-    --instances-file="_instances.txt" \
-    --algorithms-file="_algorithms.txt" \
+    --instances-file="_instances_desenv.txt" \
+    --algorithms-file="_algorithms_desenv.txt" \
     --number-of-iterations=100 \
     --allocation_experiments=4 \
     --repeat 10 \
