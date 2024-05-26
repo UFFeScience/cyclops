@@ -161,7 +161,7 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
         std::vector<std::string> strs;
         boost::split(strs, line, boost::is_any_of(" "));
 
-        // get task info
+        // Get task info
         auto tag = strs[0];
         std::string task_name = strs[1];
         auto base_time = stod(strs[2]);
@@ -182,7 +182,7 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
             my_task->AddRequirement(static_cast<int>(requirement_value));
         }
 
-        // reading input files
+        // Reading input files
         for (size_t j = 0; j < in_size; j++) {
             getline(in_file, line);
             DLOG(INFO) << "Input file: " << line;
@@ -192,7 +192,7 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
             my_task->AddInputFile(my_file);
         }
 
-        // reading output files
+        // Reading output files
         for (size_t j = 0; j < out_size; j++) {
             getline(in_file, line);
             DLOG(INFO) << "Output file: " << line;
@@ -274,7 +274,6 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
         }
     }
 
-    // ReverseMap
     predecessors_.resize(task_size, std::vector<size_t>());
 
     for (auto i = 0ul; i < successors_.size(); ++i) {
@@ -418,29 +417,33 @@ void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
 /**
  * The the three input files.
  *
- * \param[in] tasks_and_files  Name of the Activation and Files input file
- * \param[in] cluster          Name of the Cluster input file
- * \param[in] conflict_graph   Name of the Conflict Graph input file
+ * \param[in] tasks_and_files_file  Name of the Activation and Files input file
+ * \param[in] cluster_file          Name of the Cluster input file
+ * \param[in] conflict_graph_file   Name of the Conflict Graph input file
  */
-void Algorithm::ReadInputFiles(const std::string &tasks_and_files,
-                               const std::string &cluster,
-                               const std::string &conflict_graph) {
+void Algorithm::ReadInputFiles(const std::string &tasks_and_files_file,
+                               const std::string &cluster_file,
+                               const std::string &conflict_graph_file) {
     std::unordered_map<std::string, std::shared_ptr<File>> file_map_per_name;
 
-    ReadTasksAndFiles(tasks_and_files, file_map_per_name);
-    ReadCluster(cluster);
-    ReadConflictGraph(conflict_graph, file_map_per_name);
+    ReadTasksAndFiles(tasks_and_files_file, file_map_per_name);
+    ReadCluster(cluster_file);
+    ReadConflictGraph(conflict_graph_file, file_map_per_name);
     storage_vet_.resize(storages_.size(), 0.0);
 
     for (const std::shared_ptr<Storage> &storage: storages_) {
         // Storage* storage = storage_pair.second;
         storage_vet_[storage->get_id()] = storage->get_storage();
     }
+
     height_.resize(GetActivationSize(), -1);
     ComputeHeight(id_source_, 0);
+
     for (size_t i = 0; i < height_.size(); ++i) {
         DLOG(INFO) << "Height[" << i << "]: " << height_[i];
     }
+
+    ComputeFileTransferMatrix();
 }
 
 /**
@@ -471,6 +474,8 @@ std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string &algorit
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
 void Algorithm::ComputeHeight(size_t node, int n) {
+    DLOG(INFO) << "Height " << n << " node " << node << " name " << activations_[node]->get_tag() << std::endl;
+
     if (height_[node] < n) {
         height_[node] = n;
 
@@ -480,7 +485,12 @@ void Algorithm::ComputeHeight(size_t node, int n) {
         }
     }
 }
-#pragma clang diagnostic pop
+
+void Algorithm::ComputeFileTransferMatrix() {
+    for (const auto& file : files_) {
+        file->PopulateFileTransferMatrix(storages_);
+    }
+}
 
 void Algorithm::CalculateMaximumSecurityAndPrivacyExposure() {
     double maximum_task_exposure = 0.0;

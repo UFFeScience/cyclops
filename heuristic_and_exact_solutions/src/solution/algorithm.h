@@ -163,6 +163,9 @@ protected:
     ///
     void ComputeHeight(size_t, int);
 
+	///
+    void ComputeFileTransferMatrix();
+
     ///
     size_t static_file_size_{};
 
