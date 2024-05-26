@@ -420,7 +420,7 @@ void PrintBest(struct BEST *data) {
     for (auto i = 0ul; i < algorithm->GetFilesSize() - 1ul; ++i) {
         for (auto j = i + 1ul; j < algorithm->GetFilesSize(); ++j) {
             auto conflict = algorithm->get_conflict_graph()->ReturnConflict(static_cast<size_t>(i),
-                                                                           static_cast<size_t>(j));
+                                                                            static_cast<size_t>(j));
 
             if (conflict > 0) {  // soft constraint
                 if (data->ws[i][j] > data->PRECISION) {
@@ -582,7 +582,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx) {
         for (auto d1 = 0ul; d1 < algorithm->GetFilesSize() - 1ul; ++d1) {
             for (auto d2 = d1 + 1ul; d2 < algorithm->GetFilesSize(); ++d2) {
                 int conflict = algorithm->get_conflict_graph()->ReturnConflict(static_cast<size_t>(d1),
-                                                                              static_cast<size_t>(d2));
+                                                                               static_cast<size_t>(d2));
 
                 if (conflict > 0) {  // soft constraint
                     data->ws[d1][d2] = static_cast<int>((float) getValue(
