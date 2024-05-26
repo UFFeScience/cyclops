@@ -439,9 +439,11 @@ void Algorithm::ReadInputFiles(const std::string &tasks_and_files_file,
     height_.resize(GetActivationSize(), -1);
     ComputeHeight(id_source_, 0);
 
+#ifndef NDEBUG
     for (size_t i = 0; i < height_.size(); ++i) {
         DLOG(INFO) << "Height[" << i << "]: " << height_[i];
     }
+#endif
 
     ComputeFileTransferMatrix();
 }

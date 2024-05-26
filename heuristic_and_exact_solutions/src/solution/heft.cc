@@ -576,7 +576,7 @@ void Heft::Run() {
     best_solution.AddOrdering(get_id_target());
 
     DLOG(INFO) << "Compute Objective Function";
-    best_solution.ComputeObjectiveFunction();
+    best_solution.OptimizedComputeObjectiveFunction();
 
     double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 
