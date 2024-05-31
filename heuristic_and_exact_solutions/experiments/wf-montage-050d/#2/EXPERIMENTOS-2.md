@@ -38,6 +38,17 @@ Algumas observações para o restante deste documento:
 | MV4      |             12 |   0,25  |              10 | U$ 0,33 / hora | Desligado        |
 | Bucket   |          51200 |    -    |              25 | U$ 0,23 / GB   | -                |
 
+## Resultados
+
+A tabela a seguir, apresenta os resultados numéricos de desempenho dos experimentos.
+
+| ***Workflow*** | **F.O.** | ***Mks*** | **US$** | **Conf.** | **T(s)** |
+|:---------------|---------:|----------:|--------:|----------:|---------:|
+| Experimento #1 | 0.767993 |      1920 |    0.36 |  0.043243 |    6.532 |
+| Experimento #2 | 0.030905 |     15360 |    0.15 |  0.068469 |    0.331 |
+| Experimento #3 | 0.000013 |      6611 |    0.26 |  0.000000 |    8.871 |
+| Experimento #4 | 0.907013 |      6613 |    0.27 |  0.021622 |    7.008 |
+
 ## Escalonamento #1
 
 Neste escalonamento, estamos considerando a execução numa nuvem com as 4 máquinas virtuais definidas em [Arquitetura](#arquitetura) com 4 *buckets*. Além disso, a ênfase dada ao escalonamento foi sobre a redução do ***makespan***. Repare a tabela abaixo, que informa os parâmetros utilizados para gerar o escalonamento.
