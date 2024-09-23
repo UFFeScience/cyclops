@@ -52,8 +52,8 @@ create_cloud_files() {
 
 #    BUCKETS=(2 4 8 16 32 64)
     # Bucket variable from 1 to 64
-    BUCKETS=($(seq 1 64))
-#    BUCKETS=(16)
+#    BUCKETS=($(seq 1 64))
+    BUCKETS=(32)
 
     # certify folder exists
     FOLDER=./temp
@@ -494,7 +494,7 @@ pipenv run python script/run-batch.py \
     --algorithms-file="_algorithms_desenv.txt" \
     --number-of-iterations=100 \
     --allocation_experiments=4 \
-    --repeat 10 \
+    --repeat 1 \
     --output-path="${out_dir}" \
     --log-dir="${log_dir}" \
     --temp-dir="${temp_dir}"

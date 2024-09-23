@@ -2314,6 +2314,10 @@ void Cplex::Run() {
     solver.setParam(IloCplex::Param::MIP::Interval, 100);  // Log for each N node
     solver.setParam(IloCplex::Param::Parallel, CPX_PARALLEL_AUTO);
 
+    // Configurar o CPLEX para suprimir a saída no console
+//    solver.setOut(cplex.env.getNullStream());
+//    solver.setWarning(cplex.env.getNullStream());
+
     // -------------------- Callbacks ----------------------
 
     // When finding a new solution (incumbent solution)
@@ -2332,7 +2336,9 @@ void Cplex::Run() {
 
     // Information output
     bool optimal;
-    double res, lb, time_s;
+    double res = -1.0, lb = -1.0, time_s;
+    double cost = -1.0;
+    double security = -1.0;
 
     try {
         optimal = solver.getStatus() == IloAlgorithm::Optimal;
@@ -2341,8 +2347,8 @@ void Cplex::Run() {
         lb = solver.getBestObjValue();  // Dual-limit (inferior)
         time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 
-        double cost = 0.0;
-        double security = 0.0;
+        cost = 0.0;
+        security = 0.0;
 
         // ----- Financial cost
         for (int j = 0; j < _m; j++) {
@@ -2381,16 +2387,16 @@ void Cplex::Run() {
             }
         }
 
-        cout << endl;
-        cout << "----- Done ----" << endl;
-        cout << "OPTIMAL?  : " << optimal << endl;
-        cout << "MAKESPAN : " << best.z_max << endl;
-        cout << "COST     : " << cost << endl;
-        cout << "SECURITY : " << security << endl;
-        cout << "TIME     : " << time_s << endl;
-        cout << "LB       : " << lb << endl;
-        cout << "UB (X*)  : " << res << endl;
-        cout << endl;
+//        cout << endl;
+//        cout << "----- Done ----" << endl;
+//        cout << "OPTIMAL?  : " << optimal << endl;
+//        cout << "MAKESPAN : " << best.z_max << endl;
+//        cout << "COST     : " << cost << endl;
+//        cout << "SECURITY : " << security << endl;
+//        cout << "TIME     : " << time_s << endl;
+//        cout << "LB       : " << lb << endl;
+//        cout << "UB (X*)  : " << res << endl;
+//        cout << endl;
 
         LOG(INFO) << endl;
         LOG(INFO) << "----- Done ----" << endl;
@@ -2405,10 +2411,10 @@ void Cplex::Run() {
 
 //        cerr << best.z_max << " " << cost << " " << security << " " << res << endl << time_s << endl;
 
-        std::cout << best.z_max << " " << cost << " " << security << " " << res << time_s << endl;
+//        std::cout << best.z_max << " " << cost << " " << security << " " << res << " " << time_s << endl;
 
         LOG(INFO) << "Results:";
-        LOG(INFO) << best.z_max << " " << cost << " " << security << " " << res << endl << time_s;
+        LOG(INFO) << best.z_max << " " << cost << " " << security << " " << res << " " << endl << time_s;
 
         // ------------------------ Solution -------------------------
         // if (data.D E P U)
@@ -2427,15 +2433,27 @@ void Cplex::Run() {
 
     cplex.env.end();
 
-    PrintBest(&best);
-    print_solution_timeline(&best);
+//    PrintBest(&best);
+//    print_solution_timeline(&best);
 
     time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 
-    LOG(INFO) << "Elapsed time: " << time_s;
+//    LOG(INFO) << "Elapsed time: " << time_s;
 
     LOG(INFO) << "Printing BEST:";
     LOG(INFO) << best;
 
     LOG(INFO) << "... ending CPLEX";
+
+    std::cout << std::endl
+              << std::fixed << std::setprecision(6)
+              << res
+              << " " << best.z_max
+              << " " << cost
+              << " " << security
+              << " " << time_s
+              << " " << 1
+              << " " << 1
+              << " " << time_s
+              << std::endl;
 }

@@ -11,6 +11,7 @@
  * methods
  */
 
+#include <iomanip>
 #include "src/solution/grch.h"
 
 DECLARE_uint64(number_of_iteration);
@@ -130,14 +131,14 @@ void Grch::Run() {
         // The activation_list is sorted by the height(t). While activation_list is not empty do
         DLOG(INFO) << "Doing scheduling";
         while (!activation_list.empty()) {
-            auto task = activation_list.front();  // Get the first task
+            auto activation = activation_list.front();  // Get the first activation
 
             /*
              *  Gets the next available activations of the same height and shuffles them.
              */
             avail_activations.clear();
             while (!activation_list.empty()
-                   && height_[task->get_id()] == height_[activation_list.front()->get_id()]) {
+                   && height_[activation->get_id()] == height_[activation_list.front()->get_id()]) {
                 // build list of ready tasks, that is the tasks which the predecessor was finish
                 DLOG(INFO) << "Putting " << activation_list.front()->get_id() << " in avail_activations";
                 avail_activations.push_back(activation_list.front());
@@ -168,8 +169,10 @@ void Grch::Run() {
             break;
         }
     }
-    
-    std::cout << std::fixed
+
+    LOG(INFO) << best_solution;
+
+    std::cout << std::fixed << std::setprecision(6)
               << best_solution.get_objective_value()
               << " " << best_solution.get_makespan()
               << " " << best_solution.get_cost()

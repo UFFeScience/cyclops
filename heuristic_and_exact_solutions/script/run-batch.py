@@ -98,7 +98,8 @@ def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: s
                 open(cplex_output_file, 'w')
             command_list.append('--cplex_output_file=' + cplex_output_file)
         command = " ".join(command_list)
-        # print('Command:', command)
+        print('Command:\n', command)
+        return
         stdout, stderr = exec_command(command)
         # print('Print output:', stdout.decode())
         # print('Print error:', stderr.decode())
@@ -312,13 +313,14 @@ if __name__ == "__main__":
             oef_file.write(header)
 
     alphas = (
+        # (0.3, 0.3, 0.4, 0.5),
         # (0.90, 0.05, 0.05, 0.3),
         # (0.05, 0.90, 0.05, 0.3),
         # (0.05, 0.05, 0.90, 0.3),
-        (0.999990, 0.000005, 0.000005, 0.5),
+        # (0.999990, 0.000005, 0.000005, 0.5),
         (0.000005, 0.999990, 0.000005, 0.5),
-        (0.000005, 0.000005, 0.999990, 0.5),
-        (0.333333, 0.333333, 0.333333, 0.5),
+        # (0.000005, 0.000005, 0.999990, 0.5),
+        # (0.333333, 0.333333, 0.333333, 0.5),
         # (0.90, 0.05, 0.05, 0.7),
         # (0.05, 0.90, 0.05, 0.7),
         # (0.05, 0.05, 0.90, 0.7)
@@ -345,7 +347,7 @@ if __name__ == "__main__":
     my_valor_compartilhado = manager.Value('i', 0)
     # print('depois')
     total = len(filenames) * len(alphas) * len(algorithms) * len(instances) * args.repeat
-    pool = Pool(processes=8)
+    pool = Pool(processes=1)
     p = re.compile('([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl')
     contador = 0
     for filename in filenames:

@@ -3,16 +3,16 @@
 0 1
 1 1
 
-file0 2000000 1 0
-file1 2000000 1 0
-file2 2000000
-file3 3000000
-file4 4000000
-file5 4000000
-file6 4000000
-file7 2000000
-file8 2000000
-file9 2000000
+file0 20 1 0
+file1 20 1 0
+file2 20
+file3 30
+file4 40
+file5 40
+file6 40
+file7 20
+file8 20
+file9 20
 
 t0 task0 0.27 1 2 1 1
 file0

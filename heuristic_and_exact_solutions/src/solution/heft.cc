@@ -580,7 +580,7 @@ void Heft::Run() {
 
     double time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 
-    std::cout << std::fixed
+    std::cout << std::fixed << std::setprecision(6)
               << best_solution.get_objective_value()
               << " " << best_solution.get_makespan()
               << " " << best_solution.get_cost()

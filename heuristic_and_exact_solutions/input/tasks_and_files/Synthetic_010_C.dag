@@ -3,12 +3,12 @@
 0 1
 1 1
 
-file0 1000000 1 0
-file1 2000000
-file2 3000000
-file3 4000000
-file4 5000000
-file5 6400000
+file0 10 1 0
+file1 20
+file2 30
+file3 40
+file4 50
+file5 64
 
 t0 task0 40 1 2 1 1
 file0

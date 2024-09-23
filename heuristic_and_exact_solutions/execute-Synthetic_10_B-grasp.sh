@@ -2,6 +2,7 @@
 
 #ALGORITHM=grch
 ALGORITHM=grasp
+#ALGORITHM=heft
 
 #INSTANCE=Synthetic_015_C
 #INSTANCE=Sipht_100
@@ -9,7 +10,7 @@ INSTANCE=wf-montage-050d
 
 PROGRAM=/home/wsl/git/Wf-Security/heuristic_and_exact_solutions/bin/wf_security_greedy.x
 TASK_AND_FILES=/home/wsl/git/Wf-Security/heuristic_and_exact_solutions/input/tasks_and_files/$INSTANCE.dag
-CLUSTER=/home/wsl/git/Wf-Security/heuristic_and_exact_solutions/temp/clouds/4_1_4_64_2_4_heterogeneous_cloud.vcl
+CLUSTER=/home/wsl/git/Wf-Security/heuristic_and_exact_solutions/temp/clouds/4_1_4_16_2_4_heterogeneous_cloud.vcl
 CONFLICT_GRAPH=/home/wsl/git/Wf-Security/heuristic_and_exact_solutions/input/conflict_graph/$INSTANCE.scg
 NUMBER_OF_INTERATION=100
 #0.000005

@@ -11,6 +11,7 @@
  * that run the mode the approximate solution
  */
 
+#include <iomanip>
 #include "src/solution/grasp.h"
 
 DECLARE_uint64(number_of_iteration);
@@ -85,6 +86,7 @@ void Grasp::Run() {
     auto baseline = best_solution.get_objective_value();
 
     for (auto o = 0ul; o < std::numeric_limits<size_t>::max(); ++o) {
+
         // 1. Construction phase (GreedyRandomizedAlgorithm)
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
@@ -150,7 +152,7 @@ void Grasp::Run() {
         }
     }
     
-    std::cout << std::fixed
+    std::cout << std::fixed << std::setprecision(6)
             << best_solution.get_objective_value()
             << " " << best_solution.get_makespan()
             << " " << best_solution.get_cost()

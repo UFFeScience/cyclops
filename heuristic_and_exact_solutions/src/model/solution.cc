@@ -78,7 +78,7 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
         auto vm_id = vm->get_id();
         auto activation = algorithm_->GetActivationPerId(activation_id);
 
-        // TODO: VM finish time and VM allocation time should be within the VM object
+        // TODO: VM finish time and VM allocation time could be within the VM object
         // Compute Activation Start Time
         // What came latter, occupation of the VM or the previous activation finish time
         for (auto previous_activation_id: algorithm_->GetPredecessors(activation->get_id())) {
@@ -255,18 +255,19 @@ void Solution::ComputeCost() {
 
 // Accumulate the activation exposure
 double Solution::AccumulateActivationExposure() {
+
     double activation_exposure = 0.0;
     for (auto i = 0ul; i < algorithm_->GetActivationSize(); ++i) {
+
         auto activation = algorithm_->GetActivationPerId(i);
-
         for (auto j = 0ul; j < activation->get_requirements().size(); ++j) {
+
             auto virtual_machine_id = activation_allocations_[i];
-
-            // If the activation is allocated
             if (virtual_machine_id != std::numeric_limits<size_t>::max()) {
-                auto virtual_machine = algorithm_->GetVirtualMachinePerId(virtual_machine_id);
 
+                auto virtual_machine = algorithm_->GetVirtualMachinePerId(virtual_machine_id);
                 if (activation->GetRequirementValue(j) > virtual_machine->GetRequirementValue(j)) {
+
                     activation_exposure += activation->GetRequirementValue(j) - virtual_machine->GetRequirementValue(j);
                 }
             }
@@ -277,6 +278,7 @@ double Solution::AccumulateActivationExposure() {
 
 // Accumulate the privacy exposure
 double Solution::AccumulatePrivacyExposure() {
+
     double privacy_exposure = 0.0;
 
     privacy_exposure = static_cast<double>(file_manager_.get_file_privacy_exposure());
@@ -285,8 +287,6 @@ double Solution::AccumulatePrivacyExposure() {
 }
 
 void Solution::ComputeConfidentialityExposure() {
-//    double activation_exposure = 0.0;
-//    double privacy_exposure = 0.0;
 
     activation_exposure_ = 0.0;
     file_privacy_exposure_ = 0.0;
@@ -298,6 +298,7 @@ void Solution::ComputeConfidentialityExposure() {
 //double Solution::fetch_makespan() { return activation_finish_time_[ordering_.back()]; }
 
 size_t Solution::fetch_makespan() const {
+
     return activation_execution_data_[ordering_.back()].get_activation_finish_time();
 }
 
@@ -306,6 +307,7 @@ double Solution::fetch_cost() const { return virtual_machine_cost_ + bucket_vari
 double Solution::fetch_confidentiality_exposure() const { return activation_exposure_ + file_privacy_exposure_; }
 
 double Solution::ComputeAndFetchOF() {
+
     double of;
     of = algorithm_->get_alpha_time() * (static_cast<double>(makespan_) / algorithm_->get_makespan_max())
          + algorithm_->get_alpha_budget() * (cost_ / algorithm_->get_budget_max())
@@ -316,13 +318,6 @@ double Solution::ComputeAndFetchOF() {
 
 double Solution::OptimizedComputeObjectiveFunction(size_t start_of_ordering) {
     DLOG(INFO) << "Compute Optimized Objective Function";
-
-//    activation_finish_time_.assign(algorithm_->GetActivationSize(), 0ul);
-//    vm_finish_time_.assign(algorithm_->GetVirtualMachineSize(), 0ul);
-//    vm_allocation_time_.assign(algorithm_->GetVirtualMachineSize(), 0ul);
-
-    // Clear Activation Execution Data, just need clear the first
-//    activation_execution_data_[ordering_.front()].clean();
 
     PopulateExecutionAndAllocationsTimeVectors(start_of_ordering);
     ComputeCost();
@@ -592,17 +587,16 @@ size_t Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
                                                const size_t read_time,
                                                const size_t run_time,
                                                const size_t partial_write_time) {
+
     DLOG(INFO) << "Computing time for Write the File[" << file->get_id() << "] into VM[" << vm->get_id() << "]";
     auto activation_id = activation->get_id();
     double partial_objective_value;
     double best_objective_value = std::numeric_limits<double>::max();
     size_t best_write_one_file_time = std::numeric_limits<size_t>::max();
-//  double best_cost = std::numeric_limits<double>::max();
     double best_security_exposure = std::numeric_limits<double>::max();
     size_t best_storage_id = std::numeric_limits<size_t>::max();
 
     auto available_storages = std::vector<std::shared_ptr<Storage>>(algorithm_->GetStorageSize());
-
     for (size_t i = 0ul; i < available_storages.size(); ++i) {
         available_storages[i] = algorithm_->GetStoragePerId(i);
     }
@@ -667,7 +661,6 @@ size_t Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
             best_objective_value = partial_objective_value;
             best_storage_id = storage->get_id();
             best_write_one_file_time = write_one_file_time;
-//      best_cost = cost;
             best_security_exposure = security_exposure;
 
             if (i >= FLAGS_number_of_allocation_experiments - 1) {
@@ -729,10 +722,6 @@ size_t Solution::ComputeActivationStartTime(size_t activation_id, size_t vm_id) 
     DLOG(INFO) << "Compute the start time of the Activation[" << activation_id << "] at VM[" << vm_id << "]";
     size_t start_time = 0UL;
 
-//    for (auto previous_task_id: algorithm_->GetPredecessors(activation_id)) {
-//        start_time = std::max<size_t>(start_time, activation_finish_time_[previous_task_id]);
-//    }
-
     for (auto previous_task_id: algorithm_->GetPredecessors(activation_id)) {
         auto activation_finish_time = activation_execution_data_[previous_task_id].get_activation_finish_time();
         start_time = std::max<size_t>(start_time, activation_finish_time);
@@ -740,7 +729,6 @@ size_t Solution::ComputeActivationStartTime(size_t activation_id, size_t vm_id) 
 
     DLOG(INFO) << "StartTime: " << start_time;
 
-//    return std::max<size_t>(start_time, vm_finish_time_[vm_id]);
     return std::max<size_t>(start_time, activation_execution_data_[activation_id].get_vm_finish_time(vm_id));
 }
 
@@ -749,8 +737,8 @@ size_t Solution::AllocateOutputFiles(const std::shared_ptr<Activation> &activati
                                      const size_t start_time,
                                      const size_t read_time,
                                      const size_t run_time) {
-    auto write_time = 0ul;
 
+    auto write_time = 0ul;
     auto output_files = activation->get_output_files();
 
     // TODO: see if this behaviour is better
@@ -761,15 +749,12 @@ size_t Solution::AllocateOutputFiles(const std::shared_ptr<Activation> &activati
 
     // For each output file Allocate the storage that impose the minor Write time
     for (auto &file: output_files) {
-//        if (file_allocations_[file->get_id()] == std::numeric_limits<size_t>::max()) {
         if (file_manager_.get_file_allocation(file->get_id()) == std::numeric_limits<size_t>::max()) {
             write_time += AllocateOneOutputFileGreedily(activation, file, vm, start_time, read_time, run_time,
                                                         write_time);
         } else {
-//            std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(file_allocations_[file->get_id()]);
             std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(file_manager_.get_file_allocation(
                     file->get_id()));
-//            write_time += ComputeFileTransferTime(file, vm, storage);
             write_time = file->GetFileTransfer(vm->get_id(), storage->get_id());
         }
     }

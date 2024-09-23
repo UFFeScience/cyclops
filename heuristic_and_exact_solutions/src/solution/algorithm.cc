@@ -489,27 +489,28 @@ void Algorithm::ComputeHeight(size_t node, int n) {
 }
 
 void Algorithm::ComputeFileTransferMatrix() {
+
     for (const auto& file : files_) {
         file->PopulateFileTransferMatrix(storages_);
     }
 }
 
 void Algorithm::CalculateMaximumSecurityAndPrivacyExposure() {
-    double maximum_task_exposure = 0.0;
+
+    double maximum_activation_exposure = 0.0;
 
     DLOG(INFO) << "Calculate the Maximum Security and Privacy Exposure";
 
     for (Requirement requirement: requirements_) {
-        maximum_task_exposure += static_cast<double>(GetActivationSize())
-                                 * static_cast<double>(requirement.get_max_value());
+        maximum_activation_exposure += static_cast<double>(GetActivationSize()) * static_cast<double>(
+                requirement.get_max_value());
     }
 
-    DLOG(INFO) << "task_exposure: " << maximum_task_exposure;
+    DLOG(INFO) << "task_exposure: " << maximum_activation_exposure;
 
-    auto maximum_privacy_exposure =
-            static_cast<double>(conflict_graph_->get_maximum_of_soft_constraints());
+    auto maximum_privacy_exposure = static_cast<double>(conflict_graph_->get_maximum_of_soft_constraints());
 
-    maximum_security_and_privacy_exposure_ = maximum_task_exposure + maximum_privacy_exposure;
+    maximum_security_and_privacy_exposure_ = maximum_activation_exposure + maximum_privacy_exposure;
 
     DLOG(INFO) << "maximum_security_and_privacy_exposure_: " << maximum_security_and_privacy_exposure_;
 }

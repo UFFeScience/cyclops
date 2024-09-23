@@ -1,0 +1,303 @@
+9 45 25 2 250.00 125.00
+
+2mass-atlas-i04s-ji04.fits 4.02648925781 1 0
+2mass-atlas-i01s-ji01.fits 4.02648925781 1 0
+2mass-atlas-i00s-ji00.fits 4.02648925781 1 0
+fits_list.tbl 0.00023365020752 1 0
+region.hdr 0.000289916992188 1 0
+2mass-atlas-i02s-ji02.fits 4.02648925781 1 0
+2mass-atlas-i03s-ji03.fits 4.02648925781 1 0
+pimages.tbl 0.000798225402832 1 0
+cimages.tbl 0.000798225402832 1 0
+c2mass-atlas-i01s-ji01_area.fits 3.96903133392
+c2mass-atlas-i03s-ji03.fits 3.97764015198
+p2mass-atlas-i02s-ji02_area.fits 3.98857402802
+corrections.tbl 0.000252723693848
+diff.txt 0.389484405518
+diff-1.txt 0.389484405518
+diff-2.txt 0.389484405518
+diff-3.txt 0.389484405518
+diff-4.txt 0.389484405518
+diff-5.txt 0.389484405518
+diff-6.txt 0.389484405518
+diff-7.txt 0.389484405518
+diff-8.txt 0.389484405518
+p2mass-atlas-i00s-ji00.fits 3.97022628784
+c2mass-atlas-i00s-ji00.fits 3.97022628784
+c2mass-atlas-i04s-ji04.fits 3.96504116058
+fits.tbl 0.00180149078369
+c2mass-atlas-i00s-ji00_area.fits 3.97022628784
+c2mass-atlas-i02s-ji02_area.fits 3.98857402802
+c2mass-atlas-i01s-ji01.fits 3.96903133392
+newcimages.tbl 0.00152492523193
+mosaic_i22_i22.fits 44.3550243378
+c2mass-atlas-i03s-ji03_area.fits 3.97764015198
+c2mass-atlas-i02s-ji02.fits 3.98857402802
+c2mass-atlas-i04s-ji04_area.fits 3.96504116058
+p2mass-atlas-i01s-ji01.fits 3.96903133392
+mosaic_i22_i22_area.fits 44.3550243378
+p2mass-atlas-i01s-ji01_area.fits 3.96903133392
+p2mass-atlas-i00s-ji00_area.fits 3.97022628784
+p2mass-atlas-i03s-ji03.fits 3.97764015198
+shrunken_i23_i23.fits 1.77491092682
+p2mass-atlas-i03s-ji03_area.fits 3.97764015198
+shrunken_i23_i23.jpg 0.195365905762
+p2mass-atlas-i04s-ji04_area.fits 3.96504116058
+fit.txt 0.000259399414062
+fit-1.txt 0.000259399414062
+fit-2.txt 0.000259399414062
+fit-3.txt 0.000259399414062
+fit-4.txt 0.000259399414062
+fit-5.txt 0.000259399414062
+fit-6.txt 0.000259399414062
+fit-7.txt 0.000259399414062
+fit-8.txt 0.000259399414062
+p2mass-atlas-i04s-ji04.fits 3.96504116058
+p2mass-atlas-i02s-ji02.fits 3.98857402802
+
+i19 mBackground 10.93 3 2 1 1
+corrections.tbl
+p2mass-atlas-i03s-ji03.fits
+p2mass-atlas-i03s-ji03_area.fits
+c2mass-atlas-i03s-ji03.fits
+c2mass-atlas-i03s-ji03_area.fits
+i18 mBackground 10.83 3 2 1 1
+corrections.tbl
+p2mass-atlas-i02s-ji02.fits
+p2mass-atlas-i02s-ji02_area.fits
+c2mass-atlas-i02s-ji02_area.fits
+c2mass-atlas-i02s-ji02.fits
+i15 mBgModel 1.42 2 1 1 1
+pimages.tbl
+fits.tbl
+corrections.tbl
+i14 mConcatFit 0.72 19 1 1 1
+fits_list.tbl
+fit.txt
+fit-1.txt
+fit-2.txt
+fit-3.txt
+fit-4.txt
+fit-5.txt
+fit-6.txt
+fit-7.txt
+fit-8.txt
+diff.txt
+diff-1.txt
+diff-2.txt
+diff-3.txt
+diff-4.txt
+diff-5.txt
+diff-6.txt
+diff-7.txt
+diff-8.txt
+fits.tbl
+i17 mBackground 10.64 3 2 1 1
+corrections.tbl
+p2mass-atlas-i01s-ji01.fits
+p2mass-atlas-i01s-ji01_area.fits
+c2mass-atlas-i01s-ji01_area.fits
+c2mass-atlas-i01s-ji01.fits
+i16 mBackground 10.39 3 2 1 1
+corrections.tbl
+p2mass-atlas-i00s-ji00.fits
+p2mass-atlas-i00s-ji00_area.fits
+c2mass-atlas-i00s-ji00_area.fits
+c2mass-atlas-i00s-ji00.fits
+i11 mDiffFit 10.51 5 2 1 1
+region.hdr
+p2mass-atlas-i03s-ji03.fits
+p2mass-atlas-i03s-ji03_area.fits
+p2mass-atlas-i01s-ji01.fits
+p2mass-atlas-i01s-ji01_area.fits
+fit-6.txt
+diff-6.txt
+i10 mDiffFit 10.51 3 2 1 1
+region.hdr
+p2mass-atlas-i02s-ji02.fits
+p2mass-atlas-i02s-ji02_area.fits
+fit-5.txt
+diff-5.txt
+i13 mDiffFit 10.37 5 2 1 1
+region.hdr
+p2mass-atlas-i04s-ji04.fits
+p2mass-atlas-i04s-ji04_area.fits
+p2mass-atlas-i03s-ji03.fits
+p2mass-atlas-i03s-ji03_area.fits
+fit-8.txt
+diff-8.txt
+i12 mDiffFit 10.62 5 2 1 1
+region.hdr
+p2mass-atlas-i04s-ji04.fits
+p2mass-atlas-i04s-ji04_area.fits
+p2mass-atlas-i01s-ji01.fits
+p2mass-atlas-i01s-ji01_area.fits
+fit-7.txt
+diff-7.txt
+i20 mBackground 10.76 3 2 1 1
+corrections.tbl
+p2mass-atlas-i04s-ji04.fits
+p2mass-atlas-i04s-ji04_area.fits
+c2mass-atlas-i04s-ji04.fits
+c2mass-atlas-i04s-ji04_area.fits
+i21 mImgTbl 1.39 11 1 1 1
+cimages.tbl
+c2mass-atlas-i00s-ji00_area.fits
+c2mass-atlas-i00s-ji00.fits
+c2mass-atlas-i01s-ji01_area.fits
+c2mass-atlas-i01s-ji01.fits
+c2mass-atlas-i02s-ji02_area.fits
+c2mass-atlas-i02s-ji02.fits
+c2mass-atlas-i03s-ji03.fits
+c2mass-atlas-i03s-ji03_area.fits
+c2mass-atlas-i04s-ji04.fits
+c2mass-atlas-i04s-ji04_area.fits
+newcimages.tbl
+i08 mDiffFit 10.81 5 2 1 1
+region.hdr
+p2mass-atlas-i02s-ji02.fits
+p2mass-atlas-i02s-ji02_area.fits
+p2mass-atlas-i00s-ji00.fits
+p2mass-atlas-i00s-ji00_area.fits
+fit-3.txt
+diff-3.txt
+i09 mDiffFit 10.49 5 2 1 1
+region.hdr
+p2mass-atlas-i02s-ji02.fits
+p2mass-atlas-i02s-ji02_area.fits
+p2mass-atlas-i01s-ji01.fits
+p2mass-atlas-i01s-ji01_area.fits
+fit-4.txt
+diff-4.txt
+i24 mJPEG 0.45 1 1 1 1
+shrunken_i23_i23.fits
+shrunken_i23_i23.jpg
+i02 mProjectPP 13.36 2 2 1 1
+region.hdr
+2mass-atlas-i02s-ji02.fits
+p2mass-atlas-i02s-ji02.fits
+p2mass-atlas-i02s-ji02_area.fits
+i03 mProjectPP 13.6 2 2 1 1
+region.hdr
+2mass-atlas-i03s-ji03.fits
+p2mass-atlas-i03s-ji03.fits
+p2mass-atlas-i03s-ji03_area.fits
+i00 mProjectPP 13.39 2 2 1 1
+region.hdr
+2mass-atlas-i00s-ji00.fits
+p2mass-atlas-i00s-ji00.fits
+p2mass-atlas-i00s-ji00_area.fits
+i01 mProjectPP 13.83 2 2 1 1
+region.hdr
+2mass-atlas-i01s-ji01.fits
+p2mass-atlas-i01s-ji01.fits
+p2mass-atlas-i01s-ji01_area.fits
+i06 mDiffFit 10.59 5 2 1 1
+region.hdr
+p2mass-atlas-i01s-ji01.fits
+p2mass-atlas-i01s-ji01_area.fits
+p2mass-atlas-i00s-ji00.fits
+p2mass-atlas-i00s-ji00_area.fits
+fit-1.txt
+diff-1.txt
+i07 mDiffFit 10.88 5 2 1 1
+region.hdr
+p2mass-atlas-i01s-ji01.fits
+p2mass-atlas-i01s-ji01_area.fits
+p2mass-atlas-i03s-ji03.fits
+p2mass-atlas-i03s-ji03_area.fits
+fit-2.txt
+diff-2.txt
+i04 mProjectPP 13.78 2 2 1 1
+region.hdr
+2mass-atlas-i04s-ji04.fits
+p2mass-atlas-i04s-ji04.fits
+p2mass-atlas-i04s-ji04_area.fits
+i05 mDiffFit 10.59 5 2 1 1
+region.hdr
+p2mass-atlas-i00s-ji00.fits
+p2mass-atlas-i00s-ji00_area.fits
+p2mass-atlas-i01s-ji01.fits
+p2mass-atlas-i01s-ji01_area.fits
+fit.txt
+diff.txt
+i22 mAdd 3.03 2 2 1 1
+region.hdr
+newcimages.tbl
+mosaic_i22_i22.fits
+mosaic_i22_i22_area.fits
+i23 mShrink 3.86 2 1 1 1
+mosaic_i22_i22.fits
+mosaic_i22_i22_area.fits
+shrunken_i23_i23.fits
+
+i02 4
+i10
+i08
+i09
+i18
+i03 4
+i11
+i19
+i07
+i13
+i00 4
+i16
+i08
+i06
+i05
+i01 7
+i11
+i09
+i17
+i12
+i06
+i07
+i05
+i04 3
+i20
+i12
+i13
+i10 1
+i14
+i08 1
+i14
+i09 1
+i14
+i18 1
+i21
+i11 1
+i14
+i19 1
+i21
+i07 1
+i14
+i13 1
+i14
+i16 1
+i21
+i06 1
+i14
+i05 1
+i14
+i17 1
+i21
+i12 1
+i14
+i20 1
+i21
+i14 1
+i15
+i21 1
+i22
+i15 5
+i16
+i20
+i19
+i18
+i17
+i22 1
+i23
+i23 1
+i24
+i24 0
