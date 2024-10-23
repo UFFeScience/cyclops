@@ -60,7 +60,10 @@ public:
     [[nodiscard]] double get_cost() const { return cost_; }
 
     /// Getter for \c security_exposure_
-    [[nodiscard]] double get_security_exposure() const { return security_exposure_; }
+    [[nodiscard]] double get_security_exposure() const {
+
+        return security_exposure_;
+    }
 
     /// Getter for \c objective_value_
     [[nodiscard]] double get_objective_value() const { return objective_value_; }

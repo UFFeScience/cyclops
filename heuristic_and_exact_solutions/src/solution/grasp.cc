@@ -151,7 +151,9 @@ void Grasp::Run() {
             break;
         }
     }
-    
+
+    LOG(INFO) << best_solution;
+
     std::cout << std::fixed << std::setprecision(6)
             << best_solution.get_objective_value()
             << " " << best_solution.get_makespan()

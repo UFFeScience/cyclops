@@ -29,13 +29,13 @@ Solution::Solution(std::shared_ptr<Algorithm> algorithm)
           activation_allocations_(algorithm->GetActivationSize(), std::numeric_limits<size_t>::max()),
           file_manager_(algorithm->GetFilesSize(), algorithm->GetStorageSize(), algorithm->get_conflict_graph()),
           activation_height_(algorithm->GetActivationSize(), -1),
-          makespan_(0.0),
-          virtual_machine_cost_(0.0),
-          bucket_variable_cost_(0.0),
-          cost_(0.0),
-          activation_exposure_(0.0),
-          file_privacy_exposure_(0.0),
-          security_exposure_(0.0) {
+          makespan_(std::numeric_limits<size_t>::max()),
+          virtual_machine_cost_(std::numeric_limits<double>::max()),
+          bucket_variable_cost_(std::numeric_limits<double>::max()),
+          cost_(std::numeric_limits<double>::max()),
+          activation_exposure_(std::numeric_limits<double>::max()),
+          file_privacy_exposure_(std::numeric_limits<double>::max()),
+          security_exposure_(algorithm_->get_maximum_security_and_privacy_exposure()) {
     // Initialize the allocation with the static files place information (VM or Bucket)
     for (size_t i = 0ul; i < algorithm_->GetFilesSize(); ++i) {
         auto file = algorithm_->GetFilePerId(i);
@@ -52,6 +52,7 @@ Solution::Solution(std::shared_ptr<Algorithm> algorithm)
         ActivationExecutionData aed{algorithm->GetActivationSize(), algorithm->GetVirtualMachineSize()};
         activation_execution_data_.push_back(aed);
     }
+
 }
 
 void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_ordering) {
@@ -282,6 +283,7 @@ double Solution::AccumulatePrivacyExposure() {
     double privacy_exposure = 0.0;
 
     privacy_exposure = static_cast<double>(file_manager_.get_file_privacy_exposure());
+    DLOG(INFO) << "AccumulatePrivacyExposure privacy_exposure " << privacy_exposure;
     
     return privacy_exposure;
 }
@@ -302,9 +304,16 @@ size_t Solution::fetch_makespan() const {
     return activation_execution_data_[ordering_.back()].get_activation_finish_time();
 }
 
-double Solution::fetch_cost() const { return virtual_machine_cost_ + bucket_variable_cost_; }
+double Solution::fetch_cost() const {
 
-double Solution::fetch_confidentiality_exposure() const { return activation_exposure_ + file_privacy_exposure_; }
+    return virtual_machine_cost_ + bucket_variable_cost_;
+}
+
+double Solution::fetch_confidentiality_exposure() const {
+
+    DLOG(INFO) << "fetch_confidentiality_exposure " << activation_exposure_ << " " << file_privacy_exposure_;
+    return activation_exposure_ + file_privacy_exposure_;
+}
 
 double Solution::ComputeAndFetchOF() {
 
@@ -985,7 +994,10 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
         std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(i);
         auto vm_allocation_time = activation_execution_data_[activation_id].get_vm_allocation_time(
                 virtual_machine->get_id());
-        virtual_machine_cost += static_cast<double>(vm_allocation_time) * virtual_machine->get_cost();
+        auto alloc_time = static_cast<double>(vm_allocation_time);
+//        virtual_machine_cost += static_cast<double>(vm_allocation_time) * virtual_machine->get_cost();
+        virtual_machine_cost += (alloc_time / 3600) * virtual_machine->get_cost();
+
         DLOG(INFO) << "allocation_vm_queue_[virtual_machine->get_id()]: "
                    << activation_execution_data_[activation_id].get_vm_allocation_time(virtual_machine->get_id());
         DLOG(INFO) << "virtual_machine->get_cost(): " << virtual_machine->get_cost();
@@ -1013,18 +1025,22 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
     DLOG(INFO) << "Accumulate the activation Exposure of the scheduled activation";
 
     // Accumulate the activation exposure
-    for (size_t j = 0; j < activation->get_requirements().size(); ++j) {
-        size_t virtual_machine_id = activation_allocations_[activation->get_id()];
+//    for (size_t j = 0; j < activation->get_requirements().size(); ++j) {
+//        size_t virtual_machine_id = activation_allocations_[activation->get_id()];
+//
+//        // If the activation is allocated
+//        if (virtual_machine_id != std::numeric_limits<size_t>::max()) {
+//            std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(virtual_machine_id);
+//
+//            if (activation->GetRequirementValue(j) > virtual_machine->GetRequirementValue(j)) {
+//                security_exposure_ += activation->GetRequirementValue(j) - virtual_machine->GetRequirementValue(j);
+//            }
+//        }
+//    }
 
-        // If the activation is allocated
-        if (virtual_machine_id != std::numeric_limits<size_t>::max()) {
-            std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(virtual_machine_id);
+    ComputeConfidentialityExposure();
 
-            if (activation->GetRequirementValue(j) > virtual_machine->GetRequirementValue(j)) {
-                security_exposure_ += activation->GetRequirementValue(j) - virtual_machine->GetRequirementValue(j);
-            }
-        }
-    }
+    security_exposure_ = fetch_confidentiality_exposure();
 
     // If solution is unfeasible return size_t max
     if (makespan_ == std::numeric_limits<size_t>::max()
@@ -1272,6 +1288,7 @@ bool Solution::localSearchN2() {
                 //
 //                OptimizedComputeObjectiveFunction(index);
 //                ComputeObjectiveFunction();
+//                OptimizedComputeObjectiveFunction();
                 objective_value_ = best_known_of;
                 makespan_ = best_known_makespan;
                 cost_ = best_known_cost;
@@ -1291,6 +1308,7 @@ bool Solution::localSearchN2() {
  * @return
  */
 bool Solution::localSearchN3() {
+
     DLOG(INFO) << "Executing localSearchN3 local search ...";
     double best_known_of = objective_value_;
     size_t best_known_makespan = makespan_;
@@ -1382,6 +1400,7 @@ bool Solution::localSearchN3() {
                 }
                 //
 //                OptimizedComputeObjectiveFunction(index);
+//                OptimizedComputeObjectiveFunction();
                 objective_value_ = best_known_of;
                 makespan_ = best_known_makespan;
                 cost_ = best_known_cost;
