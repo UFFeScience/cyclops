@@ -50,7 +50,8 @@ create_cloud_files() {
     # <id-bucket> <capacidade> <cost> <numero de intervalos> [<limite superior> <valor contratado por intervalo>] <requirement-1> <requirement-2 (pode assumir 0 1 2{so bucket})>
     middle_bucket_desc="Standard 51200 25.0 0.023 1 1"
 
-    BUCKETS=(2 4 8 16 32 64)
+#    BUCKETS=(2 4 8 16 32 64)
+    BUCKETS=(2)
 
     # certify folder exists
     FOLDER=./temp
@@ -487,11 +488,11 @@ mkdir -p "${temp_dir}"
 #      fi
 
 pipenv run python script/run-batch.py \
-    --instances-file="_instances.txt" \
-    --algorithms-file="_algorithms.txt" \
+    --instances-file="_instances_desenv.txt" \
+    --algorithms-file="_algorithms_desenv.txt" \
     --number-of-iterations=100 \
     --allocation_experiments=4 \
-    --repeat 1 \
+    --repeat 10 \
     --output-path="${out_dir}" \
     --log-dir="${log_dir}" \
     --temp-dir="${temp_dir}"
