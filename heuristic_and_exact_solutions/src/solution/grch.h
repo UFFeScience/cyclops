@@ -1,36 +1,44 @@
 /**
- * \file src/solution/greedy_randomized_constructive_heuristic.h
+ * \file src/solution/grch.h
  * \brief Contains the \c Grch class declaration.
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
- * This header file contains the \c Grch class that construct
- * several \c Solution objects by selecting tasks randomly inside a restrict candidate list.
+ * This header file contains the \c Grch class that defines the Greed Randomized Constructive Heuristic
+ * methods.
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
+#define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
+
 
 #include "src/solution/algorithm.h"
+#include <list>
+#include <algorithm>
+#include <vector>       // std::vector
 
 class Grch : public Algorithm {
- public:
-  ///
-  Grch() = default;
+public:
+    ///
+    Grch() = default;
 
-  /// Default destructor
-  ~Grch() override = default;
+    ///
+    virtual ~Grch() = default;
 
-  /// Schedule the avail task, one-by-one
-  void ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution);
+    /// Schedule the avail task, one-by-one
+    Solution ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution &solution);
 
-  ///
-  void Run();
+    ///
+    [[nodiscard]] std::string GetName() const override { return name_; }
 
- private:
-};  // end of class GreedyAlgorithm
+    ///
+    void Run() override;
+private:
+    std::string name_ = "grch";
+};
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
+
+#endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_H_

@@ -1,0 +1,8 @@
+file1 file2 1
+file0 file1 00
+file1 file3 00
+file2 file4 00
+file3 file5 00
+file0 file2 00
+file3 file4 1
+file4 file5 00

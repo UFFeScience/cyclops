@@ -1,0 +1,18 @@
+1 2 2 2 50.00 0.01
+
+0 1
+1 1
+
+file0 10 1 0
+file1 10
+file2 10
+
+t0 task0 10 1 1 1 1
+file0
+file1
+t1 task1 15.4 1 1 1 1
+file0
+file2
+
+t0 0
+t1 0

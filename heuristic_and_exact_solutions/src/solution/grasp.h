@@ -1,36 +1,51 @@
 /**
  * \file src/solution/greedy_randomized_constructive_heuristic.h
- * \brief Contains the \c GreedyRandomizedConstructiveHeuristic class declaration.
+ * \brief Contains the \c Grasp class declaration
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2020
+ * \date 2024
  *
- * This header file contains the \c GreedyRandomizedConstructiveHeuristic class that construct
- * several \c Solution objects by selecting tasks randomly inside a restrict candidate list.
+ * This header file contains the \c Grasp class that construct
+ * several \c Solution objects by selecting tasks randomly inside a restrict candidate list
  */
 
-#ifndef APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
-#define APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
+#ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
+#define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
+
 
 #include "src/solution/algorithm.h"
+#include "grch.h"
 
-class Grasp : public Algorithm {
- public:
-  ///
-  Grasp() = default;
+class Grasp : public Grch {
+public:
+    ///
+    Grasp() = default;
 
-  /// Default destructor
-  ~Grasp() = default;
+    ///
+    virtual ~Grasp() = default;
 
-  /// Schedule the avail task, one-by-one
-  void ScheduleAvailTasks(std::list<Task*> avail_tasks, Solution& solution);
+    ///
+    [[nodiscard]] std::string GetName() const override { return name_; }
 
-  ///
-  void Run(void);
+    ///
+    void localSearch(Solution &);
 
- private:
-};  // end of class Grasp
+    ///
+    void Run() override;
+private:
+    std::string name_ = "grasp";
 
-#endif  // APPROXIMATIVE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
+    double lsn_time_1 = 0.0;  // Total Elapsed Time of Local Search Neighborhood 1
+    size_t lsn_noi_1 = 0ul;  // Total Number of Improvements made by Local Search Neighborhood 1
+
+    double lsn_time_2 = 0.0;  // Total Elapsed Time of Local Search Neighborhood 2
+    size_t lsn_noi_2 = 0ul;  // Total Number of Improvements made by Local Search Neighborhood 2
+
+    double lsn_time_3 = 0.0;  // Total Elapsed Time of Local Search Neighborhood 3
+    size_t lsn_noi_3 = 0ul;  // Total Number of Improvements made by Local Search Neighborhood 3
+};
+
+
+#endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRASP_H_
