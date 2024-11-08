@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <random>
 #include <vector>       // std::vector
+#include <iomanip>
 
 #include "src/model/static_file.h"
 
@@ -210,7 +211,8 @@ void Grch::Run() {
 
     auto time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
 
-    std::cerr << best_solution.get_makespan()
+    std::cerr << std::fixed << std::setprecision(6)
+              << best_solution.get_makespan()
               << " " << best_solution.get_cost()
               << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
               << " " << best_solution.get_objective_value() << std::endl
