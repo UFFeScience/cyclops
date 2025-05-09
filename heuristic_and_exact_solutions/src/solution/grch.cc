@@ -86,7 +86,8 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
             DLOG(INFO) << "Removing Activation[" << selected_candidate->first->get_id() << "]";
 
             // Remove task scheduled
-            auto my_pos = std::find(avail_activations.begin(), avail_activations.end(), selected_candidate->first);
+            auto my_pos = std::find(avail_activations.begin(), avail_activations.end(),
+                                    selected_candidate->first);
             avail_activations.erase(my_pos);
         } else {
             LOG(FATAL) << "Something is strange";
