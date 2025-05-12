@@ -25,9 +25,10 @@ DECLARE_uint64(number_of_iteration);
  * \param[in]  avail_activations     Avail tasks to be processed
  * \param[in]  solution        The solution to be built
  */
-Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution &solution) {
+void Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution& solution) {
     DLOG(INFO) << "Scheduling the availed activations to the solution ...";
-    Solution best_solution = solution;
+//    Solution best_solution{std::move(solution)};
+//    Solution best_solution{solution};
 
     // As long as there are allocations to be allocated, do
     while (!avail_activations.empty()) {
@@ -44,7 +45,8 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
 
             // Compute the O.F. in each Vm
             for (auto &vm: virtual_machines_) {
-                auto new_solution = best_solution;
+//                auto new_solution = best_solution;
+                auto new_solution = solution;
                 auto of = new_solution.ScheduleActivation(activation, vm);
 
                 // Select the best VM
@@ -79,12 +81,13 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
             auto position = my_rand<size_t>(0ul, upper_limit);
 
             auto selected_candidate = std::next(avail_solutions.begin(), static_cast<long>(position));
-            best_solution = selected_candidate->second;
-
+//            best_solution = selected_candidate->second;
+            solution = selected_candidate->second;
+#ifndef NDEBUG
             DLOG(INFO) << "Selected Activation from Restrict Candidate List[" << selected_candidate->first->get_id()
                        << "]";
             DLOG(INFO) << "Removing Activation[" << selected_candidate->first->get_id() << "]";
-
+#endif
             // Remove task scheduled
             auto my_pos = std::find(avail_activations.begin(), avail_activations.end(),
                                     selected_candidate->first);
@@ -95,7 +98,8 @@ Solution Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail
     }
 
     DLOG(INFO) << "... availed activations scheduled";
-    return best_solution;
+//    return best_solution;
+//    solution = best_solution;
 }
 
 /**
@@ -105,12 +109,14 @@ void Grch::Run() {
     DLOG(INFO) << "Executing GRCH (Greedy Randomized Constructive Heuristic) ...";
     double time_s;
     Solution best_solution(shared_from_this());
-    auto max_iter_without_improve = 10ul;
-    auto iter_without_improve = 1ul;
-    auto number_of_iterations = 0ul;
+//    auto max_iter_without_improve = 10ul;
+//    auto iter_without_improve = 1ul;
+//    auto number_of_iterations = 0ul;
+    auto max_iter = 100ul;
     auto best_solution_iteration = 0ul;
     double best_solution_time;
-    for (auto i = 0ul; i < std::numeric_limits<size_t>::max(); ++i) {
+//    for (auto i = 0ul; i < std::numeric_limits<size_t>::max(); ++i) {
+    for (auto i = 0ul; i < max_iter; ++i) {
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
         Solution solution(shared_from_this());
@@ -118,7 +124,9 @@ void Grch::Run() {
         // Start task list
         DLOG(INFO) << "Initialize activation list";
         for (const auto &activation: activations_) {
+#ifndef NDEBUG
             DLOG(INFO) << "Inserting activation " << activation->get_id();
+#endif
             activation_list.push_back(activation);
         }
 
@@ -141,7 +149,9 @@ void Grch::Run() {
             while (!activation_list.empty()
                    && height_[activation->get_id()] == height_[activation_list.front()->get_id()]) {
                 // build list of ready tasks, that is the tasks which the predecessor was finish
+#ifndef NDEBUG
                 DLOG(INFO) << "Putting " << activation_list.front()->get_id() << " in avail_activations";
+#endif
                 avail_activations.push_back(activation_list.front());
                 activation_list.erase(activation_list.begin());
             }
@@ -150,25 +160,27 @@ void Grch::Run() {
             std::shuffle(avail_activations.begin(), avail_activations.end(), generator());
 
             // Schedule the ready tasks (same height)
-            solution = ScheduleAvailTasks(avail_activations, solution);
+            ScheduleAvailTasks(avail_activations, solution);
         }
 
         DLOG(INFO) << "Scheduling done";
         DLOG(INFO) << solution;
         time_s = ((double) clock() - (double) t_start) / CLOCKS_PER_SEC;  // Processing time
-        number_of_iterations++;
+//        number_of_iterations++;
         if (solution.get_objective_value() < best_solution.get_objective_value()) {
-            iter_without_improve = 1ul;
+//            iter_without_improve = 1ul;
             best_solution = solution;
-            best_solution_iteration = number_of_iterations;
+//            best_solution_iteration = number_of_iterations;
+            best_solution_iteration = i;
             best_solution_time = time_s;
-        } else {
-            iter_without_improve += 1ul;
         }
+//        else {
+//            iter_without_improve += 1ul;
+//        }
         
-        if ((iter_without_improve > max_iter_without_improve) || (time_s > best_solution.get_makespan() * 0.1)) {
-            break;
-        }
+//        if ((iter_without_improve > max_iter_without_improve) || (time_s > best_solution.get_makespan() * 0.1)) {
+//            break;
+//        }
     }
 
     LOG(INFO) << best_solution;
@@ -179,7 +191,7 @@ void Grch::Run() {
               << " " << best_solution.get_cost()
               << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
               << " " << time_s
-              << " " << number_of_iterations
+              << " " << max_iter
               << " " << best_solution_iteration
               << " " << best_solution_time
               << std::endl;

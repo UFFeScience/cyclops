@@ -29,7 +29,7 @@ public:
     virtual ~Grch() = default;
 
     /// Schedule the avail task, one-by-one
-    Solution ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution &solution);
+    void ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution &solution);
 
     ///
     [[nodiscard]] std::string GetName() const override { return name_; }

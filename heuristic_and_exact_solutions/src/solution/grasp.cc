@@ -123,7 +123,7 @@ void Grasp::Run() {
             std::shuffle(avail_activations.begin(), avail_activations.end(), generator());
 
             // Schedule the ready tasks (same height)
-            solution = ScheduleAvailTasks(avail_activations, solution);
+            ScheduleAvailTasks(avail_activations, solution);
         }
         DLOG(INFO) << "Scheduling done";
 
