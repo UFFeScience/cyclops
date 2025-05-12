@@ -23,13 +23,13 @@ public:
     Storage(size_t id,
             std::string name,
             double storage,
-            double bandwidth,
+            double bandwidth_in_Gbps,
             int type_id)
             : id_(id),
               name_(std::move(name)),
               storage_(storage),
-              bandwidth_(bandwidth),
-              bandwidth_in_GBps_(bandwidth / 8.0),
+              bandwidth_(bandwidth_in_Gbps),
+              bandwidth_in_GBps_(bandwidth_in_Gbps / 8.0),
               type_id_(type_id) {}
 
     virtual ~Storage() = default;

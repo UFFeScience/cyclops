@@ -34,9 +34,9 @@ public:
                    double slowdown,
                    double storage,
                    double cost,
-                   double bandwidth,
+                   double bandwidth_in_Gbps,
                    int type_id) :
-            Storage(id, std::move(name), storage, bandwidth, type_id),
+            Storage(id, std::move(name), storage, bandwidth_in_Gbps, type_id),
             slowdown_(slowdown),
             cost_(cost / 3600.0) {}
 
