@@ -24,9 +24,34 @@ Algorithm::Algorithm() {
     conflict_graph_ = std::make_shared<ConflictGraph>();
 }
 
+bool is_number(const std::string& s) {
+    return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+}
+
+bool is_floating_number(const std::string& s) {
+    if (s.empty()) return false;
+
+    bool decimal_point_found = false;
+    size_t start = (s[0] == '-' || s[0] == '+') ? 1 : 0;
+
+    if (start == s.size()) return false;  // Só tinha sinal, sem número
+
+    for (size_t i = start; i < s.size(); ++i) {
+        if (s[i] == '.') {
+            if (decimal_point_found) return false;  // Mais de um ponto
+            decimal_point_found = true;
+        } else if (!std::isdigit(s[i])) {
+            return false;  // Caractere inválido
+        }
+    }
+    return true;
+}
+
 void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
                                   std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
+#ifndef NDEBUG
     DLOG(INFO) << "Reading Activations and Files from input file [" + tasks_and_files_file + "]" ;
+#endif
 
     if (!std::filesystem::exists(tasks_and_files_file)) {
         LOG(FATAL) << "Activations and Tasks input file could not be found in \"" << tasks_and_files_file << "\"!";
@@ -105,7 +130,9 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
             msf->AddVm(stoul(strs[3 + j]));
         }
 
+#ifndef NDEBUG
         DLOG(INFO) << *my_staticFile;
+#endif
 
         files_.push_back(my_staticFile);
         auto mfn = std::string(my_file_name);
@@ -128,7 +155,9 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
 
         std::shared_ptr<File> my_dynamicFile = std::make_shared<DynamicFile>(i, my_file_name, my_file_size);
 
+#ifndef NDEBUG
         DLOG(INFO) << *my_dynamicFile;
+#endif
 
         files_.push_back(my_dynamicFile);
         auto mfn = std::string(my_file_name);
@@ -286,13 +315,13 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
 }
 
 void Algorithm::ReadCluster(const std::string &cluster) {
+#ifndef NDEBUG
     DLOG(INFO) << "Reading Clusters from input file [" + cluster + "]" ;
+#endif
 
     if (!std::filesystem::exists(cluster)) {
         LOG(FATAL) << "Cluster file could not be found \"" << cluster << "\"!";
     }
-
-    size_t vm_size;
 
     // Reading file
     std::string line;
@@ -315,10 +344,26 @@ void Algorithm::ReadCluster(const std::string &cluster) {
     DLOG(INFO) << "Provider: " << line;
 
     std::vector<std::string> strs1;
-    boost::split(strs1, line, boost::is_any_of(" "));
+    boost::split(strs1, line, boost::is_any_of(" "), boost::token_compress_on);
 
-    vm_size = stoul(strs1[4]);
-    size_t bucket_size = stoul(strs1[5]);
+    if (strs1.size() <= 5 || strs1[0].empty() || strs1[1].empty() || strs1[2].empty() || strs1[3].empty()
+            || strs1[4].empty() || strs1[5].empty()) {
+        LOG(FATAL) << "Error: some number in strs1 is missing or empty!";
+    }
+
+    size_t vm_size{}, bucket_size{};
+
+    if (is_number(strs1[5])) {
+        vm_size = stoul(strs1[4]);
+    } else {
+        LOG(FATAL) << "Error: strs1[5] is not a valid number!\n";
+    }
+
+    if (strs1.size() > 5 && is_number(strs1[5])) {
+        bucket_size = std::stoul(strs1[5]);
+    } else {
+        LOG(FATAL) << "Error: strs1[5] is not a valid number!\n";
+    }
 
     // Reading VMs information
     for (auto j = 0ul; j < vm_size; j++) {
@@ -383,7 +428,9 @@ void Algorithm::ReadCluster(const std::string &cluster) {
 
 void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
                                   std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
+#ifndef NDEBUG
     DLOG(INFO) << "Reading Conflict Graph from input file [" + conflict_graph + "]" ;
+#endif
     std::string line;
     std::vector<std::string> tokens;
 
@@ -476,7 +523,9 @@ std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string &algorit
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
 void Algorithm::ComputeHeight(size_t node, int n) {
+#ifndef NDEBUG
     DLOG(INFO) << "Height " << n << " node " << node << " name " << activations_[node]->get_tag() << std::endl;
+#endif
 
     if (height_[node] < n) {
         height_[node] = n;
