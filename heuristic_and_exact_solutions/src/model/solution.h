@@ -47,8 +47,14 @@ class VirtualMachine;
  */
 class Solution {
 public:
+    /// Copy constructor
+    Solution(const Solution&) = default;
+
+    /// Move constructor
+    Solution(Solution&&) = default;
+
     /// Constructor declaration
-    explicit Solution(std::shared_ptr<Algorithm> algorithm);
+    explicit Solution(const std::shared_ptr<Algorithm>& algorithm);
 
     ///
     double OptimizedComputeObjectiveFunction(size_t start_of_ordering = 1ul);
