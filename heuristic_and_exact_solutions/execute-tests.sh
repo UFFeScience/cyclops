@@ -42,7 +42,7 @@
 create_cloud_files() {
     # <id-provider> <provider name> <period - seconds> <max vms> <number of vms> <number of buckets>
     middle_cloud_desc="Amazon-EC2 1 30 4"
-    # <id-vm> <type> <slowdown> <storage GB> <bandwidth MBps> <cost $> <requirement-1> <requirement-2>
+    # <id-vm> <type> <slowdown> <storage GB> <bandwidth Gbps> <cost per hour $> <requirement-1> <requirement-2>
     middle_vm1_desc="m3.medium 1.53 80 4.0 0.02"
     middle_vm2_desc="m3.large 0.77 120 9.0 0.09"
     middle_vm3_desc="m3.xlarge 0.38 160 10.0 0.16"
@@ -434,41 +434,75 @@ EOF
     #  done
 }
 
+create_cloud_files_for_sn() {
+    # <id-provider> <provider name> <period - seconds> <max vms> <number of vms> <number of buckets>
+    middle_cloud_desc="Amazon-EC2 1 30 4"
+    # <id-vm> <type> <slowdown> <storage GB> <bandwidth Gbps> <cost per hour $> <requirement-1> <requirement-2>
+    middle_vm1_desc="nano 1.60 20 0.1 0.02"
+    middle_vm2_desc="micro 1.40 20 0.1 0.03"
+    middle_vm3_desc="small 1.20 20 0.1 0.045"
+    middle_vm4_desc="medium 1.00 20 0.1 0.06"
+    middle_vm5_desc="large 0.80 20 0.1 0.09"
+    middle_vm6_desc="xlarge 0.60 20 0.1 0.12"
+    middle_vm7_desc="2xlarge 0.40 20 0.1 0.16"
+    middle_vm8_desc="3xlarge 0.20 20 0.1 0.33"
+    # <id-bucket> <capacidade> <cost> <numero de intervalos> [<limite superior> <valor contratado por intervalo>] <requirement-1> <requirement-2 (pode assumir 0 1 2{so bucket})>
+    middle_bucket_desc="Standard 51200 25.0 0.023 1 1"
+
+    # Bucket variable from 1 to 64
+#    BUCKETS=($(seq 1 64))
+    BUCKETS=(128)
+
+    # certify folder exists
+    FOLDER=./temp
+    if ! [[ -d ${FOLDER} ]]; then mkdir ${FOLDER}; fi
+    FOLDER=./temp/clouds
+    if [[ -d ${FOLDER} ]]; then
+        rm -r ${FOLDER}
+        mkdir ${FOLDER}
+    else
+        mkdir ${FOLDER}
+    fi
+
+    # Nomenclature
+    # <scenery>_<#Cloud>_<#vm>_<#buckets>_<#fulfill R1>_<#fulfill R2>_<description>.vcl
+
+    # 12 scenarios
+
+# 4th - homogeneous cloud (two met R1 requirement)
+    for elem in "${BUCKETS[@]}"; do
+        # Header anc cloud
+        file_name="${FOLDER}/4_1_4_${elem}_2_4_heterogeneous_cloud.vcl"
+        echo "${file_name}"
+        cat <<EOF >"${file_name}"
+1 2
+
+1 ${middle_cloud_desc} ${elem}
+0 ${middle_vm1_desc} 1 1
+1 ${middle_vm2_desc} 1 1
+2 ${middle_vm3_desc} 0 1
+3 ${middle_vm4_desc} 0 1
+4 ${middle_vm5_desc} 1 1
+5 ${middle_vm6_desc} 1 1
+6 ${middle_vm7_desc} 0 1
+7 ${middle_vm8_desc} 0 1
+EOF
+        # Buckets
+        for ((i = 0; i < elem; i++)); do
+            echo "${i} ${middle_bucket_desc}" >>"${file_name}"
+        done
+    done
+}
+
 # ### Main ###
 
-#now=$(date +"%Y-%m-%dT%H:%M:%S")
 now=$(date +"%Y%m%d%H%M%S")
 echo "${now}"
 
-create_cloud_files
+create_cloud_files_for_sn
 
-#alphas[$((0 * 3 + 0))]=0.90
-#alphas[$((0 * 3 + 1))]=0.05
-#alphas[$((1 * 3 + 0))]=0.05
-#alphas[$((0 * 3 + 2))]=0.05
-#alphas[$((1 * 3 + 1))]=0.90
-#alphas[$((1 * 3 + 2))]=0.05
-#alphas[$((2 * 3 + 0))]=0.05
-#alphas[$((2 * 3 + 1))]=0.05
-#alphas[$((2 * 3 + 2))]=0.90
-#alphas[$((3 * 3 + 0))]=0.30
-#alphas[$((3 * 3 + 1))]=0.30
-#alphas[$((3 * 3 + 2))]=0.40
-#alphas[$((4 * 3 + 0))]=1.00
-#alphas[$((4 * 3 + 1))]=0.00
-#alphas[$((4 * 3 + 2))]=0.00
-
-# For each time/cost/security experiment
-#for ((i = 0; i < 5; i++)); do
-#    alpha_time=${alphas[$((i * 3 + 0))]}
-#    alpha_cost=${alphas[$((i * 3 + 1))]}
-#    alpha_security=${alphas[$((i * 3 + 2))]}
-
-	# For each cluster
 home_dir=$(pwd)
 regex="([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl"
-#    for f in ${home_dir}/temp/clouds/*; do
-#        echo "$f"
 
 out_dir="${home_dir}/output/${now}"
 log_dir="${home_dir}/log/${now}"
@@ -477,18 +511,6 @@ temp_dir="${home_dir}/temp/${now}"
 mkdir -p "${out_dir}"
 mkdir -p "${log_dir}"
 mkdir -p "${temp_dir}"
-
-#      if [[ $f =~ $regex ]]; then
-#          scenario="${BASH_REMATCH[1]}"
-#          number_cloud="${BASH_REMATCH[2]}"
-#          number_vm="${BASH_REMATCH[3]}"
-#          number_buckets="${BASH_REMATCH[4]}"
-#          number_vm_req_cryptography="${BASH_REMATCH[5]}"
-#          number_vm_req_confidentiality="${BASH_REMATCH[6]}"
-#          cloud_type="${BASH_REMATCH[7]}"
-#      else
-#          echo "$f doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
-#      fi
 
 pipenv run python script/run-batch.py \
     --instances-file="_instances_desenv.txt" \
@@ -499,16 +521,3 @@ pipenv run python script/run-batch.py \
     --output-path="${out_dir}" \
     --log-dir="${log_dir}" \
     --temp-dir="${temp_dir}"
-#          --clouds-file="$f" \
-#          --alpha-time=${alpha_time} \
-#          --alpha-cost=${alpha_cost} \
-#          --alpha-security=${alpha_security} \
-#          --test-scenery="${scenario}" \
-#          --number-cloud-sites="${number_cloud}" \
-#          --number-vm="${number_vm}" \
-#          --number-buckets="${number_buckets}" \
-#          --number-vm-req-cryptography="${number_vm_req_cryptography}" \
-#          --number-vm-req-confidentiality="${number_vm_req_confidentiality}" \
-#          --cloud-type="${cloud_type}" \
-#    done
-#done
