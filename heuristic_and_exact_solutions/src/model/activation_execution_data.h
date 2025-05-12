@@ -20,34 +20,34 @@
 class ActivationExecutionData {
 public:
     /// Constructor declaration
-    explicit ActivationExecutionData(size_t, size_t);
+    explicit ActivationExecutionData(size_t activations_size, size_t vms_size);
 
     ///
-    [[nodiscard]] size_t get_activation_finish_time() const;
+    [[nodiscard]] double get_activation_finish_time() const;
 
     ///
-    void set_activation_finish_time(size_t);
+    void set_activation_finish_time(double time);
 
     ///
-    [[nodiscard]] size_t get_vm_finish_time(size_t) const;
+    [[nodiscard]] double get_vm_finish_time(size_t) const;
 
     ///
-    void set_vm_finish_time(size_t, size_t);
+    void set_vm_finish_time(size_t vm_id, double time);
 
     ///
-    [[nodiscard]] size_t get_vm_allocation_time(size_t) const;
+    [[nodiscard]] double get_vm_allocation_time(size_t vm_id) const;
 
     ///
-    void set_vm_allocation_time(size_t, size_t);
+    void set_vm_allocation_time(size_t vm_id, double time);
 private:
     /// Makespan for each task
-    size_t activation_finish_time_;
+    double activation_finish_time_;
 
     /// Final time of each Virtual Machine
-    std::vector<size_t> vm_finish_time_;
+    std::vector<double> vm_finish_time_;
 
     /// Total allocation time needed for each VM
-    std::vector<size_t> vm_allocation_time_;
+    std::vector<double> vm_allocation_time_;
 };
 
 

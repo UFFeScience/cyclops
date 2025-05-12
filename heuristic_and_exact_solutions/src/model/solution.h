@@ -107,7 +107,7 @@ public:
     double ComputeAndFetchOF();
 
     ///
-    [[nodiscard]] size_t fetch_makespan() const;
+    [[nodiscard]] double fetch_makespan() const;
 
     ///
     [[nodiscard]] double fetch_cost() const;
@@ -136,8 +136,11 @@ public:
     ///
     bool localSearchN3();
 
-    /// Copy operator
-    Solution &operator=(const Solution &) = default;
+    /// Copy assignment
+    Solution& operator=(const Solution&) = default;
+
+    /// Move assignment
+    Solution& operator=(Solution&&) = default;
 
     /// Concatenation operator
     friend std::ostream &operator<<(std::ostream &os, const Solution &a) {
@@ -149,32 +152,32 @@ protected:
     std::ostream &Write(std::ostream &os) const;
 
     /// Computes the time of reading input files for the execution of the \c activation
-    size_t ComputeActivationReadTime(const std::shared_ptr<Activation> &,
-                                     const std::shared_ptr<VirtualMachine> &,
-                                     size_t);
+    double ComputeActivationReadTime(const std::shared_ptr<Activation> &activation,
+                                     const std::shared_ptr<VirtualMachine> &vm,
+                                     double start_time);
 
     /// Compute the starting time of the \c task
-    size_t ComputeActivationStartTime(size_t activation_id, size_t vm_id);
+    double ComputeActivationStartTime(size_t activation_id, size_t vm_id);
 
     /// Allocate just one output file selecting storage with minimal time transfer
-    size_t AllocateOneOutputFileGreedily(const std::shared_ptr<Activation> &activation,
+    double AllocateOneOutputFileGreedily(const std::shared_ptr<Activation> &activation,
                                          const std::shared_ptr<File> &file,
                                          const std::shared_ptr<VirtualMachine> &vm,
-                                         size_t start_time,
-                                         size_t read_time,
-                                         size_t run_time,
-                                         size_t partial_write_time);
+                                         double start_time,
+                                         double read_time,
+                                         double run_time,
+                                         double partial_write_time);
 
     /// Define where the output files of the execution of the \c task will be stored
-    size_t AllocateOutputFiles(const std::shared_ptr<Activation> &,
-                               const std::shared_ptr<VirtualMachine> &,
-                               size_t,
-                               size_t,
-                               size_t);
+    double AllocateOutputFiles(const std::shared_ptr<Activation> &activation,
+                               const std::shared_ptr<VirtualMachine> &vm,
+                               double start_time,
+                               double read_time,
+                               double run_time);
 
     /// Calculate the actual makespan and Allocate the output files
-    size_t CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation> &,
-                                                   const std::shared_ptr<VirtualMachine> &);
+    double CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation> &activation,
+                                                   const std::shared_ptr<VirtualMachine> &virtual_machine);
 
     /// Compute the file contribution to the security exposure
     double ComputeFileSecurityExposureContribution(const std::shared_ptr<Storage> &storage,
@@ -199,7 +202,8 @@ protected:
     std::vector<ActivationExecutionData> activation_execution_data_;
 
     /// Makespan of the solution, the total execution time
-    size_t makespan_{};
+//    size_t makespan_{};
+    double makespan_{};
 
     /// The cost for allocate Virtual Machines for the execution
     double virtual_machine_cost_{};

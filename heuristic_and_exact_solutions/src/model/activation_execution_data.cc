@@ -19,26 +19,26 @@ ActivationExecutionData::ActivationExecutionData(size_t activations_size, size_t
 
 }
 
-size_t ActivationExecutionData::get_activation_finish_time() const {
+double ActivationExecutionData::get_activation_finish_time() const {
     return activation_finish_time_;
 }
 
-void ActivationExecutionData::set_activation_finish_time(size_t time) {
+void ActivationExecutionData::set_activation_finish_time(double time) {
     activation_finish_time_ = time;
 }
 
-size_t ActivationExecutionData::get_vm_finish_time(size_t vm_id) const {
+double ActivationExecutionData::get_vm_finish_time(size_t vm_id) const {
     return vm_finish_time_[vm_id];
 }
 
-void ActivationExecutionData::set_vm_finish_time(size_t vm_id, size_t time) {
+void ActivationExecutionData::set_vm_finish_time(size_t vm_id, double time) {
     vm_finish_time_[vm_id] = time;
 }
 
-size_t ActivationExecutionData::get_vm_allocation_time(size_t vm_id) const {
+double ActivationExecutionData::get_vm_allocation_time(size_t vm_id) const {
     return vm_allocation_time_[vm_id];
 }
 
-void ActivationExecutionData::set_vm_allocation_time(size_t vm_id, size_t time) {
+void ActivationExecutionData::set_vm_allocation_time(size_t vm_id, double time) {
     vm_allocation_time_[vm_id] = time;
 }

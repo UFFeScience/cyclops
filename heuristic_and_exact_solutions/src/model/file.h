@@ -51,7 +51,9 @@ public:
                 } else {
                     auto link = std::min<double>(storages[line]->get_bandwidth_in_GBps(),
                                                  storages[column]->get_bandwidth_in_GBps());
-                    auto time = static_cast<size_t>(std::ceil(size_in_GB_ / link));
+//                    auto time = static_cast<size_t>(std::ceil(size_in_GB_ / link));
+//                    auto time = static_cast<size_t>(std::floor(size_in_GB_ / link));
+                    auto time = size_in_GB_ / link;
                     matrix_[(line * storages_size_) + column] = time;
                 }
             }
@@ -59,7 +61,11 @@ public:
     }
 
     /// origin_vm_id ==> line, target_vm_id ==> column
-    size_t GetFileTransfer(size_t origin_vm_id, size_t target_vm_id) {
+//    size_t GetFileTransfer(size_t origin_vm_id, size_t target_vm_id) {
+//        return matrix_[(origin_vm_id * storages_size_) + target_vm_id];
+//    }
+
+    double GetFileTransfer(size_t origin_vm_id, size_t target_vm_id) {
         return matrix_[(origin_vm_id * storages_size_) + target_vm_id];
     }
 
@@ -96,7 +102,8 @@ protected:
     size_t storages_size_{};
 
     ///
-    std::vector<size_t> matrix_;
+//    std::vector<size_t> matrix_;
+    std::vector<double> matrix_;
 };  // end of class File
 
 

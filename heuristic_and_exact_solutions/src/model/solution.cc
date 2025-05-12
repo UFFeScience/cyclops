@@ -24,12 +24,12 @@ DECLARE_uint64(number_of_allocation_experiments);
  *
  * @param algorithm
  */
-Solution::Solution(std::shared_ptr<Algorithm> algorithm)
+Solution::Solution(const std::shared_ptr<Algorithm>& algorithm)
         : algorithm_(algorithm),
           activation_allocations_(algorithm->GetActivationSize(), std::numeric_limits<size_t>::max()),
           file_manager_(algorithm->GetFilesSize(), algorithm->GetStorageSize(), algorithm->get_conflict_graph()),
           activation_height_(algorithm->GetActivationSize(), -1),
-          makespan_(std::numeric_limits<size_t>::max()),
+          makespan_(std::numeric_limits<double>::max()),
           virtual_machine_cost_(std::numeric_limits<double>::max()),
           bucket_variable_cost_(std::numeric_limits<double>::max()),
           cost_(std::numeric_limits<double>::max()),
@@ -59,11 +59,11 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
     for (auto index = start_of_ordering; index < ordering_.size(); index++) {
         auto activation_id = ordering_[index];
         // Initializations
-        auto activation_start_time = 0ul;
-        auto activation_read_time = 0ul;
-        auto activation_write_time = 0ul;
-        size_t activation_run_time;
-        size_t finish_time;
+        double activation_start_time{};
+        double activation_read_time{};
+        double activation_write_time{};
+        double activation_run_time;
+        double finish_time;
 
         // Fetching some previous Activation Execution Data
         for (auto vm_id = 0ul; vm_id < algorithm_->GetVirtualMachineSize(); vm_id++) {
@@ -84,14 +84,15 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
         // What came latter, occupation of the VM or the previous activation finish time
         for (auto previous_activation_id: algorithm_->GetPredecessors(activation->get_id())) {
             if (previous_activation_id == algorithm_->get_id_source()) {
-                activation_start_time = 0ul;
+//                activation_start_time = 0ul;
                 break;
             }
-            activation_start_time = std::max<size_t>(
+            activation_start_time = std::max(
                     activation_start_time,
                     activation_execution_data_[previous_activation_id].get_activation_finish_time());
         }
-        activation_start_time = std::max<size_t>(
+
+        activation_start_time = std::max(
                 activation_start_time,
                 activation_execution_data_[activation_id].get_vm_finish_time(vm_id));
 
@@ -119,7 +120,7 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
             auto one_file_read_time = file->GetFileTransfer(file_storage->get_id(), vm->get_id());
 
             // If reading problem then terminate
-            if (one_file_read_time == std::numeric_limits<size_t>::max()) {
+            if (one_file_read_time == std::numeric_limits<double>::max()) {
                 LOG(FATAL) << "Something is wrong with file reading";
             }
 
@@ -128,12 +129,12 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
             // If the storage is some VM (not bucket) different from the execution VM
             // Allocate the necessary VM for the reading
             if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm->get_id()) {
-                if (activation_start_time != std::numeric_limits<size_t>::max()
-                    && activation_read_time != std::numeric_limits<size_t>::max()) {
-                    auto finish_read_time = activation_start_time + activation_read_time;
+                if (activation_start_time != std::numeric_limits<double>::max()
+                        && activation_read_time != std::numeric_limits<double>::max()) {
+                    double finish_read_time = activation_start_time + activation_read_time;
                     activation_execution_data_[activation_id].set_vm_allocation_time(
                             storage_id,
-                            std::max<size_t>(
+                            std::max(
                                     activation_execution_data_[activation_id].get_vm_allocation_time(storage_id),
                                     finish_read_time));
                 }
@@ -141,40 +142,44 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
         }
 
         // Compute Run time
-        activation_run_time = ceil(activation->get_time() * vm->get_slowdown());
+//        activation_run_time = ceil(activation->get_time() * vm->get_slowdown());
+        activation_run_time = activation->get_time() * vm->get_slowdown();
 
         // Compute Write Time
         auto output_files = activation->get_output_files();
         for (const auto& output_file: output_files) {
-            auto output_file_id = output_file->get_id();
-            auto storage_id = file_manager_.get_file_allocation(output_file_id);
-            auto storage = algorithm_->GetStoragePerId(storage_id);
-            auto one_file_write_time = output_file->GetFileTransfer(vm->get_id(), storage->get_id());
+            size_t output_file_id = output_file->get_id();
+            size_t storage_id = file_manager_.get_file_allocation(output_file_id);
+            std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(storage_id);
+            double one_file_write_time = output_file->GetFileTransfer(vm->get_id(), storage->get_id());
 
             // If we could not Write the output_file then terminate!
-            if (one_file_write_time == std::numeric_limits<size_t>::max()) {
+            if (one_file_write_time == std::numeric_limits<double>::max()) {
                 LOG(FATAL) << "Something is wrong with output_file writing";
             }
 
+#ifndef NDEBUG
             DLOG(INFO) << "output_file: " << output_file->get_name();
             DLOG(INFO) << "one_file_write_time: " << one_file_write_time;
-
+#endif
             activation_write_time += one_file_write_time;
 
             // If the storage is some VM (not bucket) different from the execution VM
             // Allocate the necessary VM for the writing
             if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm_id) {
-                if (activation_start_time != std::numeric_limits<size_t>::max()
-                    && activation_read_time != std::numeric_limits<size_t>::max()
-                    && activation_run_time != std::numeric_limits<size_t>::max()
-                    && activation_write_time != std::numeric_limits<size_t>::max()) {
-                    auto finish_write_time = activation_start_time + activation_read_time
-                            + activation_run_time + activation_write_time;
+                if (activation_start_time != std::numeric_limits<double>::max()
+                        && activation_read_time != std::numeric_limits<double>::max()
+                        && activation_run_time != std::numeric_limits<double>::max()
+                        && activation_write_time != std::numeric_limits<double>::max()) {
+                    double finish_write_time = activation_start_time
+                                             + activation_read_time
+                                             + activation_run_time
+                                             + activation_write_time;
 
                     // Need to Allocate VM until output_file is writen
                     activation_execution_data_[activation_id].set_vm_allocation_time(
                             storage_id,
-                            std::max<size_t>(
+                            std::max(
                                     activation_execution_data_[activation_id].get_vm_allocation_time(storage_id),
                                     finish_write_time));
                 } else {
@@ -184,11 +189,11 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
         }
 
         // Compute Finish Time
-        if (activation_start_time == std::numeric_limits<size_t>::max()
-            || activation_read_time == std::numeric_limits<size_t>::max()
-            || activation_run_time == std::numeric_limits<size_t>::max()
-            || activation_write_time == std::numeric_limits<size_t>::max()) {
-            finish_time = std::numeric_limits<size_t>::max();
+        if (activation_start_time == std::numeric_limits<double>::max()
+            || activation_read_time == std::numeric_limits<double>::max()
+            || activation_run_time == std::numeric_limits<double>::max()
+            || activation_write_time == std::numeric_limits<double>::max()) {
+            finish_time = std::numeric_limits<double>::max();
         } else {
             finish_time = activation_start_time + activation_read_time + activation_run_time + activation_write_time;
         }
@@ -199,11 +204,11 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
         activation_execution_data_[activation_id].set_vm_finish_time(vm_id, finish_time);
         activation_execution_data_[activation_id].set_vm_allocation_time(
                 vm_id,
-                std::max<size_t>(
+                std::max(
                         activation_execution_data_[activation_id].get_vm_allocation_time(vm_id),
                         finish_time));
 
-
+#ifndef NDEBUG
         DLOG(INFO) << "my_allocation_vm_queue[" << vm_id << "]: "
                 << activation_execution_data_[activation_id].get_vm_allocation_time(vm_id);
         DLOG(INFO) << "activation_id: " << activation_id;
@@ -213,6 +218,7 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
         DLOG(INFO) << "activation_run_time: " << activation_run_time;
         DLOG(INFO) << "activation_write_time: " << activation_write_time;
         DLOG(INFO) << "finish_time: " << finish_time;
+#endif
     }
 }
 
@@ -223,9 +229,11 @@ double Solution::AccumulateVMCost() {
         auto virtual_machine = algorithm_->GetVirtualMachinePerId(i);
         auto alloc_time = static_cast<double>(activation_execution_data_[ordering_.back()].get_vm_allocation_time(i));
         vm_cost += ((alloc_time / 3600) * virtual_machine->get_cost());  // Billed per hour
+#ifndef NDEBUG
         DLOG(INFO) << "allocation_vm_queue_[" << i << "]: " << activation_execution_data_[ordering_.back()]
                 .get_vm_allocation_time(i);
         DLOG(INFO) << "virtual_machine->get_cost(): " << virtual_machine->get_cost();
+#endif
     }
     return vm_cost;
 }
@@ -279,17 +287,12 @@ double Solution::AccumulateActivationExposure() {
 
 // Accumulate the privacy exposure
 double Solution::AccumulatePrivacyExposure() {
-
-    double privacy_exposure = 0.0;
-
-    privacy_exposure = static_cast<double>(file_manager_.get_file_privacy_exposure());
+    auto privacy_exposure = static_cast<double>(file_manager_.get_file_privacy_exposure());
     DLOG(INFO) << "AccumulatePrivacyExposure privacy_exposure " << privacy_exposure;
-    
     return privacy_exposure;
 }
 
 void Solution::ComputeConfidentialityExposure() {
-
     activation_exposure_ = 0.0;
     file_privacy_exposure_ = 0.0;
 
@@ -299,7 +302,7 @@ void Solution::ComputeConfidentialityExposure() {
 
 //double Solution::fetch_makespan() { return activation_finish_time_[ordering_.back()]; }
 
-size_t Solution::fetch_makespan() const {
+double Solution::fetch_makespan() const {
 
     return activation_execution_data_[ordering_.back()].get_activation_finish_time();
 }
@@ -510,9 +513,9 @@ std::ostream &Solution::Write(std::ostream &os) const {
     auto as = algorithm_->get_alpha_security();
     auto arcl = algorithm_->get_alpha_restrict_candidate_list();
 
-    os << std::fixed << std::setprecision(6); // Define precisão e formato fixo
+    os << std::fixed << std::setprecision(6);
     os << "Alphas: " << std::endl;
-    os << "| $\\alpha_{tempo}$ | $\\alpha_{custo}$ | $\\alpha_{seguran\\c{c}a}$ | $\\alpha_{ListaRestritaCandidatos}$ |" << std::endl;
+    os << R"(| $\alpha_{time}$ | $\alpha_{cost}$ | $\alpha_{security}$ | $\alpha_{LRC}$ |)" << std::endl;
     os << "|:----------------:|:----------------:|:--------------------:|:----------------------------------:|" << std::endl;
     os << "| " << at << " | " << ac << " | " << as << " | " << arcl << " |" << std::endl;
 
@@ -589,19 +592,20 @@ std::ostream &Solution::Write(std::ostream &os) const {
  * @param partial_write_time
  * @return
  */
-size_t Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation> &activation,
+double Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation> &activation,
                                                const std::shared_ptr<File>& file,
                                                const std::shared_ptr<VirtualMachine> &vm,
-                                               const size_t start_time,
-                                               const size_t read_time,
-                                               const size_t run_time,
-                                               const size_t partial_write_time) {
-
+                                               const double start_time,
+                                               const double read_time,
+                                               const double run_time,
+                                               const double partial_write_time) {
+#ifndef NDEBUG
     DLOG(INFO) << "Computing time for Write the File[" << file->get_id() << "] into VM[" << vm->get_id() << "]";
+#endif
     auto activation_id = activation->get_id();
     double partial_objective_value;
     double best_objective_value = std::numeric_limits<double>::max();
-    size_t best_write_one_file_time = std::numeric_limits<size_t>::max();
+    double best_write_one_file_time = std::numeric_limits<double>::max();
     double best_security_exposure = std::numeric_limits<double>::max();
     size_t best_storage_id = std::numeric_limits<size_t>::max();
 
@@ -618,13 +622,13 @@ size_t Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
         auto storage = available_storages[i];
         
         // 1. Calculates the File Transfer Time
-        size_t write_one_file_time;
+//        size_t write_one_file_time;
         if (file_manager_.FileHasHardConstraintsAgainstVmFiles(file->get_id(), storage->get_id())) {
-            write_one_file_time = std::numeric_limits<size_t>::max();
+//            write_one_file_time = std::numeric_limits<size_t>::max();
             continue;
         }  // Hard-constraint
 
-        write_one_file_time = file->GetFileTransfer(vm->get_id(), storage->get_id());
+        double write_one_file_time = file->GetFileTransfer(vm->get_id(), storage->get_id());
 
         // 2. Calculates the File Contribution to the Cost
         double cost;
@@ -633,13 +637,13 @@ size_t Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
         double bucket_variable_cost = 0.0;
 
         // Writing cost
-        virtual_machine_cost += static_cast<double>(write_one_file_time) * vm->get_cost();
+        virtual_machine_cost += write_one_file_time * vm->get_cost();
 
         // Allocation cost
         if (auto inner_vm = std::dynamic_pointer_cast<VirtualMachine>(storage)) {
-            size_t total_time = start_time + read_time + run_time + partial_write_time + write_one_file_time;
+            double total_time = start_time + read_time + run_time + partial_write_time + write_one_file_time;
             if (total_time > activation_execution_data_[activation_id].get_vm_allocation_time(inner_vm->get_id())) {
-                size_t diff = total_time
+                double diff = total_time
                         - activation_execution_data_[activation_id].get_vm_allocation_time(inner_vm->get_id());
                 allocation_cost = static_cast<double>(diff) * inner_vm->get_cost();
             }
@@ -682,7 +686,9 @@ size_t Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
         LOG(FATAL) << "There is no storage available";
     }
 
+#ifndef NDEBUG
     DLOG(INFO) << "Allocation of the output File[" << file->get_id() << "] to the Storage[" << best_storage_id << "]";
+#endif
 
     // Allocate file
     file_manager_.set_file_allocation(file->get_id(), best_storage_id);
@@ -702,8 +708,10 @@ size_t Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
         auto computed_time = start_time + read_time + run_time + partial_write_time + best_write_one_file_time;
         activation_execution_data_[activation_id].set_vm_allocation_time(best_storage_id,
                 std::max(computed_time, vm_allocation_time));
+#ifndef NDEBUG
         DLOG(INFO) << "allocation_vm_queue_[" << best_storage_id << "]: "
                 << activation_execution_data_[activation_id].get_vm_allocation_time(best_storage_id);
+#endif
     }
 
     return best_write_one_file_time;
@@ -727,27 +735,27 @@ size_t Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
  * \param[in]  vm_id         VM where the task will be executed
  * \retval     StartTime     The time at the task identified by \c activation_id will start executing
  */
-size_t Solution::ComputeActivationStartTime(size_t activation_id, size_t vm_id) {
+double Solution::ComputeActivationStartTime(size_t activation_id, size_t vm_id) {
     DLOG(INFO) << "Compute the start time of the Activation[" << activation_id << "] at VM[" << vm_id << "]";
-    size_t start_time = 0UL;
+    double start_time{};
 
     for (auto previous_task_id: algorithm_->GetPredecessors(activation_id)) {
         auto activation_finish_time = activation_execution_data_[previous_task_id].get_activation_finish_time();
-        start_time = std::max<size_t>(start_time, activation_finish_time);
+        start_time = std::max(start_time, activation_finish_time);
     }
 
     DLOG(INFO) << "StartTime: " << start_time;
 
-    return std::max<size_t>(start_time, activation_execution_data_[activation_id].get_vm_finish_time(vm_id));
+    return std::max(start_time, activation_execution_data_[activation_id].get_vm_finish_time(vm_id));
 }
 
-size_t Solution::AllocateOutputFiles(const std::shared_ptr<Activation> &activation,
+double Solution::AllocateOutputFiles(const std::shared_ptr<Activation> &activation,
                                      const std::shared_ptr<VirtualMachine> &vm,
-                                     const size_t start_time,
-                                     const size_t read_time,
-                                     const size_t run_time) {
+                                     const double start_time,
+                                     const double read_time,
+                                     const double run_time) {
 
-    auto write_time = 0ul;
+    double write_time{};
     auto output_files = activation->get_output_files();
 
     // TODO: see if this behaviour is better
@@ -771,14 +779,14 @@ size_t Solution::AllocateOutputFiles(const std::shared_ptr<Activation> &activati
     return write_time;
 }
 
-size_t Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &activation,
+double Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &activation,
                                            const std::shared_ptr<VirtualMachine> &vm,
-                                           const size_t start_time) {
+                                           const double start_time) {
+#ifndef NDEBUG
+    DLOG(INFO) << "Compute Read Time of the Activation[" << activation->get_id() << "] at VM[" << vm->get_id() << "]";
+#endif
+    double read_time{};
     auto activation_id = activation->get_id();
-    DLOG(INFO) << "Compute Read Time of the Activation[" << activation->get_id() << "] at VM[" << vm->get_id()
-               << "]";
-
-    auto read_time = 0ul;
 
     for (const auto &file: activation->get_input_files()) {
         size_t storage_id;
@@ -797,10 +805,10 @@ size_t Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &ac
 
         auto one_file_read_time = file->GetFileTransfer(file_vm->get_id(), vm->get_id());
 
-        if (one_file_read_time == std::numeric_limits<size_t>::max()) {
+        if (one_file_read_time == std::numeric_limits<double>::max()) {
             DLOG(INFO) << "read_time: " << one_file_read_time;
 
-            return std::numeric_limits<size_t>::max();
+            return std::numeric_limits<double>::max();
         } else {
             // read_time += std::ceil(one_file_read_time);
             read_time += one_file_read_time;
@@ -809,9 +817,11 @@ size_t Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &ac
                 auto allocation_time = std::max((start_time + read_time),
                         activation_execution_data_[activation_id].get_vm_allocation_time(storage_id));
                 activation_execution_data_[activation_id].set_vm_allocation_time(storage_id, allocation_time);
+#ifndef NDEBUG
                 DLOG(INFO) << "storage_id";
                 DLOG(INFO) << "allocation_vm_queue_[" << storage_id << "]: "
                         << activation_execution_data_[activation_id].get_vm_allocation_time(storage_id);
+#endif
             }
         }
     }
@@ -829,25 +839,24 @@ size_t Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &ac
  * \param[in]  virtual_machine  VM where the activation will be executed
  * \retval     makespan         The objective value of the solution when inserting the \c activation
  */
-size_t Solution::CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation> &activation,
+double Solution::CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation> &activation,
                                                          const std::shared_ptr<VirtualMachine> &virtual_machine) {
+#ifndef NDEBUG
     DLOG(INFO) << "Makespan of the allocated Activation[" << activation->get_id() << "] at VM["
                << virtual_machine->get_id() << "]";
-
-    size_t start_time;
-    size_t read_time;
-    size_t run_time;
-    size_t write_time;
-    size_t finish_time = std::numeric_limits<size_t>::max();
+#endif
+    double finish_time = std::numeric_limits<double>::max();
+    double start_time, read_time, run_time, write_time;
 
     start_time = ComputeActivationStartTime(activation->get_id(), virtual_machine->get_id());
     read_time = ComputeActivationReadTime(activation, virtual_machine, start_time);
-    run_time = std::ceil(activation->get_time() * virtual_machine->get_slowdown());
+//    run_time = std::ceil(activation->get_time() * virtual_machine->get_slowdown());
+    run_time = activation->get_time() * virtual_machine->get_slowdown();
     write_time = AllocateOutputFiles(activation, virtual_machine, start_time, read_time, run_time);
 
-    if (start_time != std::numeric_limits<size_t>::max()
-        && read_time != std::numeric_limits<size_t>::max()
-        && write_time != std::numeric_limits<size_t>::max()) {
+    if (start_time != std::numeric_limits<double>::max()
+        && read_time != std::numeric_limits<double>::max()
+        && write_time != std::numeric_limits<double>::max()) {
         finish_time = start_time + read_time + run_time + write_time;
     } else {
         LOG(FATAL) << "Something is wrong!";
@@ -882,7 +891,9 @@ double Solution::ComputeFileSecurityExposureContribution(const std::shared_ptr<S
             int conflict_value = algorithm_->get_conflict_graph()->ReturnConflict(file->get_id(), i);
 
             if (conflict_value > 0) {
+#ifndef NDEBUG
                 DLOG(INFO) << "File[" << i << "] has conflict with File[" << file->get_id() << "]";
+#endif
                 privacy_exposure += conflict_value;  // Adds the penalties
             }
         }
@@ -937,7 +948,9 @@ void Solution::AddOrdering(const size_t id) {
  */
 double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activation,
                                     const std::shared_ptr<VirtualMachine> &vm) {
+#ifndef NDEBUG
     DLOG(INFO) << "Begin schedule the Activation[" << activation->get_id() << "] at VM[" << vm->get_id() << "]";
+#endif
     auto activation_id = activation->get_id();
     // Allocate Activation
     activation_allocations_[activation->get_id()] = vm->get_id();
@@ -955,7 +968,7 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
     }
 
     // 1. Calculates the finish_time
-    size_t finish_time = CalculateMakespanAndAllocateOutputFiles(activation, vm);
+    double finish_time = CalculateMakespanAndAllocateOutputFiles(activation, vm);
 
     // Update auxiliary structures (queue_ and activation_finish_time_)
     // This update is important for the cost calculation
@@ -970,10 +983,12 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
     activation_execution_data_[activation_id].set_vm_finish_time(vm->get_id(), finish_time);
     auto allocation_time = activation_execution_data_[activation_id].get_vm_allocation_time(vm->get_id());
     activation_execution_data_[activation_id].set_vm_allocation_time(vm->get_id(),
-            std::max<size_t>(finish_time, allocation_time));
+            std::max(finish_time, allocation_time));
+#ifndef NDEBUG
     DLOG(INFO) << "vm->get_id()";
     DLOG(INFO) << "allocation_vm_queue_[" << vm->get_id() << "]: "
             << activation_execution_data_[activation_id].get_vm_allocation_time(vm->get_id());
+#endif
     makespan_ = activation_execution_data_[activation_id].get_activation_finish_time();
 
     // 2. Calculates the cost contribution of the activation execution at the virtual machine
@@ -997,10 +1012,11 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
         auto alloc_time = static_cast<double>(vm_allocation_time);
 //        virtual_machine_cost += static_cast<double>(vm_allocation_time) * virtual_machine->get_cost();
         virtual_machine_cost += (alloc_time / 3600) * virtual_machine->get_cost();
-
+#ifndef NDEBUG
         DLOG(INFO) << "allocation_vm_queue_[virtual_machine->get_id()]: "
                    << activation_execution_data_[activation_id].get_vm_allocation_time(virtual_machine->get_id());
         DLOG(INFO) << "virtual_machine->get_cost(): " << virtual_machine->get_cost();
+#endif
     }
 
     // Accumulate the Bucket variable cost
@@ -1014,8 +1030,10 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
             if (file_manager_.get_file_allocation(j) == storage->get_id()) {
                 std::shared_ptr<File> file = algorithm_->GetFilePerId(j);
                 bucket_variable_cost += (storage->get_cost() * file->get_size_in_GB());
+#ifndef NDEBUG
                 DLOG(INFO) << "storage->get_cost(): " << storage->get_cost();
                 DLOG(INFO) << "file->get_size_in_GB(): " << file->get_size_in_GB();
+#endif
             }
         }
     }
@@ -1043,7 +1061,7 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
     security_exposure_ = fetch_confidentiality_exposure();
 
     // If solution is unfeasible return size_t max
-    if (makespan_ == std::numeric_limits<size_t>::max()
+    if (makespan_ == std::numeric_limits<double>::max()
         || cost_ == std::numeric_limits<double>::max()
         || security_exposure_ == std::numeric_limits<double>::max()) {
         objective_value_ = std::numeric_limits<double>::max();
@@ -1100,7 +1118,7 @@ int Solution::ComputeTasksHeights(size_t node) {
 bool Solution::localSearchN1() {
     DLOG(INFO) << "Executing localSearchN1 local search ...";
     double best_known_of = objective_value_;
-    size_t best_known_makespan = makespan_;
+    double best_known_makespan = makespan_;
     double best_known_cost = cost_;
     double best_known_security_exposure_ = security_exposure_;
     for (auto i = 1ul; i < algorithm_->GetActivationSize() - 2ul; i++) {
@@ -1256,7 +1274,7 @@ bool Solution::localSearchN1() {
 bool Solution::localSearchN2() {
     DLOG(INFO) << "Executing localSearchN2 local search ...";
     double best_known_of = objective_value_;
-    size_t best_known_makespan = makespan_;
+    double best_known_makespan = makespan_;
     double best_known_cost = cost_;
     double best_known_security_exposure_ = security_exposure_;
     // for each task, do
@@ -1311,7 +1329,7 @@ bool Solution::localSearchN3() {
 
     DLOG(INFO) << "Executing localSearchN3 local search ...";
     double best_known_of = objective_value_;
-    size_t best_known_makespan = makespan_;
+    double best_known_makespan = makespan_;
     double best_known_cost = cost_;
     double best_known_security_exposure_ = security_exposure_;
     for (auto i = 1ul; i < algorithm_->GetActivationSize() - 1ul; ++i) {
