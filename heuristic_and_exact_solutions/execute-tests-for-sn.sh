@@ -51,15 +51,31 @@ create_cloud_files_for_sn() {
 #    middle_vm6_desc="xlarge 0.20 20 0.1 0.12"
 #    middle_vm7_desc="2xlarge 0.16 20 0.1 0.16"
 #    middle_vm8_desc="3xlarge 0.12 20 0.1 0.33"
+
 #    Montage
-    middle_vm1_desc="nano 2.60 20 0.1 0.02"
-    middle_vm2_desc="micro 2.60 20 0.1 0.03"
-    middle_vm3_desc="small 2.60 20 0.1 0.045"
-    middle_vm4_desc="medium 2.60 20 0.1 0.06"
-    middle_vm5_desc="large 2.60 20 0.1 0.09"
-    middle_vm6_desc="xlarge 2.60 20 0.1 0.12"
-    middle_vm7_desc="2xlarge 2.60 20 0.1 0.16"
-    middle_vm8_desc="3xlarge 2.60 20 0.1 0.33"
+
+#    middle_vm0_desc="VM0 2.00 20 1000000000.1 0.02"
+#    middle_vm1_desc="VM0 1.80 20 1000000000.1 0.03"
+#    middle_vm2_desc="VM0 1.60 20 1000000000.1 0.045"
+#    middle_vm3_desc="VM0 1.40 20 1000000000.1 0.06"
+#    middle_vm4_desc="VM0 1.20 20 1000000000.1 0.09"
+#    middle_vm5_desc="VM0 0.80 20 1000000000.1 0.12"
+#    middle_vm6_desc="VM0 0.80 20 1000000000.1 0.16"
+#    middle_vm7_desc="VM0 0.60 20 1000000000.1 0.20"
+#    middle_vm8_desc="VM0 0.40 20 1000000000.1 0.24"
+#    middle_vm9_desc="VM0 0.20 20 1000000000.1 0.33"
+
+    middle_vm0_desc="VM0 1.60 20 0.1 0.02"
+    middle_vm1_desc="VM1 1.50 20 0.1 0.03"
+    middle_vm2_desc="VM2 1.40 20 0.1 0.045"
+    middle_vm3_desc="VM3 1.30 20 0.1 0.06"
+    middle_vm4_desc="VM4 1.20 20 0.1 0.09"
+    middle_vm5_desc="VM5 1.10 20 0.1 0.12"
+    middle_vm6_desc="VM6 1.00 20 0.1 0.16"
+    middle_vm7_desc="VM7 0.90 20 0.1 0.20"
+    middle_vm8_desc="VM8 0.80 20 0.1 0.24"
+    middle_vm9_desc="VM9 0.70 20 0.1 0.33"
+
 #   Epigenomics - Não deu certo
 #   Inspiral
 #    middle_vm1_desc="nano 0.30 20 1000000000.1 0.20"
@@ -71,21 +87,22 @@ create_cloud_files_for_sn() {
 #    middle_vm7_desc="2xlarge 0.30 20 1000000000.1 0.20"
 #    middle_vm8_desc="3xlarge 0.30 20 1000000000.1 0.20"
 #   Sipht
-    middle_vm1_desc="nano 0.05 20 1000000000.1 0.20"
-    middle_vm2_desc="micro 0.05 20 1000000000.1 0.20"
-    middle_vm3_desc="small 0.05 20 1000000000.1 0.20"
-    middle_vm4_desc="medium 0.05 20 1000000000.1 0.20"
-    middle_vm5_desc="large 0.05 20 1000000000.1 0.20"
-    middle_vm6_desc="xlarge 0.05 20 1000000000.1 0.20"
-    middle_vm7_desc="2xlarge 0.05 20 1000000000.1 0.20"
-    middle_vm8_desc="3xlarge 0.05 20 1000000000.1 0.20"
+#    middle_vm1_desc="nano 0.05 20 1000000000.1 0.20"
+#    middle_vm2_desc="micro 0.05 20 1000000000.1 0.20"
+#    middle_vm3_desc="small 0.05 20 1000000000.1 0.20"
+#    middle_vm4_desc="medium 0.05 20 1000000000.1 0.20"
+#    middle_vm5_desc="large 0.05 20 1000000000.1 0.20"
+#    middle_vm6_desc="xlarge 0.05 20 1000000000.1 0.20"
+#    middle_vm7_desc="2xlarge 0.05 20 1000000000.1 0.20"
+#    middle_vm8_desc="3xlarge 0.05 20 1000000000.1 0.20"
 
     # <id-bucket> <capacidade> <cost> <numero de intervalos> [<limite superior> <valor contratado por intervalo>] <requirement-1> <requirement-2 (pode assumir 0 1 2{so bucket})>
-#    middle_bucket_desc="Standard 51200 1000000000.0 0.023 1 1"
+    middle_bucket_desc="Standard 51200 25.0 0.023 1 1"
 
     # Bucket variable from 1 to 64
 #    BUCKETS=($(seq 1 64))
-    BUCKETS=(0)
+#    BUCKETS=(128)
+    BUCKETS=(128)
 
     # certify folder exists
     FOLDER=./temp
@@ -111,18 +128,20 @@ create_cloud_files_for_sn() {
         cat <<EOF >"${file_name}"
 1 2
 
-1 ${middle_cloud_desc} $((8 * 1)) ${elem}
+1 ${middle_cloud_desc} $((10 * 8)) ${elem}
 EOF
         # VMs
-        for ((i = 0; i < 1; i++)); do
-            echo "$((8*i+0)) ${middle_vm1_desc} 1 1" >> "${file_name}"
-            echo "$((8*i+1)) ${middle_vm2_desc} 1 1" >> "${file_name}"
-            echo "$((8*i+2)) ${middle_vm3_desc} 0 1" >> "${file_name}"
-            echo "$((8*i+3)) ${middle_vm4_desc} 0 1" >> "${file_name}"
-            echo "$((8*i+4)) ${middle_vm5_desc} 1 1" >> "${file_name}"
-            echo "$((8*i+5)) ${middle_vm6_desc} 1 1" >> "${file_name}"
-            echo "$((8*i+6)) ${middle_vm7_desc} 0 1" >> "${file_name}"
-            echo "$((8*i+7)) ${middle_vm8_desc} 0 1" >> "${file_name}"
+        for ((i = 0; i < 8; i++)); do
+            echo "$((10*i+0)) ${middle_vm0_desc} 1 1" >> "${file_name}"
+            echo "$((10*i+1)) ${middle_vm1_desc} 1 1" >> "${file_name}"
+            echo "$((10*i+2)) ${middle_vm2_desc} 1 1" >> "${file_name}"
+            echo "$((10*i+3)) ${middle_vm3_desc} 0 1" >> "${file_name}"
+            echo "$((10*i+4)) ${middle_vm4_desc} 0 1" >> "${file_name}"
+            echo "$((10*i+5)) ${middle_vm5_desc} 1 1" >> "${file_name}"
+            echo "$((10*i+6)) ${middle_vm6_desc} 1 1" >> "${file_name}"
+            echo "$((10*i+7)) ${middle_vm7_desc} 0 1" >> "${file_name}"
+            echo "$((10*i+8)) ${middle_vm8_desc} 0 1" >> "${file_name}"
+            echo "$((10*i+9)) ${middle_vm9_desc} 0 1" >> "${file_name}"
         done
 
         # Buckets
