@@ -1,6 +1,6 @@
 /**
  * \file src/solution/grasp.cc
- * \brief Contains the \c Algorithm class methods
+ * \brief Contains the \c Configuration class methods
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
@@ -8,7 +8,7 @@
  * \date 2024
  *
  * This source file contains the methods from the \c Grasp class
- * that run the mode the approximate solution
+ * that start the mode the approximate solution
  */
 
 #include <iomanip>
@@ -77,7 +77,7 @@ void Grasp::localSearch(Solution &solution) {
 void Grasp::Run() {
     DLOG(INFO) << "Executing GRASP Heuristic ...";
     double time_s;
-    Solution best_solution(shared_from_this());
+    Solution best_solution(get_configuration());
     auto max_iter_without_improve = 10ul;
     auto iter_without_improve = 1ul;
     auto number_of_iterations = 0ul;
@@ -90,19 +90,20 @@ void Grasp::Run() {
         // 1. Construction phase (GreedyRandomizedAlgorithm)
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
-        Solution solution(shared_from_this());
+        Solution solution(get_configuration());
 
         // Start activation list
         DLOG(INFO) << "Initialize activations list";
-        for (const auto &activations: activations_) {
+        for (const auto& activations : GetActivations()) {
             activation_list.push_back(activations);
         }
 
         // Order by height
         DLOG(INFO) << "Order by height";
+        auto heights = GetHeights();
         std::sort(activation_list.begin(), activation_list.end(),
                   [&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
-                      return height_[a->get_id()] < height_[b->get_id()];
+                      return heights[a->get_id()] < heights[b->get_id()];
                   });
 
         // The activation_list is sorted by the height(t). While activation_list is not empty do
@@ -112,7 +113,7 @@ void Grasp::Run() {
 
             avail_activations.clear();
             while (!activation_list.empty()
-                   && height_[task->get_id()] == height_[activation_list.front()->get_id()]) {
+                   && heights[task->get_id()] == heights[activation_list.front()->get_id()]) {
                 // Build list of ready tasks, that is the tasks which the predecessor was finish
                 DLOG(INFO) << "Putting " << activation_list.front()->get_id() << " in avail_activations";
                 avail_activations.push_back(activation_list.front());
@@ -123,7 +124,8 @@ void Grasp::Run() {
             std::shuffle(avail_activations.begin(), avail_activations.end(), generator());
 
             // Schedule the ready tasks (same height)
-            ScheduleAvailTasks(avail_activations, solution);
+            Grch grch{get_configuration()};
+            grch.ScheduleAvailTasks(avail_activations, solution);
         }
         DLOG(INFO) << "Scheduling done";
 
@@ -158,7 +160,7 @@ void Grasp::Run() {
             << best_solution.get_objective_value()
             << " " << best_solution.get_makespan()
             << " " << best_solution.get_cost()
-            << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
+            << " " << best_solution.get_security_exposure() / GetMaximumConfidentialityExposure()
             << " " << time_s
             << " " << number_of_iterations
             << " " << best_solution_iteration

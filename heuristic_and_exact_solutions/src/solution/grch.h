@@ -14,16 +14,16 @@
 #ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
 #define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_H_
 
-
 #include "src/solution/algorithm.h"
+#include "src/solution/configuration.h"
 #include <list>
 #include <algorithm>
-#include <vector>       // std::vector
+#include <vector>
 
 class Grch : public Algorithm {
 public:
     ///
-    Grch() = default;
+    Grch(std::shared_ptr<Configuration> configuration) : Algorithm(configuration) {}
 
     ///
     virtual ~Grch() = default;
@@ -32,13 +32,12 @@ public:
     void ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_activations, Solution &solution);
 
     ///
-    [[nodiscard]] std::string GetName() const override { return name_; }
+    [[nodiscard]] std::string get_name() const override { return name_; }
 
     ///
     void Run() override;
 private:
     std::string name_ = "grch";
 };
-
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_GRCH_H_

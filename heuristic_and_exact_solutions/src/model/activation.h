@@ -22,13 +22,12 @@
 #include <iterator>
 
 #include <memory>
-#include <src/solution/algorithm.h>
 
 #include "src/model/file.h"
 #include "virtual_machine.h"
 
-/// Forward declaration of the class Algorithm, needed because of the circular reference
-class Algorithm;
+/// Forward declaration of the class Configuration, needed because of the circular reference
+class Configuration;
 
 /**
  * \class Activation task.h "src/model/task.h"

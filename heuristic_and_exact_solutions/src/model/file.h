@@ -47,15 +47,23 @@ public:
         for (auto line = 0ul; line < storages_size_; line++) {
             for (auto column = 0ul; column < storages_size_; column++) {
                 if (line == column) {
-                    matrix_[(line * storages_size_) + column] = 1ul;
+                    matrix_[(line * storages_size_) + column] = 0.0;
                 } else {
                     auto link = std::min<double>(storages[line]->get_bandwidth_in_GBps(),
                                                  storages[column]->get_bandwidth_in_GBps());
-//                    auto time = static_cast<size_t>(std::ceil(size_in_GB_ / link));
-//                    auto time = static_cast<size_t>(std::floor(size_in_GB_ / link));
                     auto time = size_in_GB_ / link;
                     matrix_[(line * storages_size_) + column] = time;
                 }
+//                if (line == column) {
+//                    matrix_[(line * storages_size_) + column] = 1ul;
+//                } else {
+//                    auto link = std::min<double>(storages[line]->get_bandwidth_in_GBps(),
+//                                                 storages[column]->get_bandwidth_in_GBps());
+////                    auto time = static_cast<size_t>(std::ceil(size_in_GB_ / link));
+////                    auto time = static_cast<size_t>(std::floor(size_in_GB_ / link));
+//                    auto time = size_in_GB_ / link;
+//                    matrix_[(line * storages_size_) + column] = time;
+//                }
             }
         }
     }

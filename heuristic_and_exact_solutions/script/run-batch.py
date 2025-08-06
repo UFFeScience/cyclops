@@ -55,7 +55,7 @@ def progress_bar(valor):
 def exec_command(cmd):
     p_result = None
     try:
-        # print('cmd:', cmd)
+        print('cmd:', cmd)
         p_result = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     except Exception as ex:
         print(ex)
@@ -101,7 +101,7 @@ def run(inner_instance: str, task_and_files: str, clouds: str, conflict_graph: s
         # print('Command:\n', command)
         # return
         stdout, stderr = exec_command(command)
-        # print('Print output:', stdout.decode())
+        print('Print output:', stdout.decode())
         print('Print error:', stderr.decode())
         # Decodificar a saída em texto
         lines = stdout.decode().splitlines()
@@ -314,13 +314,13 @@ if __name__ == "__main__":
 
     alphas = (
         # (0.3, 0.3, 0.4, 0.5),
-        (0.90, 0.05, 0.05, 0.3),
-        (0.05, 0.90, 0.05, 0.3),
-        (0.05, 0.05, 0.90, 0.3),
-        # (0.999990, 0.000005, 0.000005, 0.5),
-        # (0.000005, 0.999990, 0.000005, 0.5),
-        # (0.000005, 0.000005, 0.999990, 0.5),
-        # (0.333333, 0.333333, 0.333333, 0.5),
+        # (0.990, 0.005, 0.005, 0.3),
+        # (0.005, 0.990, 0.005, 0.3),
+        # (0.005, 0.005, 0.990, 0.3),
+        (0.990, 0.005, 0.005, 0.5),
+        (0.005, 0.990, 0.005, 0.5),
+        (0.005, 0.005, 0.990, 0.5),
+        # (0.333, 0.333, 0.333, 0.5),
         # (0.90, 0.05, 0.05, 0.7),
         # (0.05, 0.90, 0.05, 0.7),
         # (0.05, 0.05, 0.90, 0.7)
@@ -347,7 +347,7 @@ if __name__ == "__main__":
     my_valor_compartilhado = manager.Value('i', 0)
     # print('depois')
     total = len(filenames) * len(alphas) * len(algorithms) * len(instances) * args.repeat
-    pool = Pool(processes=1)
+    pool = Pool(processes=7)
     p = re.compile('([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl')
     contador = 0
     for filename in filenames:

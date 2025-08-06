@@ -1,18 +1,17 @@
 /**
- * \file src/solution/algorithm.h
- * \brief Contains the \c Algorithm class declaration.
+ * \file src/solution/configuration.h
+ * \brief Contains the \c Configuration class declaration.
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
  * \date 2024
  *
- * This header file contains the \c Algorithm class that handles different execution modes.
+ * This header file contains the \c Configuration class that handles different execution modes.
  */
 
-#ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
-#define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
-
+#ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_CONFIGURATION_H_
+#define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_CONFIGURATION_H_
 
 #include <string>
 #include <memory>
@@ -30,17 +29,31 @@
 class Solution;
 
 /**
- * \class Algorithm algorithm.h "src/solution/algorithm.h"
+ * \class Configuration configuration.h "src/solution/configuration.h"
  * \brief Executes the appropriate routines.
  *
  * This class is responsible for calling the appropriate methods for read the input files and
  * execute a specific implementation.
  */
 
-class Algorithm : public std::enable_shared_from_this<Algorithm> {
+class Configuration {
 public:
+    // Constructors
+
     ///
-    explicit Algorithm();
+    Configuration(
+            std::string tasks_and_files,
+            std::string cluster,
+            std::string conflict_graph,
+            double alpha_time,
+            double alpha_budget,
+            double alpha_security,
+            double alpha_restrict_candidate_list
+    );
+
+    Configuration(const Configuration& other) = default;
+
+    // Public methods
 
     /// Read input files.
     void ReadInputFiles(const std::string &tasks_and_files_file,
@@ -48,83 +61,102 @@ public:
                         const std::string &conflict_graph_file);
 
     /// Getter for \c id_source_
-    size_t get_id_source() const { return id_source_; }
+    [[nodiscard]] size_t get_source_id() const { return id_source_; }
 
     /// Getter for \c id_target_
-    size_t get_id_target() const { return id_target_; }
+    [[nodiscard]] size_t get_target_id() const { return id_target_; }
 
     /// Getter for \c conflict_graph_
     std::shared_ptr<ConflictGraph> get_conflict_graph() { return conflict_graph_; }
 
     /// Getter for \c storage_vet_
-    std::vector<double> &get_storage_vet() { return storage_vet_; }
+    [[nodiscard]] std::vector<double>& get_storage_vet() { return storage_vet_; }
 
     /// Getter for \c height_
-    std::vector<int> &get_height() { return height_; }
+    [[nodiscard]] int get_height(const size_t activation_id) {
+        return height_[activation_id];
+    }
 
     /// Getter for \c bucket_size_
-    size_t get_bucket_size() const { return bucket_size_; }
+    [[nodiscard]] size_t get_buckets_size() const { return bucket_size_; }
 
     /// Return the size of the \c activations_
-    size_t GetActivationSize() const { return activations_.size(); }
+    [[nodiscard]] size_t get_activations_size() const { return activations_.size(); }
 
     /// Return the size of the \c files_
-    size_t GetFilesSize() const { return files_.size(); }
+    [[nodiscard]] size_t get_files_size() const { return files_.size(); }
 
     /// Return the size of the \c virtual_machines
-    size_t GetVirtualMachineSize() const { return virtual_machines_.size(); }
+    [[nodiscard]] size_t get_virtual_machines_size() const { return virtual_machines_.size(); }
 
     /// Return the size of the \c storages_
-    size_t GetStorageSize() const { return storages_.size(); }
+    [[nodiscard]] size_t get_storages_size() const { return storages_.size(); }
 
     /// Return the size of the \c requirements_
-    size_t GetRequirementsSize() const { return requirements_.size(); }
+    [[nodiscard]] size_t get_requirements_size() const { return requirements_.size(); }
 
     /// Return a pointer to the \c File identified by \c id
-    std::shared_ptr<File> GetFilePerId(size_t id) { return files_[id]; }
+    [[nodiscard]] std::shared_ptr<File> get_file_per_id(size_t id) { return files_[id]; }
 
     /// Return a pointer to the \c Activation identified by \c id
-    std::shared_ptr<Activation> GetActivationPerId(size_t id) { return activations_[id]; }
+    [[nodiscard]] std::shared_ptr<Activation> get_activation_per_id(size_t id) { return activations_[id]; }
 
     /// Return a pointer to the \c Storage identified by \c id
-    std::shared_ptr<Storage> GetStoragePerId(size_t id) { return storages_[id]; }
+    [[nodiscard]] std::shared_ptr<Storage> get_storage_per_id(size_t id) { return storages_[id]; }
 
     /// Return a pointer to the \c VirtualMachine identified by \c id
-    std::shared_ptr<VirtualMachine> GetVirtualMachinePerId(size_t id) { return virtual_machines_[id]; }
+    [[nodiscard]] std::shared_ptr<VirtualMachine> get_virtual_machine_per_id(size_t id) { return virtual_machines_[id]; }
 
     /// Return a reference to the successors of the \c Activation identified by \c activation_id
-    std::vector<size_t> &GetSuccessors(size_t activation_id) { return successors_[activation_id]; }
+    [[nodiscard]] std::vector<size_t>& get_successors_ids(size_t activation_id) { return successors_[activation_id]; }
 
     /// Return a reference to the predecessors of the \c Activation identified by \c activation_id
-    std::vector<size_t> &GetPredecessors(size_t activation_id) { return predecessors_[activation_id]; }
+    [[nodiscard]] std::vector<size_t>& get_predecessors_ids(size_t activation_id) { return predecessors_[activation_id]; }
 
     /// Getter for makespan_max_
-    double get_makespan_max() const { return makespan_max_; }
+    [[nodiscard]] double get_makespan_max() const { return makespan_max_; }
 
     /// Getter for \c budget_max_
-    double get_budget_max() const { return budget_max_; }
+    [[nodiscard]] double get_budget_max() const { return budget_max_; }
 
     /// Getter for \c alpha_time_
-    double get_alpha_time() const { return alpha_time_; }
+    [[nodiscard]] double get_alpha_time() const { return alpha_time_; }
 
     /// Getter for \c alpha_budget_
-    double get_alpha_budget() const { return alpha_budget_; }
+    [[nodiscard]] double get_alpha_budget() const { return alpha_budget_; }
 
     /// Getter for \c alpha_security_
-    double get_alpha_security() const { return alpha_security_; }
+    [[nodiscard]] double get_alpha_security() const { return alpha_security_; }
 
     /// Getter for \c alpha_security_
-    double get_alpha_restrict_candidate_list() const { return alpha_restrict_candidate_list_; }
+    [[nodiscard]] double get_alpha_restrict_candidate_list() const { return alpha_restrict_candidate_list_; }
 
     /// Getter for \c maximum_security_and_privacy_exposure_
-    double get_maximum_security_and_privacy_exposure() const {
+    [[nodiscard]] double get_maximum_security_and_privacy_exposure() const {
         return maximum_security_and_privacy_exposure_;
     }
 
     ///
-    virtual std::string GetName() const = 0;
+    [[nodiscard]] std::vector<std::shared_ptr<Activation>> get_activations() {
+        return activations_;
+    }
 
-    /// Setter for algorithm input parameter initial_time.
+    ///
+    [[nodiscard]] int get_conflict_value(size_t file, size_t other_file) {
+        return conflict_graph_->ReturnConflict(file, other_file);
+    }
+
+    ///
+    [[nodiscard]] std::vector<int> get_heights() {
+        return height_;
+    }
+
+    ///
+    [[nodiscard]] std::vector<std::shared_ptr<VirtualMachine>> get_virtual_machines() {
+        return virtual_machines_;
+    }
+
+    ///
     void SetAlphas(double alpha_time,
                    double alpha_budget,
                    double alpha_security,
@@ -138,15 +170,17 @@ public:
     ///
     void CalculateMaximumSecurityAndPrivacyExposure();
 
-    /**
-     * \brief Executes the algorithm.
-     */
-    virtual void Run() = 0;
+    // Getters and setters
 
-    /**
-     * \brief Returns an object derived from Algorithm according to \c name parameter.
-     */
-    static std::shared_ptr<Algorithm> ReturnAlgorithm(const std::string &algorithm);
+    ///
+    [[nodiscard]] bool get_check_for_hard_constraints() {
+        return check_for_hard_constraints_;
+    }
+
+    ///
+    void set_check_for_hard_constraints(bool check_for_hard_constraints) {
+        check_for_hard_constraints_ = check_for_hard_constraints;
+    }
 
 protected:
     ///
@@ -209,13 +243,17 @@ protected:
     std::vector<std::vector<size_t>> predecessors_;
 
     /// Number of the buckets
-    size_t bucket_size_ = 0ul;
+    size_t bucket_size_{};
+
+    ///
+    bool check_for_hard_constraints_{true};
 
     ///
     std::vector<int> height_;
 
     ///
     std::shared_ptr<ConflictGraph> conflict_graph_;
+//    ConflictGraph conflict_graph_{};
 
     /// The weight of the time
     double alpha_time_{};
@@ -231,10 +269,6 @@ protected:
 
     ///
     double maximum_security_and_privacy_exposure_{};
-
-    ///
-    clock_t t_start = clock();
 };
 
-
-#endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_ALGORITHM_H_
+#endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_CONFIGURATION_H_

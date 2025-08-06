@@ -48,7 +48,6 @@ public:
 
     /// Add a new conflict value between the file with ID \c line and file with ID \c column
     void AddConflict(const size_t line, const size_t column, const int value) {
-
         if (value == 0) {  // Hard constraint
             conflicts_[(line * files_size_) + column] = -1;
             conflicts_[(column * files_size_) + line] = -1;

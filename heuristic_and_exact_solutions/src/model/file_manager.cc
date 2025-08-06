@@ -12,19 +12,40 @@
 
 #include "file_manager.h"
 
-FileManager::FileManager(size_t files_size, size_t storages_size, const std::shared_ptr<ConflictGraph> &conflict_graph)
-        : total_conflict_(0ul),
-          file_allocations_(files_size, std::numeric_limits<size_t>::max()),
-          storages_conflict_(storages_size, 0ul),
-          files_distribution_(storages_size, std::list<size_t>()),
-          conflict_graph_(conflict_graph) {
-}
+// Constructors
+
+//FileManager::FileManager(
+//        size_t files_size,
+//        size_t storages_size,
+//        const std::shared_ptr<ConflictGraph> &conflict_graph
+//)
+//        : total_conflict_(0ul),
+//          file_allocations_(files_size, std::numeric_limits<size_t>::max()),
+//          storages_conflict_(storages_size, 0ul),
+//          files_distribution_(storages_size, std::list<size_t>()),
+//          conflict_graph_(conflict_graph) {
+//}
+
+FileManager::FileManager(
+        size_t files_size,
+        size_t storages_size,
+        const std::shared_ptr<ConflictGraph>& conflict_graph,
+        bool check_for_constraints
+) :
+        total_conflict_(0ul),
+        file_allocations_(files_size, std::numeric_limits<size_t>::max()),
+        storages_conflict_(storages_size, 0ul),
+        files_distribution_(storages_size, std::list<size_t>()),
+        conflict_graph_(conflict_graph),
+        check_for_hard_constraints_(check_for_constraints) {}
+
+// Public methods
 
 size_t FileManager::get_file_allocation(size_t file_id) const {
     return file_allocations_[file_id];
 }
 
-void FileManager::set_file_allocation(size_t file_id, size_t storage_id) {
+void FileManager::set_file_allocation(const size_t file_id, const size_t storage_id) {
 
     DLOG(INFO) << "file_id " << file_id << " storage_id " << storage_id;
 
@@ -43,25 +64,31 @@ void FileManager::set_file_allocation(size_t file_id, size_t storage_id) {
     }
 #endif
     int file_conflict;
+
     for (auto stored_file_id: files_distribution_[storage_id]) {
         file_conflict = conflict_graph_->ReturnConflict(file_id, stored_file_id);
         DLOG(INFO) << "file_conflict " << file_conflict;
         if (file_conflict < 0) {
-            LOG(FATAL) << "Not acceptable file assign with hard-constrain conflict";
+            if (check_for_hard_constraints_) {
+                LOG(FATAL) << "Not acceptable file assign with hard-constrain conflict";
+            }
+        } else {
+            sum_of_conflicts += static_cast<size_t>(file_conflict);
         }
-        sum_of_conflicts += static_cast<size_t>(file_conflict);
     }
+
     storages_conflict_[storage_id] = sum_of_conflicts;
     total_conflict_ += (sum_of_conflicts - previous_sum);
     files_distribution_[storage_id].push_back(file_id);
 }
 
 bool FileManager::ChangeFileAllocation(size_t file_id, size_t new_storage_id) {
-
     auto old_storage_id = file_allocations_[file_id];
+
     if (old_storage_id == new_storage_id) {
         LOG(FATAL) << "Same storage is not permitted";
     }
+
     auto it = std::find(files_distribution_[old_storage_id].begin(), files_distribution_[old_storage_id].end(),
             file_id);
     if (it != files_distribution_[old_storage_id].end()) {
@@ -72,9 +99,12 @@ bool FileManager::ChangeFileAllocation(size_t file_id, size_t new_storage_id) {
             if (file_id != stored_file_id) {
                 file_conflict = conflict_graph_->ReturnConflict(file_id, stored_file_id);
                 if (file_conflict < 0) {
-                    LOG(FATAL) << "Makes no sense, would not be a hard-conflict here";
+                    if (check_for_hard_constraints_) {
+                        LOG(FATAL) << "Makes no sense, would not be a hard-conflict here";
+                    }
+                } else {
+                    sum_of_conflicts_old_vm += static_cast<size_t>(file_conflict);
                 }
-                sum_of_conflicts_old_vm += static_cast<size_t>(file_conflict);
             }
         }
         // Accumulate old vm conflict between files

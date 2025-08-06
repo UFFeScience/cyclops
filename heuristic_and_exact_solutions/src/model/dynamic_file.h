@@ -22,7 +22,7 @@
 #include "src/model/activation.h"
 #include "src/model/file.h"
 
-/// Forward declaration of the class Algorithm, needed because of the circular reference
+/// Forward declaration of the class Configuration, needed because of the circular reference
 class Activation;
 
 /**

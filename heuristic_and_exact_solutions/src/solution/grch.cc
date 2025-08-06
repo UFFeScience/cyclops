@@ -1,13 +1,12 @@
 /**
- * \file src/solution/greedy_randomized_constructive_heuristic.cc
- * \brief Contains the \c Algorithm class methods for the Greed Randomized Constructive Heuristic
+ * \file src/solution/grch.cc
+ * \brief Contains the \c Configuration class methods for the Greed Randomized Constructive Heuristic
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2024
  *
- * This source file contains the methods for the \c Grch class that run the Greed Randomized Constructive Heuristic
+ * This source file contains the methods for the \c Grch class that start the Greed Randomized Constructive Heuristic
  * methods
  */
 
@@ -35,16 +34,19 @@ void Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_act
         std::list<std::pair<std::shared_ptr<Activation>, Solution>> avail_solutions;
 
         // 1. Computing time
-        for (const auto &activation: avail_activations) {
+        for (const auto& activation : avail_activations) {
             // The solution with the best O.F. after choosing a specific VM
-            Solution best_temporary_solution(shared_from_this());
+            Solution best_temporary_solution(get_configuration());
 
             // Begin with a BIG O.F.
             auto best_of = std::numeric_limits<double>::max();
-            auto best_vm = virtual_machines_[0ul];
+            auto virtual_machines = GetVirtualMachines();
+            // TODO: I think that the initialization bellow is not needed
+            auto best_vm = virtual_machines[0ul];
 
+            // TODO: Return the virtual_machines iterator instead of the object
             // Compute the O.F. in each Vm
-            for (auto &vm: virtual_machines_) {
+            for (auto& vm : virtual_machines) {
 //                auto new_solution = best_solution;
                 auto new_solution = solution;
                 auto of = new_solution.ScheduleActivation(activation, vm);
@@ -68,20 +70,18 @@ void Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_act
 
         if (!avail_solutions.empty()) {
             // Sorting elements
-            avail_solutions.sort([&](const std::pair<std::shared_ptr<Activation>, Solution> &a,
-                                     const std::pair<std::shared_ptr<Activation>, Solution> &b) {
+            avail_solutions.sort([&](const std::pair<std::shared_ptr<Activation>, Solution>& a,
+                                     const std::pair<std::shared_ptr<Activation>, Solution>& b) {
                 return a.second.get_objective_value() < b.second.get_objective_value();
             });
-
             auto sol_size = static_cast<double>(avail_solutions.size());
             auto upper_limit = std::min<size_t>(
-                    static_cast<size_t>(std::ceil(sol_size * alpha_restrict_candidate_list_)),
+                    std::ceil(sol_size * GetAlphaRestrictCandidateList()),
                     avail_solutions.size()) - 1ul;
-
             auto position = my_rand<size_t>(0ul, upper_limit);
-
+            if (position >= avail_solutions.size()) LOG(FATAL)
+                    << "Position can not be greater then or equal to avail_solutions size";
             auto selected_candidate = std::next(avail_solutions.begin(), static_cast<long>(position));
-//            best_solution = selected_candidate->second;
             solution = selected_candidate->second;
 #ifndef NDEBUG
             DLOG(INFO) << "Selected Activation from Restrict Candidate List[" << selected_candidate->first->get_id()
@@ -106,9 +106,10 @@ void Grch::ScheduleAvailTasks(std::vector<std::shared_ptr<Activation>> avail_act
  *
  */
 void Grch::Run() {
+    std::cout << "Begin RUN: " << std::endl;
     DLOG(INFO) << "Executing GRCH (Greedy Randomized Constructive Heuristic) ...";
     double time_s;
-    Solution best_solution(shared_from_this());
+    Solution best_solution(get_configuration());
 //    auto max_iter_without_improve = 10ul;
 //    auto iter_without_improve = 1ul;
 //    auto number_of_iterations = 0ul;
@@ -119,11 +120,11 @@ void Grch::Run() {
     for (auto i = 0ul; i < max_iter; ++i) {
         std::vector<std::shared_ptr<Activation>> activation_list;
         std::vector<std::shared_ptr<Activation>> avail_activations;
-        Solution solution(shared_from_this());
+        Solution solution(get_configuration());
 
         // Start task list
         DLOG(INFO) << "Initialize activation list";
-        for (const auto &activation: activations_) {
+        for (const auto& activation : GetActivations()) {
 #ifndef NDEBUG
             DLOG(INFO) << "Inserting activation " << activation->get_id();
 #endif
@@ -132,9 +133,10 @@ void Grch::Run() {
 
         // Order by height
         DLOG(INFO) << "Order by height";
+        auto heights = GetHeights();
         std::sort(activation_list.begin(), activation_list.end(),
                   [&](const std::shared_ptr<Activation> &a, const std::shared_ptr<Activation> &b) {
-            return height_[a->get_id()] < height_[b->get_id()];
+            return heights[a->get_id()] < heights[b->get_id()];
         });
 
         // The activation_list is sorted by the height(t). While activation_list is not empty do
@@ -147,7 +149,7 @@ void Grch::Run() {
              */
             avail_activations.clear();
             while (!activation_list.empty()
-                   && height_[activation->get_id()] == height_[activation_list.front()->get_id()]) {
+                   && heights[activation->get_id()] == heights[activation_list.front()->get_id()]) {
                 // build list of ready tasks, that is the tasks which the predecessor was finish
 #ifndef NDEBUG
                 DLOG(INFO) << "Putting " << activation_list.front()->get_id() << " in avail_activations";
@@ -183,13 +185,15 @@ void Grch::Run() {
 //        }
     }
 
+    best_solution.OptimizedComputeObjectiveFunction();
+    
     LOG(INFO) << best_solution;
 
     std::cout << std::fixed << std::setprecision(6)
               << best_solution.get_objective_value()
               << " " << best_solution.get_makespan()
               << " " << best_solution.get_cost()
-              << " " << best_solution.get_security_exposure() / get_maximum_security_and_privacy_exposure()
+              << " " << best_solution.get_security_exposure() / GetMaximumConfidentialityExposure()
               << " " << time_s
               << " " << max_iter
               << " " << best_solution_iteration

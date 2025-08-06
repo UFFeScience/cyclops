@@ -26,14 +26,24 @@
 
 class FileManager {
 public:
-    /// Constructor declaration
-    explicit FileManager(size_t, size_t, const std::shared_ptr<ConflictGraph> &);
-
-    /// Pass the file id, and return the storage id where the file is located
-    [[nodiscard]] size_t get_file_allocation(size_t) const;
+    // Constructors
 
     ///
-    void set_file_allocation(size_t, size_t);
+//    FileManager(
+//            size_t files_size,
+//            size_t storages_size,
+//            const std::shared_ptr<ConflictGraph> &conflict_graph
+//    );
+
+    ///
+    FileManager(
+            size_t files_size,
+            size_t storages_size,
+            const std::shared_ptr<ConflictGraph>& conflict_graph,
+            bool check_for_hard_constraints
+    );
+
+    // Public methods
 
     ///
     bool ChangeFileAllocation(size_t file_id, size_t new_storage_id);
@@ -41,8 +51,18 @@ public:
     ///
     bool FileHasHardConstraintsAgainstVmFiles(size_t, size_t);
 
+    // Getters and setters
+
+    /// Pass the file id, and return the storage id where the file is located
+    [[nodiscard]] size_t get_file_allocation(size_t) const;
+
+    ///
+    void set_file_allocation(size_t file_id, size_t storage_id);
+
     ///
     [[nodiscard]] size_t get_file_privacy_exposure() const;
+
+
 private:
     ///
     size_t total_conflict_;
@@ -58,6 +78,9 @@ private:
 
     ///
     std::shared_ptr<ConflictGraph> conflict_graph_;
+
+    ///
+    bool check_for_hard_constraints_{true};
 };
 
 

@@ -14,9 +14,12 @@
 #define APPROXIMATE_SOLUTIONS_SRC_CPLEX_H_
 
 #include <ilcplex/ilocplex.h>
-#include "src/solution/algorithm.h"
 
-template<typename T= VirtualMachine>
+#include <utility>
+#include "src/solution/algorithm.h"
+#include "src/solution/configuration.h"
+
+template<typename T = VirtualMachine>
 T dynamic_pointer_cast(Storage);
 
 //------------ Cplex environment structure (environment, model and variables) -------------------
@@ -56,11 +59,17 @@ struct CPLEX {
 
 class Cplex : public Algorithm {
 public:
+    // Constructors
+
     ///
-    Cplex() = default;
+    Cplex(std::shared_ptr<Configuration> configuration) : Algorithm(std::move(configuration)) {}
+
+    // Destructor
 
     ///
     virtual ~Cplex() = default;
+
+    // Public methods
 
     static int ComputeFileTransferTime(const std::shared_ptr<File>& file,
                                        const std::shared_ptr<Storage> &storage1,
@@ -69,7 +78,7 @@ public:
     static void print_solution_timeline(struct BEST *data);
 
     ///
-    [[nodiscard]] std::string GetName() const override { return name_; }
+    [[nodiscard]] std::string get_name() const override { return name_; }
 
     ///
     void Run() override;
@@ -366,7 +375,9 @@ struct BEST {
         // -------- ws ----------
         for (auto i = 0ul; i < d_ - 1; ++i) {
             for (auto j = i + 1; j < d_; ++j) {
-                int conflict = algorithm_->get_conflict_graph()->ReturnConflict(i, j);
+//                int conflict = configuration_->get_conflict_graph()->ReturnConflict(i, j);
+                int conflict = algorithm_->GetConflictValue(i, j);
+
 
                 if (conflict > 0) {  // soft constraint
                     if (ws[i][j] > PRECISION) {
@@ -387,7 +398,7 @@ struct BEST {
 
         // -------- b ----------
         for (auto i = 0ul; i < numb_; ++i) {
-            std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(algorithm_->GetVirtualMachineSize() + i);
+            std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(algorithm_->GetVirtualMachinesSize() + i);
 
             if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
                 for (auto j = 0ul; j <= bucket->get_number_of_GB_per_cost_intervals(); ++j) {
@@ -402,7 +413,7 @@ struct BEST {
 
         // -------- q ----------
         for (auto i = 0ul; i < numb_; ++i) {
-            std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(algorithm_->GetVirtualMachineSize() + i);
+            std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(algorithm_->GetVirtualMachinesSize() + i);
 
             if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
                 for (auto j = 0ul; j <= bucket->get_number_of_GB_per_cost_intervals(); ++j) {
@@ -570,7 +581,7 @@ struct BEST {
 
                                 // Returns the value of the variable
                                 if (r_idjpt >= (1 - PRECISION)) {
-//                                    auto read_time = algorithm_->ComputeFileTransferTime(file, virtual_machine,
+//                                    auto read_time = configuration_->ComputeFileTransferTime(file, virtual_machine,
 //                                                                                         storage);
                                     auto read_time = Cplex::ComputeFileTransferTime(
                                             file, virtual_machine, storage);
@@ -626,7 +637,7 @@ struct BEST {
 
                                 // Returns the value of the variable
                                 if (w_idjpt >= (1 - PRECISION)) {
-//                                    int write_time = algorithm_->ComputeFileTransferTime(file, virtual_machine, storage);
+//                                    int write_time = configuration_->ComputeFileTransferTime(file, virtual_machine, storage);
                                     auto write_time = Cplex::ComputeFileTransferTime(
                                             file, virtual_machine, storage);
 

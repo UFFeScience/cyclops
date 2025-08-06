@@ -16,18 +16,23 @@
 
 
 #include "src/solution/algorithm.h"
+#include "src/solution/configuration.h"
 #include "grch.h"
 
-class Grasp : public Grch {
+class Grasp : public Algorithm {
 public:
+    // Constructors
+
     ///
-    Grasp() = default;
+    Grasp(std::shared_ptr<Configuration> configuration) : Algorithm(configuration) {}
+
+    // Destructor
 
     ///
     virtual ~Grasp() = default;
 
     ///
-    [[nodiscard]] std::string GetName() const override { return name_; }
+    [[nodiscard]] std::string get_name() const override { return name_; }
 
     ///
     void localSearch(Solution &);

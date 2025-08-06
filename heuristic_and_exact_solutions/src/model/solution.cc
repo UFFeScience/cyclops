@@ -15,45 +15,315 @@
 #include <utility>  // Para std::pair
 #include <algorithm>  // Para std::find_if
 #include <iomanip>
+#include <boost/iterator/counting_iterator.hpp>
 #include "src/model/solution.h"
 
 DECLARE_uint64(number_of_allocation_experiments);
 
+constexpr size_t NUM_CHROMOSOMES = 50;
+constexpr size_t NUM_GENERATIONS = 100;
+constexpr double MUTATION_PROBABILITY = 0.10;
+constexpr double ALPHA = 0.3;
+
+// Constructors
+
 /**
  * Parameterised constructor.
  *
- * @param algorithm
+ * @param configuration
  */
-Solution::Solution(const std::shared_ptr<Algorithm>& algorithm)
-        : algorithm_(algorithm),
-          activation_allocations_(algorithm->GetActivationSize(), std::numeric_limits<size_t>::max()),
-          file_manager_(algorithm->GetFilesSize(), algorithm->GetStorageSize(), algorithm->get_conflict_graph()),
-          activation_height_(algorithm->GetActivationSize(), -1),
+Solution::Solution(const std::shared_ptr<Configuration> &configuration)
+        : configuration_(configuration),
+          activation_allocations_(configuration->get_activations_size(), std::numeric_limits<size_t>::max()),
+          file_manager_(configuration->get_files_size(),
+                        configuration->get_storages_size(),
+                        configuration->get_conflict_graph(),
+                        configuration->get_check_for_hard_constraints()),
+          activation_height_(configuration->get_activations_size(), -1),
           makespan_(std::numeric_limits<double>::max()),
           virtual_machine_cost_(std::numeric_limits<double>::max()),
           bucket_variable_cost_(std::numeric_limits<double>::max()),
           cost_(std::numeric_limits<double>::max()),
           activation_exposure_(std::numeric_limits<double>::max()),
           file_privacy_exposure_(std::numeric_limits<double>::max()),
-          security_exposure_(algorithm_->get_maximum_security_and_privacy_exposure()) {
+          security_exposure_(configuration_->get_maximum_security_and_privacy_exposure()) {
     // Initialize the allocation with the static files place information (VM or Bucket)
-    for (size_t i = 0ul; i < algorithm_->GetFilesSize(); ++i) {
-        auto file = algorithm_->GetFilePerId(i);
+    for (size_t i = 0ul; i < configuration_->get_files_size(); ++i) {
+        auto file = configuration_->get_file_per_id(i);
         if (auto static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
             SetFileAllocation(file->get_id(), static_file->GetFirstVm());
         }
     }
 
     // Setting Activations Heights
-    ComputeTasksHeights(algorithm->get_id_source());
+    ComputeTasksHeights(configuration->get_source_id());
 
     // Initialize the Activation Execution Data
-    for (auto i = 0ul; i < algorithm->GetActivationSize(); ++i) {
-        ActivationExecutionData aed{algorithm->GetActivationSize(), algorithm->GetVirtualMachineSize()};
+    for (auto i = 0ul; i < configuration->get_activations_size(); ++i) {
+        ActivationExecutionData aed{configuration->get_activations_size(), configuration->get_virtual_machines_size()};
         activation_execution_data_.push_back(aed);
     }
-
 }
+
+// Public Methods
+
+//Mutation on allocation chromosome
+void Solution::Mutate(double probability) {
+    std::uniform_int_distribution<> idis(0, configuration_->get_virtual_machines_size() - 1);
+
+    for (size_t i{}; i < configuration_->get_activations_size(); i++) {
+        if (((float) random() / (float) RAND_MAX) <= probability) {
+            activation_allocations_[i] = my_rand<size_t>(0, configuration_->get_virtual_machines_size() - 1);
+        }
+    }
+
+    for (size_t i{}; i < configuration_->get_files_size(); i++) {
+        if (((float) random() / (float) RAND_MAX) <= probability) {
+//            file_manager_.set_file_allocation(i, my_rand<size_t>(0, configuration_->get_virtual_machines_size() - 1));
+            auto new_vm_id = my_rand<size_t>(0, configuration_->get_virtual_machines_size() - 1);
+            if (new_vm_id != file_manager_.get_file_allocation(i)) file_manager_.ChangeFileAllocation(i, new_vm_id);
+        }
+    }
+
+    OptimizedComputeObjectiveFunction();
+}
+
+// Random encode (new chromosome)
+void Solution::Encode() {
+    std::vector<size_t> seq_list(boost::counting_iterator<size_t>(0ull), boost::counting_iterator<size_t>(
+            activation_height_.size())
+    );
+
+    // TODO: Height should be size_t also
+    // TODO: passing by reference is too much, I think
+    sort(begin(seq_list), end(seq_list), [&](const size_t& i, const size_t& j) {
+        return activation_height_[i] < activation_height_[j];
+    }); //sort a list based on height soft
+
+    // Encode ordering Chromosome
+    for (auto activation_id : seq_list) {
+        ordering_.push_back(activation_id);
+    }
+
+    // Encode allocation chromosome
+    for (size_t i{}; i < configuration_->get_activations_size(); i++) {
+        activation_allocations_[i] = my_rand<size_t>(0, configuration_->get_virtual_machines_size() - 1);
+    }
+
+    for (size_t i{}; i < configuration_->get_files_size(); i++) {
+        auto file = configuration_->get_file_per_id(i);
+        if (!std::dynamic_pointer_cast<StaticFile>(file)) {
+            file_manager_.set_file_allocation(i, my_rand<size_t>(0, configuration_->get_virtual_machines_size() - 1));
+        }
+    }
+}
+
+/*crossover*/
+Solution Solution::Crossover(Solution partner) {
+    Solution chr(partner);
+
+    size_t activation_size = configuration_->get_activations_size();
+
+    size_t point_ordering = my_rand<size_t>(0, activation_size - 1);
+    size_t point_allocation = my_rand<size_t>(0, activation_size - 1);
+    size_t point_file = my_rand<size_t>(0, configuration_->get_files_size() - 1);
+
+    // Allocation crossover (Single point crossover)
+    for (size_t i{}; i < point_allocation; i++) {
+        chr.activation_allocations_[i] = activation_allocations_[i];
+    }
+
+    // Allocation crossover (Single point crossover)
+    for (size_t i{}; i < point_file; i++) {
+        if (chr.file_manager_.get_file_allocation(i) != file_manager_.get_file_allocation(i)) {
+            chr.file_manager_.ChangeFileAllocation(i, file_manager_.get_file_allocation(i));
+        }
+    }
+
+    // Ordering crossover
+    std::vector<bool> aux(activation_size, false);
+    chr.ordering_.clear();
+
+    // Ordering crossover first part self -> chr
+    for (size_t i{}; i < point_ordering; i++) {
+        chr.ordering_.push_back(ordering_[i]);
+        aux[ordering_[i]] = true;
+    }
+
+    // Ordering crossover second part partner -> chr
+    for (size_t i{}; i < activation_size; i++) {
+        if (!aux[partner.ordering_[i]]) {
+            chr.ordering_.push_back(partner.ordering_[i]);
+        }
+    }
+
+    return chr;
+}
+
+double Solution::GetActivationStartTime(size_t act_id, size_t vm_id) {
+    double start_time{};
+
+    // What came later, occupation of the VM or the previous activation finish time
+    for (auto predecessor_id : configuration_->get_predecessors_ids(act_id)) {
+        if (predecessor_id == configuration_->get_source_id()) {
+            break;
+        }
+        start_time = std::max(start_time, activation_execution_data_[predecessor_id].get_activation_finish_time());
+    }
+
+    auto ordering_size = ordering_.size();
+
+    if (ordering_size > 0) {
+        return std::max(start_time, activation_execution_data_[ordering_size - 1].get_vm_finish_time(vm_id));
+    } else {
+        return start_time;
+    }
+}
+
+double Solution::GetActivationReadTime(const size_t act_id, const size_t vm_id) {
+    double read_time{};
+
+    auto activation = configuration_->get_activation_per_id(act_id);
+    for (const auto& file: activation->get_input_files()) {
+        size_t storage_id;
+        auto file_id = file->get_id();
+
+        // TODO: This should be inside the file object, something like GetStorage()
+        // TODO: Maybe, it is better initialize all static files with corresponding VM and drop the casting
+//        if (auto static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
+            // If the file is static, get the ID of the storage where the file is stored from its definition
+//            storage_id = static_file->GetFirstVm();
+//        } else {
+            // If the file is dynamic, get the ID of the storage where the file is stored from its allocation
+            storage_id = file_manager_.get_file_allocation(file_id);
+//        }
+
+        if (storage_id == std::numeric_limits<size_t>::max()) {
+            LOG(FATAL) << "Wrong storage_id - PopulateExecutionAndAllocationsTimeVectors";
+        }
+
+//        auto file_storage = configuration_->get_storage_per_id(storage_id);
+
+        // Ceil of File Transfer Time + File Size * lambda
+        auto one_file_read_time = file->GetFileTransfer(storage_id, vm_id);
+
+        // If reading problem then terminate
+        if (one_file_read_time == std::numeric_limits<double>::max()) {
+            LOG(FATAL) << "Something is wrong with file reading";
+        }
+
+        read_time += one_file_read_time;
+
+        // TODO: Doing this another time
+
+//        // If the storage is some VM (not bucket) different from the execution VM
+//        // Allocate the necessary VM for the reading
+//        if (storage_id < configuration_->get_virtual_machines_size() and storage_id != vm->get_id()) {
+//            if (start_time != std::numeric_limits<double>::max()
+//                && read_time != std::numeric_limits<double>::max()) {
+//                double finish_read_time = start_time + read_time;
+//                activation_execution_data_[act_id].set_vm_allocation_time(
+//                        storage_id,
+//                        std::max(activation_execution_data_[act_id].get_vm_allocation_time(storage_id),
+//                                 finish_read_time));
+//            }
+//        }
+    }
+
+    return read_time;
+}
+
+double Solution::GetActivationRunTime(const size_t act_id, const size_t vm_id) {
+    auto activation = configuration_->get_activation_per_id(act_id);
+    auto virtual_machine = configuration_->get_virtual_machine_per_id(vm_id);
+    return activation->get_time() * virtual_machine->get_slowdown();
+}
+
+double Solution::GetActivationWriteTime(const size_t act_id, const size_t vm_id) {
+    DLOG(INFO) << act_id << " " << vm_id;
+    // All files are being stored on the VM executing the activation
+    return 0.0;
+
+//    double write_time{};
+//    auto activation = configuration_->get_activation_per_id(act_id);
+//    auto virtual_machine = configuration_->get_virtual_machine_per_id(vm_id);
+//
+//    auto output_files = activation->get_output_files();
+//    for (const auto& output_file: output_files) {
+//        size_t output_file_id = output_file->get_id();
+//        size_t storage_id = file_manager_.get_file_allocation(output_file_id);
+//        std::shared_ptr<Storage> storage = configuration_->get_storage_per_id(storage_id);
+//        double one_file_write_time = output_file->GetFileTransfer(virtual_machine->get_id(), storage->get_id());
+//
+//        // If we could not Write the output_file then terminate!
+//        if (one_file_write_time == std::numeric_limits<double>::max()) {
+//            LOG(FATAL) << "Something is wrong with output_file writing";
+//        }
+//
+//        write_time += one_file_write_time;
+//
+////        // If the storage is some VM (not bucket) different from the execution VM
+////        // Allocate the necessary VM for the writing
+////        if (storage_id < configuration_->get_virtual_machines_size() and storage_id != vm_id) {
+////            if (activation_start_time != std::numeric_limits<double>::max()
+////                && activation_read_time != std::numeric_limits<double>::max()
+////                && activation_run_time != std::numeric_limits<double>::max()
+////                && activation_write_time != std::numeric_limits<double>::max()) {
+////                double finish_write_time = activation_start_time
+////                                           + activation_read_time
+////                                           + activation_run_time
+////                                           + activation_write_time;
+////
+////                // Need to Allocate VM until output_file is writen
+////                activation_execution_data_[activation_id].set_vm_allocation_time(
+////                        storage_id,
+////                        std::max(
+////                                activation_execution_data_[activation_id].get_vm_allocation_time(storage_id),
+////                                finish_write_time));
+////            } else {
+////                LOG(FATAL) << "Something very very very wrong";
+////            }
+////        }
+//    }
+//
+//    return write_time;
+}
+
+size_t Solution::GetDistance(const Solution& solution) {
+    size_t distance{};
+    size_t activation_size = configuration_->get_activations_size();
+
+    // compute the distance based on position
+    for (size_t i{}; i < activation_size; i++) {
+        if (activation_allocations_[i] != solution.activation_allocations_[i])
+            distance += 1;
+    }
+
+    for (size_t i{}; i < configuration_->get_files_size(); i++) {
+        if (file_manager_.get_file_allocation(i) != solution.file_manager_.get_file_allocation(i))
+            distance += 1;
+    }
+
+    // TODO: Better understand this
+    // compute the distance based on swaps required
+    std::vector<size_t> aux_ordering(ordering_);
+    for (size_t i{}; i < activation_size; i++) {
+        if (aux_ordering[i] != solution.ordering_[i]) {
+            distance += 1;
+            for (size_t j = i + 1; j < activation_size; j++) {
+                if (aux_ordering[j] == solution.ordering_[i]) {
+                    iter_swap(aux_ordering.begin() + static_cast<long>(i), aux_ordering.begin() + static_cast<long>(j));
+                }
+            }
+        }
+    }
+
+    return distance;
+}
+
+//double SetActivationOutputFilesLocations(const size_t act_id, const size_t vm_id) {
+//
+//}
 
 void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_ordering) {
     for (auto index = start_of_ordering; index < ordering_.size(); index++) {
@@ -66,7 +336,7 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
         double finish_time;
 
         // Fetching some previous Activation Execution Data
-        for (auto vm_id = 0ul; vm_id < algorithm_->GetVirtualMachineSize(); vm_id++) {
+        for (auto vm_id = 0ul; vm_id < configuration_->get_virtual_machines_size(); vm_id++) {
             auto previous_activation_id = ordering_[index - 1];
             activation_execution_data_[activation_id].set_vm_finish_time(vm_id,
                     activation_execution_data_[previous_activation_id].get_vm_finish_time(vm_id));
@@ -75,15 +345,15 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
         }
 
         // Load Vm
-        auto vm = algorithm_->GetVirtualMachinePerId(activation_allocations_[activation_id]);
+        auto vm = configuration_->get_virtual_machine_per_id(activation_allocations_[activation_id]);
         auto vm_id = vm->get_id();
-        auto activation = algorithm_->GetActivationPerId(activation_id);
+        auto activation = configuration_->get_activation_per_id(activation_id);
 
         // TODO: VM finish time and VM allocation time could be within the VM object
         // Compute Activation Start Time
-        // What came latter, occupation of the VM or the previous activation finish time
-        for (auto previous_activation_id: algorithm_->GetPredecessors(activation->get_id())) {
-            if (previous_activation_id == algorithm_->get_id_source()) {
+        // What came later, occupation of the VM or the previous activation finish time
+        for (auto previous_activation_id : configuration_->get_predecessors_ids(activation->get_id())) {
+            if (previous_activation_id == configuration_->get_source_id()) {
 //                activation_start_time = 0ul;
                 break;
             }
@@ -97,7 +367,7 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
                 activation_execution_data_[activation_id].get_vm_finish_time(vm_id));
 
         // Compute Activation Read Time
-        for (const auto &file: activation->get_input_files()) {
+        for (const auto& file: activation->get_input_files()) {
             size_t storage_id;
             auto file_id = file->get_id();
 
@@ -114,7 +384,7 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
                 LOG(FATAL) << "Wrong storage_id - PopulateExecutionAndAllocationsTimeVectors";
             }
 
-            auto file_storage = algorithm_->GetStoragePerId(storage_id);
+            auto file_storage = configuration_->get_storage_per_id(storage_id);
 
             // Ceil of File Transfer Time + File Size * lambda
             auto one_file_read_time = file->GetFileTransfer(file_storage->get_id(), vm->get_id());
@@ -128,7 +398,7 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
 
             // If the storage is some VM (not bucket) different from the execution VM
             // Allocate the necessary VM for the reading
-            if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm->get_id()) {
+            if (storage_id < configuration_->get_virtual_machines_size() and storage_id != vm->get_id()) {
                 if (activation_start_time != std::numeric_limits<double>::max()
                         && activation_read_time != std::numeric_limits<double>::max()) {
                     double finish_read_time = activation_start_time + activation_read_time;
@@ -150,7 +420,7 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
         for (const auto& output_file: output_files) {
             size_t output_file_id = output_file->get_id();
             size_t storage_id = file_manager_.get_file_allocation(output_file_id);
-            std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(storage_id);
+            std::shared_ptr<Storage> storage = configuration_->get_storage_per_id(storage_id);
             double one_file_write_time = output_file->GetFileTransfer(vm->get_id(), storage->get_id());
 
             // If we could not Write the output_file then terminate!
@@ -166,7 +436,7 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
 
             // If the storage is some VM (not bucket) different from the execution VM
             // Allocate the necessary VM for the writing
-            if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm_id) {
+            if (storage_id < configuration_->get_virtual_machines_size() and storage_id != vm_id) {
                 if (activation_start_time != std::numeric_limits<double>::max()
                         && activation_read_time != std::numeric_limits<double>::max()
                         && activation_run_time != std::numeric_limits<double>::max()
@@ -225,10 +495,10 @@ void Solution::PopulateExecutionAndAllocationsTimeVectors(size_t start_of_orderi
 // Accumulate the Virtual Machine rent cost
 double Solution::AccumulateVMCost() {
     double vm_cost = 0.0;
-    for (auto i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
-        auto virtual_machine = algorithm_->GetVirtualMachinePerId(i);
+    for (auto i = 0ul; i < configuration_->get_virtual_machines_size(); ++i) {
+        auto virtual_machine = configuration_->get_virtual_machine_per_id(i);
         auto alloc_time = static_cast<double>(activation_execution_data_[ordering_.back()].get_vm_allocation_time(i));
-        vm_cost += ((alloc_time / 3600) * virtual_machine->get_cost());  // Billed per hour
+        vm_cost += ((alloc_time) * virtual_machine->get_cost());  // Billed per hour
 #ifndef NDEBUG
         DLOG(INFO) << "allocation_vm_queue_[" << i << "]: " << activation_execution_data_[ordering_.back()]
                 .get_vm_allocation_time(i);
@@ -241,15 +511,15 @@ double Solution::AccumulateVMCost() {
 // Accumulate the Bucket variable cost
 double Solution::AccumulateBucketCost() {
     double bucket_cost = 0.0;
-    for (auto i = algorithm_->GetVirtualMachineSize(); i < algorithm_->GetStorageSize(); ++i) {
-        auto storage = algorithm_->GetStoragePerId(i);
+    for (auto i = configuration_->get_virtual_machines_size(); i < configuration_->get_storages_size(); ++i) {
+        auto storage = configuration_->get_storage_per_id(i);
 
         // If the storage is not a Virtual Machine, i.e. it is a Bucket; then calculate the bucket
         // variable cost
-        for (auto j = 0ul; j < algorithm_->GetFilesSize(); ++j) {
+        for (auto j = 0ul; j < configuration_->get_files_size(); ++j) {
             // If the Bucket is used; then accumulate de cost and break to the next Storage
             if (file_manager_.get_file_allocation(j) == i) {
-                auto file = algorithm_->GetFilePerId(j);
+                auto file = configuration_->get_file_per_id(j);
                 bucket_cost += (storage->get_cost() * file->get_size_in_GB());
             }
         }
@@ -266,15 +536,15 @@ void Solution::ComputeCost() {
 double Solution::AccumulateActivationExposure() {
 
     double activation_exposure = 0.0;
-    for (auto i = 0ul; i < algorithm_->GetActivationSize(); ++i) {
+    for (auto i = 0ul; i < configuration_->get_activations_size(); ++i) {
 
-        auto activation = algorithm_->GetActivationPerId(i);
+        auto activation = configuration_->get_activation_per_id(i);
         for (auto j = 0ul; j < activation->get_requirements().size(); ++j) {
 
             auto virtual_machine_id = activation_allocations_[i];
             if (virtual_machine_id != std::numeric_limits<size_t>::max()) {
 
-                auto virtual_machine = algorithm_->GetVirtualMachinePerId(virtual_machine_id);
+                auto virtual_machine = configuration_->get_virtual_machine_per_id(virtual_machine_id);
                 if (activation->GetRequirementValue(j) > virtual_machine->GetRequirementValue(j)) {
 
                     activation_exposure += activation->GetRequirementValue(j) - virtual_machine->GetRequirementValue(j);
@@ -319,12 +589,13 @@ double Solution::fetch_confidentiality_exposure() const {
 }
 
 double Solution::ComputeAndFetchOF() {
-
     double of;
-    of = algorithm_->get_alpha_time() * (static_cast<double>(makespan_) / algorithm_->get_makespan_max())
-         + algorithm_->get_alpha_budget() * (cost_ / algorithm_->get_budget_max())
-         + algorithm_->get_alpha_security() * (security_exposure_
-                                               / algorithm_->get_maximum_security_and_privacy_exposure());
+
+    of = configuration_->get_alpha_time() * makespan_ / configuration_->get_makespan_max()
+         + configuration_->get_alpha_budget() * (cost_ / configuration_->get_budget_max())
+         + configuration_->get_alpha_security() * (security_exposure_
+                                                   / configuration_->get_maximum_security_and_privacy_exposure());
+
     return of;
 }
 
@@ -342,6 +613,23 @@ double Solution::OptimizedComputeObjectiveFunction(size_t start_of_ordering) {
 
     return objective_value_;
 }
+
+//double Solution::HeaOptimizedComputeObjectiveFunction(size_t start_of_ordering) {
+//    DLOG(INFO) << "Compute Optimized Objective Function";
+//
+//    PopulateExecutionAndAllocationsTimeVectors(start_of_ordering);
+////    ComputeCost();
+////    ComputeConfidentialityExposure();
+//
+//    makespan_ = fetch_makespan();
+////    cost_ = fetch_cost();
+////    security_exposure_ = fetch_confidentiality_exposure();
+////    objective_value_ = HeaComputeAndFetchOF();
+//
+//    objective_value_ = makespan_;
+//
+//    return makespan_;
+//}
 
 /**
  * Compute the objective value. The objective value is composed by three weighted normalized values:
@@ -371,7 +659,7 @@ double Solution::OptimizedComputeObjectiveFunction(size_t start_of_ordering) {
 double Solution::ObjectiveFunction(bool check_storage, bool check_sequence) {
     DLOG(INFO) << "Compute Makespan: check_storage[" << check_storage << "], check_sequence[" << check_sequence << "]";
 
-    if (ordering_.size() != algorithm_->GetActivationSize()) {
+    if (ordering_.size() != configuration_->get_activations_size()) {
         LOG(FATAL) << "Ordering has a wrong number of elements";
     }
 
@@ -380,10 +668,10 @@ double Solution::ObjectiveFunction(bool check_storage, bool check_sequence) {
         throw;
     }
 
-    objective_value_ = algorithm_->get_alpha_time() * (static_cast<double>(makespan_) / algorithm_->get_makespan_max())
-                       + algorithm_->get_alpha_budget() * (cost_ / algorithm_->get_budget_max())
-                       + algorithm_->get_alpha_security() * (security_exposure_
-                                                             / algorithm_->get_maximum_security_and_privacy_exposure());
+    objective_value_ = configuration_->get_alpha_time() * (static_cast<double>(makespan_) / configuration_->get_makespan_max())
+                       + configuration_->get_alpha_budget() * (cost_ / configuration_->get_budget_max())
+                       + configuration_->get_alpha_security() * (security_exposure_
+                                                                 / configuration_->get_maximum_security_and_privacy_exposure());
 
     return objective_value_;
 }
@@ -397,8 +685,8 @@ bool Solution::checkFiles() {
     bool flag = true;
     size_t count = 0;
 
-    std::vector<double> aux_storage(algorithm_->get_storage_vet());
-    std::vector<size_t> aux(algorithm_->GetVirtualMachineSize());
+    std::vector<double> aux_storage(configuration_->get_storage_vet());
+    std::vector<size_t> aux(configuration_->get_virtual_machines_size());
     iota(aux.begin(), aux.end(), 0);  // 0,1,2,3,4 ... n
 
     std::unordered_map<size_t, std::vector<size_t>> map_file;
@@ -406,9 +694,9 @@ bool Solution::checkFiles() {
     size_t id_storage;
     // build file map and compute the storage
     // for (auto it : data->file_map) {
-    // for (auto it : algorithm_->get_file_map_per_id()) {
-    for (size_t it = 0ul; it < algorithm_->GetFilesSize(); ++it) {
-        std::shared_ptr<File> file = algorithm_->GetFilePerId(it);
+    // for (auto it : configuration_->get_file_map_per_id()) {
+    for (size_t it = 0ul; it < configuration_->get_files_size(); ++it) {
+        std::shared_ptr<File> file = configuration_->get_file_per_id(it);
 
         if (std::shared_ptr<DynamicFile> dynamic_file = std::dynamic_pointer_cast<DynamicFile>(file)) {
             id_storage = file_manager_.get_file_allocation(dynamic_file->get_id());
@@ -438,7 +726,7 @@ bool Solution::checkFiles() {
             // Search min file (based on the size of file)
             for_each(vet_file.begin(), vet_file.end(), [&](size_t i) {
                 std::cout << i << std::endl;
-                std::shared_ptr<File> file = algorithm_->GetFilePerId(i);
+                std::shared_ptr<File> file = configuration_->get_file_per_id(i);
                 std::cout << file->get_name() << std::endl;
                 if (file->get_size_in_GB() < min) {
                     min = file->get_size_in_GB();
@@ -446,7 +734,7 @@ bool Solution::checkFiles() {
                 }
             });
 
-            std::shared_ptr<File> file_min = algorithm_->GetFilePerId(min_file);
+            std::shared_ptr<File> file_min = configuration_->get_file_per_id(min_file);
 
             std::cout << file_min->get_name() << std::endl;
             // MinFile will be moved to machine with more empty space
@@ -463,7 +751,7 @@ bool Solution::checkFiles() {
         }
 
         count++;
-    } while (flag && count < algorithm_->GetFilesSize());
+    } while (flag && count < configuration_->get_files_size());
     return !flag;
 }  // bool Solution::checkFiles() {
 
@@ -476,9 +764,9 @@ std::ostream &Solution::Write(std::ostream &os) const {
     DLOG(INFO) << "Writing solution information";
 
     os << std::endl;
-    os << "################################################################################################"
-       << std::endl;
-    os << algorithm_->GetName() << std::endl;
+//    os << "################################################################################################"
+//       << std::endl;
+//    os << configuration_->get_name() << std::endl;
     os << "################################################################################################"
        << std::endl;
     os << "makespan_: " << makespan_ << " seconds" << std::endl;
@@ -487,7 +775,7 @@ std::ostream &Solution::Write(std::ostream &os) const {
     os << "security_exposure_: " << security_exposure_ << std::endl;
     os << "objective_value_: " << objective_value_ << std::endl;
     os << "Maximum security and privacy exposure: "
-       << algorithm_->get_maximum_security_and_privacy_exposure()
+       << configuration_->get_maximum_security_and_privacy_exposure()
        << std::endl;
 
     os << std::endl;
@@ -498,20 +786,20 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
     os << std::endl;
     os << "Allocations and executions: " << std::endl;
-    for (size_t i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
+    for (size_t i = 0ul; i < configuration_->get_virtual_machines_size(); ++i) {
         os << "a[" << i << "]: \t" << activation_execution_data_[ordering_.back()].get_vm_allocation_time(i) << "\t";
     }
 
     os << std::endl;
-    for (size_t i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
+    for (size_t i = 0ul; i < configuration_->get_virtual_machines_size(); ++i) {
         os << "x[" << i << "]: \t" << activation_execution_data_[ordering_.back()].get_vm_finish_time(i) << "\t";
     }
     os << std::endl << std::endl;
 
-    auto at = algorithm_->get_alpha_time();
-    auto ac = algorithm_->get_alpha_budget();
-    auto as = algorithm_->get_alpha_security();
-    auto arcl = algorithm_->get_alpha_restrict_candidate_list();
+    auto at = configuration_->get_alpha_time();
+    auto ac = configuration_->get_alpha_budget();
+    auto as = configuration_->get_alpha_security();
+    auto arcl = configuration_->get_alpha_restrict_candidate_list();
 
     os << std::fixed << std::setprecision(6);
     os << "Alphas: " << std::endl;
@@ -521,12 +809,12 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
     os << std::endl;
     os << "Activations: " << std::endl;
-    for (size_t i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
-        std::shared_ptr<VirtualMachine> vm = algorithm_->GetVirtualMachinePerId(i);
+    for (size_t i = 0ul; i < configuration_->get_virtual_machines_size(); ++i) {
+        std::shared_ptr<VirtualMachine> vm = configuration_->get_virtual_machine_per_id(i);
 
         os << "**MV" << vm->get_id() + 1 << "**: \\" << std::endl;
-        for (size_t j = 0ul; j < algorithm_->GetActivationSize(); ++j) {
-            std::shared_ptr<Activation> activation = algorithm_->GetActivationPerId(j);
+        for (size_t j = 0ul; j < configuration_->get_activations_size(); ++j) {
+            std::shared_ptr<Activation> activation = configuration_->get_activation_per_id(j);
             size_t virtual_machine_id = activation_allocations_[j];
 
             if (virtual_machine_id == vm->get_id()) {
@@ -538,17 +826,17 @@ std::ostream &Solution::Write(std::ostream &os) const {
 
     os << std::endl;
     os << "Files: " << std::endl;
-    for (size_t i = 0ul; i < algorithm_->GetStorageSize(); ++i) {
-        auto storage = algorithm_->GetStoragePerId(i);
+    for (size_t i = 0ul; i < configuration_->get_storages_size(); ++i) {
+        auto storage = configuration_->get_storage_per_id(i);
 
         if (const auto s = std::dynamic_pointer_cast<VirtualMachine>(storage)) {
             os << "|**MV" << s->get_id() + 1 << "**| |" << std::endl;
         } else {
-            os << "|***Bucket" << storage->get_id() - algorithm_->GetVirtualMachineSize() + 1 << "***| |" << std::endl;
+            os << "|***Bucket" << storage->get_id() - configuration_->get_virtual_machines_size() + 1 << "***| |" << std::endl;
         }
 
-        for (size_t j = 0ul; j < algorithm_->GetFilesSize(); ++j) {
-            auto file = algorithm_->GetFilePerId(j);
+        for (size_t j = 0ul; j < configuration_->get_files_size(); ++j) {
+            auto file = configuration_->get_file_per_id(j);
             size_t storage_id;
 
             if (std::shared_ptr<StaticFile> static_file = std::dynamic_pointer_cast<StaticFile>(file)) {
@@ -567,12 +855,12 @@ std::ostream &Solution::Write(std::ostream &os) const {
     os << std::endl;
     os << "Activation Sequence: " << std::endl;
     for (auto task_id: ordering_) {
-        os << algorithm_->GetActivationPerId(task_id)->get_tag() << " --> ";
+        os << configuration_->get_activation_per_id(task_id)->get_tag() << " --> ";
     }
     os << std::endl;
-    os << "################################################################################################"
-       << std::endl;
-    os << algorithm_->GetName() << std::endl;
+//    os << "################################################################################################"
+//       << std::endl;
+//    os << configuration_->get_name() << std::endl;
     os << "################################################################################################"
        << std::endl;
 
@@ -609,9 +897,9 @@ double Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
     double best_security_exposure = std::numeric_limits<double>::max();
     size_t best_storage_id = std::numeric_limits<size_t>::max();
 
-    auto available_storages = std::vector<std::shared_ptr<Storage>>(algorithm_->GetStorageSize());
+    auto available_storages = std::vector<std::shared_ptr<Storage>>(configuration_->get_storages_size());
     for (size_t i = 0ul; i < available_storages.size(); ++i) {
-        available_storages[i] = algorithm_->GetStoragePerId(i);
+        available_storages[i] = configuration_->get_storage_per_id(i);
     }
 
     // Shuffle the output files for better randomness between the solutions
@@ -650,7 +938,7 @@ double Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
         }
 
         // Storage cost
-        if (storage->get_id() >= algorithm_->GetVirtualMachineSize()) {
+        if (storage->get_id() >= configuration_->get_virtual_machines_size()) {
             bucket_variable_cost += storage->get_cost() * file->get_size_in_GB();
         }
 
@@ -664,11 +952,11 @@ double Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
         DLOG(INFO) << "security_exposure: " << security_exposure;
 
         partial_objective_value =
-                algorithm_->get_alpha_time() *
-                (static_cast<double>(write_one_file_time) / algorithm_->get_makespan_max())
-                + algorithm_->get_alpha_budget() * (cost / algorithm_->get_budget_max())
-                + algorithm_->get_alpha_security()
-                  * (security_exposure / algorithm_->get_maximum_security_and_privacy_exposure());
+                configuration_->get_alpha_time() *
+                (static_cast<double>(write_one_file_time) / configuration_->get_makespan_max())
+                + configuration_->get_alpha_budget() * (cost / configuration_->get_budget_max())
+                + configuration_->get_alpha_security()
+                  * (security_exposure / configuration_->get_maximum_security_and_privacy_exposure());
 
         if (best_objective_value > partial_objective_value) {
             best_objective_value = partial_objective_value;
@@ -696,7 +984,7 @@ double Solution::AllocateOneOutputFileGreedily(const std::shared_ptr<Activation>
     // Store the file contribution to the makespan, cost and security expose
     security_exposure_ += best_security_exposure;
 
-    if (best_storage_id < algorithm_->GetVirtualMachineSize() && best_storage_id != vm->get_id()) {
+    if (best_storage_id < configuration_->get_virtual_machines_size() && best_storage_id != vm->get_id()) {
         DLOG(INFO) << "allocation_vm_queue_: " << start_time;
         DLOG(INFO) << "allocation_vm_queue_: " << read_time;
         DLOG(INFO) << "allocation_vm_queue_: " << run_time;
@@ -739,7 +1027,7 @@ double Solution::ComputeActivationStartTime(size_t activation_id, size_t vm_id) 
     DLOG(INFO) << "Compute the start time of the Activation[" << activation_id << "] at VM[" << vm_id << "]";
     double start_time{};
 
-    for (auto previous_task_id: algorithm_->GetPredecessors(activation_id)) {
+    for (auto previous_task_id: configuration_->get_predecessors_ids(activation_id)) {
         auto activation_finish_time = activation_execution_data_[previous_task_id].get_activation_finish_time();
         start_time = std::max(start_time, activation_finish_time);
     }
@@ -770,7 +1058,7 @@ double Solution::AllocateOutputFiles(const std::shared_ptr<Activation> &activati
             write_time += AllocateOneOutputFileGreedily(activation, file, vm, start_time, read_time, run_time,
                                                         write_time);
         } else {
-            std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(file_manager_.get_file_allocation(
+            std::shared_ptr<Storage> storage = configuration_->get_storage_per_id(file_manager_.get_file_allocation(
                     file->get_id()));
             write_time = file->GetFileTransfer(vm->get_id(), storage->get_id());
         }
@@ -801,7 +1089,7 @@ double Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &ac
             LOG(FATAL) << "Wrong storage_id - ComputeActivationReadTime";
         }
 
-        std::shared_ptr<Storage> file_vm = algorithm_->GetStoragePerId(storage_id);
+        std::shared_ptr<Storage> file_vm = configuration_->get_storage_per_id(storage_id);
 
         auto one_file_read_time = file->GetFileTransfer(file_vm->get_id(), vm->get_id());
 
@@ -813,7 +1101,7 @@ double Solution::ComputeActivationReadTime(const std::shared_ptr<Activation> &ac
             // read_time += std::ceil(one_file_read_time);
             read_time += one_file_read_time;
 
-            if (storage_id < algorithm_->GetVirtualMachineSize() and storage_id != vm->get_id()) {
+            if (storage_id < configuration_->get_virtual_machines_size() and storage_id != vm->get_id()) {
                 auto allocation_time = std::max((start_time + read_time),
                         activation_execution_data_[activation_id].get_vm_allocation_time(storage_id));
                 activation_execution_data_[activation_id].set_vm_allocation_time(storage_id, allocation_time);
@@ -881,14 +1169,14 @@ double Solution::ComputeFileSecurityExposureContribution(const std::shared_ptr<S
     double privacy_exposure = 0.0;
 
     // Accumulate the privacy_exposure
-    for (size_t i = 0ul; i < algorithm_->GetFilesSize(); ++i) {
+    for (size_t i = 0ul; i < configuration_->get_files_size(); ++i) {
         size_t storage1_id = file_manager_.get_file_allocation(i);
         
         if (storage1_id != std::numeric_limits<size_t>::max()
             && storage->get_id() != std::numeric_limits<size_t>::max()
             && storage1_id == storage->get_id()) {
-            // int conflict_value = algorithm_->get_conflict_graph().ReturnConflict(i, file->get_id());
-            int conflict_value = algorithm_->get_conflict_graph()->ReturnConflict(file->get_id(), i);
+            // int conflict_value = configuration_->get_conflict_graph().ReturnConflict(i, file->get_id());
+            int conflict_value = configuration_->get_conflict_graph()->ReturnConflict(file->get_id(), i);
 
             if (conflict_value > 0) {
 #ifndef NDEBUG
@@ -958,7 +1246,7 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
 
     // Fetching some previous Activation Execution Data
     if (ordering_.size() > 1ul) {
-        for (auto vm_id = 0ul; vm_id < algorithm_->GetVirtualMachineSize(); vm_id++) {
+        for (auto vm_id = 0ul; vm_id < configuration_->get_virtual_machines_size(); vm_id++) {
             auto previous_activation_id = ordering_[ordering_.size() - 2];
             activation_execution_data_[activation_id].set_vm_finish_time(vm_id,
                     activation_execution_data_[previous_activation_id].get_vm_finish_time(vm_id));
@@ -997,21 +1285,22 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
     double bucket_variable_cost = 0.0;
 
     // Accumulate the Virtual Machine cost
-//    for (size_t i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
-//        std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(i);
+//    for (size_t i = 0ul; i < configuration_->get_virtual_machines_size(); ++i) {
+//        std::shared_ptr<VirtualMachine> virtual_machine = configuration_->get_virtual_machine_per_id(i);
 //        virtual_machine_cost += static_cast<double>(vm_allocation_time_[virtual_machine->get_id()])
 //                                * virtual_machine->get_cost();
 //        DLOG(INFO) << "allocation_vm_queue_[virtual_machine->get_id()]: "
 //                   << vm_allocation_time_[virtual_machine->get_id()];
 //        DLOG(INFO) << "virtual_machine->get_cost(): " << virtual_machine->get_cost();
 //    }
-    for (size_t i = 0ul; i < algorithm_->GetVirtualMachineSize(); ++i) {
-        std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(i);
+    for (size_t i = 0ul; i < configuration_->get_virtual_machines_size(); ++i) {
+        std::shared_ptr<VirtualMachine> virtual_machine = configuration_->get_virtual_machine_per_id(i);
         auto vm_allocation_time = activation_execution_data_[activation_id].get_vm_allocation_time(
                 virtual_machine->get_id());
         auto alloc_time = static_cast<double>(vm_allocation_time);
 //        virtual_machine_cost += static_cast<double>(vm_allocation_time) * virtual_machine->get_cost();
-        virtual_machine_cost += (alloc_time / 3600) * virtual_machine->get_cost();
+//        virtual_machine_cost += (alloc_time / 3600) * virtual_machine->get_cost();
+        virtual_machine_cost += alloc_time * virtual_machine->get_cost();
 #ifndef NDEBUG
         DLOG(INFO) << "allocation_vm_queue_[virtual_machine->get_id()]: "
                    << activation_execution_data_[activation_id].get_vm_allocation_time(virtual_machine->get_id());
@@ -1020,15 +1309,15 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
     }
 
     // Accumulate the Bucket variable cost
-    for (size_t i = algorithm_->GetVirtualMachineSize(); i < algorithm_->GetStorageSize(); ++i) {
-        std::shared_ptr<Storage> storage = algorithm_->GetStoragePerId(i);
+    for (size_t i = configuration_->get_virtual_machines_size(); i < configuration_->get_storages_size(); ++i) {
+        std::shared_ptr<Storage> storage = configuration_->get_storage_per_id(i);
 
         // If the storage is not a Virtual Machine, i.e. it is a Bucket; then calculate the bucket
         // variable cost
-        for (size_t j = 0ul; j < algorithm_->GetFilesSize(); ++j) {
+        for (size_t j = 0ul; j < configuration_->get_files_size(); ++j) {
             // If the Bucket is used; then accumulate de cost and break to the next Storage
             if (file_manager_.get_file_allocation(j) == storage->get_id()) {
-                std::shared_ptr<File> file = algorithm_->GetFilePerId(j);
+                std::shared_ptr<File> file = configuration_->get_file_per_id(j);
                 bucket_variable_cost += (storage->get_cost() * file->get_size_in_GB());
 #ifndef NDEBUG
                 DLOG(INFO) << "storage->get_cost(): " << storage->get_cost();
@@ -1048,7 +1337,7 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
 //
 //        // If the activation is allocated
 //        if (virtual_machine_id != std::numeric_limits<size_t>::max()) {
-//            std::shared_ptr<VirtualMachine> virtual_machine = algorithm_->GetVirtualMachinePerId(virtual_machine_id);
+//            std::shared_ptr<VirtualMachine> virtual_machine = configuration_->get_virtual_machine_per_id(virtual_machine_id);
 //
 //            if (activation->GetRequirementValue(j) > virtual_machine->GetRequirementValue(j)) {
 //                security_exposure_ += activation->GetRequirementValue(j) - virtual_machine->GetRequirementValue(j);
@@ -1067,14 +1356,16 @@ double Solution::ScheduleActivation(const std::shared_ptr<Activation> &activatio
         objective_value_ = std::numeric_limits<double>::max();
     } else { // o.w. return O.F.
         objective_value_ =
-                algorithm_->get_alpha_time() * (static_cast<double>(makespan_) / algorithm_->get_makespan_max())
-                + algorithm_->get_alpha_budget() * (cost_ / algorithm_->get_budget_max())
-                + algorithm_->get_alpha_security() * (security_exposure_
-                                                      / algorithm_->get_maximum_security_and_privacy_exposure());
+                configuration_->get_alpha_time() * (static_cast<double>(makespan_) / configuration_->get_makespan_max())
+                + configuration_->get_alpha_budget() * (cost_ / configuration_->get_budget_max())
+                + configuration_->get_alpha_security() * (security_exposure_
+                                                          / configuration_->get_maximum_security_and_privacy_exposure());
     }
 
-    DLOG(INFO) << "Makespan " << makespan_ << ", cost " << cost_ << ", security " << security_exposure_ << ", o.f. "
-               << objective_value_;
+    DLOG(INFO) << "Makespan " << makespan_
+               << ", cost " << cost_
+               << ", security " << security_exposure_
+               << ", o.f. " << objective_value_;
 
     return objective_value_;
 }
@@ -1093,16 +1384,16 @@ int Solution::ComputeTasksHeights(size_t node) {
     int min = std::numeric_limits<int>::max();
     if (activation_height_[node] != -1)
         return activation_height_[node];
-    if (node != algorithm_->get_id_target()) {
-        for (auto i: algorithm_->GetSuccessors(node)) {
+    if (node != configuration_->get_target_id()) {
+        for (auto i: configuration_->get_successors_ids(node)) {
             int value = ComputeTasksHeights(i);
             min = std::min(value, min);
         }
     } else {
-        activation_height_[node] = algorithm_->get_height()[node];
+        activation_height_[node] = configuration_->get_height(node);
         return activation_height_[node];
     }
-    std::uniform_int_distribution<> dis(algorithm_->get_height()[node], min - 1);
+    std::uniform_int_distribution<> dis(configuration_->get_height(node), min - 1);
     activation_height_[node] = dis(generator());
     return activation_height_[node];
 }
@@ -1121,8 +1412,8 @@ bool Solution::localSearchN1() {
     double best_known_makespan = makespan_;
     double best_known_cost = cost_;
     double best_known_security_exposure_ = security_exposure_;
-    for (auto i = 1ul; i < algorithm_->GetActivationSize() - 2ul; i++) {
-        for (auto j = i + 2ul; j < algorithm_->GetActivationSize() - 1ul; j++) {
+    for (auto i = 1ul; i < configuration_->get_activations_size() - 2ul; i++) {
+        for (auto j = i + 2ul; j < configuration_->get_activations_size() - 1ul; j++) {
             if (activation_allocations_[i] != activation_allocations_[j]) {
                 bool was_file_changed;
                 auto i_vm = activation_allocations_[i];
@@ -1131,7 +1422,7 @@ bool Solution::localSearchN1() {
                 // Do the swap
                 iter_swap(activation_allocations_.begin() + static_cast<long int>(i),
                           activation_allocations_.begin() + static_cast<long int>(j));
-                auto i_activation = algorithm_->GetActivationPerId(i);
+                auto i_activation = configuration_->get_activation_per_id(i);
                 auto i_input_files = i_activation->get_input_files();
                 for (const auto &input_file : i_input_files) {
                     if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(input_file)) {
@@ -1146,7 +1437,12 @@ bool Solution::localSearchN1() {
                             if (it == files_changed.end()) {
 //                                file_allocations_[file_id] = j_vm;
 //                                file_manager_.set_file_allocation(file_id, j_vm);
-                                was_file_changed = file_manager_.ChangeFileAllocation(file_id, j_vm);
+                                if (file_manager_.get_file_allocation(file_id) != j_vm) {
+                                    was_file_changed = file_manager_.ChangeFileAllocation(file_id, j_vm);
+                                } else {
+                                    was_file_changed = false;
+                                }
+
                                 if (was_file_changed) {
                                     files_changed.emplace_back(file_id, file_allocation);
                                 }
@@ -1168,7 +1464,12 @@ bool Solution::localSearchN1() {
                             if (it == files_changed.end()) {
 //                                file_allocations_[file_id] = j_vm;
 //                                file_manager_.set_file_allocation(file_id, j_vm);
-                                was_file_changed = file_manager_.ChangeFileAllocation(file_id, j_vm);
+                                if (file_manager_.get_file_allocation(file_id) != j_vm) {
+                                    was_file_changed = file_manager_.ChangeFileAllocation(file_id, j_vm);
+                                } else {
+                                    was_file_changed = false;
+                                }
+
                                 if (was_file_changed) {
                                     files_changed.emplace_back(file_id, file_allocation);
                                 }
@@ -1176,7 +1477,7 @@ bool Solution::localSearchN1() {
                         }
                     }
                 }
-                auto j_activation = algorithm_->GetActivationPerId(j);
+                auto j_activation = configuration_->get_activation_per_id(j);
                 auto j_input_files = j_activation->get_input_files();
                 for (const auto &input_file : j_input_files) {
                     if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(input_file)) {
@@ -1191,7 +1492,12 @@ bool Solution::localSearchN1() {
                             if (it == files_changed.end()) {
 //                                file_allocations_[file_id] = i_vm;
 //                                file_manager_.set_file_allocation(file_id, i_vm);
-                                was_file_changed = file_manager_.ChangeFileAllocation(file_id, i_vm);
+                                if (file_manager_.get_file_allocation(file_id) != i_vm) {
+                                    was_file_changed = file_manager_.ChangeFileAllocation(file_id, i_vm);
+                                } else {
+                                    was_file_changed = false;
+                                }
+
                                 if (was_file_changed) {
                                     files_changed.emplace_back(file_id, file_allocation);
                                 }
@@ -1213,7 +1519,12 @@ bool Solution::localSearchN1() {
                             if (it == files_changed.end()) {
 //                                file_allocations_[file_id] = i_vm;
 //                                file_manager_.set_file_allocation(file_id, i_vm);
-                                was_file_changed = file_manager_.ChangeFileAllocation(file_id, i_vm);
+                                if (file_manager_.get_file_allocation(file_id) != i_vm) {
+                                    was_file_changed = file_manager_.ChangeFileAllocation(file_id, i_vm);
+                                } else {
+                                    was_file_changed = false;
+                                }
+
                                 if (was_file_changed) {
                                     files_changed.emplace_back(file_id, file_allocation);
                                 }
@@ -1247,6 +1558,8 @@ bool Solution::localSearchN1() {
 //                    file_allocations_[my_pair.first] = my_pair.second;
 //                    file_manager_.set_file_allocation(my_pair.first, my_pair.second);
                     was_file_changed = file_manager_.ChangeFileAllocation(my_pair.first, my_pair.second);
+                    // TODO: It seams that the fatal log below is never reachable. ChangeFileAllocation already treats
+                    // same origin fault.
                     if (!was_file_changed) {
                         LOG(FATAL) << "Makes no sense, file should be able to move back";
                     }
@@ -1278,9 +1591,9 @@ bool Solution::localSearchN2() {
     double best_known_cost = cost_;
     double best_known_security_exposure_ = security_exposure_;
     // for each task, do
-    for (auto i = 1ul; i < algorithm_->GetActivationSize() - 2ul; i++) {
+    for (auto i = 1ul; i < configuration_->get_activations_size() - 2ul; i++) {
         auto task_i = ordering_[i];
-        for (auto j = i + 2ul; j < algorithm_->GetActivationSize() - 1ul; j++) {
+        for (auto j = i + 2ul; j < configuration_->get_activations_size() - 1ul; j++) {
             auto task_j = ordering_[j];
             if (activation_height_[task_i] == activation_height_[task_j]) {
                 // Do the swap
@@ -1332,14 +1645,14 @@ bool Solution::localSearchN3() {
     double best_known_makespan = makespan_;
     double best_known_cost = cost_;
     double best_known_security_exposure_ = security_exposure_;
-    for (auto i = 1ul; i < algorithm_->GetActivationSize() - 1ul; ++i) {
+    for (auto i = 1ul; i < configuration_->get_activations_size() - 1ul; ++i) {
         bool was_file_changed;
         std::deque<std::pair<size_t, size_t>> files_changed;
         auto old_vm_id = activation_allocations_[i];
-        for (auto new_vm_id = 0ul; new_vm_id < algorithm_->GetVirtualMachineSize(); new_vm_id++) {
+        for (auto new_vm_id = 0ul; new_vm_id < configuration_->get_virtual_machines_size(); new_vm_id++) {
             if (old_vm_id != new_vm_id) {
                 activation_allocations_[i] = new_vm_id;
-                auto i_activation = algorithm_->GetActivationPerId(i);
+                auto i_activation = configuration_->get_activation_per_id(i);
                 auto i_input_files = i_activation->get_input_files();
                 for (const auto &input_file : i_input_files) {
                     if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(input_file)) {
@@ -1354,7 +1667,12 @@ bool Solution::localSearchN3() {
                             if (it == files_changed.end()) {
 //                                file_allocations_[file_id] = old_vm_id;
 //                                file_manager_.set_file_allocation(file_id, old_vm_id);
-                                was_file_changed = file_manager_.ChangeFileAllocation(file_id, new_vm_id);
+                                if (file_manager_.get_file_allocation(file_id) != new_vm_id) {
+                                    was_file_changed = file_manager_.ChangeFileAllocation(file_id, new_vm_id);
+                                } else {
+                                    was_file_changed = false;
+                                }
+
                                 if (was_file_changed) {
                                     files_changed.emplace_back(file_id, file_allocation);
                                 }
@@ -1376,7 +1694,12 @@ bool Solution::localSearchN3() {
                             if (it == files_changed.end()) {
 //                                file_allocations_[file_id] = old_vm_id;
 //                                file_manager_.set_file_allocation(file_id, old_vm_id);
-                                was_file_changed = file_manager_.ChangeFileAllocation(file_id, new_vm_id);
+                                if (file_manager_.get_file_allocation(file_id) != new_vm_id) {
+                                    was_file_changed = file_manager_.ChangeFileAllocation(file_id, new_vm_id);
+                                } else {
+                                    was_file_changed = false;
+                                }
+
                                 if (was_file_changed) {
                                     files_changed.emplace_back(file_id, file_allocation);
                                 }
@@ -1411,6 +1734,7 @@ bool Solution::localSearchN3() {
 //            file_allocations_[my_pair.first] = my_pair.second;
 //            file_manager_.set_file_allocation(my_pair.first, my_pair.second);
                     was_file_changed = file_manager_.ChangeFileAllocation(my_pair.first, my_pair.second);
+                    // TODO: maybe the code below isn't necessary
                     if (!was_file_changed) {
                         LOG(FATAL) << "Makes no sense, file should be able to move back";
                     }
@@ -1427,5 +1751,137 @@ bool Solution::localSearchN3() {
         }
     }
     DLOG(INFO) << "... ending localSearchN3 local search";
+    return false;
+}
+
+// =========== HEA Local search functions  ========= //
+
+// N1 - Swap-vm
+bool Solution::HeaLocalSearchN1() {
+    double best_known_of = objective_value_;
+    double best_known_makespan = makespan_;
+    double best_known_cost = cost_;
+    double best_known_security_exposure_ = security_exposure_;
+    size_t data_size = configuration_->get_activations_size() + configuration_->get_files_size();
+
+    for (size_t i{}; i < data_size; i++) {
+        for (size_t j = i + 1; j < data_size; j++) {
+            size_t vm_a = (i >= configuration_->get_activations_size())
+                    ? file_manager_.get_file_allocation(i - configuration_->get_activations_size())
+                    : activation_allocations_[i];
+            size_t vm_b = (j >= configuration_->get_activations_size())
+                    ? file_manager_.get_file_allocation(j - configuration_->get_activations_size())
+                    : activation_allocations_[j];
+            if (vm_a != vm_b) {
+                //do the swap
+                if (i >= configuration_->get_activations_size()) {
+                    if (file_manager_.get_file_allocation(i - configuration_->get_activations_size()) != vm_b) {
+                        file_manager_.ChangeFileAllocation(i - configuration_->get_activations_size(), vm_b);
+                    }
+                } else {
+                    activation_allocations_[i] = vm_b;
+                }
+                if (j >= configuration_->get_activations_size()) {
+                    if (file_manager_.get_file_allocation(j - configuration_->get_activations_size()) != vm_a) {
+                        file_manager_.ChangeFileAllocation(j - configuration_->get_activations_size(), vm_a);
+                    }
+                } else {
+                    activation_allocations_[j] = vm_a;
+                }
+                OptimizedComputeObjectiveFunction();
+                if (get_objective_value() < best_known_of) {
+                    return true;
+                }
+                //return elements
+                if (i >= configuration_->get_activations_size()) {
+                    if (file_manager_.get_file_allocation(i - configuration_->get_activations_size()) != vm_a) {
+                        file_manager_.ChangeFileAllocation(i - configuration_->get_activations_size(), vm_a);
+                    }
+                } else {
+                    activation_allocations_[i] = vm_a;
+                }
+                if (j >= configuration_->get_activations_size()) {
+                    if (file_manager_.get_file_allocation(j - configuration_->get_activations_size()) != vm_b) {
+                        file_manager_.ChangeFileAllocation(j - configuration_->get_activations_size(), vm_b);
+                    }
+                } else {
+                    activation_allocations_[j] = vm_b;
+                }
+                objective_value_ = best_known_of;
+                makespan_ = best_known_makespan;
+                cost_ = best_known_cost;
+                security_exposure_ = best_known_security_exposure_;
+            }
+        }
+    }
+    return false;
+}
+
+// N2 - Swap position
+bool Solution::HeaLocalSearchN2() {
+    double best_known_of = objective_value_;
+    double best_known_makespan = makespan_;
+    double best_known_cost = cost_;
+    double best_known_security_exposure_ = security_exposure_;
+
+    // For each task, do
+    for (size_t i{}; i < configuration_->get_activations_size(); i++) {
+        auto task_i = ordering_[i];
+        for (size_t j = i + 1; j < configuration_->get_activations_size(); j++) {
+            auto task_j = ordering_[j];
+            if (activation_height_[task_i] == activation_height_[task_j]) {
+                // Do the swap
+                iter_swap(ordering_.begin() + static_cast<long>(i), ordering_.begin() + static_cast<long>(j));
+                OptimizedComputeObjectiveFunction();
+                if (get_objective_value() < best_known_of) {
+                    return true;
+                }
+                // Return elements
+                objective_value_ = best_known_of;
+                makespan_ = best_known_makespan;
+                cost_ = best_known_cost;
+                security_exposure_ = best_known_security_exposure_;
+            } else
+                break;
+        }
+    }
+    return false;
+}
+
+// N3 = Move-1 Element
+bool Solution::HeaLocalSearchN3() {
+    double best_known_of = objective_value_;
+    double best_known_makespan = makespan_;
+    double best_known_cost = cost_;
+    double best_known_security_exposure_ = security_exposure_;
+    size_t data_size = configuration_->get_activations_size() + configuration_->get_files_size();
+
+    for (size_t act_or_file_id{}; act_or_file_id < data_size; ++act_or_file_id) {
+        size_t old_vm = (act_or_file_id >= configuration_->get_activations_size())
+                      ? file_manager_.get_file_allocation(act_or_file_id - configuration_->get_activations_size())
+                      : activation_allocations_[act_or_file_id];
+        for (size_t vm_id{}; vm_id < configuration_->get_virtual_machines_size(); vm_id++) {
+            if (old_vm != vm_id) {
+                if (act_or_file_id >= configuration_->get_activations_size()) {
+                    if (file_manager_.get_file_allocation(act_or_file_id - configuration_->get_activations_size())
+                            != vm_id) {
+                        file_manager_.ChangeFileAllocation(act_or_file_id - configuration_->get_activations_size(),
+                                                           vm_id);
+                    }
+                } else {
+                    activation_allocations_[act_or_file_id] = vm_id;
+                }
+                OptimizedComputeObjectiveFunction();
+                if (get_objective_value() < best_known_of) {
+                    return true;
+                }
+            }
+        }
+        // Return elements
+        objective_value_ = best_known_of;
+        makespan_ = best_known_makespan;
+        cost_ = best_known_cost;
+        security_exposure_ = best_known_security_exposure_;
+    }
     return false;
 }

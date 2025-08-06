@@ -13,6 +13,7 @@
 
 #include <glog/logging.h>
 #include "src/solution/algorithm.h"
+#include "src/solution/configuration.h"
 
 DEFINE_string(tasks_and_files, // NOLINT(cert-err58-cpp)
               "CyberShake_30.xml.dag",
@@ -96,19 +97,25 @@ int main(int argc, char **argv) {
     std::cout << "Number of allocation experiments: " << FLAGS_number_of_allocation_experiments << std::endl;
     std::cout << "CPLEX output file: " << FLAGS_cplex_output_file << std::endl;
 
-    std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
+//    std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm);
 
-    DLOG(INFO) << "... algorithm picked-up ...";
+    std::shared_ptr<Configuration> configuration = std::make_shared<Configuration>(
+            FLAGS_tasks_and_files,
+            FLAGS_cluster,
+            FLAGS_conflict_graph,FLAGS_alpha_time,
+            FLAGS_alpha_budget,
+            FLAGS_alpha_security,
+            FLAGS_alpha_restrict_candidate_list
+    );
 
-    algorithm->ReadInputFiles(FLAGS_tasks_and_files, FLAGS_cluster, FLAGS_conflict_graph);
-    std::cout << "Number of Activation: " << algorithm->GetActivationSize() << " (including source and target)"
+    std::shared_ptr<Algorithm> algorithm = Algorithm::ReturnAlgorithm(FLAGS_algorithm, configuration);
+
+//    DLOG(INFO) << "... algorithm picked-up ...";
+
+    std::cout << "Number of Activation: " << configuration->get_activations_size() << " (including source and target)"
               << std::endl;
-    std::cout << "Number of files: " << algorithm->GetFilesSize() << std::endl;
-    algorithm->SetAlphas(FLAGS_alpha_time,
-                         FLAGS_alpha_budget,
-                         FLAGS_alpha_security,
-                         FLAGS_alpha_restrict_candidate_list);
-    algorithm->CalculateMaximumSecurityAndPrivacyExposure();
+    std::cout << "Number of files: " << configuration->get_files_size() << std::endl;
+
     algorithm->Run();
 
     DLOG(INFO) << "... ending.";

@@ -1,27 +1,34 @@
 /**
- * \file src/solution/algorithm.cc
- * \brief Contains the \c Algorithm class methods
+ * \file src/solution/configuration.cc
+ * \brief Contains the \c Configuration class methods
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
  * \date 2024
  *
- * This source file contains the methods from the \c Algorithm class that run the mode the
+ * This source file contains the methods from the \c Configuration class that start the mode the
  * approximate solution
  */
 
-#include "src/solution/algorithm.h"
+#include "src/solution/configuration.h"
 
 #include <boost/algorithm/string.hpp>
 #include <filesystem>
-#include "src/solution/grch.h"
-#include "src/solution/grasp.h"
-#include "src/solution/cplex.h"
-#include "heft.h"
 
-Algorithm::Algorithm() {
+Configuration::Configuration(
+        std::string tasks_and_files,
+        std::string cluster,
+        std::string conflict_graph,
+        double alpha_time,
+        double alpha_budget,
+        double alpha_security,
+        double alpha_restrict_candidate_list
+) {
     conflict_graph_ = std::make_shared<ConflictGraph>();
+    ReadInputFiles(tasks_and_files, cluster, conflict_graph);
+    SetAlphas(alpha_time, alpha_budget, alpha_security, alpha_restrict_candidate_list);
+    CalculateMaximumSecurityAndPrivacyExposure();
 }
 
 bool is_number(const std::string& s) {
@@ -47,8 +54,8 @@ bool is_floating_number(const std::string& s) {
     return true;
 }
 
-void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
-                                  std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
+void Configuration::ReadTasksAndFiles(const std::string &tasks_and_files_file,
+                                      std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
 #ifndef NDEBUG
     DLOG(INFO) << "Reading Activations and Files from input file [" + tasks_and_files_file + "]" ;
 #endif
@@ -314,7 +321,7 @@ void Algorithm::ReadTasksAndFiles(const std::string &tasks_and_files_file,
     in_file.close();
 }
 
-void Algorithm::ReadCluster(const std::string &cluster) {
+void Configuration::ReadCluster(const std::string &cluster) {
 #ifndef NDEBUG
     DLOG(INFO) << "Reading Clusters from input file [" + cluster + "]" ;
 #endif
@@ -426,8 +433,8 @@ void Algorithm::ReadCluster(const std::string &cluster) {
     in_cluster.close();
 }
 
-void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
-                                  std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
+void Configuration::ReadConflictGraph(const std::string &conflict_graph,
+                                      std::unordered_map<std::string, std::shared_ptr<File>> &file_map_per_name) {
 #ifndef NDEBUG
     DLOG(INFO) << "Reading Conflict Graph from input file [" + conflict_graph + "]" ;
 #endif
@@ -440,7 +447,7 @@ void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
         LOG(FATAL) << "Conflict graph [" + conflict_graph + "] doesn't exist";
     }
 
-    conflict_graph_->Redefine(GetFilesSize());
+    conflict_graph_->Redefine(get_files_size());
 
     // Reading conflict graph information
     while (getline(in_conflict_graph, line)) {
@@ -468,9 +475,9 @@ void Algorithm::ReadConflictGraph(const std::string &conflict_graph,
  * \param[in] cluster_file          Name of the Cluster input file
  * \param[in] conflict_graph_file   Name of the Conflict Graph input file
  */
-void Algorithm::ReadInputFiles(const std::string &tasks_and_files_file,
-                               const std::string &cluster_file,
-                               const std::string &conflict_graph_file) {
+void Configuration::ReadInputFiles(const std::string &tasks_and_files_file,
+                                   const std::string &cluster_file,
+                                   const std::string &conflict_graph_file) {
     std::unordered_map<std::string, std::shared_ptr<File>> file_map_per_name;
 
     ReadTasksAndFiles(tasks_and_files_file, file_map_per_name);
@@ -483,7 +490,7 @@ void Algorithm::ReadInputFiles(const std::string &tasks_and_files_file,
         storage_vet_[storage->get_id()] = storage->get_storage();
     }
 
-    height_.resize(GetActivationSize(), -1);
+    height_.resize(get_activations_size(), -1);
     ComputeHeight(id_source_, 0);
 
 #ifndef NDEBUG
@@ -495,34 +502,9 @@ void Algorithm::ReadInputFiles(const std::string &tasks_and_files_file,
     ComputeFileTransferMatrix();
 }
 
-/**
- * The \c ReturnAlgorithm() returns an object derived from \c Algorithm depending on the
- * \c algorithm parameter.
- *
- * \param[in] algorithm  Name of the \c Algorithm object to be instantiated
- * \retval    object     Instance of an \c Algorithm object
- */
-std::shared_ptr<Algorithm> Algorithm::ReturnAlgorithm(const std::string &algorithm) {
-    DLOG(INFO) << "ReturnAlgorithm: " << algorithm;
-    std::cout << "ReturnAlgorithm: " << algorithm << std::endl;
-
-    if (algorithm == "grch") {
-        return std::make_shared<Grch>();
-    } else if (algorithm == "cplex") {
-        return std::make_shared<Cplex>();
-    } else if (algorithm == "grasp") {
-        return std::make_shared<Grasp>();
-    } else if (algorithm == "heft") {
-        return std::make_shared<Heft>();
-    } else {
-        std::fprintf(stderr, "Please select a valid algorithm.\n");
-        std::exit(-1);
-    }
-}
-
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
-void Algorithm::ComputeHeight(size_t node, int n) {
+void Configuration::ComputeHeight(size_t node, int n) {
 #ifndef NDEBUG
     DLOG(INFO) << "Height " << n << " node " << node << " name " << activations_[node]->get_tag() << std::endl;
 #endif
@@ -537,21 +519,21 @@ void Algorithm::ComputeHeight(size_t node, int n) {
     }
 }
 
-void Algorithm::ComputeFileTransferMatrix() {
+void Configuration::ComputeFileTransferMatrix() {
 
     for (const auto& file : files_) {
         file->PopulateFileTransferMatrix(storages_);
     }
 }
 
-void Algorithm::CalculateMaximumSecurityAndPrivacyExposure() {
+void Configuration::CalculateMaximumSecurityAndPrivacyExposure() {
 
     double maximum_activation_exposure = 0.0;
 
     DLOG(INFO) << "Calculate the Maximum Security and Privacy Exposure";
 
     for (Requirement requirement: requirements_) {
-        maximum_activation_exposure += static_cast<double>(GetActivationSize()) * static_cast<double>(
+        maximum_activation_exposure += static_cast<double>(get_activations_size()) * static_cast<double>(
                 requirement.get_max_value());
     }
 

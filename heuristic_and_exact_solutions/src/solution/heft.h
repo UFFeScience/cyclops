@@ -1,20 +1,21 @@
 /**
  * \file src/solution/heft.h
- * \brief Contains the \c Grch class declaration.
+ * \brief Contains the \c Heft class declaration.
  *
- * \authors Rodrigo Alves Prado da Silva \<rodrigo_prado@id.uff.br\>
+ * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \copyright Fluminense Federal University (UFF)
  * \copyright Computer Science Department
- * \date 2021
  *
- * This header file contains the \c Grch class that construct
- * several \c Solution objects by selecting tasks randomly inside a restrict candidate list.
+ * This header file contains the \c Heft class.
  */
 
 #ifndef APPROXIMATE_SOLUTIONS_SRC_SOLUTION_HEFT_H_
 #define APPROXIMATE_SOLUTIONS_SRC_SOLUTION_HEFT_H_
 
+// Macros or defines
+
 #include "src/solution/algorithm.h"
+#include "src/solution/configuration.h"
 #include <list>
 #include <map>
 #include <boost/range/join.hpp>
@@ -30,10 +31,19 @@ struct Event {
 
 class Heft : public Algorithm {
 public:
+    // Constructors
+
     ///
-    Heft() = default;
+    Heft(std::shared_ptr<Configuration> configuration) : Algorithm(configuration) {}
+
+    ///
+    explicit Heft(const Algorithm& algorithm) : Algorithm(algorithm) {}
+
+    // Destructor
 
     virtual ~Heft() = default;
+
+    // Public Methods
 
     double RankUpward(size_t activation_id, std::vector<double> &communication_plus_max_successor_rank_cache);
 
@@ -62,14 +72,20 @@ public:
                   std::vector<double> &end_time);
 
     ///
-    [[nodiscard]] std::string GetName() const override { return name_; }
+    void HeftScheduling(Solution& best_solution);
 
     ///
     void Run() override;
+
+    // Getters and Setters
+
+    ///
+    [[nodiscard]] std::string get_name() const override { return name_; }
 
 private:
 
     std::string name_ = "Heft";
 };
+
 
 #endif  // APPROXIMATE_SOLUTIONS_SRC_SOLUTION_HEFT_H_

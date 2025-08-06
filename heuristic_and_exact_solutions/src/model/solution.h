@@ -27,18 +27,18 @@
 #include "src/common/my_random.h"
 #include "src/model/dynamic_file.h"
 #include "src/model/static_file.h"
-#include "src/solution/algorithm.h"
+#include "src/solution/configuration.h"
 #include "src/model/activation.h"
 #include "src/model/activation_execution_data.h"
 #include "src/model/file_manager.h"
 
-/// Forward declaration of the class Algorithm, needed because of the circular reference
-class Algorithm;
+/// Forward declaration of the class Configuration, needed because of the circular reference
+class Configuration;
 
-/// Forward declaration of the class Algorithm, needed because of the circular reference
+/// Forward declaration of the class Configuration, needed because of the circular reference
 class Activation;
 
-/// Forward declaration of the class Algorithm, needed because of the circular reference
+/// Forward declaration of the class Configuration, needed because of the circular reference
 class VirtualMachine;
 
 /**
@@ -47,17 +47,59 @@ class VirtualMachine;
  */
 class Solution {
 public:
+    // Constructors
+
+    explicit Solution(const std::shared_ptr<Configuration>& configuration);
+
     /// Copy constructor
     Solution(const Solution&) = default;
 
     /// Move constructor
-    Solution(Solution&&) = default;
+//    Solution(Solution&&) = default;
 
-    /// Constructor declaration
-    explicit Solution(const std::shared_ptr<Algorithm>& algorithm);
+    // Public Methods
+
+    ///
+    double GetActivationStartTime(size_t act_id, size_t vm_id);
+
+    ///
+    double GetActivationReadTime(size_t act_id, size_t vm_id);
+
+    ///
+    double GetActivationRunTime(size_t act_id, size_t vm_id);
+
+    /// Define where the output files of the execution of the \c task will be stored
+    double AllocateOutputFiles(
+            const std::shared_ptr<Activation>& activation,
+            const std::shared_ptr<VirtualMachine>& vm,
+            double start_time,
+            double read_time,
+            double run_time
+    );
+
+    ///
+    double GetActivationWriteTime(size_t act_id, size_t vm_id);
+
+    ///
+    size_t GetDistance(const Solution& solution);
+
+    ///
+    void Mutate(double probability);
+
+    ///
+    void Encode();
+
+    ///
+    Solution Crossover(Solution partner);
+
+    ///
+//    double SetActivationOutputFilesLocations(size_t act_id, size_t vm_id);
 
     ///
     double OptimizedComputeObjectiveFunction(size_t start_of_ordering = 1ul);
+
+    ///
+//    double HeaOptimizedComputeObjectiveFunction(size_t start_of_ordering = 1ul);
 
     /// Getter for \c makespan_
     [[nodiscard]] double get_makespan() const { return static_cast<double>(makespan_); }
@@ -113,6 +155,9 @@ public:
     double ComputeAndFetchOF();
 
     ///
+    double HeaComputeAndFetchOF();
+
+    ///
     [[nodiscard]] double fetch_makespan() const;
 
     ///
@@ -142,6 +187,17 @@ public:
     ///
     bool localSearchN3();
 
+    ///
+    bool HeaLocalSearchN1();
+
+    ///
+    bool HeaLocalSearchN2();
+
+    ///
+    bool HeaLocalSearchN3();
+
+    // Operators
+
     /// Copy assignment
     Solution& operator=(const Solution&) = default;
 
@@ -153,44 +209,75 @@ public:
         return a.Write(os);
     }
 
+    // Getters and Setters
+    std::vector<size_t> get_ordering() {
+        return ordering_;
+    }
+
+    // TODO: Remover esses acessos, criar forma mais eficiente de alterar e manter os estado
+
+    size_t get_activation_allocation(size_t act_id) {
+        return activation_allocations_[act_id];
+    }
+
+    void set_activation_allocation(size_t act_id, size_t vm_id) {
+        activation_allocations_[act_id] = vm_id;
+    }
+
+    size_t get_file_allocation(size_t file_id) {
+        return file_manager_.get_file_allocation(file_id);
+    }
+
+    void set_file_allocation(size_t file_id, size_t vm_id) {
+        file_manager_.set_file_allocation(file_id, vm_id);
+    }
+
+    void change_file_allocation(size_t file_id, size_t vm_id) {
+        file_manager_.ChangeFileAllocation(file_id, vm_id);
+    }
+
 protected:
     /// Write this object to the output stream
     std::ostream &Write(std::ostream &os) const;
 
     /// Computes the time of reading input files for the execution of the \c activation
-    double ComputeActivationReadTime(const std::shared_ptr<Activation> &activation,
-                                     const std::shared_ptr<VirtualMachine> &vm,
-                                     double start_time);
+    double ComputeActivationReadTime(
+            const std::shared_ptr<Activation> &activation,
+            const std::shared_ptr<VirtualMachine> &vm,
+            double start_time
+    );
 
     /// Compute the starting time of the \c task
-    double ComputeActivationStartTime(size_t activation_id, size_t vm_id);
+    double ComputeActivationStartTime(
+            size_t activation_id,
+            size_t vm_id
+    );
 
     /// Allocate just one output file selecting storage with minimal time transfer
-    double AllocateOneOutputFileGreedily(const std::shared_ptr<Activation> &activation,
-                                         const std::shared_ptr<File> &file,
-                                         const std::shared_ptr<VirtualMachine> &vm,
-                                         double start_time,
-                                         double read_time,
-                                         double run_time,
-                                         double partial_write_time);
-
-    /// Define where the output files of the execution of the \c task will be stored
-    double AllocateOutputFiles(const std::shared_ptr<Activation> &activation,
-                               const std::shared_ptr<VirtualMachine> &vm,
-                               double start_time,
-                               double read_time,
-                               double run_time);
+    double AllocateOneOutputFileGreedily(
+            const std::shared_ptr<Activation> &activation,
+            const std::shared_ptr<File> &file,
+            const std::shared_ptr<VirtualMachine> &vm,
+            double start_time,
+            double read_time,
+            double run_time,
+            double partial_write_time
+    );
 
     /// Calculate the actual makespan and Allocate the output files
-    double CalculateMakespanAndAllocateOutputFiles(const std::shared_ptr<Activation> &activation,
-                                                   const std::shared_ptr<VirtualMachine> &virtual_machine);
+    double CalculateMakespanAndAllocateOutputFiles(
+            const std::shared_ptr<Activation> &activation,
+            const std::shared_ptr<VirtualMachine> &virtual_machine
+    );
 
     /// Compute the file contribution to the security exposure
-    double ComputeFileSecurityExposureContribution(const std::shared_ptr<Storage> &storage,
-                                                   const std::shared_ptr<File>& file);
+    double ComputeFileSecurityExposureContribution(
+            const std::shared_ptr<Storage> &storage,
+            const std::shared_ptr<File>& file
+    );
 
-    /// A pointer to the Algorithm object that contain the all necessary data
-    std::shared_ptr<Algorithm> algorithm_;
+    /// A pointer to the Configuration object that contain the all necessary data
+    std::shared_ptr<Configuration> configuration_;
 
     /// Allocation of task in theirs VM
     std::vector<size_t> activation_allocations_;
@@ -208,7 +295,6 @@ protected:
     std::vector<ActivationExecutionData> activation_execution_data_;
 
     /// Makespan of the solution, the total execution time
-//    size_t makespan_{};
     double makespan_{};
 
     /// The cost for allocate Virtual Machines for the execution

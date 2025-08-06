@@ -1,6 +1,6 @@
 /**
  * \file src/solution/cplex.cc
- * \brief Contains the \c Algorithm class methods
+ * \brief Contains the \c Configuration class methods
  *
  * \authors Rodrigo Alves Prado da Silva \<rodrigo.raps@gmail.com\>
  * \authors Yuri Frota \<abitbol@gmail.com\>
@@ -8,7 +8,7 @@
  * \copyright Computer Science Department
  * \date 2024
  *
- * This source file contains the methods from the \c Cplex class that run the mode of the
+ * This source file contains the methods from the \c Cplex class that start the mode of the
  * exact solution
  */
 
@@ -419,8 +419,9 @@ void PrintBest(struct BEST *data) {
     // -------- ws ----------
     for (auto i = 0ul; i < algorithm->GetFilesSize() - 1ul; ++i) {
         for (auto j = i + 1ul; j < algorithm->GetFilesSize(); ++j) {
-            auto conflict = algorithm->get_conflict_graph()->ReturnConflict(static_cast<size_t>(i),
-                                                                            static_cast<size_t>(j));
+//            auto conflict = algorithm->get_conflict_graph()->ReturnConflict(static_cast<size_t>(i),
+//                                                                            static_cast<size_t>(j));
+            auto conflict = algorithm->GetConflictValue(static_cast<size_t>(i), static_cast<size_t>(j));
 
             if (conflict > 0) {  // soft constraint
                 if (data->ws[i][j] > data->PRECISION) {
@@ -442,7 +443,7 @@ void PrintBest(struct BEST *data) {
 
     // -------- b ----------
     for (auto i = 0ul; i < data->numb_; ++i) {
-        auto storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + i);
+        auto storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachinesSize() + i);
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             for (auto j = 0ul; j <= bucket->get_number_of_GB_per_cost_intervals(); ++j) {
@@ -457,7 +458,7 @@ void PrintBest(struct BEST *data) {
 
     // -------- q ----------
     for (auto i = 0ul; i < data->numb_; ++i) {
-        auto storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + i);
+        auto storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachinesSize() + i);
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             for (auto j = 0ul; j <= bucket->get_number_of_GB_per_cost_intervals(); ++j) {
@@ -581,8 +582,9 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx) {
         // -------- ws ----------
         for (auto d1 = 0ul; d1 < algorithm->GetFilesSize() - 1ul; ++d1) {
             for (auto d2 = d1 + 1ul; d2 < algorithm->GetFilesSize(); ++d2) {
-                int conflict = algorithm->get_conflict_graph()->ReturnConflict(static_cast<size_t>(d1),
-                                                                               static_cast<size_t>(d2));
+//                int conflict = algorithm->get_conflict_graph()->ReturnConflict(static_cast<size_t>(d1),
+//                                                                               static_cast<size_t>(d2));
+                auto conflict = algorithm->GetConflictValue(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
                 if (conflict > 0) {  // soft constraint
                     data->ws[d1][d2] = static_cast<int>((float) getValue(
@@ -600,7 +602,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx) {
 
         // -------- b ----------
         for (auto j = 0ul; j < data->numb_; ++j) {
-            auto storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + j);
+            auto storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachinesSize() + j);
 
             if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
                 for (auto l = 0ul; l <= bucket->get_number_of_GB_per_cost_intervals(); ++l) {
@@ -614,7 +616,7 @@ ILOINCUMBENTCALLBACK2(CB_incub_sol, struct BEST*, data, struct CPLEX*, cplx) {
 
         // -------- q ----------
         for (auto j = 0ul; j < data->numb_; ++j) {
-            auto storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachineSize() + j);
+            auto storage = algorithm->GetStoragePerId(algorithm->GetVirtualMachinesSize() + j);
 
             if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
                 for (auto l = 0ul; l <= bucket->get_number_of_GB_per_cost_intervals(); ++l) {
@@ -652,15 +654,15 @@ void Cplex::Run() {
     char var_name[100];
 
     DLOG(INFO) << "Cplex structure (environment, model and variables)";
-    int _n = static_cast<int>(GetActivationSize() - 2);  // less source and target
+    int _n = static_cast<int>(GetActivationsSize() - 2);  // less source and target
     int _d = static_cast<int>(GetFilesSize());
-    int _m = static_cast<int>(GetVirtualMachineSize());
-    int _mb = static_cast<int>(GetStorageSize());
+    int _m = static_cast<int>(GetVirtualMachinesSize());
+    int _mb = static_cast<int>(GetStoragesSize());
     int _num_r = static_cast<int>(GetRequirementsSize());
-    int _num_b = static_cast<int>(get_bucket_size());
-    int _time_max = static_cast<int>(makespan_max_);
-    double _cost_max = get_budget_max();
-    double _security_max = get_maximum_security_and_privacy_exposure();
+    int _num_b = static_cast<int>(GetBucketsSize());
+    int _time_max = static_cast<int>(GetMakespanDeadline());
+    double _cost_max = GetMaximumBudget();
+    double _security_max = GetMaximumConfidentialityExposure();
 
     int max_num_intervals = 2;
 
@@ -828,7 +830,8 @@ void Cplex::Run() {
         for (auto d2 = d1 + 1ul; d2 < GetFilesSize(); d2++) {
             auto int_d2 = static_cast<int>(d2);
 
-            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
+//            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
+            auto conflict = GetConflictValue(d1, d2);
 
             if (conflict > 0) {  // soft constraint
                 sprintf(var_name, "ws_%d_%d", (int) d1, (int) d2);  // Variable name
@@ -865,7 +868,7 @@ void Cplex::Run() {
     for (auto b = 0ul; b < static_cast<size_t>(_num_b); b++) {
         auto int_b = static_cast<int>(b);
 
-        std::shared_ptr<Storage> storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+        std::shared_ptr<Storage> storage = GetStoragePerId(GetVirtualMachinesSize() + static_cast<size_t>(b));
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             cplex.b[int_b] = IloBoolVarArray(cplex.env, static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()) + 1);
@@ -890,7 +893,7 @@ void Cplex::Run() {
     for (auto b = 0ul; b < static_cast<size_t>(_num_b); b++) {
         auto int_b = static_cast<int>(b);
 
-        auto storage = GetStoragePerId(GetVirtualMachineSize() + b);
+        auto storage = GetStoragePerId(GetVirtualMachinesSize() + b);
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             cplex.q[int_b] = IloNumVarArray(cplex.env,
@@ -952,26 +955,29 @@ void Cplex::Run() {
     IloExpr fo(cplex.env);
 
     // ---- Makespan
-    fo = alpha_time_ * (cplex.z_max[0] / _time_max);
+//    fo = alpha_time_ * (cplex.z_max[0] / _time_max);
+    fo = GetAlphaTime() * (cplex.z_max[0] / _time_max);
 
     // ----- Financial cost
     for (auto j = 0ul; j < static_cast<size_t>(_m); j++) {
         auto int_j = static_cast<int>(j);
 
         std::shared_ptr<VirtualMachine> virtual_machine = GetVirtualMachinePerId(j);
-        fo += alpha_budget_ * (virtual_machine->get_cost() * cplex.z[int_j]) / _cost_max;
+//        fo += alpha_budget_ * (virtual_machine->get_cost() * cplex.z[int_j]) / _cost_max;
+        fo += GetAlphaCost() * (virtual_machine->get_cost() * cplex.z[int_j]) / _cost_max;
     }
 
     for (auto b = 0ul; b < static_cast<size_t>(_num_b); b++) {
         auto int_b = static_cast<int>(b);
 
-        std::shared_ptr<Storage> storage = GetStoragePerId(GetVirtualMachineSize() + b);
+        std::shared_ptr<Storage> storage = GetStoragePerId(GetVirtualMachinesSize() + b);
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             for (auto l = 0; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++) {
                 auto int_l = static_cast<int>(l);
 
-                fo += alpha_budget_ * (bucket->get_cost() * cplex.q[int_b][int_l]) / _cost_max;
+//                fo += alpha_budget_ * (bucket->get_cost() * cplex.q[int_b][int_l]) / _cost_max;
+                fo += GetAlphaCost() * (bucket->get_cost() * cplex.q[int_b][int_l]) / _cost_max;
             }
         } else {
             exit(1);  // Error
@@ -985,7 +991,8 @@ void Cplex::Run() {
         for (auto i = 0ul; i < static_cast<size_t>(_n); i++) {
             auto int_i = static_cast<int>(i);
 
-            fo += alpha_security_ * cplex.e[int_r][int_i] / _security_max;
+//            fo += alpha_security_ * cplex.e[int_r][int_i] / _security_max;
+            fo += GetAlphaSecurity() * cplex.e[int_r][int_i] / _security_max;
         }
     }
 
@@ -996,10 +1003,12 @@ void Cplex::Run() {
         for (auto d2 = d1 + 1ul; d2 < static_cast<size_t>(_d); d2++) {
             auto int_d2 = static_cast<int>(d2);
 
-            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
+//            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
+            auto conflict = GetConflictValue(d1, d2);
 
             if (conflict > 0) {  // soft constraint
-                fo += alpha_security_ * (conflict * cplex.ws[int_d1][int_d2] / _security_max);
+//                fo += alpha_security_ * (conflict * cplex.ws[int_d1][int_d2] / _security_max);
+                fo += GetAlphaSecurity() * (conflict * cplex.ws[int_d1][int_d2] / _security_max);
             }
         }
     }
@@ -1467,7 +1476,7 @@ void Cplex::Run() {
     DLOG(INFO) << var_name << " added to the model.";
 
     // Restriction (12)
-    for (auto b = GetVirtualMachineSize(); b < GetVirtualMachineSize() + static_cast<size_t>(_num_b); b++) {
+    for (auto b = GetVirtualMachinesSize(); b < GetVirtualMachinesSize() + static_cast<size_t>(_num_b); b++) {
         auto int_b = static_cast<int>(b);  // device
 
         auto storage = GetStoragePerId(b);
@@ -1548,10 +1557,12 @@ void Cplex::Run() {
     DLOG(INFO) << var_name << " added to the model.";
 
     // Restriction (12)
-    for (auto d = 0ul; d < files_.size(); ++d) {
+//    for (auto d = 0ul; d < files_.size(); ++d) {
+    for (size_t d{}; d < GetFilesSize(); ++d) {
         auto int_d = static_cast<int>(d);
 
-        auto file = files_[d];
+//        auto file = files_[d];
+        auto file = GetFilePerId(d);
 
         if (dynamic_pointer_cast<DynamicFile>(file)) {
             for (auto j = 0ul; j < static_cast<size_t>(_mb); j++) {
@@ -1575,16 +1586,19 @@ void Cplex::Run() {
     DLOG(INFO) << var_name << " added to the model.";
 
     // Restrictions (13) and (14)
-    for (auto d = 0ul; d < files_.size(); ++d) {
+//    for (size_t d{}; d < files_.size(); ++d) {
+    for (size_t d{}; d < GetFilesSize(); ++d) {
         auto int_d = static_cast<int>(d);
 
-        auto file = files_[d];
+//        auto file = files_[d];
+        auto file = GetFilePerId(d);
 
         if (auto static_file = dynamic_pointer_cast<StaticFile>(file)) {
             auto ind = static_file->GetFirstVm();
             auto int_ind = static_cast<int>(ind);
 
-            for (auto mb = 0ul; mb < storages_.size(); ++mb) {
+//            for (auto mb = 0ul; mb < storages_.size(); ++mb) {
+            for (auto mb = 0ul; mb < GetStoragesSize(); ++mb) {
                 auto int_mb = static_cast<int>(mb);
 
                 if (ind == mb) {
@@ -1628,7 +1642,8 @@ void Cplex::Run() {
         DLOG(INFO) << "o: " << o;
 
         // Dynamic files
-        if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(files_[o])) {
+//        if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(files_[o])) {
+        if (auto dynamic_file = std::dynamic_pointer_cast<DynamicFile>(GetFilePerId(o))) {
             DLOG(INFO) << "Dynamic file: " << dynamic_file->get_id();
             auto activation = dynamic_file->get_parent_task().lock();
 
@@ -1896,7 +1911,7 @@ void Cplex::Run() {
         for (auto b = 0ul; b < static_cast<size_t>(_num_b); b++) {
             auto int_b = static_cast<int>(b);
 
-            auto storage = GetStoragePerId(GetVirtualMachineSize() + b);
+            auto storage = GetStoragePerId(GetVirtualMachinesSize() + b);
 
             if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
                 for (auto l = 1ul; l <= bucket->get_number_of_GB_per_cost_intervals(); l++) {
@@ -2004,7 +2019,8 @@ void Cplex::Run() {
         for (auto d2 = d1 + 1ul; d2 < static_cast<size_t>(_d); d2++) {
             auto int_d2 = static_cast<int>(d2);
 
-            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
+//            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
+            auto conflict = GetConflictValue(d1, d2);
 
             // hard constraint
             if (conflict == -1) {
@@ -2037,7 +2053,8 @@ void Cplex::Run() {
         for (auto d2 = d1 + 1ul; d2 < static_cast<size_t>(_d); d2++) {
             auto int_d2 = static_cast<int>(d2);
 
-            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
+//            auto conflict = conflict_graph_->ReturnConflict(d1, d2);
+            auto conflict = GetConflictValue(d1, d2);
 
             // Hard constraint
             if (conflict > 0) {
@@ -2107,10 +2124,10 @@ void Cplex::Run() {
         auto int_b = static_cast<int>(b);
 
         // bucket
-        auto storage = GetStoragePerId(GetVirtualMachineSize() + b);
+        auto storage = GetStoragePerId(GetVirtualMachinesSize() + b);
 
         // Bucket index among the machines
-        int int_j = static_cast<int>(GetVirtualMachineSize() + b);
+        int int_j = static_cast<int>(GetVirtualMachinesSize() + b);
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             IloExpr exp(cplex.env);
@@ -2124,7 +2141,8 @@ void Cplex::Run() {
             for (auto d = 0ul; d < static_cast<size_t>(_d); d++) {
                 auto int_d = static_cast<int>(d);
 
-                auto file = files_[d];
+//                auto file = files_[d];
+                auto file = GetFilePerId(d);
 
                 exp -= (file->get_size_in_GB() * cplex.yb[int_d][int_j]);
                 // exp -= (file->get_size() * cplex.yb[d][int_j]);
@@ -2149,7 +2167,7 @@ void Cplex::Run() {
         auto int_b = static_cast<int>(b);
 
         // bucket
-        auto storage = GetStoragePerId(GetVirtualMachineSize() + b);
+        auto storage = GetStoragePerId(GetVirtualMachinesSize() + b);
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             IloExpr exp(cplex.env);
@@ -2174,10 +2192,10 @@ void Cplex::Run() {
     // Restriction (28)
     for (auto b = 0ul; b < static_cast<size_t>(_num_b); b++) {
         // bucket
-        auto storage = GetStoragePerId(GetVirtualMachineSize() + b);
+        auto storage = GetStoragePerId(GetVirtualMachinesSize() + b);
 
         // Bucket index among the machines
-        auto int_j = static_cast<int>(GetVirtualMachineSize() + b);
+        auto int_j = static_cast<int>(GetVirtualMachinesSize() + b);
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             IloExpr exp(cplex.env);
@@ -2185,7 +2203,8 @@ void Cplex::Run() {
             for (auto d = 0ul; d < static_cast<size_t>(_d); d++) {
                 auto int_d = static_cast<int>(d);
 
-                auto file = files_[d];
+//                auto file = files_[d];
+                auto file = GetFilePerId(d);
 
                 exp += file->get_size_in_GB() * cplex.yb[int_d][int_j];
                 // exp += (file->get_size() * cplex.yb[d][int_j]);
@@ -2216,7 +2235,7 @@ void Cplex::Run() {
         auto int_b = static_cast<int>(b);
 
         // bucket
-        auto storage = GetStoragePerId(GetVirtualMachineSize() + b);
+        auto storage = GetStoragePerId(GetVirtualMachinesSize() + b);
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             for (auto l = 1ul; l <= bucket->get_number_of_GB_per_cost_intervals(); l++) {
@@ -2262,10 +2281,10 @@ void Cplex::Run() {
         auto int_b = static_cast<int>(b);
 
         // Bucket
-        auto storage = GetStoragePerId(GetVirtualMachineSize() + b);
+        auto storage = GetStoragePerId(GetVirtualMachinesSize() + b);
 
         // Bucket index among the machines
-        auto int_j = static_cast<int>(GetVirtualMachineSize() + b);
+        auto int_j = static_cast<int>(GetVirtualMachinesSize() + b);
 
         if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
             for (auto l = 1ul; l <= bucket->get_number_of_GB_per_cost_intervals(); l++) {
@@ -2358,7 +2377,7 @@ void Cplex::Run() {
         }
 
         for (auto b = 0; b < _num_b; b++) {
-            auto storage = GetStoragePerId(GetVirtualMachineSize() + static_cast<size_t>(b));
+            auto storage = GetStoragePerId(GetVirtualMachinesSize() + static_cast<size_t>(b));
 
             if (auto bucket = dynamic_pointer_cast<Bucket>(storage)) {
                 for (auto l = 1; l <= static_cast<int>(bucket->get_number_of_GB_per_cost_intervals()); l++) {
@@ -2379,7 +2398,8 @@ void Cplex::Run() {
         // Soft edge penalties
         for (auto d1 = 0; d1 < _d - 1; d1++) {
             for (auto d2 = d1 + 1; d2 < _d; d2++) {
-                int conflict = conflict_graph_->ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
+//                int conflict = conflict_graph_->ReturnConflict(static_cast<size_t>(d1), static_cast<size_t>(d2));
+                int conflict = GetConflictValue(static_cast<size_t>(d1), static_cast<size_t>(d2));
 
                 if (conflict > 0) {  // Soft constraint
                     security += conflict * best.ws[d1][d2] / _security_max;
