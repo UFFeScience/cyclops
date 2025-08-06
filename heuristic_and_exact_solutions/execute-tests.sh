@@ -41,7 +41,7 @@
 # And considering a following range of number of buckets 2, 4, 8, 16, 32, 64
 create_cloud_files() {
     # <id-provider> <provider name> <period - seconds> <max vms> <number of vms> <number of buckets>
-    middle_cloud_desc="Amazon-EC2 1 30 4"
+    middle_cloud_desc="Amazon-EC2 1 30 8"
     # <id-vm> <type> <slowdown> <storage GB> <bandwidth Gbps> <cost per hour $> <requirement-1> <requirement-2>
     middle_vm1_desc="m3.medium 1.53 80 4.0 0.02"
     middle_vm2_desc="m3.large 0.77 120 9.0 0.09"
@@ -54,7 +54,7 @@ create_cloud_files() {
     # Bucket variable from 1 to 64
 #    BUCKETS=($(seq 1 64))
 #    BUCKETS=(128)
-    BUCKETS=(16)
+    BUCKETS=(128)
 
     # certify folder exists
     FOLDER=./temp
@@ -145,6 +145,10 @@ create_cloud_files() {
 1 ${middle_vm2_desc} 1 1
 2 ${middle_vm3_desc} 0 1
 3 ${middle_vm4_desc} 0 1
+4 ${middle_vm1_desc} 1 1
+5 ${middle_vm2_desc} 1 1
+6 ${middle_vm3_desc} 0 1
+7 ${middle_vm4_desc} 0 1
 EOF
         # Buckets
         for ((i = 0; i < elem; i++)); do
@@ -328,8 +332,11 @@ EOF
     #    done
     #  done
     #
-    ## 	10th - 2 cloud sites heterogêneos: 4 máquinas - uma de cada tipo em cada cloud site - os dois sites atendendo o requisito de confiabilidade e duas máquinas em cada site atendendo o requisito de criptografia/anonimização
-    #  # 10th - homogeneous cloud (two clouds, two VM attend to R1 requirement for each site)
+
+    #
+    # 	10th - 2 cloud sites heterogêneos: 4 máquinas - uma de cada tipo em cada cloud site - os dois sites atendendo o requisito de confiabilidade e duas máquinas em cada site atendendo o requisito de criptografia/anonimização
+    #   10th - homogeneous cloud (two clouds, two VM attend to R1 requirement for each site)
+    #
     #  for elem in "${BUCKETS[@]}" ; do
     #    file_name="${FOLDER}/10_2_8_${elem}_4_8_heterogeneous_clouds.vcl"
     #    echo "${file_name}"
@@ -434,72 +441,12 @@ EOF
     #  done
 }
 
-create_cloud_files_for_sn() {
-    # <id-provider> <provider name> <period - seconds> <max vms> <number of vms> <number of buckets>
-    middle_cloud_desc="Amazon-EC2 1 30 4"
-    # <id-vm> <type> <slowdown> <storage GB> <bandwidth Gbps> <cost per hour $> <requirement-1> <requirement-2>
-    middle_vm1_desc="nano 1.60 20 0.1 0.02"
-    middle_vm2_desc="micro 1.40 20 0.1 0.03"
-    middle_vm3_desc="small 1.20 20 0.1 0.045"
-    middle_vm4_desc="medium 1.00 20 0.1 0.06"
-    middle_vm5_desc="large 0.80 20 0.1 0.09"
-    middle_vm6_desc="xlarge 0.60 20 0.1 0.12"
-    middle_vm7_desc="2xlarge 0.40 20 0.1 0.16"
-    middle_vm8_desc="3xlarge 0.20 20 0.1 0.33"
-    # <id-bucket> <capacidade> <cost> <numero de intervalos> [<limite superior> <valor contratado por intervalo>] <requirement-1> <requirement-2 (pode assumir 0 1 2{so bucket})>
-    middle_bucket_desc="Standard 51200 25.0 0.023 1 1"
-
-    # Bucket variable from 1 to 64
-#    BUCKETS=($(seq 1 64))
-    BUCKETS=(128)
-
-    # certify folder exists
-    FOLDER=./temp
-    if ! [[ -d ${FOLDER} ]]; then mkdir ${FOLDER}; fi
-    FOLDER=./temp/clouds
-    if [[ -d ${FOLDER} ]]; then
-        rm -r ${FOLDER}
-        mkdir ${FOLDER}
-    else
-        mkdir ${FOLDER}
-    fi
-
-    # Nomenclature
-    # <scenery>_<#Cloud>_<#vm>_<#buckets>_<#fulfill R1>_<#fulfill R2>_<description>.vcl
-
-    # 12 scenarios
-
-# 4th - homogeneous cloud (two met R1 requirement)
-    for elem in "${BUCKETS[@]}"; do
-        # Header anc cloud
-        file_name="${FOLDER}/4_1_4_${elem}_2_4_heterogeneous_cloud.vcl"
-        echo "${file_name}"
-        cat <<EOF >"${file_name}"
-1 2
-
-1 ${middle_cloud_desc} ${elem}
-0 ${middle_vm1_desc} 1 1
-1 ${middle_vm2_desc} 1 1
-2 ${middle_vm3_desc} 0 1
-3 ${middle_vm4_desc} 0 1
-4 ${middle_vm5_desc} 1 1
-5 ${middle_vm6_desc} 1 1
-6 ${middle_vm7_desc} 0 1
-7 ${middle_vm8_desc} 0 1
-EOF
-        # Buckets
-        for ((i = 0; i < elem; i++)); do
-            echo "${i} ${middle_bucket_desc}" >>"${file_name}"
-        done
-    done
-}
-
 # ### Main ###
 
 now=$(date +"%Y%m%d%H%M%S")
 echo "${now}"
 
-create_cloud_files_for_sn
+create_cloud_files
 
 home_dir=$(pwd)
 regex="([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)_([0-9a-zA-Z]+)_cloud.vcl"
